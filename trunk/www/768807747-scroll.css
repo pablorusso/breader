@@ -434,7 +434,7 @@ font-size: 105%;
 #quick-add-subs,
 #selectors-box li,
 #add-box #add-subs {
-padding: 2px 0 2px 18px;
+padding: 2px 0 2px 10px;
 display: block;
 background-repeat: no-repeat;
 background-position: center left;
@@ -497,10 +497,6 @@ cursor: default;
 #selectors-box #nav-refresh {
 float: right;
 }
-#quick-add-subs,
-#add-box #add-subs {
-background-image: url("images/3362155361-add.png");
-}
 #add-box #add-directory {
 float: right;
 padding: 2px 0.5em 2px 0;
@@ -533,8 +529,8 @@ width: 180px;
 padding: 0 0 1px 8px;
 }
 #quickadd {
-width: 160px;
-float: left;
+width: 130px;
+float: center;
 }
 #quick-add-close {
 float: right;
@@ -682,6 +678,7 @@ display: none;
 }
 .sub-tree-header {
 padding: 0.2em 0.4em;
+font-weight: bold;
 }
 #sub-tree-refresh {
 float: right;
@@ -1405,7 +1402,7 @@ margin-right: 0;
 width: 100%;
 }
 .folder-chooser .button-container .button-body {
-font-size: 85%;
+font-size: 100%;
 }
 .folder-chooser .contents {
 position: absolute;
