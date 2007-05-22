@@ -584,13 +584,12 @@ margin-bottom: 0;
 padding-bottom: 10px;
 }
 #sub-tree {
-padding: 0 0 0 8px;
-height: 420px;
-width: 227px;
-overflow: auto;
-overflow-y: auto;
-overflow-x: hidden;
-position: relative;
+	height: 100%;
+	overflow: auto;
+	overflow-y: auto;
+	overflow-x: hidden;
+	position: absolute;
+	width:  100%;
 }
 #sub-tree,
 #sub-tree ul,
@@ -2220,17 +2219,15 @@ height: 46px;
 }
 #entries,
 #viewer-page-container {
-overflow: auto;
-overflow-y: auto;
-overflow-x: hidden;
 width: 100%;
 position: relative;
 }
 #entries {
 padding: 0;
-height: 300px;
+height: 100%;
+width: 83%;
 z-index: 1;
-position: relative;
+position: absolute;
 zoom: 1;
 outline: 0;
 }
@@ -3027,6 +3024,7 @@ font-weight: bold;
 margin: .7em 0;
 text-align: center;
 }
+
 body.hide-nav #nav {
 display: none;
 }
