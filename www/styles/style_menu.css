@@ -1,0 +1,108 @@
+#quick-add-bubble-holder {
+color: #000;
+z-index: 50;
+margin: 10px 0;
+position: relative;
+overflow: auto;
+}
+#quick-add-bubble-holder td.s {
+background-color: #6bc290;
+}
+#quick-add-bubble-holder .c {
+background: #b5edbc;
+width: 180px;
+padding: 0 0 1px 8px;
+}
+
+#selectors-box td {
+background-color: #e1ecfe;
+}
+#selectors-box ul,
+#selectors-box li {
+padding: 0;
+margin: 0;
+}
+#selectors-box li {
+list-style-type: none;
+}
+#selectors-box li {
+font-weight: normal;
+font-size: 105%;
+}
+#selectors-box li {
+padding: 2px 0 2px 10px;
+display: block;
+background-repeat: no-repeat;
+background-position: center left;
+}
+#selectors-box li {
+float: left;
+clear: left;
+padding-right: 5px;
+}
+
+#selectors-box .c {
+padding: 0 0 0 8px;
+width: 227px;
+}
+#selectors-box {
+margin: 2px 0;
+}
+#selectors-box li.selected {
+background-color: #a4c5ff;
+-moz-border-radius: 5px;
+-webkit-border-radius: 5px;
+}
+#selectors-box li.selected a,
+#selectors-box li.selected .link {
+color: #000;
+text-decoration: none;
+cursor: default;
+}
+
+.round-box {
+empty-cells: show;
+}
+.round-box td {
+padding: 0;
+margin: 0;
+}
+.round-box .s {
+font-size: 1px;
+line-height: 1px;
+}
+.round-box td.s,
+.round-box td.c {
+background-color: #ccc;
+}
+.round-box .tl,
+.round-box .tr,
+.round-box .bl,
+.round-box .br {
+width: 3px;
+height: 3px;
+background-repeat: no-repeat;
+}
+.round-box .sq {
+background-image: none;
+}
+
+.sub-tree-header
+{
+padding: 0.2em 0.4em;
+font-weight: bold;
+}
+
+#quick-add-helptext,
+#quick-add-instructions {
+clear: both;
+color: #555;
+font-size: 75%;
+}
+#quick-add-helptext a {
+font-weight: bold;
+}
+#quickadd {
+width: 130px;
+float: center;
+}
