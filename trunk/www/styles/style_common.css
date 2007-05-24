@@ -1,0 +1,89 @@
+html, body {
+margin: 0;
+font-size: 90%;
+}
+html, body, input {
+font-family: arial, sans-serif;
+font-weight: normal;
+}
+body {
+background: #fff url("../images/body_bkg.png") repeat-x 0 0;
+color: #000;
+}
+div, form {
+margin: 0;
+}
+html.settings, body.settings {
+overflow: auto;
+}
+a,
+a:visited,
+ul#reading-list li,
+.link {
+color: #1010c8;
+}
+.link {
+text-decoration: underline;
+cursor: pointer;
+}
+a:focus {
+-moz-outline: 0;
+}
+a:focus,
+.unselectable {
+-moz-user-select: none;
+-khtml-user-select: none;
+user-select: none;
+}
+a.internal,
+.link.internal {
+color: #a00;
+}
+input {
+font-size: 95%;
+}
+div.clr {
+clear: both;
+}
+.hidden {
+display: none;
+}
+
+.link {
+color: #1010c8;
+}
+.link {
+text-decoration: underline;
+cursor: pointer;
+}
+
+#nav
+{
+	position:absolute;
+	float: left;
+	width:  19%;
+	z-index: 2;
+}
+#chrome
+{
+	position:absolute;
+	float: left;
+	margin-left: 20%;
+	margin-top: 5px;
+	width:  96%;
+	z-index: 3;
+}
+#loading
+{
+	position:absolute;
+	float: center;
+	width:  100%;
+	margin-left: 50%;
+	margin-top: 10%;
+	color: #FF0000;
+	font-weight: bold;
+	font-size: 150%;
+	text-decoration: blink;
+	display: none;
+	z-index: 4;
+}
