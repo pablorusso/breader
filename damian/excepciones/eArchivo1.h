@@ -1,17 +1,17 @@
-#ifndef E_ARCHIVO5
-#define E_ARCHIVO5
+#ifndef E_ARCHIVO1
+#define E_ARCHIVO1
 
 #include "IException.h"
 
-typedef enum {A5_ARCHIVO_CORRUPTO, A5_IDCAT_FUERA_DE_RANGO} A5_error;
+typedef enum {A1_ARCHIVO_CORRUPTO, A1_REG_ERRONEO} A1_error;
 
 /**
  * Excepciones del modulo TipoDeFuente
  */
-class eArchivo5 : public std::exception::exception, public IException {
+class eArchivo1 : public std::exception::exception, public IException {
 
 private:
-	A5_error errnumber; //!< El numero de error que arrojo la exepcion
+	A1_error errnumber; //!< El numero de error que arrojo la exepcion
 	unsigned int line; //!< La linea en donde se arrojo la exepcion
 	std::string file; //!< El archivo en donde se arrojo la exepcion
 	  
@@ -22,12 +22,12 @@ public:
 	 * @param l la linea
 	 * @param f el archivo
 	 */
-	eArchivo5(A5_error e, unsigned int l, std::string f)
+	eArchivo1(A1_error e, unsigned int l, std::string f)
 	  :errnumber(e), line(l), file(f) {}
 	/**
 	 * Destructor default
 	 */
-	~eArchivo5() throw() {}
+	~eArchivo1() throw() {}
 	/**
 	 * Metodo sobrecargado de la clase exeption
 	 * @return una secuencia de chars terminada en NULL con una descripcion
@@ -35,16 +35,16 @@ public:
 	 */
 	const char *what() const throw() {
 		switch(errnumber){
-			case A5_ARCHIVO_CORRUPTO: {
-				return "Archivo corrupto"; 
+			case A1_ARCHIVO_CORRUPTO: {
+				return "Archivo corrupto";
 				break;
 			}
-			case A5_IDCAT_FUERA_DE_RANGO: {
-				return "El id de la categoria esta fuera de rango"; 
+			case A1_REG_ERRONEO: {
+				return "Registro erroneo en el archivo";
 				break;
 			}
 			default: {
-				return "Error inesperado"; 
+				return "Error inesperado";
 				break;
 			}
 		}
