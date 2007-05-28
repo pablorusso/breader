@@ -87,5 +87,5 @@ $(target): $(o_files)
 	$(enlazador) $(LDFLAGS) $(o_files) $(LOADLIBES) $(LDLIBS) -o $(target)
 
 clean:
-	@$(RM) -fv *.o $(target) *~
+	@$(RM) -fv *.o $(target) *~ excepciones/*~ data/*
 

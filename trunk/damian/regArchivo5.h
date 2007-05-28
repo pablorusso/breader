@@ -1,4 +1,4 @@
-#ifndef TREGARCHIVO5
+#ifndef T_REGARCHIVO5
 #define T_REGARCHIVO5
 
 #include "General.h"
@@ -44,8 +44,8 @@ class t_regArchivo5 {
 
 		/**
 		 * Constructor, reserva memoria para el contenedor y lo  inicializa
-		 * @param MAX_CAT la cantidad maxima de categorias
 		 * en cero
+		 * @param MAX_CAT la cantidad maxima de categorias
 		 */
 		t_regArchivo5(const t_idcat &MAX_CAT);
 

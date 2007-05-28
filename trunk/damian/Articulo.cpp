@@ -1,44 +1,43 @@
 #include "Articulo.h"
 
-// Articulo::Articulo() {}
-// Articulo::~Articulo() {}
+Articulo::Articulo(const t_idcat &MAX_CAT):title(""), uri(""), description(""),
+  category(""), pubdate(""), summary(""), timestamp(0), leido(0),
+  numArticulo(0), cont_idcat(MAX_CAT), cont_usu_pc(MAX_CAT) {}
+Articulo::~Articulo() {
 
-void Articulo::add_cat(const t_idcat &idcat) {
-	// si ya estaba en el contenedor insert no hace nada
-	//TODO this->categorias.insert(idcat);
 }
 
-bool Articulo::find_cat(const t_idcat &idcat) {
-	// si no se encuentra el iterador es = end()
-	// TODO return (this->categorias.find(idcat) != this->categorias.end());
+void Articulo::add_cat(const t_idcat &idcat, const bool usu_pc) {
+	this->cont_idcat.setCat(idcat, 1);
+	this->cont_usu_pc.setCat(idcat, usu_pc);
 }
+
+short Articulo::find_cat(const t_idcat &idcat) {
+	short ret=-1;
+	if (this->cont_idcat.getCat(idcat)) {
+		ret = this->cont_usu_pc.getCat(idcat);
+	}
+	return ret;
+}
+
 
 bool Articulo::rem_cat(const t_idcat &idcat) {
 	// erase devuelve la cantidad de elementos que se borraron
 	//TODO return (this->categorias.erase(idcat) > 0);
 }
 
-std::ostream &operator<<(std::ostream &stream,  const Articulo &articulo) {
-	stream << "Contenido del articulo: " << std::endl;
-	stream << "title: " << articulo.title << std::endl;
-	stream << "uri: " << articulo.uri << std::endl;
-	stream << "description: " << articulo.description << std::endl;
-	stream << "category: " << articulo.category << std::endl;
-	stream << "pubdate: " << articulo.pubdate << std::endl;
-	stream << "summary: " << articulo.summary << std::endl;
-	stream << "timestamp: " << articulo.timestamp << std::endl;
-	stream << "leido: " << articulo.leido << std::endl;
-	stream << "numArticulo: " << articulo.numArticulo << std::endl;
-
-	
-
-/* TODO
-stream << "categorias: ";
-	t_cont_idcat::const_iterator it;
-	t_idcat i=1;
-	for(it = articulo.categorias.begin(); it != articulo.categorias.end();
-	  ++it, ++i)
-		stream << "\tidcat [" << i << "] = " << (*it) << std::endl;
-*/
+ostream &operator<<(ostream &stream,  const Articulo &articulo) {
+	stream << "Contenido del articulo: " << endl;
+	stream << "title: " << articulo.title << endl;
+	stream << "uri: " << articulo.uri << endl;
+	stream << "description: " << articulo.description << endl;
+	stream << "category: " << articulo.category << endl;
+	stream << "pubdate: " << articulo.pubdate << endl;
+	stream << "summary: " << articulo.summary << endl;
+	stream << "timestamp: " << articulo.timestamp << endl;
+	stream << "leido: " << articulo.leido << endl;
+	stream << "numArticulo: " << articulo.numArticulo << endl;
+	stream << "categorias: " << articulo.cont_idcat << endl;;
+	stream << "clasificaciones: " << articulo.cont_usu_pc << endl;;
 	return stream;
 }
