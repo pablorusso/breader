@@ -1,0 +1,5 @@
+<?xml-stylesheet type="text/xsl" href="../feeds.xslt"?>
+<feeds>
+	<feed id="1" name="Google" lastUpdate="May 22, 2007 3:29 AM" url="http://www.blogger.com/rss/atom.xml"/>
+	<feed id="2" name="Mio" lastUpdate="May 22, 2007 3:29 AM" url="http://localhost/breader/rss/atom.xml" />
+</feeds>

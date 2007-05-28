@@ -1,0 +1,5 @@
+<?xml-stylesheet type="text/xsl" href="../tags.xslt"?>
+<tags>
+	<tag id="1" readOnly="1" name="Cat1" artCount="10"/>
+	<tag id="2" readOnly="0" name="Cat2" artCount="10"/>
+</tags>

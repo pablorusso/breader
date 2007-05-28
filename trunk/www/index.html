@@ -1,142 +1,439 @@
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title>::Breader:: El lector de noticias inteligente</title>
-		<link href="styles/style_menu.css"   rel="stylesheet" type="text/css">
-		<link href="styles/style_common.css" rel="stylesheet" type="text/css"/>
-		<link href="styles/style_body.css" rel="stylesheet" type="text/css"/>
+		<link href="styles/style_menu.css"   rel="stylesheet" type="text/css" />
+		<link href="styles/style_common.css" rel="stylesheet" type="text/css" />
+		<link href="styles/style_body.css" rel="stylesheet" type="text/css"   />
+
+		<script type="text/javascript" src="scripts/ajax.js"></script>
+		<script type="text/javascript" src="scripts/xml.js"></script>
 
 		<script type="text/javascript">
+			var tagsDocument  ;
+			var feedsDocument ;
+			var bodyDocument  ;
 
-			function toggleLoading()
+			// DIVS MANAGERS
+			function showDiv( divName, innerText )
 			{
-				var divLoading = document.getElementById('loading');
-				if ( divLoading.style.display == "block" )
-					divLoading.style.display = "none";
-				else
+				var divToToggle = document.getElementById( divName );
+				if ( divToToggle.style.display == "none" )
 				{
-					var divBody = document.getElementById('chrome');
-					if ( divBody != null ) divBody.innerHTML = "";
-
-					divLoading.style.display = "block";
+					divToToggle.style.display = "block";
+					if ( innerText != null ) divToToggle.innerHTML = innerText;
+				}
+			}
+			function hideDiv( divName, innerText )
+			{
+				var divToToggle = document.getElementById( divName );
+				if ( divToToggle.style.display == "block" || divToToggle.style.display == "" )
+				{
+					divToToggle.style.display = "none";
+					if ( innerText != null ) divToToggle.innerHTML = innerText;
 				}
 			}
 
-			function reload()
+			// ACTUALIZAN PANTALLA
+			function showBody()
 			{
-				toggleLoading();
-				xmlOpen( "GET", "bin/thin_client.out", "", respHandlerBody );
+				var divBody = document.getElementById('chrome');
+				applyXSLT( 'body.xslt', divBody, bodyDocument );
+
+				showDiv( 'chrome', null );
+				hideDiv( 'loading_body', null );
+				hideDiv( 'processing_div', null );
+			}
+			function showTags()
+			{
+				var divTags = document.getElementById('menu_tags');
+				applyXSLT( 'tags.xslt', divTags, tagsDocument );
+
+				showDiv( 'menu_tags', null );
+				hideDiv( 'loading_tags', null );
+				hideDiv( 'processing_div', null );
+			}
+			function showFeeds()
+			{
+				var divFeeds = document.getElementById('menu_feeds');
+				applyXSLT( 'feeds.xslt', divFeeds, feedsDocument );
+
+				showDiv( 'menu_feeds', null );
+				hideDiv( 'loading_feeds', null );
+				hideDiv( 'processing_div', null );
 			}
 
-
-			function getReadyStateHandler( req, responseHandler )
+			function findNodeById ( rootNode, NodeToSearchId )
 			{
-				return function ()
+				var idToSearch = null;
+				if ( NodeToSearchId.attributes != null )
 				{
-					if (req.readyState == 4)
+					var attr = NodeToSearchId.attributes.getNamedItem( 'id' );
+					if ( attr != null ) // no tiene id? raro
 					{
-						if (req.status == 200)
+					    var value = attr.value;
+					    if ( value != null )
+						    idToSearch = value;
+					}
+				}
+
+				if ( idToSearch == null )
+				{
+				    alert( 'No se encontro el id a borrar' );
+				    return;
+				}
+
+				var i;
+				var children = rootNode.childNodes;
+				for(i = 0;i < children.length;i++)
+				{
+					var node = children.item(i);
+					if( node.attributes != null )
+					{
+						var attr = node.attributes.getNamedItem( 'id' );
+					    var value = attr.value;
+					    if ( value != null && idToSearch == value )
+						    return node;
+					}
+				}
+				return null;
+			}
+			function checkError ( nodeToCheck )
+			{
+				//alert( serializeXML( nodeToCheck ) );
+				var errorNode = nodeToCheck.documentElement.childNodes[0];
+				if( errorNode.attributes != null )
+				{
+					{
+						var attr = errorNode.attributes.getNamedItem( 'error' );
+						var value = attr.value;
+						if ( value != null && value == "1" )
 						{
-							if ( req.responseXML == null )
-								responseHandler( req.responseText );
+							var attrM = errorNode.attributes.getNamedItem( 'message' );
+							var msg = attrM.value;
+							if ( value != null )
+								showDiv( 'error_tag', msg );
 							else
-								responseHandler( req.responseXML );
-						}
-						else
-						{
-							var hellomsg = document.getElementById("hellomsg");
-							hellomsg.innerHTML = "ERROR: "+ req.status;
+								showDiv( 'error_tag', 'Se produjo un error no determinado.' );
+							return null;
 						}
 					}
 				}
+				return parseXML( serializeXML( nodeToCheck.documentElement.childNodes[1] ) );
 			}
 
-			function getXslProcessor( fileName )
+			// HANDLERS
+			function bodyHandler( result )
 			{
-			  	var xsltProcessor = new XSLTProcessor();
+				result = checkError( result );
+				if ( result == null ) return;
+				bodyDocument = result;
+				showBody();
+			}
+			function editArticleHandler( result )
+			{
+				result = checkError( result );
+				if ( result == null ) return;
 
-  				// Load the xsl file using synchronous (third param is set to false) XMLHttpRequest
-  				var myXMLHTTPRequest = new XMLHttpRequest();
-  				myXMLHTTPRequest.open("GET", fileName, false);
-  				myXMLHTTPRequest.send(null);
-
-  				var xslRef = myXMLHTTPRequest.responseXML;
-
-  				// Finally import the .xsl
-  				xsltProcessor.importStylesheet(xslRef);
-				return xsltProcessor;
+				var nodeFound = findNodeById( bodyDocument.documentElement, result.documentElement );
+				bodyDocument.documentElement.replaceChild( result.documentElement, nodeFound );
+				showBody();
 			}
 
-			/**
-			* Open a connection to the specified URL, which is
-			* intended to respond with an XML message.
-			* @param string method The connection method; either "GET" or "POST".
-			* @param string url    The URL to connect to.
-			* @param string toSend The data to send to the server; must be URL encoded.
-			* @param function responseHandler The function handling server response.
-			*/
-			function xmlOpen(method, url, toSend, responseHandler)
+			function tagsHandler( result )
 			{
-				if (window.XMLHttpRequest)
+				result = checkError( result );
+				if ( result == null ) return;
+				tagsDocument = result;
+				showTags();
+			}
+
+			function feedsHandler( result )
+			{
+				result = checkError( result );
+				if ( result == null ) return;
+				feedsDocument = result;
+				showFeeds();
+			}
+
+			function editTagHandler( result )
+			{
+				result = checkError( result );
+				if ( result == null ) return;
+
+				var nodeFound = findNodeById( tagsDocument.documentElement, result.documentElement );
+				tagsDocument.documentElement.replaceChild( result.documentElement, nodeFound );
+				showTags();
+			}
+			function delTagHandler( result )
+			{
+				result = checkError( result );
+				if ( result == null ) return;
+
+				var nodeFound = findNodeById( tagsDocument.documentElement, result.documentElement );
+				tagsDocument.documentElement.removeChild( nodeFound )
+				showTags();
+			}
+			function addTagHandler( result )
+			{
+				result = checkError( result );
+				if ( result == null ) return;
+
+				tagsDocument.documentElement.appendChild( result.documentElement );
+				showTags();
+			}
+			function delFeedHandler( result )
+			{
+				result = checkError( result );
+				if ( result == null ) return;
+
+				var nodeFound = findNodeById( feedsDocument.documentElement, result.documentElement );
+				feedsDocument.documentElement.removeChild( nodeFound )
+				showFeeds();
+			}
+			function addFeedHandler( result )
+			{
+				result = checkError( result );
+				if ( result == null ) return;
+				//var newNodeText = '<feed id="3" name="' + name + '" lastUpdate="May 22, 2007 3:29 AM" url="http://www.blogger.com/rss/atom.xml"/>';
+				//var newNode = parseXML( newNodeText )
+				feedsDocument.documentElement.appendChild( result.documentElement );
+				showFeeds();
+			}
+
+			// ACCIONES COMPUESTAS
+			function addFeed( inputId )
+			{
+				var txtInput = document.getElementById( inputId );
+				var url = txtInput.value;
+				if ( url == '' )
 				{
-					// browser has native support for XMLHttpRequest object
-					req = new XMLHttpRequest();
+					alert( 'Debe ingresar la direccion del feed' );
+					return;
 				}
-				else if (window.ActiveXObject)
+
+				var name = prompt( 'Ingrese el nombre del feed', '' );
+				if ( name == "" )
 				{
-					// try XMLHTTP ActiveX (Internet Explorer) version
-					req = new ActiveXObject("Microsoft.XMLHTTP");
+					alert( 'Debe ingresar el nombre del feed' );
+					return;
 				}
+				txtInput.value = "";
 
-				if(req)
+				doAction ( "?actionCode=F1&params=feedUrl%23" + url + "%7CfeedName%23" + name, addFeedHandler, '' );
+			}
+			function editTag( tagId, oldTagName )
+			{
+				var name = prompt( 'Ingrese el nuevo nombre de la categoria', oldTagName );
+				if ( name != oldTagName )
+					doAction ( "?actionCode=T3&params=tagId%23" + tagId + "%7CtagName%23" + name, editTagHandler, '' );
+			}
+			function addTag( artId )
+			{
+				document.getElementById( 'artId' ).value = artId;
+				window.open( 'addTag.html', 'addTag', "width=350;height=80;menubar=no;personalbar=no;resizable=no;scrollbars=yes;status=no;toolbar=no" )
+			}
+
+			// GENERAL
+			function doAction( params, handler, type )
+			{
+				hideDiv( 'error_tag', '' );
+
+				if ( type == 'F' )
 				{
-					var callbackHandler = getReadyStateHandler( req, responseHandler );
-					req.onreadystatechange = callbackHandler;
-					req.open(method, url, true);
-					req.setRequestHeader("content-type","application/x-www-form-urlencoded");
-					req.send(toSend);
+					hideDiv( 'menu_feeds', '' );
+					showDiv( 'loading_feeds', null );
 				}
-				else
+				else if ( type == 'T' )
 				{
-					alert('Your browser does not seem to support XMLHttpRequest.');
+					hideDiv( 'menu_tags', '' );
+					showDiv( 'loading_tags', null );
+				}
+				else if ( type == 'A' )
+				{
+					hideDiv( 'chrome', '' );
+					showDiv( 'loading_body', null );
+				}
+				else showDiv( 'processing_div', null );
+
+				xmlOpen( "GET", "bin/thin_client.exe" + params, "", handler );
+			}
+			function reload()
+			{
+				hideDiv( 'processing_div', null );
+
+				doAction ( "?actionCode=A6", bodyHandler, 'A' );
+				doAction ( "?actionCode=F4", feedsHandler , 'F' );
+				doAction ( "?actionCode=T4", tagsHandler  , 'T' );
+
+				document.captureEvents( Event.KEYPRESS );
+				document.onkeypress= document_keyPress;
+			}
+			function document_keyPress( e )
+			{
+				var el = document.getElementById( 'quickadd' );
+				if ( e.target == el && e.which == 13 )
+				{
+					addFeed( 'quickadd' )
+					return false;
 				}
 			}
 
-			function respHandlerBody( result )
-			{
-				var xsltProcessor = getXslProcessor( 'body.xslt' )
-				 var toShow = xsltProcessor.transformToFragment( result, document );
-
-				var divBody = document.getElementById('chrome');
-				if ( divBody != null )
-					divBody.appendChild(toShow)
-
-				toggleLoading();
-			}
-			function respHandlerMenu( result )
-			{
-				var divMenu = document.getElementById('nav');
-				if ( divMenu != null )
-					divMenu.innerHTML = result;
-			}
-
-			function loadFrames()
-			{
-				toggleLoading();
-				xmlOpen( "GET", "menu.html", "", respHandlerMenu );
-				xmlOpen( "GET", "bin/thin_client.out", "", respHandlerBody );
-
-			}
+			// %23 = #
+			// %7C = |
 		</script>
+
 	</head>
-	<noscript><style type="text/css"> div {display: none;} #noscript {padding: 3em; font-size: 130%;} </style> <p id="noscript">JavaScript must be enabled in order for you to use Reader. However, it seems JavaScript is either disabled or not supported by your browser. To use Reader, enable JavaScript by changing your browser options, then <a href="/reader/">try again</a>.</p></noscript>
 
-	<body onLoad="loadFrames()">
+	<body onload="reload()">
+		<input type="hidden" value="" id="artId"/>
+		<div id="nav">
+			<div id="processing_div" class="processing" style="display: none">Procesando...</div>
 
-		<div id="loading">
-			Procesando la operacion, aguarde...
+			<div id="menu_main">
+				<table cellspacing="0" cellpadding="0" border="0" id="selectors-box1" class="round-box">
+					<tr>
+						<td class="s tl"/>
+						<td class="s"/>
+						<td class="s tr"/>
+					</tr>
+					<tr>
+						<td class="s"/>
+						<td class="c">
+				            <div class="sub-tree-header">Inicio</div>
+						    <table>
+							    <tr>
+								    <td class="menuName">
+									    <a class="link" onclick="doAction ( '?actionCode=A6', bodyHandler, 'A' );">
+									    <img style="border:0" src="images/status_unread.png" title="Icono de status no leido" alt="Icono de status no leido"/>
+									    </a>
+								    </td>
+								    <td class="menuName">
+									    <a class="link" onclick="doAction ( '?actionCode=A6', bodyHandler, 'A' );">No Leidos</a>
+								    </td>
+							    </tr>
+							    <tr>
+								    <td class="menuName">
+									    <a class="link" onclick="doAction ( '?actionCode=A7', bodyHandler, 'A' );">
+									    <img style="border:0" src="images/status_unclasi.png" title="Icono de status no clasificado" alt="Icono de status no clasificado"/>
+									    </a>
+								    </td>
+								    <td class="menuName">
+									    <a class="link" onclick="doAction ( '?actionCode=A7', bodyHandler, 'A' );">No Clasificados</a>
+								    </td>
+							    </tr>
+
+							    <tr>
+								    <td class="menuName">
+									    <a class="link" onclick="doAction ( '?actionCode=A4&params=tagId%230%7CtagStates%231', bodyHandler, 'A' )">
+										    <img style="border:0" src="images/status_fav.png" title="Icono de status favorito" alt="Icono de status favorito"/>
+									    </a>
+								    </td>
+								    <td class="menuName">
+									    <a class="link" onclick="doAction ( '?actionCode=A4&params=tagId%230%7CtagStates%231', bodyHandler, 'A' )">Favoritos</a>
+								    </td>
+							    </tr>
+
+						    </table>
+						</td>
+						<td class="s"/>
+					</tr>
+					<tr>
+						<td class="s bl"/>
+						<td class="s"/>
+						<td class="s br"/>
+					</tr>
+				</table>
+			</div>
+
+			<div id="loading_tags">
+				<table cellspacing="0" cellpadding="0" border="0" id="selectors-box2" class="round-box">
+					<tr>
+						<td class="s tl"/>
+						<td class="s"/>
+						<td class="s tr"/>
+					</tr>
+					<tr>
+						<td class="s"/>
+						<td class="c">
+							<div class="sub-tree-header-loading">Cargando categorias...</div>
+						</td>
+						<td class="s"/>
+					</tr>
+					<tr>
+						<td class="s bl"/>
+						<td class="s"/>
+						<td class="s br"/>
+					</tr>
+				</table>
+			</div>
+			<div id="menu_tags"></div>
+
+			<div id="loading_feeds">
+				<table cellspacing="0" cellpadding="0" border="0" id="selectors-box3" class="round-box">
+					<tr>
+						<td class="s tl"/>
+						<td class="s"/>
+						<td class="s tr"/>
+					</tr>
+					<tr>
+						<td class="s"/>
+						<td class="c">
+							<div class="sub-tree-header-loading">Cargando feeds...</div>
+						</td>
+						<td class="s"/>
+					</tr>
+					<tr>
+						<td class="s bl"/>
+						<td class="s"/>
+						<td class="s br"/>
+					</tr>
+				</table>
+			</div>
+			<div id="menu_feeds"></div>
+
+			<div id="menu_add_feed">
+				<table cellspacing="0" cellpadding="0" border="0" id="selectors-box4" class="round-box">
+					<tr>
+						<td class="s tl"/>
+						<td class="s"/>
+						<td class="s tr"/>
+					</tr>
+					<tr>
+						<td class="s"/>
+						<td class="c" align="center">
+							<div class="sub-tree-header">Suscribirse</div>
+							<span id="quick-add-instructions">Ingrese la direccion</span>
+							<table>
+								<tr>
+									<td class="menuName">
+										<input type="text" id="quickadd" name="quickadd"/>
+									</td>
+									<td class="menuName">
+										<a class="link" onclick="addFeed( 'quickadd' )">
+											<img style="border:0" src="images/action_feed_add.png" alt="Agregar feed" title="Agregar feed"/>
+										</a>
+									</td>
+								</tr>
+							</table>
+
+
+						</td>
+						<td class="s"/>
+					</tr>
+					<tr>
+						<td class="s bl"/>
+						<td class="s"/>
+						<td class="s br"/>
+					</tr>
+				</table>
+			</div>
 		</div>
 
-		<div id="nav"></div>
+		<div id="loading_body">
+			Buscando articulos, aguarde un momento...
+		</div>
+
+		<div id="error_tag" class="error" style="display: none">Aca va a ir el mensaje de error cuando este ocurra</div>
 
 		<div id="chrome"></div>
 	</body>

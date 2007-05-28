@@ -1,0 +1,72 @@
+html, body {
+margin: 0;
+font-size: 90%;
+}
+html, body, input {
+font-family: arial, sans-serif;
+font-weight: normal;
+}
+body {
+background-color: #6bc290;
+color: #000;
+}
+div, form {
+margin: 0;
+}
+html.settings, body.settings {
+overflow: auto;
+}
+a,
+a:visited,
+ul#reading-list li,
+.link {
+color: #1010c8;
+}
+.link {
+text-decoration: underline;
+cursor: pointer;
+}
+a:focus {
+-moz-outline: 0;
+}
+a:focus,
+.unselectable {
+-moz-user-select: none;
+-khtml-user-select: none;
+user-select: none;
+}
+a.internal,
+.link.internal {
+color: #a00;
+}
+input {
+font-size: 85%;
+}
+div.clr {
+clear: both;
+}
+.hidden {
+display: none;
+}
+
+.link {
+color: #1010c8;
+text-decoration: underline;
+cursor: pointer;
+}
+
+.catName {
+font-size: 90%;
+}
+
+.catList
+{
+	background: #b5edbc;
+	margin-top: 2%;
+	margin-left: 2%;
+	width: 94%;
+	height: 96%;
+	padding: 2px 0 2px 10px;
+	font-weight: bold;
+}
+

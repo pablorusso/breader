@@ -1,0 +1,11 @@
+#include "[ActionName].h"
+
+string [ActionName]::processAction()
+{
+
+}
+
+string [ActionName]::getName()
+{
+	return "[ActionName]";
+}

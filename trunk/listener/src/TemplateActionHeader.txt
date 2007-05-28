@@ -1,0 +1,16 @@
+#ifndef [ActionName]_H
+#define	[ActionName]_H
+
+#include "Action.h"
+#include <string>
+
+using namespace std;
+
+class [ActionName] : public Action
+{
+	protected:
+		virtual string processAction();
+		virtual string getName();
+};
+
+#endif
