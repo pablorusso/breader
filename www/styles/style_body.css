@@ -1,39 +1,70 @@
-#entries {
-padding: 0;
-height: 100%;
-width: 81%;
-z-index: 1;
-position: absolute;
-zoom: 1;
-outline: 0;
+#chrome
+{
+	float:right;
+	margin-left:16%;
+	margin-top:2px;
+	position:static;
+	width:84%;
+	z-index:3;
 }
 
-#entries .entry {
-position: relative;
-zoom: 1;
-background: #fff;
-margin: 0;
+#loading_body
+{
+	position:absolute;
+	width:  100%;
+	margin-left: 45%;
+	margin-top: 10%;
+	color: #FF0000;
+	font-weight: bold;
+	font-size: 150%;
+	text-decoration: blink;
+	display: none;
+	z-index: 4;
 }
 
-#entries .entry-body {
-padding-top: .5em;
+#entries 
+{
+	height:97%;
+	outline-color:invert;
+	outline-style:none;
+	outline-width:0pt;
+	padding:0pt;
+	position:absolute;
+	width:83%;
+	z-index:1;
 }
 
-#entries .entry-main {
-margin-right: .5em;
-margin-left: 20px;
+#entries .entry 
+{
+	position: relative;
+	background: #fff;
+	margin: 0;
 }
 
-#entries .entry-actions {
-padding-top: 0.35em;
-position: relative;
-left: -2px;
-font-size: 90%;
+#entries .entry-body 
+{
+	padding-top: .5em;
+	font-size: 85%;
+}
+
+#entries .entry-main 
+{
+	margin-right: .5em;
+	margin-left: 10px;
+}
+
+#entries .entry-actions 
+{
+	padding-top: -1.35em;
+	position: relative;
+	left: -2px;
+	font-size: 90%;
 }
 
 #entries .entry-actions a,
 #entries .entry-actions .link {
 text-decoration: none;
+font-size: 85%;
 }
 #entries .entry-actions .star
 {
@@ -41,13 +72,15 @@ background-repeat: no-repeat;
 background-color: transparent;
 padding: 1px 8px 1px 16px;
 background-position: 0 50%;
+font-size: 85%;
 }
 
 #entries .entry .card .entry-container .entry-date {
 float: right;
+font-size: 85%;
 }
 #entries .entry-title {
-font-size: 140%;
+font-size: 130%;
 margin: 0;
 }
 #entries .entry-title a {
@@ -65,12 +98,13 @@ padding-left: 0.25em;
 vertical-align: top;
 }
 #entries .entry-source-title {
-font-size: 100%;
+font-size: 85%;
 text-decoration: none;
 }
 
 #entries .entry-author,
 #entries .entry-date {
+font-size: 80%;
 color: #666;
 text-decoration: none;
 }
@@ -88,11 +122,12 @@ border-collapse: collapse;
 border: 0;
 }
 #entries .entry .card td {
-background-color: #fff;
+background-color: transparent;
 background-repeat: no-repeat;
 border: 0;
 padding: 0;
 }
+
 #entries .entry .card .ctl,
 #entries .entry .card .cl,
 #entries .entry .card .cbl,

@@ -3,24 +3,15 @@
 	<xsl:output method="html"/>
 
 	<xsl:template match="articles">
-		<!--html>
-			<head>
-				<link href="styles/style_common.css" rel="stylesheet" type="text/css"/>
-				<link href="styles/style_body.css" rel="stylesheet" type="text/css"/>
-			</head>
-
-			<body-->
-				<table>
-					<tr>
-						<td>
-							<div id="entries" >
-								<xsl:apply-templates select="article"/>
-							</div>
-						</td>
-					</tr>
-				</table>
-			<!--/body>
-		</html-->
+		<table>
+			<tr>
+				<td>
+					<div id="entries" >
+						<xsl:apply-templates select="article"/>
+					</div>
+				</td>
+			</tr>
+		</table>
 	</xsl:template>
 
 	<xsl:template match="article">
@@ -42,21 +33,49 @@
 							</div>
 
 							<!--titulo y link-->
-							<h2 class="entry-title">
+							<table>
+							<tr>
+								<td>
+									<xsl:if test="@isFavourite != 0">
+										<img style="border:0" src="images/status_fav.png" title="Favorito" alt="Favorito"/>
+									</xsl:if>
+								</td>
+								<td>
+									<xsl:if test="@read = 0">
+										<img style="border:0" src="images/status_unread.png" title="No leido" alt="No leido"/>
+									</xsl:if>
+								</td>
+								<td>
+									<xsl:if test="@isClassified = 0">
+										<img style="border:0" src="images/status_unclasi.png" title="No clasificado" alt="No clasificado"/>
+									</xsl:if>
+								</td>
+								<td>
+									<h2 class="entry-title">
+										<a target="_blank" class="entry-title-link">
+											<xsl:attribute name="href">
+												<xsl:value-of select="@link"/>
+											</xsl:attribute>
+											<xsl:value-of select="@title"/>
+										</a>
+									</h2>
+								</td>
 
-								<a target="_blank" class="entry-title-link">
-								<xsl:attribute name="href">
-									<xsl:value-of select="@link"/>
-								</xsl:attribute>
+								<td>
+									<a target="_blank" class="entry-title-link">
+										<xsl:attribute name="href">
+											<xsl:value-of select="@link"/>
+										</xsl:attribute>
+										<img style="border:0" class="entry-title-go-to" src="images/action_go_to.png" title="Ir a la pagina de la noticia" alt="Ir a la pagina de la noticia"/>
+									</a>
+								</td>
+							</tr>
+							</table>
 
-								<xsl:value-of select="@title"/>
-								<img width="18" height="18" class="entry-title-go-to" src="images/action_go_to.gif"/>
-								</a>
-							</h2>
 
 							<!--autor-->
 							<div class="entry-author">
-								from <xsl:value-of select="@author"/>
+								publicado por <xsl:value-of select="@author"/> en <xsl:value-of select="@feed"/>
 							</div>
 
 							<!--resumen-->
@@ -74,12 +93,58 @@
 
 					<td class="ca">
 						<div class="entry-actions">
-							<span class="star link">Agregar a favoritos</span>
-							<span class="star link">Marcar como leido</span>
-							<span class="star">
-								<a href=""><img border="0" src="images/action_add.png"/></a> Categorias:
-								<xsl:apply-templates select="tags"/>
-							</span>
+							<table>
+								<tr align="left">
+									<td align="left">
+										<span class="star link">
+											<xsl:attribute name="onclick">
+												doAction( '?actionCode=A8&amp;params=artId%23<xsl:value-of select="@id"/>', editArticleHandler, '' )
+											</xsl:attribute>
+											<xsl:choose>
+												<xsl:when test="@isFavourite = 0">
+													<xsl:text>Agregar a favoritos</xsl:text>
+												</xsl:when>
+												<xsl:otherwise>
+													<xsl:text>Quitar de favoritos</xsl:text>
+												</xsl:otherwise>
+											</xsl:choose>
+										</span>
+									</td>
+									<td align="left">
+										<span class="star link">
+											<xsl:attribute name="onclick">
+												doAction('?actionCode=A9&amp;params=artId%23<xsl:value-of select="@id"/>', editArticleHandler, '')
+											</xsl:attribute>
+											<xsl:choose>
+												<xsl:when test="@read = 0">
+													<xsl:text>Marcar como leido</xsl:text>
+												</xsl:when>
+												<xsl:otherwise>
+													<xsl:text>Marcar como no leido</xsl:text>
+												</xsl:otherwise>
+											</xsl:choose>
+										</span>
+									</td>
+									<td class="star">
+											Categorias (
+									</td>
+									<td>
+										<a class="link">
+											<xsl:attribute name="onclick">
+												addTag( '<xsl:value-of select="@id"/>' )
+											</xsl:attribute>
+											<img style="border:0" src="images/action_tag_add.png" title="Agregar categoria" alt="Agregar categoria"/>
+										</a>
+									</td>
+									<td class="star">
+											):
+									</td>
+
+									<td>
+										<xsl:apply-templates select="tags"/>
+									</td>
+								</tr>
+							</table>
 						</div>
 					</td>
 
@@ -87,9 +152,9 @@
 				</tr>
 
 				<tr class="card-bottomrow">
-					<td class="cbl"> </td>
-					<td class="cb"> </td>
-					<td class="cbr"> </td>
+					<td class="cbl"/>
+					<td class="cb"/>
+					<td class="cbr"/>
 				</tr>
 
 			</table>
@@ -97,11 +162,34 @@
 	</xsl:template>
 
 	<xsl:template match="tags">
-		<xsl:for-each select="tag">
-			<xsl:if test="position() &gt; 1">
-				<xsl:text>,   </xsl:text>
-			</xsl:if>
-			<xsl:value-of select="@name"/><xsl:text> </xsl:text><a href=""><img border="0" src="images/action_check.png"/></a><xsl:text> </xsl:text><a href=""><img border="0" src="images/action_del.png"/></a>
-		</xsl:for-each>
+		<table>
+			<tr>
+				<xsl:for-each select="tag">
+					<td class="catName">
+						<xsl:value-of select="@name"/>
+					</td>
+					<xsl:if test="@isApproved = 0">
+						<td>
+						<a class="link">
+							<xsl:attribute name="onclick">
+							doAction('?actionCode=A3&amp;params=artId%23<xsl:value-of select="../../@id"/>%7CtagId%23<xsl:value-of select="@id"/>', editArticleHandler, '')
+							</xsl:attribute>
+							<img style="border:0" src="images/action_tag_check.png" title="Aprobar clasificacion automatica" alt="Aprobar clasificacion automatica"/>
+						</a>
+						</td>
+					</xsl:if>
+
+					<td>
+					<a class="link">
+						<xsl:attribute name="onclick">
+							doAction('?actionCode=A2&amp;params=artId%23<xsl:value-of select="../../@id"/>%7CtagId%23<xsl:value-of select="@id"/>', editArticleHandler, '')
+						</xsl:attribute>
+						<img style="border:0" src="images/action_tag_del.png" title="Borrar categoria" alt="Borrar categoria"/>
+					</a>
+					</td>
+				</xsl:for-each>
+			</tr>
+		</table>
 	</xsl:template>
+
 </xsl:transform>

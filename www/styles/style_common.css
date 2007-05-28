@@ -40,7 +40,7 @@ a.internal,
 color: #a00;
 }
 input {
-font-size: 95%;
+font-size: 85%;
 }
 div.clr {
 clear: both;
@@ -51,39 +51,33 @@ display: none;
 
 .link {
 color: #1010c8;
-}
-.link {
 text-decoration: underline;
 cursor: pointer;
 }
 
-#nav
-{
-	position:absolute;
-	float: left;
-	width:  19%;
-	z-index: 2;
+.catName {
+font-size: 90%;
 }
-#chrome
-{
-	position:absolute;
-	float: left;
-	margin-left: 20%;
-	margin-top: 5px;
-	width:  96%;
-	z-index: 3;
-}
-#loading
-{
-	position:absolute;
-	float: center;
-	width:  100%;
-	margin-left: 50%;
-	margin-top: 10%;
-	color: #FF0000;
-	font-weight: bold;
+
+.error {
+	color: #FFFFFF;
 	font-size: 150%;
-	text-decoration: blink;
-	display: none;
-	z-index: 4;
+	text-decoration: bold;
+	background-color: #FF0000;
+	width: 84%;
+	height: 4%;
+	text-align: right;
+	margin-left: 16%
 }
+
+.processing {
+	color: #FFFFFF;
+	font-size: 120%;
+	text-decoration: bold;
+	background-color: #FF0000;
+	margin:0px 2pt;
+	width: 98%;
+	height: 4%;
+	text-align: center;
+}
+

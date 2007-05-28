@@ -1,5 +1,6 @@
 #include "CGIClass.h"
 #include <sstream>
+#include <iostream>
 
 CGIClass::CGIClass()
 {
@@ -66,47 +67,102 @@ string CGIClass::url_decode(const string& s)
 	return result;
 }
 
+int CGIClass::splitString(const string& input, const string& delimiter, vector< string >& results, bool includeEmpties )
+{
+    size_t iPos = 0;
+    size_t newPos = string::npos;
+    size_t sizeS2 = delimiter.size();
+    size_t isize = input.size();
+
+    if(
+        ( isize == 0 )
+        ||
+        ( sizeS2 == 0 )
+    )
+    {
+        return 0;
+    }
+
+    vector< size_t > positions;
+
+    newPos = input.find (delimiter, 0);
+
+    if( newPos == string::npos )
+    {
+		results.push_back( input );
+        return 0;
+    }
+
+    int numFound = 0;
+
+    while( newPos != string::npos )
+    {
+        numFound++;
+        positions.push_back(newPos);
+        iPos = newPos;
+        newPos = input.find (delimiter, iPos+sizeS2);
+    }
+
+    if( numFound == 0 )
+    {
+		results.push_back( input );
+        return 0;
+    }
+
+    for( size_t i=0; i <= positions.size(); ++i )
+    {
+        string s("");
+        if( i == 0 )
+        {
+            s = input.substr( i, positions[i] );
+        }
+        size_t offset = positions[i-1] + sizeS2;
+        if( offset < isize )
+        {
+            if( i == positions.size() )
+            {
+                s = input.substr(offset);
+            }
+            else if( i > 0 )
+            {
+                s = input.substr( positions[i-1] + sizeS2,
+                      positions[i] - positions[i-1] - sizeS2 );
+            }
+        }
+        if( includeEmpties || ( s.size() > 0 ) )
+        {
+            results.push_back(s);
+        }
+    }
+    return numFound;
+}
+
 void CGIClass::buildMap( string buff )
 {
-	string lastName;
+	std::string lastName;
 	string lastValue;
 
-	// cout << "<br>" << "MAP: ENTRE CON BUFFER[" << buff << "]" << "<br>";
+	vector< string > query_string;
+	splitString( buff, "&", query_string, true );
 
-	string::size_type posInicial = 0;
-	string::size_type posIgual = buff.find ( "=", posInicial );
-	string::size_type posAmp   = buff.find ( "&", posInicial );
-	// cout << "MAP: ENCONTRE INICIAL EN " << posInicial << "<br>";
-	// cout << "MAP: ENCONTRE IGUAL   EN " << posIgual << "<br>";
-	// cout << "MAP: ENCONTRE AMP     EN " << posAmp << "<br>";
-
-	while ( posIgual != string::npos )
+	vector< string >::iterator queryStrIt;
+	for( queryStrIt = query_string.begin(); queryStrIt != query_string.end(); queryStrIt++ )
 	{
-		// Si encontre ampersan freno ahi, sino voy hasta el final del string
-		string::size_type final = string::npos;
-		if ( posAmp != string::npos )
-			final = posAmp;
-		else
-			final = buff.length();
+		string singleParam = *( queryStrIt );
+		vector< string > pairNameValue;
+		splitString( singleParam, "=", pairNameValue, true );
 
-		// obtengo los valores
-		lastName  = buff.substr( posInicial, posIgual - posInicial );
-		lastValue = buff.substr( posIgual+1, final-posIgual-1 );
-		_mapNameValue[lastName] = lastValue;
-		//cout << "MAP: ENCONTRE NAME:" << lastName << "<br>";
-		//cout << "MAP: COORDENADAS NAME:" << buff << "(" << posInicial << ", " << posIgual - posInicial << ") <br>";
-		//cout << "MAP: ENCONTRE VALUE: " << lastValue << "<br>";
-		//cout << "MAP: COORDENADAS NAME:" << buff << "(" << posIgual+1 << ", " << final - posIgual - 1 << ") <br>";
-		//cout << "MAP: DATO:" << lastName << " - " << lastValue << "<br>";
-
-
-		// busco el que sigue
-		posInicial = final+1;
-		posIgual = buff.find ( "=", posInicial+1 );
-		posAmp   = buff.find ( "&", posInicial+1 );
-		//cout << "MAP: ENCONTRE INICIAL EN " << posInicial << "<br>";
-		//cout << "MAP: ENCONTRE IGUAL   EN " << posIgual << "<br>";
-		//cout << "MAP: ENCONTRE AMP     EN " << posAmp << "<br>";
+		vector< string >::iterator pairNameIt = pairNameValue.begin();
+		if ( pairNameIt != pairNameValue.end() )
+		{
+			string name = *( pairNameIt );
+			pairNameIt++;
+			if ( pairNameIt != pairNameValue.end() )
+			{
+				string value = *( pairNameIt );
+				_mapNameValue[ name ] = value;
+			}
+		}
 	}
-	// cout << "MAP: SALI" << "<br>";
 }
+

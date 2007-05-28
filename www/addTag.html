@@ -1,0 +1,74 @@
+<html>
+	<head>
+		<title>Agregar categoria</title>
+		<link href="styles/style_addTag.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="scripts/ajax.js"></script>
+		<script type="text/javascript" src="scripts/xml.js"></script>
+
+		<script type="text/javascript">
+			function toggleLoading( divLoading, divBody )
+			{
+				if ( divLoading.style.display == "block" )
+				{
+					divLoading.style.display = "none";
+					if ( divBody != null ) divBody.style.display = "block";
+				}
+				else
+				{
+					if ( divBody != null ) divBody.style.display = "none";
+					divLoading.style.display = "block";
+				}
+			}
+
+			function addTagHandler( result )
+			{
+				opener.document.getElementById( 'artId' ).value = "";
+				this.close();
+			}
+			function createTagHandler( result )
+			{
+				opener.doReturnTagsAction  ( "?actionCode=T4" );
+				reload();
+			}
+			function tagsHandler( result )
+			{
+				var divTags = document.getElementById('tag_list');
+				applyXSLT( 'add_tags.xslt', divTags, result );
+			}
+			function doAction( params, handler )
+			{
+				xmlOpen( "GET", "bin/thin_client.exe" + params, "", handler  );
+			}
+			function reload()
+			{
+				doAction( "?actionCode=T4", tagsHandler );
+			}
+
+			function newTag()
+			{
+				var name = prompt( 'Ingrese el nombre de la categoria', '' );
+				if ( name == "" )
+				{
+					alert( "El nombre no puede ser vacio" );
+					return;
+				}
+				doAction( "?actionCode=T1&params=tagName%23" + name, createTagHandler );
+			}
+
+			function addTag( tagId )
+			{
+				var divLoading = document.getElementById( 'tag_loading' );
+				var divBody = document.getElementById( 'tag_list' );
+				toggleLoading( divLoading, divBody );
+
+				alert( '?actionCode=A1&params=tagId%23' + tagId + '%7CartId%23' + opener.document.getElementById( 'artId' ).value );
+				doAction( '?actionCode=A1&params=tagId%23' + tagId + '%7CartId%23' + opener.document.getElementById( 'artId' ).value, addTagHandler );
+			}
+		</script>
+	</head>
+
+	<body onLoad="reload()">
+		<div id="tag_list" class="catList"></div>
+		<div id="tag_loading" class="catList" align="center" style="display:none">Asignando categoria, aguarde...</div>
+	</body>
+</html>
