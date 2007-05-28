@@ -45,8 +45,8 @@ int main(int argc, char* argv[])
 
 	// actionCode =
 	// params     = param1|param2|param3
-	// cada param a su vez puede ser: param1=value1,value2,value3
-	// ej: thin_client.exe?actionCode=1&params=1,-1|2,-1|3,1
+	// cada param a su vez puede ser: param1#value1,value2,value3
+	// ej: thin_client.exe?actionCode=1&params=tagsId#1,1|statesId#2,-1
 	if ( word == "" )
 	{
 		showError( "No se especificaron parametros." );
