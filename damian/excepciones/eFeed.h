@@ -3,8 +3,6 @@
 
 #include "IException.h"
 
-#define THROW(class, err) throw class(err, __LINE__, __FILE__)
-
 typedef enum {FEED_PARAMETROS_INVALIDOS} FEED_error;
 
 /**
