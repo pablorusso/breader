@@ -31,23 +31,12 @@ bool ContenedorIdCat::getCat(const t_idcat &idcat) const {
 void ContenedorIdCat::writeCat(fstream &f) {
 	f.write(reinterpret_cast<const char *>(&this->categorias[0]),
 		  sizeof(unsigned char)*this->MAX_CAT/8);
-/*
-	for (t_idcat i=0; i< this->categorias.size(); ++i) {	
-		f.write(reinterpret_cast<const char *>(&this->categorias[i]),
-		  sizeof(unsigned char));
-	}
-*/
 }
 
 void ContenedorIdCat::readCat(fstream &f) {
 	// Leo los bits de idcat
 	f.read(reinterpret_cast<char *>(&this->categorias[0]),
 	  sizeof(unsigned char)*this->MAX_CAT/8);
-/*
-	for (t_idcat i = 0; i<this->MAX_CAT/8;i++) {
-		f.read(reinterpret_cast<char *>(&d), sizeof(unsigned char));
-		this->categorias[i]=d;
-	}*/
 }
 
 
@@ -120,7 +109,7 @@ void ContenedorIdCat::setOffsetNext(const t_offset &offset) {
 }
 
 ostream &operator<<(ostream &stream, const ContenedorIdCat &cont) {
-	stream << "Imprimiendo el contenido del contenedor de categorias" << endl;
+	stream << "Imprimiendo el contenedor" << endl;
 	for (t_idcat i = 0; i< cont.MAX_CAT; ++i) {
 		stream<< "idcat: " << i << ", estado: "<<(cont.getCat(i))<<endl;
 	}

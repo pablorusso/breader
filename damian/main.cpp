@@ -104,10 +104,10 @@ int main(int argc, char** argv) {
 	cout << "Adios" << endl;
 	return 0;
 }
-/* */
+ */
 
 
-/* PRUEBA AMBOS ARCHIVOS (A5 A6) */
+/* PRUEBA AMBOS ARCHIVOS (A5 A6)
 #include <iostream>
 #include "Archivo6.h"
 // OJO: debe ser multiplo de 8 y >= que 32
@@ -183,4 +183,70 @@ int main(int argc, char** argv) {
 	std::cout << "Adios" << std::endl;
 	return 0;
 }
+ */
+
+/* PRUEBA ARCHIVO A2 */
+#include <iostream>
+#include "Archivo2.h"
+// OJO: debe ser multiplo de 8 y >= que 32
+#define CONST_MAX_CAT 32
+using namespace std;
+int main(int argc, char** argv) {
+	std::cout << "Bienvenido al breader, probando Archivo2" << std::endl;
+
+	try {
+		Archivo2 a2(CONST_MAX_CAT, 123);
+
+		Articulo art1(CONST_MAX_CAT);
+		art1.set_title("Titulo: Dracula");
+		art1.set_uri("Uri: www.dracula.com");
+		art1.set_description("Description: un vampiro chupasangre");
+		art1.set_category("Category: suspenso/accion");
+		art1.set_pubdate("Pubdate: 17 de Mayo del 1998");
+		art1.set_summary("Summary: el vampiro es un capo, muy groso el tipo");
+		art1.set_timestamp(4321);
+	
+		Articulo art2(CONST_MAX_CAT);
+		art2.set_title("Titulo: TheShining");
+		art2.set_uri("Uri: www.theshiningthemovie.com");
+		art2.set_description("Description: Jack Nicholson es un asesino");
+		art2.set_category("Category: suspenso/terror");
+		art2.set_pubdate("Pubdate: 32 de Octubre del 1995 =P");
+		art2.set_summary("Summary: un clasico, donde rompe la puerta con el hacha");
+		art2.set_timestamp(9876);	
+
+		cout << "idart1: " << a2.writeArticulo(art1) << endl;
+		cout << "idart2: " << a2.writeArticulo(art2) << endl;
+
+		// Escribo que el idart 1 fue clasificado con la idcat 0, como positivo
+		// y por la pc
+		a2.writeCat(1,0,1, 1);
+		// Escribo que el idart 1 fue clasificado con la idcat 1, como positivo
+		// y por el usuario
+		a2.writeCat(1,1,1, 0);
+
+		// Escribo que el idart 1 fue clasificado con la idcat 18, como positivo
+		// y por la pc
+		a2.writeCat(1,18,1, 1);
+
+		// Escribo que el idart 1 fue clasificado con la idcat 18, como negativo
+		// y por la pc
+		a2.writeCat(1,18,0, 1);
+
+
+		// Escribo que el idart 1 fue clasificado con la idcat 31, como positivo
+		// y por la pc
+		a2.writeCat(1,31,1, 1);
+
+		cout << a2 << endl;
+
+	}
+	catch (eArchivo2 e){
+		cout << e.getErrorMensaje() << endl;
+	}
+
+	cout << "Adios" << endl;
+	return 0;
+}
+
 /* */

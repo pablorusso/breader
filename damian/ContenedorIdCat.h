@@ -54,16 +54,6 @@ class ContenedorIdCat {
 		void writeCat(fstream &f);
 
 		/**
-		 * Escribe solo la categoria indicada (y rango minimo)
-		 * Nota: el archivo debe estar posicionado en el registro indicado, 
-		 * al principio de las categorias
-		 * @param f el archivo a escribir
-		 * @param idcat el idcat a escribir
-		 * @throw fstream::failure si el archivo esta corrupto
-		 */
-		void writeCat(fstream &f, const t_idcat &idcat);
-
-		/**
 		 * Lee de un archivo las categorias. Debe estar posicionado.
 		 * @param f el archivo a leer
 		 * @throw fstream::failure si el archivo esta corrupto
