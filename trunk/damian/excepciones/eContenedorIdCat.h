@@ -3,8 +3,6 @@
 
 #include "IException.h"
 
-#define THROW(class, err) throw class(err, __LINE__, __FILE__)
-
 typedef enum {CIDCAT_IDCAT_FUERA_DE_RANGO} CIDCAT_error;
 
 /**

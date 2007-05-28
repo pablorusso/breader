@@ -3,8 +3,6 @@
 
 #include "IException.h"
 
-#define THROW(class, err) throw class(err, __LINE__, __FILE__)
-
 typedef enum {A6_ARCHIVO_CORRUPTO, A6_PARAMETROS_FEED_INVALIDOS,
   A6_IDFEED_INVALIDO} A6_error;
 
