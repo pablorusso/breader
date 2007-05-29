@@ -2,7 +2,6 @@
 	<head>
 		<title>Agregar categoria</title>
 		<link href="styles/style_addTag.css" rel="stylesheet" type="text/css" />
-		<script type="text/javascript" src="scripts/ajax.js"></script>
 		<script type="text/javascript" src="scripts/xml.js"></script>
 		<script type="text/javascript" src="scripts/show_data.js"></script>
 
@@ -33,8 +32,13 @@
 
 				var nodeFound = findNodeById( opener.bodyDocument.documentElement, result.documentElement );
 				opener.bodyDocument.documentElement.replaceChild( result.documentElement, nodeFound );
-				opener.window.reload();
-				this.close();
+				opener.location.reload();
+
+				hideDiv( document, 'tag_loading', null );
+				showDiv( document, 'tag_list', null );
+
+				//this.close();
+
 			}
 			function createTagHandler( result )
 			{
@@ -45,11 +49,14 @@
 			{
 				var divTags = document.getElementById('tag_list');
 				applyXSLT( 'add_tags.xslt', divTags, result );
+				hideDiv( opener.document, 'processing_div', null );
 			}
+
 			function doAction( params, handler )
 			{
-				xmlOpen( "GET", "bin/thin_client.exe" + params, "", handler  );
+				opener.doAction( params, handler, null );
 			}
+
 			function reload()
 			{
 				doAction( "?actionCode=T4", tagsHandler );
@@ -68,9 +75,8 @@
 
 			function addTag( tagId )
 			{
-				var divLoading = document.getElementById( 'tag_loading' );
-				var divBody = document.getElementById( 'tag_list' );
-				toggleLoading( divLoading, divBody );
+				showDiv( document, 'tag_loading', null );
+				hideDiv( document, 'tag_list', null );
 
 				doAction( '?actionCode=A1&params=tagId%23' + tagId + '%7CartId%23' + opener.document.getElementById( 'artId' ).value, addTagHandler );
 			}

@@ -2,7 +2,7 @@
 function showDiv( docToUse, divName, innerText )
 {
 	var divToToggle = docToUse.getElementById( divName );
-	if ( divToToggle.style.display == "none" )
+	if ( divToToggle.style.display == "none" || divToToggle.style.display == "" )
 	{
 		divToToggle.style.display = "block";
 		if ( innerText != null ) divToToggle.innerHTML = innerText;
