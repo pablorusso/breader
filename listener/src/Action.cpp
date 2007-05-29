@@ -124,7 +124,7 @@ void Action::parseParams( string params )
 
 string Action::ProcessAction( string params )
 {
-	// emptyParams();
+	emptyParams();
 	parseParams( params );
 	return this->processAction();
 }

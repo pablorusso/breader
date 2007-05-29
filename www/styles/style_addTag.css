@@ -32,8 +32,6 @@ a:focus {
 a:focus,
 .unselectable {
 -moz-user-select: none;
--khtml-user-select: none;
-user-select: none;
 }
 a.internal,
 .link.internal {

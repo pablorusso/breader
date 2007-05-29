@@ -7,197 +7,90 @@
 
 		<script type="text/javascript" src="scripts/ajax.js"></script>
 		<script type="text/javascript" src="scripts/xml.js"></script>
+		<script type="text/javascript" src="scripts/show_data.js"></script>
 
 		<script type="text/javascript">
 			var tagsDocument  ;
 			var feedsDocument ;
 			var bodyDocument  ;
 
-			// DIVS MANAGERS
-			function showDiv( divName, innerText )
-			{
-				var divToToggle = document.getElementById( divName );
-				if ( divToToggle.style.display == "none" )
-				{
-					divToToggle.style.display = "block";
-					if ( innerText != null ) divToToggle.innerHTML = innerText;
-				}
-			}
-			function hideDiv( divName, innerText )
-			{
-				var divToToggle = document.getElementById( divName );
-				if ( divToToggle.style.display == "block" || divToToggle.style.display == "" )
-				{
-					divToToggle.style.display = "none";
-					if ( innerText != null ) divToToggle.innerHTML = innerText;
-				}
-			}
-
-			// ACTUALIZAN PANTALLA
-			function showBody()
-			{
-				var divBody = document.getElementById('chrome');
-				applyXSLT( 'body.xslt', divBody, bodyDocument );
-
-				showDiv( 'chrome', null );
-				hideDiv( 'loading_body', null );
-				hideDiv( 'processing_div', null );
-			}
-			function showTags()
-			{
-				var divTags = document.getElementById('menu_tags');
-				applyXSLT( 'tags.xslt', divTags, tagsDocument );
-
-				showDiv( 'menu_tags', null );
-				hideDiv( 'loading_tags', null );
-				hideDiv( 'processing_div', null );
-			}
-			function showFeeds()
-			{
-				var divFeeds = document.getElementById('menu_feeds');
-				applyXSLT( 'feeds.xslt', divFeeds, feedsDocument );
-
-				showDiv( 'menu_feeds', null );
-				hideDiv( 'loading_feeds', null );
-				hideDiv( 'processing_div', null );
-			}
-
-			function findNodeById ( rootNode, NodeToSearchId )
-			{
-				var idToSearch = null;
-				if ( NodeToSearchId.attributes != null )
-				{
-					var attr = NodeToSearchId.attributes.getNamedItem( 'id' );
-					if ( attr != null ) // no tiene id? raro
-					{
-					    var value = attr.value;
-					    if ( value != null )
-						    idToSearch = value;
-					}
-				}
-
-				if ( idToSearch == null )
-				{
-				    alert( 'No se encontro el id a borrar' );
-				    return;
-				}
-
-				var i;
-				var children = rootNode.childNodes;
-				for(i = 0;i < children.length;i++)
-				{
-					var node = children.item(i);
-					if( node.attributes != null )
-					{
-						var attr = node.attributes.getNamedItem( 'id' );
-					    var value = attr.value;
-					    if ( value != null && idToSearch == value )
-						    return node;
-					}
-				}
-				return null;
-			}
-			function checkError ( nodeToCheck )
-			{
-				//alert( serializeXML( nodeToCheck ) );
-				var errorNode = nodeToCheck.documentElement.childNodes[0];
-				if( errorNode.attributes != null )
-				{
-					{
-						var attr = errorNode.attributes.getNamedItem( 'error' );
-						var value = attr.value;
-						if ( value != null && value == "1" )
-						{
-							var attrM = errorNode.attributes.getNamedItem( 'message' );
-							var msg = attrM.value;
-							if ( value != null )
-								showDiv( 'error_tag', msg );
-							else
-								showDiv( 'error_tag', 'Se produjo un error no determinado.' );
-							return null;
-						}
-					}
-				}
-				return parseXML( serializeXML( nodeToCheck.documentElement.childNodes[1] ) );
-			}
-
 			// HANDLERS
 			function bodyHandler( result )
 			{
-				result = checkError( result );
+				result = checkError( document, result );
 				if ( result == null ) return;
 				bodyDocument = result;
-				showBody();
+				showBody( document, bodyDocument );
 			}
 			function editArticleHandler( result )
 			{
-				result = checkError( result );
+				result = checkError( document, result );
 				if ( result == null ) return;
 
 				var nodeFound = findNodeById( bodyDocument.documentElement, result.documentElement );
 				bodyDocument.documentElement.replaceChild( result.documentElement, nodeFound );
-				showBody();
+				showBody( document, bodyDocument );
 			}
 
 			function tagsHandler( result )
 			{
-				result = checkError( result );
+				result = checkError( document, result );
 				if ( result == null ) return;
 				tagsDocument = result;
-				showTags();
+				showTags( document, tagsDocument );
 			}
 
 			function feedsHandler( result )
 			{
-				result = checkError( result );
+				result = checkError( document, result );
 				if ( result == null ) return;
 				feedsDocument = result;
-				showFeeds();
+				showFeeds( document, feedsDocument );
 			}
 
 			function editTagHandler( result )
 			{
-				result = checkError( result );
+				result = checkError( document, result );
 				if ( result == null ) return;
 
 				var nodeFound = findNodeById( tagsDocument.documentElement, result.documentElement );
 				tagsDocument.documentElement.replaceChild( result.documentElement, nodeFound );
-				showTags();
+				showTags( document, tagsDocument );
 			}
 			function delTagHandler( result )
 			{
-				result = checkError( result );
+				result = checkError( document, result );
 				if ( result == null ) return;
 
 				var nodeFound = findNodeById( tagsDocument.documentElement, result.documentElement );
 				tagsDocument.documentElement.removeChild( nodeFound )
-				showTags();
+				showTags( document, tagsDocument );
 			}
 			function addTagHandler( result )
 			{
-				result = checkError( result );
+				result = checkError( document, result );
 				if ( result == null ) return;
 
 				tagsDocument.documentElement.appendChild( result.documentElement );
-				showTags();
+				showTags( document, tagsDocument );
 			}
 			function delFeedHandler( result )
 			{
-				result = checkError( result );
+				result = checkError( document, result );
 				if ( result == null ) return;
 
 				var nodeFound = findNodeById( feedsDocument.documentElement, result.documentElement );
 				feedsDocument.documentElement.removeChild( nodeFound )
-				showFeeds();
+				showFeeds( document, feedsDocument );
 			}
 			function addFeedHandler( result )
 			{
-				result = checkError( result );
+				result = checkError( document, result );
 				if ( result == null ) return;
 				//var newNodeText = '<feed id="3" name="' + name + '" lastUpdate="May 22, 2007 3:29 AM" url="http://www.blogger.com/rss/atom.xml"/>';
 				//var newNode = parseXML( newNodeText )
 				feedsDocument.documentElement.appendChild( result.documentElement );
-				showFeeds();
+				showFeeds( document, feedsDocument );
 			}
 
 			// ACCIONES COMPUESTAS
@@ -230,43 +123,42 @@
 			function addTag( artId )
 			{
 				document.getElementById( 'artId' ).value = artId;
-				window.open( 'addTag.html', 'addTag', "width=350;height=80;menubar=no;personalbar=no;resizable=no;scrollbars=yes;status=no;toolbar=no" )
+				window.open( "addTag.html", "addTag", "width=350;height=80;menubar=no;personalbar=no;resizable=no;scrollbars=yes;status=no;toolbar=no" );
 			}
 
 			// GENERAL
 			function doAction( params, handler, type )
 			{
-				hideDiv( 'error_tag', '' );
+				hideDiv( document, 'error_tag', '' );
 
 				if ( type == 'F' )
 				{
-					hideDiv( 'menu_feeds', '' );
-					showDiv( 'loading_feeds', null );
+					hideDiv( document, 'menu_feeds', '' );
+					showDiv( document, 'loading_feeds', null );
 				}
 				else if ( type == 'T' )
 				{
-					hideDiv( 'menu_tags', '' );
-					showDiv( 'loading_tags', null );
+					hideDiv( document, 'menu_tags', '' );
+					showDiv( document, 'loading_tags', null );
 				}
 				else if ( type == 'A' )
 				{
-					hideDiv( 'chrome', '' );
-					showDiv( 'loading_body', null );
+					hideDiv( document, 'chrome', '' );
+					showDiv( document, 'loading_body', null );
 				}
-				else showDiv( 'processing_div', null );
+				else showDiv( document, 'processing_div', null );
 
 				xmlOpen( "GET", "bin/thin_client.exe" + params, "", handler );
 			}
 			function reload()
 			{
-				hideDiv( 'processing_div', null );
+				hideDiv( document, 'processing_div', null );
 
 				doAction ( "?actionCode=A6", bodyHandler, 'A' );
 				doAction ( "?actionCode=F4", feedsHandler , 'F' );
 				doAction ( "?actionCode=T4", tagsHandler  , 'T' );
 
-				document.captureEvents( Event.KEYPRESS );
-				document.onkeypress= document_keyPress;
+				document.addEventListener( "keypress", document_keyPress, false);
 			}
 			function document_keyPress( e )
 			{
@@ -287,8 +179,6 @@
 	<body onload="reload()">
 		<input type="hidden" value="" id="artId"/>
 		<div id="nav">
-			<div id="processing_div" class="processing" style="display: none">Procesando...</div>
-
 			<div id="menu_main">
 				<table cellspacing="0" cellpadding="0" border="0" id="selectors-box1" class="round-box">
 					<tr>
@@ -324,12 +214,12 @@
 
 							    <tr>
 								    <td class="menuName">
-									    <a class="link" onclick="doAction ( '?actionCode=A4&params=tagId%230%7CtagStates%231', bodyHandler, 'A' )">
+									    <a class="link" onclick="doAction ( '?actionCode=A4&params=tagIds%230%7CtagStates%231', bodyHandler, 'A' )">
 										    <img style="border:0" src="images/status_fav.png" title="Icono de status favorito" alt="Icono de status favorito"/>
 									    </a>
 								    </td>
 								    <td class="menuName">
-									    <a class="link" onclick="doAction ( '?actionCode=A4&params=tagId%230%7CtagStates%231', bodyHandler, 'A' )">Favoritos</a>
+									    <a class="link" onclick="doAction ( '?actionCode=A4&params=tagIds%230%7CtagStates%231', bodyHandler, 'A' )">Favoritos</a>
 								    </td>
 							    </tr>
 
@@ -428,6 +318,7 @@
 				</table>
 			</div>
 		</div>
+		<div id="processing_div" class="processing" style="display: none">Procesando...</div>
 
 		<div id="loading_body">
 			Buscando articulos, aguarde un momento...

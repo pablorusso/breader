@@ -223,11 +223,42 @@ string EntitiesManager::ArticleGetByTags( vector< string > tagIds, vector< strin
 {
 	if ( Articles.size() == 0 ) return "<articles/>";
 
+	vector< Article *> toFilter;
+	vector< string >::iterator tagIdsIt ;
+	vector< string >::iterator stateIt = state.begin();
+	for( tagIdsIt = tagIds.begin(); tagIdsIt != tagIds.end(); tagIdsIt++ )
+	{
+		if ( (*stateIt) == "1" )
+		{
+			string tagId = (*tagIdsIt);
+
+			map< string, Article * >::iterator artsIt;
+			for( artsIt = Articles.begin(); artsIt != Articles.end(); artsIt++ )
+			if ( ( static_cast< Article * > ( artsIt->second ) )->tags.find( tagId ) != ( static_cast< Article * > ( artsIt->second ) )->tags.end() )
+				toFilter.push_back( static_cast< Article * > ( artsIt->second ) );
+		}
+		stateIt++;
+	}
+
+	if ( toFilter.size() == 0 ) return "<articles/>";
+
 	vector< Article *> toShow;
-	map< string, Article * >::iterator artsIt;
-	for( artsIt = Articles.begin(); artsIt != Articles.end(); artsIt++ )
-		// si cumple con el filtro -- if ( ( static_cast< Article * > ( artsIt->second ) )->isClassified == "0" )
-			toShow.push_back( static_cast< Article * > ( artsIt->second ) );
+	vector< Article * >::iterator toFilterIt;
+	for( toFilterIt = toFilter.begin(); toFilterIt != toFilter.end(); toFilterIt++ )
+	{
+		bool pushToShow = true;
+
+		stateIt = state.begin();
+		for( tagIdsIt = tagIds.begin(); tagIdsIt != tagIds.end(); tagIdsIt++ )
+		{
+			string tagId = *tagIdsIt;
+			if ( (*stateIt) == "0" )
+				pushToShow = (*toFilterIt)->tags.find( tagId ) == (*toFilterIt)->tags.end();
+			stateIt++;
+		}
+
+		if ( pushToShow ) toShow.push_back( *toFilterIt );
+	}
 
 	if ( toShow.size() == 0 ) return "<articles/>";
 
@@ -314,6 +345,26 @@ string EntitiesManager::FeedDelete( string id )
 {
 	Feed *t = Feeds[ id ];
 	Feeds.erase( id );
+
+	if ( Articles.size() != 0 )
+	{
+		string feedName = t->name;
+		vector< Article *> toDelete;
+		map< string, Article * >::iterator artsIt;
+		for( artsIt = Articles.begin(); artsIt != Articles.end(); artsIt++ )
+			if ( ( static_cast< Article * > ( artsIt->second ) )->feedName == feedName )
+				toDelete.push_back( static_cast< Article * > ( artsIt->second ) );
+		if ( toDelete.size() != 0 )
+		{
+			vector< Article *>::iterator toDeleteIt;
+			for( toDeleteIt = toDelete.begin(); toDeleteIt != toDelete.end(); toDeleteIt++ )
+			{
+				Articles.erase( (*toDeleteIt)->id );
+				delete ( *toDeleteIt );
+			}
+		}
+	}
+
 	string response = t->getXML();
 	delete t;
 	return response;
@@ -351,6 +402,23 @@ string EntitiesManager::TagDelete( string id )
 {
 	Tag *toD = Tags[ id ];
 	Tags.erase( id );
+
+	if ( Articles.size() != 0 )
+	{
+
+		vector< Article *> toDelete;
+		map< string, Article * >::iterator artsIt;
+		for( artsIt = Articles.begin(); artsIt != Articles.end(); artsIt++ )
+			if ( ( static_cast< Article * > ( artsIt->second ) )->tags.find( id ) != ( static_cast< Article * > ( artsIt->second ) )->tags.end() )
+				toDelete.push_back( static_cast< Article * > ( artsIt->second ) );
+
+		if ( toDelete.size() != 0 )
+		{
+			vector< Article *>::iterator toDeleteIt;
+			for( toDeleteIt = toDelete.begin(); toDeleteIt != toDelete.end(); toDeleteIt++ )
+				ArticleUnLinkTag( (*toDeleteIt)->id, id );
+		}
+	}
 
 	string response = toD->getXML();
 	delete toD;
