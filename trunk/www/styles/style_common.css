@@ -32,8 +32,6 @@ a:focus {
 a:focus,
 .unselectable {
 -moz-user-select: none;
--khtml-user-select: none;
-user-select: none;
 }
 a.internal,
 .link.internal {
@@ -62,7 +60,6 @@ font-size: 90%;
 .error {
 	color: #FFFFFF;
 	font-size: 150%;
-	text-decoration: bold;
 	background-color: #FF0000;
 	width: 84%;
 	height: 4%;
@@ -73,7 +70,6 @@ font-size: 90%;
 .processing {
 	color: #FFFFFF;
 	font-size: 120%;
-	text-decoration: bold;
 	background-color: #FF0000;
 	margin:0px 2pt;
 	width: 98%;

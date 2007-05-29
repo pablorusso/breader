@@ -22,7 +22,7 @@
 	z-index: 4;
 }
 
-#entries 
+#entries
 {
 	height:97%;
 	outline-color:invert;
@@ -34,28 +34,27 @@
 	z-index:1;
 }
 
-#entries .entry 
+#entries .entry
 {
 	position: relative;
 	background: #fff;
 	margin: 0;
 }
 
-#entries .entry-body 
+#entries .entry-body
 {
 	padding-top: .5em;
 	font-size: 85%;
 }
 
-#entries .entry-main 
+#entries .entry-main
 {
 	margin-right: .5em;
 	margin-left: 10px;
 }
 
-#entries .entry-actions 
+#entries .entry-actions
 {
-	padding-top: -1.35em;
 	position: relative;
 	left: -2px;
 	font-size: 90%;

@@ -1,3 +1,39 @@
+function findNodeById ( rootNode, NodeToSearchId )
+{
+	var idToSearch = null;
+	if ( NodeToSearchId.attributes != null )
+	{
+		var attr = NodeToSearchId.attributes.getNamedItem( 'id' );
+		if ( attr != null ) // no tiene id? raro
+		{
+			var value = attr.value;
+			if ( value != null )
+				idToSearch = value;
+		}
+	}
+
+	if ( idToSearch == null )
+	{
+		alert( 'No se encontro el id a borrar' );
+		return;
+	}
+
+	var i;
+	var children = rootNode.childNodes;
+	for(i = 0;i < children.length;i++)
+	{
+		var node = children.item(i);
+		if( node.attributes != null )
+		{
+			var attr = node.attributes.getNamedItem( 'id' );
+			var value = attr.value;
+			if ( value != null && idToSearch == value )
+				return node;
+		}
+	}
+	return null;
+}
+
 function parseXML(text)
 {
 	if (typeof DOMParser != "undefined")

@@ -55,7 +55,7 @@
 				<td class="menuName">
 					<a class="link">
 						<xsl:attribute name="onclick">
-							doAction ( '?actionCode=A4&amp;params=tagId%23<xsl:value-of select="@id"/>%7CtagStates%231', bodyHandler, 'A' )
+							doAction ( '?actionCode=A4&amp;params=tagIds%23<xsl:value-of select="@id"/>%7CtagStates%231', bodyHandler, 'A' )
 						</xsl:attribute>
 						<xsl:value-of select="@name"/>
 					</a>

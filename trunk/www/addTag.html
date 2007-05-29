@@ -4,6 +4,7 @@
 		<link href="styles/style_addTag.css" rel="stylesheet" type="text/css" />
 		<script type="text/javascript" src="scripts/ajax.js"></script>
 		<script type="text/javascript" src="scripts/xml.js"></script>
+		<script type="text/javascript" src="scripts/show_data.js"></script>
 
 		<script type="text/javascript">
 			function toggleLoading( divLoading, divBody )
@@ -20,14 +21,24 @@
 				}
 			}
 
+
 			function addTagHandler( result )
 			{
-				opener.document.getElementById( 'artId' ).value = "";
+				result = checkError( opener.document, result );
+				if ( result == null )
+				{
+					this.close();
+					return;
+				}
+
+				var nodeFound = findNodeById( opener.bodyDocument.documentElement, result.documentElement );
+				opener.bodyDocument.documentElement.replaceChild( result.documentElement, nodeFound );
+				opener.window.reload();
 				this.close();
 			}
 			function createTagHandler( result )
 			{
-				opener.doReturnTagsAction  ( "?actionCode=T4" );
+				opener.doAction ( "?actionCode=T4", opener.tagsHandler, 'T' );
 				reload();
 			}
 			function tagsHandler( result )
@@ -61,7 +72,6 @@
 				var divBody = document.getElementById( 'tag_list' );
 				toggleLoading( divLoading, divBody );
 
-				alert( '?actionCode=A1&params=tagId%23' + tagId + '%7CartId%23' + opener.document.getElementById( 'artId' ).value );
 				doAction( '?actionCode=A1&params=tagId%23' + tagId + '%7CartId%23' + opener.document.getElementById( 'artId' ).value, addTagHandler );
 			}
 		</script>
