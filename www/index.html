@@ -5,14 +5,15 @@
 		<link href="styles/style_common.css" rel="stylesheet" type="text/css" />
 		<link href="styles/style_body.css" rel="stylesheet" type="text/css"   />
 
-		<script type="text/javascript" src="scripts/ajax.js"></script>
 		<script type="text/javascript" src="scripts/xml.js"></script>
 		<script type="text/javascript" src="scripts/show_data.js"></script>
+		<script type="text/javascript" src="scripts/ajax_queue.js"></script>
 
 		<script type="text/javascript">
 			var tagsDocument  ;
 			var feedsDocument ;
 			var bodyDocument  ;
+			var lastShowBody = "";
 
 			// HANDLERS
 			function bodyHandler( result )
@@ -133,29 +134,36 @@
 
 				if ( type == 'F' )
 				{
-					hideDiv( document, 'menu_feeds', '' );
 					showDiv( document, 'loading_feeds', null );
+					hideDiv( document, 'menu_feeds', '' );
 				}
 				else if ( type == 'T' )
 				{
-					hideDiv( document, 'menu_tags', '' );
 					showDiv( document, 'loading_tags', null );
+					hideDiv( document, 'menu_tags', '' );
 				}
 				else if ( type == 'A' )
 				{
-					hideDiv( document, 'chrome', '' );
+					lastShowBody = params;
 					showDiv( document, 'loading_body', null );
+					hideDiv( document, 'chrome', '' );
 				}
 				else showDiv( document, 'processing_div', null );
 
-				xmlOpen( "GET", "bin/thin_client.exe" + params, "", handler, false );
+				SimpleAJAXCall ( "bin/thin_client.exe" + params, SimpleCallback, "GET", handler )
+			}
+
+			function SimpleCallback( in_text, in_param )
+			{
+				in_param( parseXML( in_text ) );
 			}
 
 			function reload()
 			{
 				hideDiv( document, 'processing_div', null );
 
-				doAction ( "?actionCode=A6", bodyHandler, 'A'   );
+				if ( lastShowBody == "" ) lastShowBody = "?actionCode=A6";
+				doAction ( lastShowBody, bodyHandler, 'A' );
 				doAction ( "?actionCode=F4", feedsHandler , 'F' );
 				doAction ( "?actionCode=T4", tagsHandler  , 'T' );
 
