@@ -29,7 +29,7 @@ function getReadyStateHandler( req, responseHandler )
 * @param string toSend The data to send to the server; must be URL encoded.
 * @param function responseHandler The function handling server response.
 */
-function xmlOpen(method, url, toSend, responseHandler)
+function xmlOpen( method, url, toSend, responseHandler, async )
 {
 	if ( window.XMLHttpRequest )
 	{
@@ -44,17 +44,22 @@ function xmlOpen(method, url, toSend, responseHandler)
 
 	if( req )
 	{
-		// Hacerlo asincronico trae problemas con el cgi, por ahora dejarlo en false
-		req.open( method, url, false );
+		req.open( method, url, async );
 		req.setRequestHeader("content-type","application/x-www-form-urlencoded");
-		//var callbackHandler    = getReadyStateHandler( req, responseHandler );
-		//req.onreadystatechange = callbackHandler;
+		if ( async )
+		{
+			var callbackHandler    = getReadyStateHandler( req, responseHandler );
+			req.onreadystatechange = callbackHandler;
+		}
 		req.send( toSend );
 
-		if ( req.responseXML == null )
-			responseHandler( req.responseText );
-		else
-			responseHandler( req.responseXML );
+		if ( !async )
+		{
+			if ( req.responseXML == null )
+				responseHandler( req.responseText );
+			else
+				responseHandler( req.responseXML );
+		}
 	}
 	else
 	{
