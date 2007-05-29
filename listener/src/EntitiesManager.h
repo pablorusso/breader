@@ -42,6 +42,7 @@ class EntitiesManager
 		string ArticleGetUnread();
 		string ArticleLinkTag( string artId, string tagId );
 		string ArticleUnLinkTag( string artId, string tagId );
+		string ArticleGetFavourites();
 
 		string FeedCreate( string name, string url );
 		string FeedDelete( string id );

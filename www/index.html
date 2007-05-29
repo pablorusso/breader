@@ -148,13 +148,14 @@
 				}
 				else showDiv( document, 'processing_div', null );
 
-				xmlOpen( "GET", "bin/thin_client.exe" + params, "", handler );
+				xmlOpen( "GET", "bin/thin_client.exe" + params, "", handler, false );
 			}
+
 			function reload()
 			{
 				hideDiv( document, 'processing_div', null );
 
-				doAction ( "?actionCode=A6", bodyHandler, 'A' );
+				doAction ( "?actionCode=A6", bodyHandler, 'A'   );
 				doAction ( "?actionCode=F4", feedsHandler , 'F' );
 				doAction ( "?actionCode=T4", tagsHandler  , 'T' );
 
@@ -214,12 +215,12 @@
 
 							    <tr>
 								    <td class="menuName">
-									    <a class="link" onclick="doAction ( '?actionCode=A4&params=tagIds%230%7CtagStates%231', bodyHandler, 'A' )">
+									    <a class="link" onclick="doAction ( '?actionCode=A10', bodyHandler, 'A' )">
 										    <img style="border:0" src="images/status_fav.png" title="Icono de status favorito" alt="Icono de status favorito"/>
 									    </a>
 								    </td>
 								    <td class="menuName">
-									    <a class="link" onclick="doAction ( '?actionCode=A4&params=tagIds%230%7CtagStates%231', bodyHandler, 'A' )">Favoritos</a>
+									    <a class="link" onclick="doAction ( '?actionCode=A10', bodyHandler, 'A' )">Favoritos</a>
 								    </td>
 							    </tr>
 
@@ -317,8 +318,9 @@
 					</tr>
 				</table>
 			</div>
+
+			<div id="processing_div" class="processing" style="display: none">Procesando...</div>
 		</div>
-		<div id="processing_div" class="processing" style="display: none">Procesando...</div>
 
 		<div id="loading_body">
 			Buscando articulos, aguarde un momento...

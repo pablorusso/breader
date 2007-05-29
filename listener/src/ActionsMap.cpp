@@ -16,6 +16,7 @@
 #include "ActionArticleGetUnclassified.h"
 #include "ActionArticleChangeFavState.h"
 #include "ActionArticleChangeReadState.h"
+#include "ActionArticleGetFavourites.h"
 
 #include <sstream>
 
@@ -71,4 +72,5 @@ void ActionsMap::buildMap()
 	_actionMap["A7"] = new ActionArticleGetUnclassified();
 	_actionMap["A8"] = new ActionArticleChangeFavState();
 	_actionMap["A9"] = new ActionArticleChangeReadState();
+	_actionMap["A10"] = new ActionArticleGetFavourites();
 }

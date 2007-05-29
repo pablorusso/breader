@@ -178,6 +178,17 @@ string EntitiesManager::ArticleApproveTag( string id, string tagId )
 		Articles[ id ]->tags[ tagId ]->isApproved = "1";
 	else
 		Articles[ id ]->tags[ tagId ]->isApproved = "0";
+
+	map< string, TagArticleRelation* >::iterator it;
+
+	bool mustChange = true;
+	for( it = Articles[ id ]->tags.begin(); it != Articles[ id ]->tags.end(); it++)
+		if ( ( static_cast< TagArticleRelation * > ( it->second ) )->isApproved == "0" )
+			mustChange = false;
+
+	if ( mustChange )
+		Articles[ id ]->isClassified = "1";
+
 	return Articles[ id ]->getXML();
 }
 
@@ -196,6 +207,26 @@ string EntitiesManager::ArticleChangeReadState( string id )
 	else
 		Articles[ id ]->isRead = "0";
 	return Articles[ id ]->getXML();
+}
+
+string EntitiesManager::ArticleGetFavourites()
+{
+	if ( Articles.size() == 0 ) return "<articles/>";
+
+	vector< Article *> toShow;
+	map< string, Article * >::iterator artsIt;
+	for( artsIt = Articles.begin(); artsIt != Articles.end(); artsIt++ )
+		if ( ( static_cast< Article * > ( artsIt->second ) )->isFav == "1" )
+			toShow.push_back( static_cast< Article * > ( artsIt->second ) );
+
+	if ( toShow.size() == 0 ) return "<articles/>";
+
+	string response = "<articles>";
+	vector< Article *>::iterator toShowIt;
+	for( toShowIt = toShow.begin(); toShowIt != toShow.end(); toShowIt++ )
+		response += (*toShowIt)->getXML();
+	response += "</articles>";
+	return response;
 }
 
 string EntitiesManager::ArticleGetByFeed( string feedId )
@@ -314,7 +345,7 @@ string EntitiesManager::ArticleLinkTag( string artId, string tagId )
 {
 	TagArticleRelation *r = new TagArticleRelation();
 	r->tag = Tags[ tagId ];
-	r->isApproved = "0";
+	r->isApproved = "1";
 
 	Articles[ artId ]->tags[ tagId ] = r;
 	return Articles[ artId ]->getXML();

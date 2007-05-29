@@ -125,9 +125,6 @@
 											</xsl:choose>
 										</span>
 									</td>
-									<td class="star">
-											Categorias (
-									</td>
 									<td>
 										<a class="link">
 											<xsl:attribute name="onclick">
@@ -137,9 +134,8 @@
 										</a>
 									</td>
 									<td class="star">
-											):
+											Categorias :
 									</td>
-
 									<td>
 										<xsl:apply-templates select="tags"/>
 									</td>
@@ -165,9 +161,10 @@
 		<table>
 			<tr>
 				<xsl:for-each select="tag">
-					<td class="catName">
-						<xsl:value-of select="@name"/>
-					</td>
+					<xsl:if test="position() &gt; 1">
+						<xsl:text>, </xsl:text>
+					</xsl:if>
+
 					<xsl:if test="@isApproved = 0">
 						<td>
 						<a class="link">
@@ -187,6 +184,11 @@
 						<img style="border:0" src="images/action_tag_del.png" title="Borrar categoria" alt="Borrar categoria"/>
 					</a>
 					</td>
+					<td class="star">
+						<xsl:text> </xsl:text>
+						<xsl:value-of select="@name"/>
+					</td>
+
 				</xsl:for-each>
 			</tr>
 		</table>

@@ -124,6 +124,7 @@ void Action::parseParams( string params )
 
 string Action::ProcessAction( string params )
 {
+	//usleep( 2000 * 1000 );
 	emptyParams();
 	parseParams( params );
 	return this->processAction();
