@@ -1,35 +1,24 @@
-function findNodeById ( rootNode, NodeToSearchId )
+function getNodeAttr ( node, attName )
 {
-	var idToSearch = null;
-	if ( NodeToSearchId.attributes != null )
+	if ( node.attributes != null )
 	{
-		var attr = NodeToSearchId.attributes.getNamedItem( 'id' );
-		if ( attr != null ) // no tiene id? raro
-		{
-			var value = attr.value;
-			if ( value != null )
-				idToSearch = value;
-		}
+		var attr = node.attributes.getNamedItem( attName );
+		if ( attr != null )
+			return attr.value;
 	}
+	return null;
+}
 
-	if ( idToSearch == null )
-	{
-		alert( 'No se encontro el id a borrar' );
-		return;
-	}
-
+function findNodeById ( rootNode, idToSearch )
+{
 	var i;
 	var children = rootNode.childNodes;
 	for(i = 0;i < children.length;i++)
 	{
 		var node = children.item(i);
-		if( node.attributes != null )
-		{
-			var attr = node.attributes.getNamedItem( 'id' );
-			var value = attr.value;
-			if ( value != null && idToSearch == value )
-				return node;
-		}
+		var value = getNodeAttr( node, 'id' );
+		if ( value != null && idToSearch == value )
+			return node;
 	}
 	return null;
 }
@@ -38,8 +27,13 @@ function parseXML(text)
 {
 	if (typeof DOMParser != "undefined")
 	{
+		var toParse = '<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>' + text;
+		alert( toParse );
+		var output  = (new DOMParser( )).parseFromString( toParse, "application/xml");
+		alert( serializeXML( output ) );
+		return output;
 		// Mozilla, Firefox, and related browsers
-		return (new DOMParser( )).parseFromString(text, "application/xml");
+		//return (new DOMParser( )).parseFromString(text, "application/xml");
 	}
 	else if (typeof ActiveXObject != "undefined")
 	{
@@ -50,7 +44,7 @@ function parseXML(text)
 	}
 	else
 	{
-		var url = "data:text/xml;charset=utf-8," + encodeURIComponent(text);
+		var url = "data:text/xml;charset=ISO-8859-1," + encodeURIComponent(text);
 		var request = new XMLHttpRequest( );
 		request.open("GET", url, false);
 		request.send(null);

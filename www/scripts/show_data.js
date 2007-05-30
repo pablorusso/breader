@@ -50,6 +50,15 @@ function showFeeds( docToUse, feedsDoc )
 function checkError ( docToUse, nodeToCheck )
 {
 	//alert( serializeXML( nodeToCheck ) );
+
+	var parserError = nodeToCheck.firstChild.tagName;
+	if ( parserError == 'parsererror' )
+	{
+		alert( nodeToCheck.firstChild.textContent );
+		showDiv( docToUse, 'error_tag', nodeToCheck.firstChild.textContent );
+		return null;
+	}
+
 	var errorNode = nodeToCheck.documentElement.childNodes[0];
 	if( errorNode.attributes != null )
 	{
@@ -68,5 +77,5 @@ function checkError ( docToUse, nodeToCheck )
 			}
 		}
 	}
-	return parseXML( serializeXML( nodeToCheck.documentElement.childNodes[1] ) );
+	return nodeToCheck; //parseXML( serializeXML( nodeToCheck.documentElement.childNodes[1] ) );
 }

@@ -10,12 +10,11 @@ Action::~Action()
 	this->emptyParams();
 }
 
-
 Values *Action::getParamValue( string paramName )
 {
 	Values *value = parameterList[ paramName ];
 	if ( value == NULL )
-		throw string( "El parametro " + paramName + " no se encuentra seteado" );
+		throw string( "[listener] - El parametro " + paramName + " no se encuentra seteado" );
 	return value;
 }
 
@@ -26,22 +25,17 @@ int Action::splitString(const string& input, const string& delimiter, Values& re
     size_t sizeS2 = delimiter.size();
     size_t isize = input.size();
 
-    if(
-        ( isize == 0 )
-        ||
-        ( sizeS2 == 0 )
-    )
+    if ( ( isize == 0 ) || ( sizeS2 == 0 ) )
     {
+		if ( includeEmpties ) results.push_back( input );
         return 0;
     }
 
     vector< size_t > positions;
-
     newPos = input.find (delimiter, 0);
-
     if( newPos == string::npos )
     {
-		results.push_back( input );
+		if ( includeEmpties ) results.push_back( input );
         return 0;
     }
 
@@ -57,7 +51,7 @@ int Action::splitString(const string& input, const string& delimiter, Values& re
 
     if( numFound == 0 )
     {
-		results.push_back( input );
+		if ( includeEmpties ) results.push_back( input );
         return 0;
     }
 
@@ -91,14 +85,14 @@ int Action::splitString(const string& input, const string& delimiter, Values& re
 
 void Action::parseParams( string params )
 {
-	string delim1 = "|";
+	string delim1 = "|||";
 	Values paramListWithName;
 	splitString( params, delim1, paramListWithName, true );
 
 	Values::iterator itParamList;
 	for( itParamList = paramListWithName.begin(); itParamList != paramListWithName.end(); itParamList++ )
 	{
-		string delim2 = "#";
+		string delim2 = "||#";
 		Values nameAndValue;
 		string nameAndValudS = *itParamList;
 		splitString( nameAndValudS, delim2, nameAndValue, true );
@@ -110,7 +104,7 @@ void Action::parseParams( string params )
 			itNameAndValue++;
 			if ( itNameAndValue != nameAndValue.end() )
 			{
-				string delim3 = ",";
+				string delim3 = "||,";
 
 				Values *valuesOnly = new Values();
 				string valuesStr = *itNameAndValue;
@@ -125,7 +119,7 @@ void Action::parseParams( string params )
 string Action::ProcessAction( string params )
 {
 	// si se quiere simular un delay de 1 segundo
-	usleep( 1000 * 1000 );
+	//usleep( 1000 * 1000 );
 	emptyParams();
 	parseParams( params );
 	return this->processAction();

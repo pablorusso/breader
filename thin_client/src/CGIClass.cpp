@@ -74,27 +74,22 @@ int CGIClass::splitString(const string& input, const string& delimiter, vector< 
     size_t sizeS2 = delimiter.size();
     size_t isize = input.size();
 
-    if(
-        ( isize == 0 )
-        ||
-        ( sizeS2 == 0 )
-    )
+    if ( ( isize == 0 ) || ( sizeS2 == 0 ) )
     {
+		if ( includeEmpties ) results.push_back( input );
         return 0;
     }
 
     vector< size_t > positions;
 
     newPos = input.find (delimiter, 0);
-
     if( newPos == string::npos )
     {
-		results.push_back( input );
+		if ( includeEmpties ) results.push_back( input );
         return 0;
     }
 
     int numFound = 0;
-
     while( newPos != string::npos )
     {
         numFound++;
@@ -105,7 +100,7 @@ int CGIClass::splitString(const string& input, const string& delimiter, vector< 
 
     if( numFound == 0 )
     {
-		results.push_back( input );
+		if ( includeEmpties ) results.push_back( input );
         return 0;
     }
 

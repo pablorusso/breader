@@ -18,6 +18,7 @@ class EntitiesManager
 		void createFeeds();
 		void createTags();
 		void createArticles();
+		string encodeXML ( const string &original );
 
 		int lastTagId;
 		int lastFeedId;
@@ -33,6 +34,7 @@ class EntitiesManager
 		map< string, Feed *> Feeds;
 		map< string, Article *> Articles;
 
+		string ArticleCreate( string title, string summary, string link, string author, string date, string feedName );
 		string ArticleApproveTag( string artId, string tagId );
 		string ArticleChangeFavState( string artId );
 		string ArticleChangeReadState( string artId );
@@ -42,11 +44,11 @@ class EntitiesManager
 		string ArticleGetUnread();
 		string ArticleLinkTag( string artId, string tagId );
 		string ArticleUnLinkTag( string artId, string tagId );
+		string ArticleGetFavourites();
 
 		string FeedCreate( string name, string url );
 		string FeedDelete( string id );
 		string FeedGetAll();
-		string FeedRefresh( string id );
 
 		string TagCreate( string name );
 		string TagDelete( string id );

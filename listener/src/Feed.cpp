@@ -1,6 +1,7 @@
 #include "Feed.h"
+#include "XmlUtils.h"
 
 string Feed::getXML()
 {
-	return "<feed id=\"" + id + "\" name=\"" + name + "\" lastUpdate=\"" + lastUpdate + "\" url=\"" + url + "\"/>";
+	return "<feed id=\"" + XmlUtils::xmlEncode( id ) + "\" name=\"" + XmlUtils::xmlEncode( name ) + "\" lastUpdate=\"" + XmlUtils::xmlEncode( lastUpdate ) + "\" url=\"" + XmlUtils::xmlEncode( url ) + "\"/>";
 }

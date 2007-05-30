@@ -30,8 +30,14 @@
 					return;
 				}
 
-				var nodeFound = findNodeById( opener.bodyDocument.documentElement, result.documentElement );
-				opener.bodyDocument.documentElement.replaceChild( result.documentElement, nodeFound );
+				var idToFind = getNodeAttr( result.documentElement.childNodes[1], 'id' );
+				if ( idToFind == null )
+				{
+					showDiv( document, 'error_tag', "Agregar categoria - El nodo no tiene id" );
+					return;
+				}
+				var nodeFound = findNodeById( opener.bodyDocument.documentElement.childNodes[1], idToFind );
+				opener.bodyDocument.documentElement..childNodes[1].replaceChild( result.documentElement.childNodes[1], nodeFound );
 				opener.location.reload();
 
 				hideDiv( document, 'tag_loading', null );
@@ -70,15 +76,14 @@
 					alert( "El nombre no puede ser vacio" );
 					return;
 				}
-				doAction( "?actionCode=T1&params=tagName%23" + name, createTagHandler );
+				doAction ( "?actionCode=" + escape( "T1" ) + "&params=" + escape( "tagName||#" + name ), createTagHandler );
 			}
 
 			function addTag( tagId )
 			{
 				showDiv( document, 'tag_loading', null );
 				hideDiv( document, 'tag_list', null );
-
-				doAction( '?actionCode=A1&params=tagId%23' + tagId + '%7CartId%23' + opener.document.getElementById( 'artId' ).value, addTagHandler );
+				doAction ( "?actionCode=" + escape( "A1" ) + "&params=" + escape( "tagId||#" + tagId + "|||artId||#" + opener.document.getElementById( 'artId' ).value ), addTagHandler );
 			}
 		</script>
 	</head>

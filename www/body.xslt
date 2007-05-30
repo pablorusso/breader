@@ -1,4 +1,7 @@
-<xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<xsl:transform
+	xmlns:xsl = "http://www.w3.org/1999/XSL/Transform"
+	xmlns:fn  = "http://www.w3.org/2005/02/xpath-functions"
+	version   = "1.0">
 
 	<xsl:output method="html"/>
 
@@ -28,8 +31,11 @@
 					<td class="cc">
 						<div class="entry-container entry-main">
 							<!--fecha-->
+							<xsl:variable name="timestamp">
+								<xsl:value-of select="concat('http://localhost/breader/convert.php?timestamp=', @date)"/>
+							</xsl:variable>
 							<div class="entry-date">
-								<xsl:value-of select="@date"/>
+								<xsl:value-of select="document( $timestamp )/formatted" />
 							</div>
 
 							<!--titulo y link-->
@@ -98,7 +104,7 @@
 									<td align="left">
 										<span class="star link">
 											<xsl:attribute name="onclick">
-												doAction( '?actionCode=A8&amp;params=artId%23<xsl:value-of select="@id"/>', editArticleHandler, '' )
+												doAction( '?actionCode=' + escape( 'A8' ) + '&amp;params=' + escape( 'artId||#<xsl:value-of select="@id"/>' ), editArticleHandler, '' )
 											</xsl:attribute>
 											<xsl:choose>
 												<xsl:when test="@isFavourite = 0">
@@ -113,7 +119,7 @@
 									<td align="left">
 										<span class="star link">
 											<xsl:attribute name="onclick">
-												doAction('?actionCode=A9&amp;params=artId%23<xsl:value-of select="@id"/>', editArticleHandler, '')
+												doAction( '?actionCode=' + escape( 'A9' ) + '&amp;params=' + escape( 'artId||#<xsl:value-of select="@id"/>' ), editArticleHandler, '')
 											</xsl:attribute>
 											<xsl:choose>
 												<xsl:when test="@read = 0">
@@ -169,7 +175,7 @@
 						<td>
 						<a class="link">
 							<xsl:attribute name="onclick">
-							doAction('?actionCode=A3&amp;params=artId%23<xsl:value-of select="../../@id"/>%7CtagId%23<xsl:value-of select="@id"/>', editArticleHandler, '')
+							doAction( '?actionCode=' + escape('A3') + '&amp;params=' + escape( 'artId||#<xsl:value-of select="../../@id"/>|||tagId||#<xsl:value-of select="@id"/>' ), editArticleHandler, '')
 							</xsl:attribute>
 							<img style="border:0" src="images/action_tag_check.png" title="Aprobar clasificacion automatica" alt="Aprobar clasificacion automatica"/>
 						</a>
@@ -179,7 +185,7 @@
 					<td>
 					<a class="link">
 						<xsl:attribute name="onclick">
-							doAction('?actionCode=A2&amp;params=artId%23<xsl:value-of select="../../@id"/>%7CtagId%23<xsl:value-of select="@id"/>', editArticleHandler, '')
+							doAction( '?actionCode=' + escape( 'A2' ) + '&amp;params=' + escape( 'artId||#<xsl:value-of select="../../@id"/>|||tagId||#<xsl:value-of select="@id"/>' ), editArticleHandler, '')
 						</xsl:attribute>
 						<img style="border:0" src="images/action_tag_del.png" title="Borrar categoria" alt="Borrar categoria"/>
 					</a>

@@ -1,4 +1,7 @@
 #include "EntitiesManager.h"
+#include "XmlUtils.h"
+#include <iostream>
+#include <sstream>
 
 EntitiesManager *EntitiesManager::_instance = NULL;
 
@@ -10,20 +13,26 @@ EntitiesManager *EntitiesManager::getInstance()
 
 }
 
+string EntitiesManager::encodeXML( const string &original )
+{
+	//string result = "<?xml version=\"1.0\" enconding=\"ISO-8859-1\"?>";
+	return original;
+}
+
 void EntitiesManager::createFeeds()
 {
 	Feed *feed = new Feed();
 	feed->id = "1";
-	feed->name = "Google";
-	feed->lastUpdate = "May 22, 2007 3:29 AM";
-	feed->url = "http://www.blogger.com/rss/atom.xml";
+	feed->name = "ELPAIS.com - Última Hora";
+	feed->lastUpdate = "";
+	feed->url = "http://localhost/breader/rss/elpais.html";
 	Feeds[feed->id] = feed;
 
 	feed = new Feed();
 	feed->id = "2";
-	feed->name = "Mio";
-	feed->lastUpdate = "May 22, 2007 3:29 AM";
-	feed->url = "http://www.blogger.com/rss/atom.xml";
+	feed->name = "MagpieRSS - PHP RSS Parser";
+	feed->lastUpdate = "";
+	feed->url = "http://magpierss.sf.net/test.rss";
 	Feeds[feed->id] = feed;
 }
 
@@ -38,42 +47,21 @@ void EntitiesManager::createTags()
 
 	tag= new Tag();
 	tag->id = "1";
-	tag->name = "Tenis";
+	tag->name = "Tag 1";
 	tag->artCount = "0";
 	tag->isReadOnly = "0";
 	Tags[tag->id] = tag;
 
 	tag= new Tag();
 	tag->id = "2";
-	tag->name = "Futbol";
+	tag->name = "Tag 2";
 	tag->artCount = "0";
 	tag->isReadOnly = "0";
 	Tags[tag->id] = tag;
 
 	tag= new Tag();
 	tag->id = "3";
-	tag->name = "Deportes";
-	tag->artCount = "0";
-	tag->isReadOnly = "0";
-	Tags[tag->id] = tag;
-
-	tag= new Tag();
-	tag->id = "4";
-	tag->name = "Natacion";
-	tag->artCount = "0";
-	tag->isReadOnly = "0";
-	Tags[tag->id] = tag;
-
-	tag= new Tag();
-	tag->id = "5";
-	tag->name = "Computacion";
-	tag->artCount = "0";
-	tag->isReadOnly = "0";
-	Tags[tag->id] = tag;
-
-	tag= new Tag();
-	tag->id = "6";
-	tag->name = "Facultad";
+	tag->name = "Tag 3";
 	tag->artCount = "0";
 	tag->isReadOnly = "0";
 	Tags[tag->id] = tag;
@@ -89,7 +77,7 @@ void EntitiesManager::createArticles()
 	art->title = "Resident Evil 4: Wii, receives 9.5 from Famistu";
 	art->date = "May 22, 2007 3:29 AM";
 	art->author = "digg";
-	art->feedName = "Google";
+	art->feedName = "ELPAIS.com - última Hora";
 	art->link = "http://digg.com/nintendo_wii/Resident_Evil_4_Wii_receives_9_5_from_Famistu";
 	art->summary	=  "Two editors awarded the game a perfect 10 out of 10. The other two were still impressed enough to award a score of 9.";
 	art->summary	+= "Two editors awarded the game a perfect 10 out of 10. The other two were still impressed enough to award a score of 9.";
@@ -102,7 +90,7 @@ void EntitiesManager::createArticles()
 	tr->tag = Tags[ "2" ]; tr->isApproved = "1";
 	art->tags[ tr->tag->id ] = tr;
 	Articles[art->id] = art;
-
+/*
 	art= new Article();
 	art->id = "2";
 	art->isClassified = "1";
@@ -143,7 +131,7 @@ void EntitiesManager::createArticles()
 	tr = new TagArticleRelation();
 	tr->tag = Tags[ "2" ]; tr->isApproved = "1";
 	art->tags[ tr->tag->id ] = tr;
-	Articles[art->id] = art;
+	Articles[art->id] = art;*/
 }
 
 EntitiesManager::EntitiesManager()
@@ -172,6 +160,39 @@ EntitiesManager::~EntitiesManager()
 		free( static_cast< Article *>( artsIt->second ) );
 }
 
+string EntitiesManager::ArticleCreate( string title, string summary, string link, string author, string date, string feedName )
+{
+	Article *a = new Article();
+	lastArtId = lastArtId+1;
+	std::ostringstream oss;
+	oss << lastArtId;
+	a->id = oss.str();
+	a->isClassified = "0";
+	a->isFav = "0" ;
+	a->isRead = "0";
+	a->title = title;
+	a->date = date;
+	a->author = author;
+	a->feedName = feedName;
+	a->link = link;
+	a->summary = summary;
+	Articles[ a->id ] = a;
+
+	bool encontre = false;
+	map< string, Feed *>::iterator it;
+	for( it = Feeds.begin(); it != Feeds.end() && !encontre; it++ )
+	{
+		Feed *pF = ( static_cast<Feed *>( it->second ) );
+		if ( pF->name == feedName && a->date > pF->lastUpdate )
+		{
+			encontre = true;
+			pF->lastUpdate = a->date;
+		}
+	}
+
+	return encodeXML( a->getXML() );
+}
+
 string EntitiesManager::ArticleApproveTag( string id, string tagId )
 {
 	if ( Articles[ id ]->tags[ tagId ]->isApproved == "0" )
@@ -189,7 +210,7 @@ string EntitiesManager::ArticleApproveTag( string id, string tagId )
 	if ( mustChange )
 		Articles[ id ]->isClassified = "1";
 
-	return Articles[ id ]->getXML();
+	return encodeXML( Articles[ id ]->getXML() );
 }
 
 string EntitiesManager::ArticleChangeFavState( string id )
@@ -198,7 +219,7 @@ string EntitiesManager::ArticleChangeFavState( string id )
 		Articles[ id ]->isFav = "1";
 	else
 		Articles[ id ]->isFav = "0";
-	return Articles[ id ]->getXML();
+	return encodeXML( Articles[ id ]->getXML() );
 }
 string EntitiesManager::ArticleChangeReadState( string id )
 {
@@ -206,12 +227,12 @@ string EntitiesManager::ArticleChangeReadState( string id )
 		Articles[ id ]->isRead = "1";
 	else
 		Articles[ id ]->isRead = "0";
-	return Articles[ id ]->getXML();
+	return encodeXML(  Articles[ id ]->getXML() );
 }
 
 string EntitiesManager::ArticleGetFavourites()
 {
-	if ( Articles.size() == 0 ) return "<articles/>";
+	if ( Articles.size() == 0 ) return encodeXML( "<articles/>" );
 
 	vector< Article *> toShow;
 	map< string, Article * >::iterator artsIt;
@@ -219,19 +240,19 @@ string EntitiesManager::ArticleGetFavourites()
 		if ( ( static_cast< Article * > ( artsIt->second ) )->isFav == "1" )
 			toShow.push_back( static_cast< Article * > ( artsIt->second ) );
 
-	if ( toShow.size() == 0 ) return "<articles/>";
+	if ( toShow.size() == 0 ) return encodeXML( "<articles/>" );
 
 	string response = "<articles>";
 	vector< Article *>::iterator toShowIt;
 	for( toShowIt = toShow.begin(); toShowIt != toShow.end(); toShowIt++ )
 		response += (*toShowIt)->getXML();
 	response += "</articles>";
-	return response;
+	return encodeXML( response );
 }
 
 string EntitiesManager::ArticleGetByFeed( string feedId )
 {
-	if ( Articles.size() == 0 ) return "<articles/>";
+	if ( Articles.size() == 0 ) return encodeXML( "<articles/>" );
 
 	string feedName = Feeds[ feedId ]->name;
 	vector< Article *> toShow;
@@ -240,19 +261,19 @@ string EntitiesManager::ArticleGetByFeed( string feedId )
 		if ( ( static_cast< Article * > ( artsIt->second ) )->feedName == feedName )
 			toShow.push_back( static_cast< Article * > ( artsIt->second ) );
 
-	if ( toShow.size() == 0 ) return "<articles/>";
+	if ( toShow.size() == 0 ) return encodeXML( "<articles/>" );
 
 	string response = "<articles>";
 	vector< Article *>::iterator toShowIt;
 	for( toShowIt = toShow.begin(); toShowIt != toShow.end(); toShowIt++ )
 		response += (*toShowIt)->getXML();
 	response += "</articles>";
-	return response;
+	return encodeXML( response );
 }
 
 string EntitiesManager::ArticleGetByTags( vector< string > tagIds, vector< string > state )
 {
-	if ( Articles.size() == 0 ) return "<articles/>";
+	if ( Articles.size() == 0 ) return encodeXML( "<articles/>" );
 
 	vector< Article *> toFilter;
 	vector< string >::iterator tagIdsIt ;
@@ -271,7 +292,7 @@ string EntitiesManager::ArticleGetByTags( vector< string > tagIds, vector< strin
 		stateIt++;
 	}
 
-	if ( toFilter.size() == 0 ) return "<articles/>";
+	if ( toFilter.size() == 0 ) return encodeXML( "<articles/>" );
 
 	vector< Article *> toShow;
 	vector< Article * >::iterator toFilterIt;
@@ -291,19 +312,19 @@ string EntitiesManager::ArticleGetByTags( vector< string > tagIds, vector< strin
 		if ( pushToShow ) toShow.push_back( *toFilterIt );
 	}
 
-	if ( toShow.size() == 0 ) return "<articles/>";
+	if ( toShow.size() == 0 ) return encodeXML( "<articles/>" );
 
 	string response = "<articles>";
 	vector< Article *>::iterator toShowIt;
 	for( toShowIt = toShow.begin(); toShowIt != toShow.end(); toShowIt++ )
 		response += (*toShowIt)->getXML();
 	response += "</articles>";
-	return response;
+	return encodeXML( response );
 }
 
 string EntitiesManager::ArticleGetUnclassified()
 {
-	if ( Articles.size() == 0 ) return "<articles/>";
+	if ( Articles.size() == 0 ) return encodeXML( "<articles/>" );
 
 	vector< Article *> toShow;
 	map< string, Article * >::iterator artsIt;
@@ -311,19 +332,19 @@ string EntitiesManager::ArticleGetUnclassified()
 		if ( ( static_cast< Article * > ( artsIt->second ) )->isClassified == "0" )
 			toShow.push_back( static_cast< Article * > ( artsIt->second ) );
 
-	if ( toShow.size() == 0 ) return "<articles/>";
+	if ( toShow.size() == 0 ) return encodeXML( "<articles/>" );
 
 	string response = "<articles>";
 	vector< Article *>::iterator toShowIt;
 	for( toShowIt = toShow.begin(); toShowIt != toShow.end(); toShowIt++ )
 		response += (*toShowIt)->getXML();
 	response += "</articles>";
-	return response;
+	return encodeXML( response );
 }
 
 string EntitiesManager::ArticleGetUnread()
 {
-	if ( Articles.size() == 0 ) return "<articles/>";
+	if ( Articles.size() == 0 ) return encodeXML( "<articles/>" );
 
 	vector< Article *> toShow;
 	map< string, Article * >::iterator artsIt;
@@ -331,14 +352,14 @@ string EntitiesManager::ArticleGetUnread()
 		if ( ( static_cast< Article * > ( artsIt->second ) )->isRead == "0" )
 			toShow.push_back( static_cast< Article * > ( artsIt->second ) );
 
-	if ( toShow.size() == 0 ) return "<articles/>";
+	if ( toShow.size() == 0 ) return encodeXML( "<articles/>" );
 
 	string response = "<articles>";
 	vector< Article *>::iterator toShowIt;
 	for( toShowIt = toShow.begin(); toShowIt != toShow.end(); toShowIt++ )
 		response += (*toShowIt)->getXML();
 	response += "</articles>";
-	return response;
+	return encodeXML( response );
 }
 
 string EntitiesManager::ArticleLinkTag( string artId, string tagId )
@@ -348,7 +369,7 @@ string EntitiesManager::ArticleLinkTag( string artId, string tagId )
 	r->isApproved = "1";
 
 	Articles[ artId ]->tags[ tagId ] = r;
-	return Articles[ artId ]->getXML();
+	return encodeXML( Articles[ artId ]->getXML() );
 }
 
 string EntitiesManager::ArticleUnLinkTag( string artId, string tagId )
@@ -357,19 +378,21 @@ string EntitiesManager::ArticleUnLinkTag( string artId, string tagId )
 	Articles[ artId ]->tags.erase( tagId );
 	delete r;
 
-	return Articles[ artId ]->getXML();
+	return encodeXML( Articles[ artId ]->getXML() );
 }
 
 string EntitiesManager::FeedCreate( string name, string url )
 {
 	Feed *f = new Feed();
 	lastFeedId = lastFeedId+1;
-	f->id = lastFeedId;
+	std::ostringstream oss;
+	oss << lastFeedId;
+	f->id = oss.str();
 	f->name = name;
 	f->url  = url;
 	f->lastUpdate = "";
 	Feeds[ f->id ] = f;
-	return f->getXML();
+	return encodeXML( f->getXML() );
 }
 
 string EntitiesManager::FeedDelete( string id )
@@ -398,35 +421,32 @@ string EntitiesManager::FeedDelete( string id )
 
 	string response = t->getXML();
 	delete t;
-	return response;
+	return encodeXML( response );
 }
 
 string EntitiesManager::FeedGetAll()
 {
-	if ( Feeds.size() == 0 ) return "<feeds/>";
+	if ( Feeds.size() == 0 ) return encodeXML( "<feeds/>" );
 	string response = "<feeds>";
 	map< string, Feed * >::iterator feedsIt;
 	for( feedsIt = Feeds.begin(); feedsIt != Feeds.end(); feedsIt++ )
 		response += ( static_cast< Feed * > ( feedsIt->second ) )->getXML();
 	response += "</feeds>";
-	return response;
-}
-string EntitiesManager::FeedRefresh( string id )
-{
-	Feeds[ id ]->lastUpdate = "28 de Mayo del 2005 5:25";
-	return Feeds[ id ]->getXML();
+	return encodeXML(  response );
 }
 
 string EntitiesManager::TagCreate( string name )
 {
 	Tag *nT = new Tag();
 	lastTagId = lastTagId+1;
-	nT->id = lastTagId;
+	std::ostringstream oss;
+	oss << lastTagId;
+	nT->id = oss.str();
 	nT->name = name;
 	nT->artCount = "0";
 	nT->isReadOnly = "0";
 	Tags[ nT->id ] = nT;
-	return nT->getXML();
+	return encodeXML( nT->getXML() );
 }
 
 string EntitiesManager::TagDelete( string id )
@@ -453,22 +473,24 @@ string EntitiesManager::TagDelete( string id )
 
 	string response = toD->getXML();
 	delete toD;
-	return response;
+	return encodeXML( response );
 }
 
 string EntitiesManager::TagEdit( string id, string name )
 {
 	Tags[ id ]->name = name;
-	return Tags[ id ]->getXML();
+	return encodeXML( Tags[ id ]->getXML() );
 }
 
 string EntitiesManager::TagGetAll()
 {
-	if ( Tags.size() == 0 ) return "<tags/>";
+	if ( Tags.size() == 0 ) return encodeXML( "<tags/>" );
+
 	string response = "<tags>";
 	map< string, Tag * >::iterator tagsIt;
 	for( tagsIt = Tags.begin(); tagsIt != Tags.end(); tagsIt++ )
 		response += ( static_cast< Tag * > ( tagsIt->second ) )->getXML();
 	response += "</tags>";
-	return response;
+
+	return encodeXML( response );
 }

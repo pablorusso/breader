@@ -1,11 +1,12 @@
 #include "Article.h"
+#include "XmlUtils.h"
 
 string Article::getXML()
 {
 	string result = "";
-	result += "<article id=\"" + id + "\" isClassified=\"" + isClassified + "\" isFavourite=\"" + isFav + "\" read=\"" + isRead;
-	result += "\" title=\"" + title + "\" date=\"" + date + "\" author=\"" + author + "\" feed=\"" + feedName + "\" link=\"" + link + "\">";
-	result += "<summary>" + summary + "</summary>";
+	result += "<article id=\"" + XmlUtils::xmlEncode( id ) + "\" isClassified=\"" + XmlUtils::xmlEncode( isClassified ) + "\" isFavourite=\"" + XmlUtils::xmlEncode( isFav ) + "\" read=\"" + XmlUtils::xmlEncode( isRead );
+	result += "\" title=\"" + XmlUtils::xmlEncode( title ) + "\" date=\"" + XmlUtils::xmlEncode( date ) + "\" author=\"" + XmlUtils::xmlEncode( author ) + "\" feed=\"" + XmlUtils::xmlEncode( feedName ) + "\" link=\"" + XmlUtils::xmlEncode( link ) + "\">";
+	result += "<summary>" + XmlUtils::xmlEncode( summary ) + "</summary>";
 
 	if ( tags.size() == 0 )
 		result += "<tags/>";
