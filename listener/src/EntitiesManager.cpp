@@ -136,9 +136,9 @@ void EntitiesManager::createArticles()
 
 EntitiesManager::EntitiesManager()
 {
-	createFeeds();
-	createTags();
-	createArticles();
+	//createFeeds();
+	//createTags();
+	//createArticles();
 
 	lastTagId = 100;
 	lastFeedId = 100;
