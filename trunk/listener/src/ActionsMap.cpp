@@ -1,7 +1,6 @@
 #include "ActionsMap.h"
 #include "ActionFeedCreate.h"
 #include "ActionFeedDelete.h"
-#include "ActionFeedRefresh.h"
 #include "ActionFeedGetAll.h"
 #include "ActionTagCreate.h"
 #include "ActionTagDelete.h"
@@ -17,6 +16,7 @@
 #include "ActionArticleChangeFavState.h"
 #include "ActionArticleChangeReadState.h"
 #include "ActionArticleGetFavourites.h"
+#include "ActionArticleCreate.h"
 
 #include <sstream>
 
@@ -53,8 +53,7 @@ void ActionsMap::buildMap()
 	// Feeds Related
 	_actionMap["F1"] = new ActionFeedCreate();
 	_actionMap["F2"] = new ActionFeedDelete();
-	_actionMap["F3"] = new ActionFeedRefresh();
-	_actionMap["F4"] = new ActionFeedGetAll();
+	_actionMap["F3"] = new ActionFeedGetAll();
 
 	// Tags Related
 	_actionMap["T1"] = new ActionTagCreate();
@@ -63,14 +62,15 @@ void ActionsMap::buildMap()
 	_actionMap["T4"] = new ActionTagGetAll();
 
 	// Article Related
-	_actionMap["A1"] = new ActionArticleLinkTag();
-	_actionMap["A2"] = new ActionArticleUnLinkTag();
-	_actionMap["A3"] = new ActionArticleApproveTag();
-	_actionMap["A4"] = new ActionArticleGetByTags();
-	_actionMap["A5"] = new ActionArticleGetByFeed();
-	_actionMap["A6"] = new ActionArticleGetUnread();
-	_actionMap["A7"] = new ActionArticleGetUnclassified();
-	_actionMap["A8"] = new ActionArticleChangeFavState();
-	_actionMap["A9"] = new ActionArticleChangeReadState();
+	_actionMap["A0" ] = new ActionArticleCreate();
+	_actionMap["A1" ] = new ActionArticleLinkTag();
+	_actionMap["A2" ] = new ActionArticleUnLinkTag();
+	_actionMap["A3" ] = new ActionArticleApproveTag();
+	_actionMap["A4" ] = new ActionArticleGetByTags();
+	_actionMap["A5" ] = new ActionArticleGetByFeed();
+	_actionMap["A6" ] = new ActionArticleGetUnread();
+	_actionMap["A7" ] = new ActionArticleGetUnclassified();
+	_actionMap["A8" ] = new ActionArticleChangeFavState();
+	_actionMap["A9" ] = new ActionArticleChangeReadState();
 	_actionMap["A10"] = new ActionArticleGetFavourites();
 }

@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
 	// ej: thin_client.exe?actionCode=1&params=tagsId#1,1|statesId#2,-1
 	if ( word == "" )
 	{
-		showError( "No se especificaron parametros." );
+		showError( "[thin_client] - No se especificaron parametros." );
 		return 0;
 	}
 	cgi.Load( word );
@@ -85,7 +85,8 @@ int main(int argc, char* argv[])
 
 		if ( isError == "0" )
 		{
-			cout << "Content-type: text/xml" << endl << endl << endl;
+			cout << "Content-type: text/xml" << endl << endl;
+			cout << "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>";
 			cout << "<response><status error=\"0\" message=\"\"/>";
 			cout << response;
 			cout << "</response>";

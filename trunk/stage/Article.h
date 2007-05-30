@@ -24,7 +24,6 @@ class Article
 		map< string, TagArticleRelation * > tags;
 
 		string getXML();
-
 		~Article();
 };
 

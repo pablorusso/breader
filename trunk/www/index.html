@@ -28,8 +28,14 @@
 				result = checkError( document, result );
 				if ( result == null ) return;
 
-				var nodeFound = findNodeById( bodyDocument.documentElement, result.documentElement );
-				bodyDocument.documentElement.replaceChild( result.documentElement, nodeFound );
+				var idToFind = getNodeAttr( result.documentElement.childNodes[1], 'id' );
+				if ( idToFind == null )
+				{
+					showDiv( document, 'error_tag', "Editar Articulo - El nodo no tiene id" );
+					return;
+				}
+				var nodeFound = findNodeById( bodyDocument.documentElement.childNodes[1], idToFind );
+				bodyDocument.documentElement.childNodes[1].replaceChild( result.documentElement.childNodes[1], nodeFound );
 				showBody( document, bodyDocument );
 			}
 
@@ -44,6 +50,7 @@
 			function feedsHandler( result )
 			{
 				result = checkError( document, result );
+
 				if ( result == null ) return;
 				feedsDocument = result;
 				showFeeds( document, feedsDocument );
@@ -54,8 +61,14 @@
 				result = checkError( document, result );
 				if ( result == null ) return;
 
-				var nodeFound = findNodeById( tagsDocument.documentElement, result.documentElement );
-				tagsDocument.documentElement.replaceChild( result.documentElement, nodeFound );
+				var idToFind = getNodeAttr( result.documentElement.childNodes[1], 'id' );
+				if ( idToFind == null )
+				{
+					showDiv( document, 'error_tag', "Editar Categoria - El nodo no tiene id" );
+					return;
+				}
+				var nodeFound = findNodeById( tagsDocument.documentElement.childNodes[1], idToFind );
+				tagsDocument.documentElement.childNodes[1].replaceChild( result.documentElement.childNodes[1], nodeFound );
 				showTags( document, tagsDocument );
 			}
 			function delTagHandler( result )
@@ -63,8 +76,14 @@
 				result = checkError( document, result );
 				if ( result == null ) return;
 
-				var nodeFound = findNodeById( tagsDocument.documentElement, result.documentElement );
-				tagsDocument.documentElement.removeChild( nodeFound )
+				var idToFind = getNodeAttr( result.documentElement.childNodes[1], 'id' );
+				if ( idToFind == null )
+				{
+					showDiv( document, 'error_tag', "Borrar Categoria - El nodo no tiene id" );
+					return;
+				}
+				var nodeFound = findNodeById( tagsDocument.documentElement.childNodes[1], idToFind );
+				tagsDocument.documentElement.childNodes[1].removeChild( nodeFound.childNodes[1] )
 				showTags( document, tagsDocument );
 			}
 			function addTagHandler( result )
@@ -72,7 +91,7 @@
 				result = checkError( document, result );
 				if ( result == null ) return;
 
-				tagsDocument.documentElement.appendChild( result.documentElement );
+				tagsDocument.documentElement.childNodes[1].appendChild( result.documentElement.childNodes[1] );
 				showTags( document, tagsDocument );
 			}
 			function delFeedHandler( result )
@@ -80,21 +99,122 @@
 				result = checkError( document, result );
 				if ( result == null ) return;
 
-				var nodeFound = findNodeById( feedsDocument.documentElement, result.documentElement );
-				feedsDocument.documentElement.removeChild( nodeFound )
+				var idToFind = getNodeAttr( result.documentElement.childNodes[1], 'id' );
+				if ( idToFind == null )
+				{
+					showDiv( document, 'error_tag', "Borrar Feed - El nodo no tiene id" );
+					return;
+				}
+				var nodeFound = findNodeById( feedsDocument.documentElement.childNodes[1], idToFind );
+				feedsDocument.documentElement.childNodes[1].removeChild( nodeFound )
 				showFeeds( document, feedsDocument );
 			}
+
+
+			function addFeedHandlerForReal( result )
+			{
+				result = checkError( document, result );
+				if ( result == null ) return;
+				feedsDocument.documentElement.childNodes[1].appendChild( result.documentElement.childNodes[1] );
+				showFeeds( document, feedsDocument );
+			}
+			function refreshFeedHandlerForReal( result )
+			{
+				result = checkError( document, result );
+				if ( result == null ) return;
+
+				countToRefresh--;
+				if ( countToRefresh == 0 )
+					reload();
+			}
+
 			function addFeedHandler( result )
 			{
 				result = checkError( document, result );
 				if ( result == null ) return;
-				//var newNodeText = '<feed id="3" name="' + name + '" lastUpdate="May 22, 2007 3:29 AM" url="http://www.blogger.com/rss/atom.xml"/>';
-				//var newNode = parseXML( newNodeText )
-				feedsDocument.documentElement.appendChild( result.documentElement );
-				showFeeds( document, feedsDocument );
+
+				var feedUrl  = getNodeAttr ( result.documentElement.childNodes[1], 'url' );
+				var feedName = getNodeAttr ( result.documentElement.childNodes[1], 'name' );
+				if ( feedUrl == null || feedName == null )
+				{
+					showDiv( document, 'error_tag', 'No se pudo recuperar la informacion del feed' );
+					return;
+				}
+				doAction ( "?actionCode=" + escape( "F1" ) + "&params=" + escape( "feedUrl||#" + feedUrl + "|||feedName||#" + feedName ), addFeedHandlerForReal, '' );
+			}
+
+			var countToRefresh = 0;
+			function refreshFeedHandler( result )
+			{
+				result = checkError( document, result );
+				if ( result == null ) return;
+
+				countToRefresh = 0;
+				var children = result.documentElement.childNodes[1].childNodes;
+				for( i = 0; i < children.length; i++ )
+				{
+					// Cada hijo es un articulo a agregar
+					var node = children.item(i);
+
+					var feedName = getNodeAttr( node, 'feedName' );
+					var title    = getNodeAttr( node, 'title'    );
+					var link     = getNodeAttr( node, 'link'     );
+					var author   = getNodeAttr( node, 'author'   );
+					var date     = getNodeAttr( node, 'date'     );
+
+					var summary  = null;
+					if ( node.firstChild != null )
+						summary = node.firstChild.textContent;
+
+					if ( 	feedName == null ||
+							title == null ||
+							summary == null ||
+							link == null ||
+							author == null ||
+							date == null )
+					{
+						showDiv( document, 'error_tag', 'No se pudo recuperar la informacion del articulo a actualizar' );
+						return;
+					}
+
+					var params = "";
+					params += "feedName||#" + feedName;
+					params += "|||title||#" + title;
+					params += "|||summary||#" + summary;
+					params += "|||link||#" + link;
+					params += "|||author||#" + author;
+					params += "|||date||#" + date;
+					params = escape( params );
+
+					countToRefresh++;
+					doAction ( "?actionCode=" + escape( "A0" ) + "&params=" + params, refreshFeedHandlerForReal, '' );
+				}
+
+				if ( countToRefresh == 0 )
+					reload();
 			}
 
 			// ACCIONES COMPUESTAS
+			function refreshFeed( feedId )
+			{
+				var node = findNodeById( feedsDocument.documentElement.childNodes[1], feedId );
+				if ( node == null )
+				{
+					showDiv( document, 'error_tag', 'No se encontro el feed para actualizar' );
+					return;
+				}
+
+				var feedUrl    = getNodeAttr( node, 'url' );
+				var lastUpdate = getNodeAttr( node, 'lastUpdate' );
+				if ( feedUrl == null || lastUpdate == null )
+				{
+					showDiv( document, 'error_tag', 'No se encontro el feed para actualizar' );
+					return;
+				}
+
+				doActionWithName ( "refresh_feed.php", "?feedUrl=" + escape( feedUrl ) + "&lastUpdate=" + escape( lastUpdate ), refreshFeedHandler, '' );
+			}
+
 			function addFeed( inputId )
 			{
 				var txtInput = document.getElementById( inputId );
@@ -104,22 +224,14 @@
 					alert( 'Debe ingresar la direccion del feed' );
 					return;
 				}
-
-				var name = prompt( 'Ingrese el nombre del feed', '' );
-				if ( name == "" )
-				{
-					alert( 'Debe ingresar el nombre del feed' );
-					return;
-				}
-				txtInput.value = "";
-
-				doAction ( "?actionCode=F1&params=feedUrl%23" + url + "%7CfeedName%23" + name, addFeedHandler, '' );
+				//txtInput.value = "";
+				doActionWithName ( "add_feed.php", "?feedUrl=" + escape( url ), addFeedHandler, '' );
 			}
 			function editTag( tagId, oldTagName )
 			{
 				var name = prompt( 'Ingrese el nuevo nombre de la categoria', oldTagName );
 				if ( name != oldTagName )
-					doAction ( "?actionCode=T3&params=tagId%23" + tagId + "%7CtagName%23" + name, editTagHandler, '' );
+					doAction ( "?actionCode=" + escape( "T3" ) + "&params=" + escape( "tagId||#" + tagId + "|||tagName||#" + name ), editTagHandler, '' );
 			}
 			function addTag( artId )
 			{
@@ -128,7 +240,7 @@
 			}
 
 			// GENERAL
-			function doAction( params, handler, type )
+			function doActionWithName( pageName, params, handler, type )
 			{
 				hideDiv( document, 'error_tag', '' );
 
@@ -150,12 +262,17 @@
 				}
 				else showDiv( document, 'processing_div', null );
 
-				SimpleAJAXCall ( "bin/thin_client.exe" + params, SimpleCallback, "GET", handler )
+				SimpleAJAXCall ( pageName + params, SimpleCallback, "GET", handler );
+			}
+
+			function doAction( params, handler, type )
+			{
+				doActionWithName( "bin/thin_client.exe", params, handler, type );
 			}
 
 			function SimpleCallback( in_text, in_param )
 			{
-				in_param( parseXML( in_text ) );
+				in_param( in_text );
 			}
 
 			function reload()
@@ -164,7 +281,7 @@
 
 				if ( lastShowBody == "" ) lastShowBody = "?actionCode=A6";
 				doAction ( lastShowBody, bodyHandler, 'A' );
-				doAction ( "?actionCode=F4", feedsHandler , 'F' );
+				doAction ( "?actionCode=F3", feedsHandler, 'F' );
 				doAction ( "?actionCode=T4", tagsHandler  , 'T' );
 
 				document.addEventListener( "keypress", document_keyPress, false);
@@ -178,9 +295,6 @@
 					return false;
 				}
 			}
-
-			// %23 = #
-			// %7C = |
 		</script>
 
 	</head>
@@ -305,7 +419,7 @@
 							<table>
 								<tr>
 									<td class="menuName">
-										<input type="text" id="quickadd" name="quickadd"/>
+										<input type="text" id="quickadd" name="quickadd" value="http://magpierss.sf.net/test.rss"/>
 									</td>
 									<td class="menuName">
 										<a class="link" onclick="addFeed( 'quickadd' )">
