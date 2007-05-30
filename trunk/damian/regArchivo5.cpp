@@ -63,8 +63,6 @@ t_offset t_regArchivo5::writeReg(fstream &f, t_offset &primerLibre) {
 		} else { // El espacio libre esta en el medio
 			if (posPrev == posCur) { // el espacio libre es el primero
 				// Necesito actualizar el nuevoPrimerLibre
-//				t_regArchivo5 regTmp(this->cont.getMAX_CAT());
-//				regTmp.readReg(posCur);
 				nuevoPrimerLibre = regLeido.getOffsetNext() + primerLibre;
 				// Escribo el registro en el espacio libre
 				this->freeBytes = regLeido.freeBytes - spaceNeeded;

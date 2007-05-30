@@ -3,7 +3,8 @@
 
 #include "IException.h"
 
-typedef enum {A2_ARCHIVO_CORRUPTO, A2_IDART_FUERA_DE_RANGO} A2_error;
+typedef enum {A2_ARCHIVO_CORRUPTO, A2_IDART_FUERA_DE_RANGO,
+  A2_IDCAT_FUERA_DE_RANGO} A2_error;
 
 /**
  * Excepciones del modulo TipoDeFuente
@@ -41,6 +42,10 @@ public:
 			}
 			case A2_IDART_FUERA_DE_RANGO: {
 				return "El id del articulo proporcionado esta fuera de rango";
+				break;
+			}
+			case A2_IDCAT_FUERA_DE_RANGO: {
+				return "El id de la categoria proporcionada esta fuera de rango";
 				break;
 			}
 			default: {

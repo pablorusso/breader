@@ -99,7 +99,7 @@ class Archivo6 {
 		 * @return el Feed
 		 * @throw eArchivo6 si el archivo esta corrupto
 		 * @throw eArchivo6 si el idfeed esta fuera de rango, o el feed
-		 *        estaba borrado
+		 *                  estaba borrado
 		 */
 		Feed getFeed(const t_idfeed &idfeed);
 
@@ -138,13 +138,35 @@ class Archivo6 {
 		 * @param idfeed el id del feed a categorizar
 		 * @param idcat el id de la categoria a agregar
 		 * @param si_no si se categoriza o se descategoriza
-//		 * @return false si no existia o estaba borrado, true de lo contrario
 		 * @throw eArchivo6 si el archivo esta corrupto
 		 * @throw eArchivo6 si el idfeed esta fuera de rango, o el feed
 		 *        estaba borrado
 		 */
 		void catFeed(const t_idfeed &idfeed, const t_idcat &idcat,
 		  const bool si_no);
+
+		/**
+		 * Devuelve una cola con los idfeed del archivo
+		 * @return una cola con los idfeed del archivo
+		 * @throw eArchivo6 si el Archivo6 esta corrupto
+		 */
+		t_cola_idfeeds getColaIdFeeds();
+
+		/**
+		 * Borra una categoria del archivo (escribe como no clasificado)
+		 * TODO: esta bien asi???
+		 * @param idcat el id de la categoria a borrar
+		 * @throw eArchivo6 si el archivo esta corrupto
+		 * @throw eArchivo6 si el idcat esta fuera de rango
+		 */
+		void bajaCategoria(const t_idcat &idcat);
+
+		/**
+		 * Devuelve la cantidad maxima de categorias
+		 * @return la cantidad maxima de categorias
+		 */
+		t_idcat get_MAX_CAT() const 
+		  {return this->header.MAX_CAT;}
 		/**
 		 * Sobrecarga del operator<<
 		 * Imprime el contenido del Archivo6

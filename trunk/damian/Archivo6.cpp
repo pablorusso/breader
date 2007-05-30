@@ -234,6 +234,26 @@ void Archivo6::catFeed(const t_idfeed &idfeed, const t_idcat &idcat,
 
 }
 
+t_cola_idfeeds Archivo6::getColaIdFeeds() {
+	t_cola_idfeeds c_idfeeds;
+	this->gotoFirstFeed();
+	Feed feed(this->header.MAX_CAT);
+	while (this->nextIsOK()) {
+		feed = this->getNextFeed();
+		c_idfeeds.push(feed.getIdFeed());
+	}
+	return c_idfeeds;
+}
+
+void Archivo6::bajaCategoria(const t_idcat &idcat) {
+	if (idcat < this->header.MAX_CAT) {
+		t_cola_idfeeds c_idfeeds = this->getColaIdFeeds();
+		while (!c_idfeeds.empty()) {
+			this->catFeed(c_idfeeds.front(), idcat, 0);
+			c_idfeeds.pop();
+		}
+	} else THROW(eArchivo6, A6_IDCAT_FUERA_DE_RANGO);
+}
 
 void Archivo6::writeHeader() {
 	this->f.seekp(0, ios::beg);

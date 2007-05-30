@@ -1,11 +1,7 @@
 #include "Archivo1.h"
 
 Archivo1::Archivo1(const t_idfeed &idfeed) {
-	// Calculo el nombre del archivo como "A1_PATH"+"_"+idfeed+".txt"
-	string fileName = A1_PATH;
-	ostringstream o;
-	o << idfeed;
-	fileName.append("_" + o.str() + ".txt");
+	string fileName = Archivo1::genFileName(idfeed);
 	// Leo/Creo el Archivo2
 	this->f.open(fileName.c_str(), ios::in |ios::out | ios::binary);
 	if (!this->f.good()) {
@@ -26,6 +22,22 @@ Archivo1::~Archivo1() {
 	catch (fstream::failure e){
 		// aca no se puede hacer nada
 	}
+}
+
+string Archivo1::genFileName(const t_idfeed &idfeed) {
+	// Calculo el nombre del archivo como "A1_PATH"+"_"+idfeed+".txt"
+	string fileName = A1_PATH;
+	ostringstream o;
+	o << idfeed;
+	fileName.append("_" + o.str() + ".txt");
+	return fileName;
+}
+
+bool Archivo1::del(const t_idfeed &idfeed) {
+	bool ret = true;
+	string fileName = Archivo1::genFileName(idfeed);
+	if (remove(fileName.c_str()) != 0) ret = false;
+	return ret;
 }
 
 t_offset Archivo1::writeArticulo(const Articulo &art) {

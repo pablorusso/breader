@@ -41,6 +41,12 @@ bool bitOperator::readBit(fstream &f, const t_offset &pos) {
 	return ret;
 }
 
+void bitOperator::invertBit(fstream &f, const t_offset &pos) {
+	bool tmp = bitOperator::readBit(f, pos);
+	tmp = !tmp;
+	bitOperator::writeBit(f, pos, tmp);
+}
+
 void bitOperator::setBit1(t_byte &byte, const t_byte &pos){
 	t_byte tmp = static_cast<t_byte>(1); // 00000001
 	tmp <<= (7-pos);
