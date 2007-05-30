@@ -8,6 +8,7 @@
 		<script type="text/javascript" src="scripts/xml.js"></script>
 		<script type="text/javascript" src="scripts/show_data.js"></script>
 		<script type="text/javascript" src="scripts/ajax_queue.js"></script>
+		<script type="text/javascript" src="scripts/ajax_threads.js"></script>
 
 		<script type="text/javascript">
 			var tagsDocument  ;
@@ -125,7 +126,11 @@
 
 				countToRefresh--;
 				if ( countToRefresh == 0 )
-					reload();
+				{
+					if ( lastShowBody == "" ) lastShowBody = "actionCode=A6";
+					doAction ( lastShowBody, bodyHandler, 'A' );
+					doAction ( "actionCode=F3", feedsHandler, 'F' );
+				}
 			}
 
 			function addFeedHandler( result )
@@ -191,7 +196,11 @@
 				}
 
 				if ( countToRefresh == 0 )
-					reload();
+				{
+					if ( lastShowBody == "" ) lastShowBody = "actionCode=A6";
+					doAction ( lastShowBody, bodyHandler, 'A' );
+					doAction ( "actionCode=F3", feedsHandler, 'F' );
+				}
 			}
 
 			// ACCIONES COMPUESTAS
@@ -263,7 +272,8 @@
 				else showDiv( document, 'processing_div', null );
 
 				params = '?port=6157&'+params;
-				SimpleAJAXCall ( pageName + params, SimpleCallback, "GET", handler );
+				//SimpleAJAXCall ( pageName + params, SimpleCallback, "GET", handler );
+				MakeNewAJAXCall( pageName + params, SimpleCallback, "GET", null, handler, null );
 			}
 
 			function doAction( params, handler, type )

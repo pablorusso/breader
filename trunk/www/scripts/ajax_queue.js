@@ -658,8 +658,8 @@ function Handle_HTTP_Response () {
 				if ( g_ajax_obj._dm_phase == g_ajax_obj._dm_xmlhttprequestobject.readyState ) {
 					if ( g_ajax_obj._dm_partialcallback_function ) {
 						var resp;	// This is all about the IE fix mentioned above.
-						if(!ie && g_ajax_obj._dm_xmlhttprequestobject.responseText){
-							resp=g_ajax_obj._dm_xmlhttprequestobject.responseText;
+						if(!ie && g_ajax_obj._dm_xmlhttprequestobject.responseXML){
+							resp=g_ajax_obj._dm_xmlhttprequestobject.responseXML;
 							}
 						g_ajax_obj._dm_partialcallback_function ( resp, g_ajax_obj._dm_param2 ? g_ajax_obj._dm_param2 : g_ajax_obj._dm_param );
 						}
@@ -671,8 +671,8 @@ function Handle_HTTP_Response () {
 					if ( g_ajax_obj._dm_phase == g_ajax_obj._dm_xmlhttprequestobject.readyState ) {
 						if ( g_ajax_obj._dm_partialcallback_function ) {
 							var resp;
-							if(!ie && g_ajax_obj._dm_xmlhttprequestobject.responseText){
-								resp=g_ajax_obj._dm_xmlhttprequestobject.responseText;
+							if(!ie && g_ajax_obj._dm_xmlhttprequestobject.responseXML){
+								resp=g_ajax_obj._dm_xmlhttprequestobject.responseXML;
 								}
 							g_ajax_obj._dm_partialcallback_function ( resp, g_ajax_obj._dm_param2 ? g_ajax_obj._dm_param2 : g_ajax_obj._dm_param );
 							}
@@ -689,8 +689,8 @@ function Handle_HTTP_Response () {
 						if ( g_ajax_obj._dm_phase == g_ajax_obj._dm_xmlhttprequestobject.readyState ) {
 							if ( g_ajax_obj._dm_partialcallback_function ) {
 								var resp;
-								if(!ie && g_ajax_obj._dm_xmlhttprequestobject.responseText){
-									resp=g_ajax_obj._dm_xmlhttprequestobject.responseText;
+								if(!ie && g_ajax_obj._dm_xmlhttprequestobject.responseXML){
+									resp=g_ajax_obj._dm_xmlhttprequestobject.responseXML;
 									}
 								g_ajax_obj._dm_partialcallback_function ( resp, g_ajax_obj._dm_param2 ? g_ajax_obj._dm_param2 : g_ajax_obj._dm_param );
 								}

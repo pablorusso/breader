@@ -37,7 +37,7 @@
 					return;
 				}
 				var nodeFound = findNodeById( opener.bodyDocument.documentElement.childNodes[1], idToFind );
-				opener.bodyDocument.documentElement..childNodes[1].replaceChild( result.documentElement.childNodes[1], nodeFound );
+				opener.bodyDocument.documentElement.childNodes[1].replaceChild( result.documentElement.childNodes[1], nodeFound );
 				opener.location.reload();
 
 				hideDiv( document, 'tag_loading', null );
