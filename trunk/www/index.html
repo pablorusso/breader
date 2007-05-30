@@ -140,7 +140,7 @@
 					showDiv( document, 'error_tag', 'No se pudo recuperar la informacion del feed' );
 					return;
 				}
-				doAction ( "?actionCode=" + escape( "F1" ) + "&params=" + escape( "feedUrl||#" + feedUrl + "|||feedName||#" + feedName ), addFeedHandlerForReal, '' );
+				doAction ( "actionCode=" + escape( "F1" ) + "&params=" + escape( "feedUrl||#" + feedUrl + "|||feedName||#" + feedName ), addFeedHandlerForReal, '' );
 			}
 
 			var countToRefresh = 0;
@@ -187,7 +187,7 @@
 					params = escape( params );
 
 					countToRefresh++;
-					doAction ( "?actionCode=" + escape( "A0" ) + "&params=" + params, refreshFeedHandlerForReal, '' );
+					doAction ( "actionCode=" + escape( "A0" ) + "&params=" + params, refreshFeedHandlerForReal, '' );
 				}
 
 				if ( countToRefresh == 0 )
@@ -212,7 +212,7 @@
 					return;
 				}
 
-				doActionWithName ( "refresh_feed.php", "?feedUrl=" + escape( feedUrl ) + "&lastUpdate=" + escape( lastUpdate ), refreshFeedHandler, '' );
+				doActionWithName ( "refresh_feed.php", "feedUrl=" + escape( feedUrl ) + "&lastUpdate=" + escape( lastUpdate ), refreshFeedHandler, '' );
 			}
 
 			function addFeed( inputId )
@@ -225,13 +225,13 @@
 					return;
 				}
 				//txtInput.value = "";
-				doActionWithName ( "add_feed.php", "?feedUrl=" + escape( url ), addFeedHandler, '' );
+				doActionWithName ( "add_feed.php", "feedUrl=" + escape( url ), addFeedHandler, '' );
 			}
 			function editTag( tagId, oldTagName )
 			{
 				var name = prompt( 'Ingrese el nuevo nombre de la categoria', oldTagName );
 				if ( name != oldTagName )
-					doAction ( "?actionCode=" + escape( "T3" ) + "&params=" + escape( "tagId||#" + tagId + "|||tagName||#" + name ), editTagHandler, '' );
+					doAction ( "actionCode=" + escape( "T3" ) + "&params=" + escape( "tagId||#" + tagId + "|||tagName||#" + name ), editTagHandler, '' );
 			}
 			function addTag( artId )
 			{
@@ -262,6 +262,7 @@
 				}
 				else showDiv( document, 'processing_div', null );
 
+				params = '?port=6157&'+params;
 				SimpleAJAXCall ( pageName + params, SimpleCallback, "GET", handler );
 			}
 
@@ -279,10 +280,10 @@
 			{
 				hideDiv( document, 'processing_div', null );
 
-				if ( lastShowBody == "" ) lastShowBody = "?actionCode=A6";
+				if ( lastShowBody == "" ) lastShowBody = "actionCode=A6";
 				doAction ( lastShowBody, bodyHandler, 'A' );
-				doAction ( "?actionCode=F3", feedsHandler, 'F' );
-				doAction ( "?actionCode=T4", tagsHandler  , 'T' );
+				doAction ( "actionCode=F3", feedsHandler, 'F' );
+				doAction ( "actionCode=T4", tagsHandler  , 'T' );
 
 				document.addEventListener( "keypress", document_keyPress, false);
 			}
@@ -316,33 +317,33 @@
 						    <table>
 							    <tr>
 								    <td class="menuName">
-									    <a class="link" onclick="doAction ( '?actionCode=A6', bodyHandler, 'A' );">
+									    <a class="link" onclick="doAction ( 'actionCode=A6', bodyHandler, 'A' );">
 									    <img style="border:0" src="images/status_unread.png" title="Icono de status no leido" alt="Icono de status no leido"/>
 									    </a>
 								    </td>
 								    <td class="menuName">
-									    <a class="link" onclick="doAction ( '?actionCode=A6', bodyHandler, 'A' );">No Leidos</a>
+									    <a class="link" onclick="doAction ( 'actionCode=A6', bodyHandler, 'A' );">No Leidos</a>
 								    </td>
 							    </tr>
 							    <tr>
 								    <td class="menuName">
-									    <a class="link" onclick="doAction ( '?actionCode=A7', bodyHandler, 'A' );">
+									    <a class="link" onclick="doAction ( 'actionCode=A7', bodyHandler, 'A' );">
 									    <img style="border:0" src="images/status_unclasi.png" title="Icono de status no clasificado" alt="Icono de status no clasificado"/>
 									    </a>
 								    </td>
 								    <td class="menuName">
-									    <a class="link" onclick="doAction ( '?actionCode=A7', bodyHandler, 'A' );">No Clasificados</a>
+									    <a class="link" onclick="doAction ( 'actionCode=A7', bodyHandler, 'A' );">No Clasificados</a>
 								    </td>
 							    </tr>
 
 							    <tr>
 								    <td class="menuName">
-									    <a class="link" onclick="doAction ( '?actionCode=A10', bodyHandler, 'A' )">
+									    <a class="link" onclick="doAction ( 'actionCode=A10', bodyHandler, 'A' )">
 										    <img style="border:0" src="images/status_fav.png" title="Icono de status favorito" alt="Icono de status favorito"/>
 									    </a>
 								    </td>
 								    <td class="menuName">
-									    <a class="link" onclick="doAction ( '?actionCode=A10', bodyHandler, 'A' )">Favoritos</a>
+									    <a class="link" onclick="doAction ( 'actionCode=A10', bodyHandler, 'A' )">Favoritos</a>
 								    </td>
 							    </tr>
 
