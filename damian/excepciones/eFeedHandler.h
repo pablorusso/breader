@@ -3,7 +3,9 @@
 
 #include "IException.h"
 
-typedef enum {FH_ARCHIVO_CORRUPTO} FH_error;
+typedef enum {FH_ARCHIVO_CORRUPTO, FH_IDFEED_INEXISTENTE,
+  FH_PROXIMOS_ART_SIN_ULTIMOS, FH_IDCAT_FUERA_DE_RANGO, FH_IDART_FUERA_DE_RANGO,
+  FH_PROXIMAS_CAT_SIN_ULTIMAS} FH_error;
 
 /**
  * Excepciones del modulo TipoDeFuente
@@ -37,6 +39,30 @@ public:
 		switch(errnumber){
 			case FH_ARCHIVO_CORRUPTO: {
 				return "Archivo corrupto";
+				break;
+			}
+			case FH_IDFEED_INEXISTENTE: {
+				return "El id del feed proporcionado no existe";
+				break;
+			}
+
+			case FH_PROXIMOS_ART_SIN_ULTIMOS: {
+				return "Se pidieron los proximos articulos sin pedir los \
+				        ultimos";
+				break;
+			}
+			case FH_PROXIMAS_CAT_SIN_ULTIMAS: {
+				return "Se pidieron los proximos articulos de una categoria \
+						sin pedir los ultimos";
+				break;
+			}
+			case FH_IDCAT_FUERA_DE_RANGO: {
+				return "El id de la categoria proporcionado esta fuera \
+				        de rango";
+				break;
+			}
+			case FH_IDART_FUERA_DE_RANGO: {
+				return "El id del articulo proporcionado esta fuera de rango";
 				break;
 			}
 			default: {

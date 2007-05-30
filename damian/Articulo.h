@@ -3,6 +3,7 @@
 
 #include <string>
 #include <fstream>
+#include <queue>
 #include "ContenedorIdCat.h"
 #include "General.h"
 
@@ -66,10 +67,15 @@ class Articulo {
 		  {this->leido = leido;}
 		bool get_leido() const
 		  {return this->leido;}
-		void set_numArticulo(const t_idart &numArticulo)
-		  {this->numArticulo = numArticulo;}
-		bool get_numArticulo() const
-		  {return this->numArticulo;}
+		void set_idart(const t_idart &idart)
+		  {this->idart = idart;}
+		bool get_idart() const
+		  {return this->idart;}
+
+		void set_idfeed(const t_idfeed &idfeed)
+		  {this->idfeed = idfeed;}
+		bool get_idfeed() const
+		  {return this->idfeed;}
 
 		void set_cont_idcat(const ContenedorIdCat &cont_idcat)
 		  {this->cont_idcat = cont_idcat;}
@@ -87,23 +93,26 @@ class Articulo {
 		 * @param idcat el id de la categoria a agregar
 		 * @param usu_pc es igual a 0 si fue clasificado el usuario, vale 1 de
 		 *               lo contrario
+		 * @throw eContenedorIdCat si el idcat esta fuera de rango
 		 */
 		void add_cat(const t_idcat &idcat, const bool usu_pc);
 
 		/**
 		 * Encuentra una categoria en el contenedor de categorias
 		 * @param idcat la categoria a encontrar
-		 * @return -1 si no la encontro, 0 si estaba clasificado por el usuario,
-		 *         1 si estaba clasificado por el clasificador
+		 * @return -1 si no la encontro o fuera de rango, 0 si estaba
+		 *         clasificado por el usuario, 1 si estaba clasificado por el
+         *         clasificador
 		 */
 		short find_cat(const t_idcat &idcat);
 
 		/**
-		 * Borra una categoria del contenedor de categorias
+		 * Borra una categoria del contenedor de categorias. Si ya estaba
+		 * borrada no importa.
 		 * @param idcat la categoria a borrar
-		 * @return true si la borro, false de lo contrario, porque no existe
+		 * @throw eContenedorIdCat si el idcat esta fuera de rango
 		 */
-		bool rem_cat(const t_idcat &idcat);
+		void rem_cat(const t_idcat &idcat);
 
 		/**
 		 * Sobrecarga del operator<<
@@ -125,7 +134,8 @@ class Articulo {
 
 		//!< Las siguientes son las que incorporamos nosotros
 		bool leido; //!< indica si el articulo fue leido por el usuario o no 
-		t_idart numArticulo; //!< el numero de articulo dentro del feed
+		t_idart idart; //!< el numero de articulo dentro del feed
+		t_idfeed idfeed; //!< el numero de feed al que pertenece
 		ContenedorIdCat cont_idcat; //!< contenedor con los idcat del articulo
 		ContenedorIdCat cont_usu_pc; //!< por quien fue clasificado
 };

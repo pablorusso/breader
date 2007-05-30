@@ -47,6 +47,20 @@ class Archivo2 {
 		~Archivo2();
 
 		/**
+		 * Borra el archivo indicado del disco duro
+		 * @param idfeed el id del feed del archivo a borrar
+		 * @return true si lo pudo borrar, false de lo contrario
+		 */
+		static bool del(const t_idfeed &idfeed);
+
+		/**
+		 * Genera el nombre del archivo a partir de su idfeed
+		 * @param idfeed el id del feed del nombre a generar
+		 * @return el nombre del archivo
+		 */
+		static string genFileName(const t_idfeed &idfeed);
+
+		/**
 		 * Agrega el articulo al final del Archivo2, y le asigna un idart
 		 * @param art el articulo a agregar
 		 * @return el id del articulo asignado
@@ -64,6 +78,15 @@ class Archivo2 {
 		Articulo readArticulo(const t_idart &idart);
 
 		/**
+		 * Lee el timestamp del articulo indicado
+		 * @param idart el id del articulo a leer
+		 * @return el timestamp del articulo indicado
+		 * @throw eArchivo2 si el archivo esta corrupto
+		 * @throw eArchivo2 si el idart esta fuera de rango
+		 */
+		t_timestamp readTimestamp(const t_idart &idart);
+
+		/**
 		 * Escribe en el articulo su condicion de leido
 		 * @param idart el id del articulo a modificar
 		 * @param leido si se escribira como leido o no
@@ -71,6 +94,24 @@ class Archivo2 {
 		 * @throw eArchivo2 si el idart esta fuera de rango
 		 */
 		void writeLeido(const t_idart &idart, const bool leido);
+
+		/**
+		 * Invierte el valor de lectura, es decir, si estaba leido,
+		 * pasa no leido y viceversa.
+		 * @param idart el id del articulo que hay que leer/desleer
+		 * @throw eArchivo2 si el Archivo2 esta corrupto
+		 * @throw eArchivo2 si el idart esta fuera de rango
+		 */
+		void invertirLecturaArticulo( const t_idart &idart);
+
+		/**
+		 * Invierte el valor del bit de favorito, es decir, si estaba como
+		 * favorito deja de estarlo y viceversa.
+		 * @param idart el id del articulo que hay que invertir
+		 * @throw eArchivo2 si el Archivo2 esta corrupto
+		 * @throw eArchivo2 si el idart esta fuera de rango
+		 */
+		void invertirFavorito(const t_idart &idart);
 
 		/**
 		 * Escribe una clasificacion en el archivo
@@ -109,6 +150,22 @@ class Archivo2 {
 		bool readUsu_Pc(const t_idart &idart, const t_idcat &idcat);
 
 		/**
+		 * Da de baja a una categoria en el Archivo2, es decir, la escribe
+		 * como no clasificada y como clasificada por el usuario
+		 * TODO esta bien asi???
+		 * @param idcat el id de la categoria a borrar
+		 * @throw eArchivo2 si el id de la categoria esta fuera de rango
+		 */
+		void bajaCategoria(const t_idcat &idcat);
+
+		/**
+		 * Devuelve la cantidad de articulos del archivo
+		 * @return la cantidad de articulos del archivo
+		 */
+		t_idart cantidadArticulos() const
+		  {return this->numRegs;}
+
+		/**
 		 * Devuelve el tamanio del registro en bytes
 		 * @return el tamanio del registro
 		 */
@@ -129,6 +186,7 @@ class Archivo2 {
 		fstream f; //!< el handler del Archivo2
 		t_headerArchivo2 header; //!< el header del Archivo2
 		t_idart numRegs; //!< el numero de registros (articulos) del archivo
+		t_idfeed idfeed; //!< el id del feed del archivo
 		Archivo1 a1; //!< el Archivo1
 
 		/**

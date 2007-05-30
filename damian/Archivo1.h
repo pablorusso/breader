@@ -36,6 +36,20 @@ class Archivo1 {
 		Archivo1(const t_idfeed &idfeed);
 
 		/**
+		 * Borra el archivo indicado del disco duro
+		 * @param idfeed el id del feed del archivo a borrar
+		 * @return true si lo pudo borrar, false de lo contrario
+		 */
+		static bool del(const t_idfeed &idfeed);
+
+		/**
+		 * Genera el nombre del archivo a partir de su idfeed
+		 * @param idfeed el id del feed del nombre a generar
+		 * @return el nombre del archivo
+		 */
+		static string genFileName(const t_idfeed &idfeed);
+
+		/**
 		 * Destructor. Cierra el archivo.
 		 */
 		~Archivo1();
@@ -61,22 +75,6 @@ class Archivo1 {
 
 	private:
 		fstream f; //!< el handler del Archivo1
-
-		/**
-		 * Escribe un registro en el archivo
-		 * @param reg el registro a escribir
-		 * @throw fstream::failure si el archivo esta corrupto
-		 */
-//		void writeReg(t_regArchivo2 &reg);
-
-		/**
-		 * Lee un registro del archivo
-		 * @return el registro leido
-		 * @param reg la posicion a leer
-		 * @throw fstream::failure si el archivo esta corrupto
-		 */
-//		t_regArchivo2 readReg(const t_idart &numReg);
-
 };
 
 #endif

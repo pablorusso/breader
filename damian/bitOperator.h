@@ -47,6 +47,14 @@ class bitOperator {
 		 */
 		static bool readBit(fstream &f, const t_offset &pos);
 
+		/**
+		 * Lee un bit del archivo, lo invierte, y lo vuelve a escribir,
+		 *  dependiendo de la posicion indicada
+		 * @param f el archivo a escribir
+		 * @param pos la posicion a escribir (en bits) absoluta
+		 * @throw fstream::failure si el archivo esta corrupto
+		 */
+		static void invertBit(fstream &f, const t_offset &pos);
 
 	private:
 		/**

@@ -4,7 +4,7 @@
 #include "IException.h"
 
 typedef enum {A6_ARCHIVO_CORRUPTO, A6_PARAMETROS_FEED_INVALIDOS,
-  A6_IDFEED_INVALIDO} A6_error;
+  A6_IDFEED_INVALIDO, A6_IDCAT_FUERA_DE_RANGO} A6_error;
 
 /**
  * Excepciones del modulo TipoDeFuente
@@ -37,19 +37,23 @@ public:
 	const char *what() const throw() {
 		switch(errnumber){
 			case A6_ARCHIVO_CORRUPTO: {
-				return "Archivo corrupto"; 
+				return "Archivo corrupto";
 				break;
 			}
 			case A6_PARAMETROS_FEED_INVALIDOS: {
-				return "Los parametros pasados al feed son invalidos"; 
+				return "Los parametros pasados al feed son invalidos";
 				break;
 			}
 			case A6_IDFEED_INVALIDO: {
-				return "El idfeed requerido esta fuera de rango"; 
+				return "El idfeed requerido esta fuera de rango";
+				break;
+			}
+			case A6_IDCAT_FUERA_DE_RANGO: {
+				return "El id de la categoria esta fuera de rango";
 				break;
 			}
 			default: {
-				return "Error inesperado"; 
+				return "Error inesperado";
 				break;
 			}
 		}
