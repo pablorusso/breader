@@ -36,7 +36,7 @@
 			<td class="menuName">
 				<a class="link">
 					<xsl:attribute name="onclick">
-						doAction( '?actionCode=' + escape( 'F2' ) + '&amp;params=' + escape( 'feedId||#<xsl:value-of select="@id"/>' ), delFeedHandler, '' )
+						doAction( 'actionCode=' + escape( 'F2' ) + '&amp;params=' + escape( 'feedId||#<xsl:value-of select="@id"/>' ), delFeedHandler, '' )
 					</xsl:attribute>
 					<img style="border:0" src="images/action_feed_del.png" title="Borrar feed" alt="Borrar feed"/>
 				</a>
@@ -54,7 +54,7 @@
 			<td class="menuName">
 				<a class="link">
 					<xsl:attribute name="onclick">
-						doAction('?actionCode=' + escape( 'A5' ) + '&amp;params=' + escape( 'feedId||#<xsl:value-of select="@id"/>' ), bodyHandler, 'A' )
+						doAction('actionCode=' + escape( 'A5' ) + '&amp;params=' + escape( 'feedId||#<xsl:value-of select="@id"/>' ), bodyHandler, 'A' )
 					</xsl:attribute>
 					<xsl:value-of select="@name"/>
 				</a>

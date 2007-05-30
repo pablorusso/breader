@@ -86,7 +86,7 @@
 
 							<!--resumen-->
 							<div class="entry-body">
-								<xsl:value-of select="summary"/>
+								<xsl:value-of select="summary" disable-output-encoding="yes"/>
 							</div>
 						</div>
 					</td>
@@ -104,7 +104,7 @@
 									<td align="left">
 										<span class="star link">
 											<xsl:attribute name="onclick">
-												doAction( '?actionCode=' + escape( 'A8' ) + '&amp;params=' + escape( 'artId||#<xsl:value-of select="@id"/>' ), editArticleHandler, '' )
+												doAction( 'actionCode=' + escape( 'A8' ) + '&amp;params=' + escape( 'artId||#<xsl:value-of select="@id"/>' ), editArticleHandler, '' )
 											</xsl:attribute>
 											<xsl:choose>
 												<xsl:when test="@isFavourite = 0">
@@ -119,7 +119,7 @@
 									<td align="left">
 										<span class="star link">
 											<xsl:attribute name="onclick">
-												doAction( '?actionCode=' + escape( 'A9' ) + '&amp;params=' + escape( 'artId||#<xsl:value-of select="@id"/>' ), editArticleHandler, '')
+												doAction( 'actionCode=' + escape( 'A9' ) + '&amp;params=' + escape( 'artId||#<xsl:value-of select="@id"/>' ), editArticleHandler, '')
 											</xsl:attribute>
 											<xsl:choose>
 												<xsl:when test="@read = 0">
@@ -175,7 +175,7 @@
 						<td>
 						<a class="link">
 							<xsl:attribute name="onclick">
-							doAction( '?actionCode=' + escape('A3') + '&amp;params=' + escape( 'artId||#<xsl:value-of select="../../@id"/>|||tagId||#<xsl:value-of select="@id"/>' ), editArticleHandler, '')
+							doAction( 'actionCode=' + escape('A3') + '&amp;params=' + escape( 'artId||#<xsl:value-of select="../../@id"/>|||tagId||#<xsl:value-of select="@id"/>' ), editArticleHandler, '')
 							</xsl:attribute>
 							<img style="border:0" src="images/action_tag_check.png" title="Aprobar clasificacion automatica" alt="Aprobar clasificacion automatica"/>
 						</a>
@@ -185,7 +185,7 @@
 					<td>
 					<a class="link">
 						<xsl:attribute name="onclick">
-							doAction( '?actionCode=' + escape( 'A2' ) + '&amp;params=' + escape( 'artId||#<xsl:value-of select="../../@id"/>|||tagId||#<xsl:value-of select="@id"/>' ), editArticleHandler, '')
+							doAction( 'actionCode=' + escape( 'A2' ) + '&amp;params=' + escape( 'artId||#<xsl:value-of select="../../@id"/>|||tagId||#<xsl:value-of select="@id"/>' ), editArticleHandler, '')
 						</xsl:attribute>
 						<img style="border:0" src="images/action_tag_del.png" title="Borrar categoria" alt="Borrar categoria"/>
 					</a>

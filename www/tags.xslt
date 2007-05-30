@@ -37,7 +37,7 @@
 				<td class="menuName">
 					<a class="link">
 						<xsl:attribute name="onclick">
-							doAction( '?actionCode=' + escape('T2') + '&amp;params=' + escape( tagId||#<xsl:value-of select="@id"/>' ), delTagHandler, '')
+							doAction( 'actionCode=' + escape('T2') + '&amp;params=' + escape( tagId||#<xsl:value-of select="@id"/>' ), delTagHandler, '')
 						</xsl:attribute>
 						<img style="border:0" src="images/action_tag_del.png" title="Borrar categoria" alt="Borrar categoria"/>
 					</a>
@@ -55,7 +55,7 @@
 				<td class="menuName">
 					<a class="link">
 						<xsl:attribute name="onclick">
-							doAction ( '?actionCode=' + escape('A4') + '&amp;params=' + escape( 'tagIds||#<xsl:value-of select="@id"/>|||tagStates||#1' ), bodyHandler, 'A' )
+							doAction ( 'actionCode=' + escape('A4') + '&amp;params=' + escape( 'tagIds||#<xsl:value-of select="@id"/>|||tagStates||#1' ), bodyHandler, 'A' )
 						</xsl:attribute>
 						<xsl:value-of select="@name"/>
 					</a>

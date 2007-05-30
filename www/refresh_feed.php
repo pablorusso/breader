@@ -31,7 +31,7 @@
 					$dc_creator = $item['author']; // rss
 
 				$article = "<article feedName=\"".htmlspecialchars($feedName, ENT_QUOTES)."\" title=\"".htmlspecialchars($title, ENT_QUOTES)."\" link=\"".htmlspecialchars($link, ENT_QUOTES)."\" author=\"".htmlspecialchars($dc_creator, ENT_QUOTES)."\" date=\"".htmlspecialchars($date_timestamp, ENT_QUOTES)."\">";
-				$article = $article."<summary>".htmlspecialchars($atom_content, ENT_QUOTES)."</summary>";
+				$article = $article."<summary>".$atom_content."</summary>";
 				$article = $article."</article>";
 
 				$artXML = $artXML.$article;

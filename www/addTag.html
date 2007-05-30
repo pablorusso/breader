@@ -48,7 +48,7 @@
 
 			function createTagHandler( result )
 			{
-				opener.doAction ( "?actionCode=T4", opener.tagsHandler, 'T' );
+				opener.doAction ( "actionCode=T4", opener.tagsHandler, 'T' );
 				reload();
 			}
 			function tagsHandler( result )
@@ -65,7 +65,7 @@
 
 			function reload()
 			{
-				doAction( "?actionCode=T4", tagsHandler );
+				doAction( "actionCode=T4", tagsHandler );
 			}
 
 			function newTag()
@@ -76,14 +76,14 @@
 					alert( "El nombre no puede ser vacio" );
 					return;
 				}
-				doAction ( "?actionCode=" + escape( "T1" ) + "&params=" + escape( "tagName||#" + name ), createTagHandler );
+				doAction ( "actionCode=" + escape( "T1" ) + "&params=" + escape( "tagName||#" + name ), createTagHandler );
 			}
 
 			function addTag( tagId )
 			{
 				showDiv( document, 'tag_loading', null );
 				hideDiv( document, 'tag_list', null );
-				doAction ( "?actionCode=" + escape( "A1" ) + "&params=" + escape( "tagId||#" + tagId + "|||artId||#" + opener.document.getElementById( 'artId' ).value ), addTagHandler );
+				doAction ( "actionCode=" + escape( "A1" ) + "&params=" + escape( "tagId||#" + tagId + "|||artId||#" + opener.document.getElementById( 'artId' ).value ), addTagHandler );
 			}
 		</script>
 	</head>

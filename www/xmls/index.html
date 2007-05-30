@@ -1,0 +1,34 @@
+<html>
+	<head>
+		<title>Tester</title>
+		<script type="text/javascript" src="../scripts/xml.js"></script>
+		<script type="text/javascript">
+			var bodyDocument  ;
+
+			function showBody( xmlDoc )
+			{
+				var divBody = document.getElementById('result');
+				applyXSLT( '../body.xslt', divBody, xmlDoc );
+			}
+
+
+
+			function reload()
+			{
+
+				var text = "<articles><article id=\"2\" isFavourite=\"0\" read=\"0\" title=\"Resident Evil 4: Wii, receives 9.5 from Famistu\" date=\"May 22, 2007 3:29 AM\" author=\"digg\" feed=\"google\" link=\"http://digg.com/nintendo_wii/Resident_Evil_4_Wii_receives_9_5_from_Famistu\"><summary>&lt;p&gt;The &lt;a href=&quot;http://laughingmeme.org/magpie_blog&quot;&gt;Magpie Blog&lt;/a&gt; has been reborn as an actual blog</summary><tags><tag id=\"1\" name=\"cat1\"/><tag id=\"3\" name=\"cat3\"/></tags></article></articles>";
+
+				//var text = "<articles><article id=\"2\" isFavourite=\"0\" read=\"0\" title=\"Resident Evil 4: Wii, receives 9.5 from Famistu\" date=\"May 22, 2007 3:29 AM\" author=\"digg\" feed=\"google\" link=\"http://digg.com/nintendo_wii/Resident_Evil_4_Wii_receives_9_5_from_Famistu\"><summary><![CDATA[<p>The <a href=\"http://laughingmeme.org/magpie_blog\">Magpie Blog</a> has been reborn as an actual blog]]></summary><tags><tag id=\"1\" name=\"cat1\"/><tag id=\"3\" name=\"cat3\"/></tags></article></articles>";
+
+ 				bodyDocument = parseXML( text )
+				showBody( bodyDocument )
+			}
+
+		</script>
+	</head>
+
+	<body onload="reload()">
+		Prueba:
+		<div id="result"></div>
+	</body>
+</html>

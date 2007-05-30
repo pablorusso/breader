@@ -1,6 +1,7 @@
 #include <iostream>
 #include "CGIClass.h"
-#include "MQTraits.h"
+#include "ClientSocket.h"
+#include "SocketException.h"
 
 void showError( string msg )
 {
@@ -11,10 +12,10 @@ void showError( string msg )
 
 void usage()
 {
-	cerr <<	"usage: thin_client [pathToMsgFiles] [queryString]" << endl;
-	cerr << "       enviara el queryString usando la cola que representa el primer path" << endl;
+	cerr <<	"usage: thin_client [puerto] [queryString]" << endl;
+	cerr << "       enviara el queryString usando a traves del puerto" << endl;
 	cerr << "       el queryString tiene que respetar el html encoding, tal cual como lo enviaria un browser" << endl;
-	cerr << "       ex: thin_client /home/pablo/facultad/datos/breader/www/bin/ \"?actionCode=F2&params=tagId#1\"" << endl;
+	cerr << "       ex: thin_client 6157 \"?actionCode=F2&params=tagId#1\"" << endl;
 	::exit( 1 );
 }
 
@@ -22,7 +23,7 @@ int main(int argc, char* argv[])
 {
 	CGIClass cgi;
 	string word;
-	string path = "";
+	int port = 0;
 
 	if ( argc == 1 )
 	{
@@ -32,78 +33,92 @@ int main(int argc, char* argv[])
 	}
 	else
 	{
-		if ( argc != 3 )
+		if ( argc < 2 )
 		{
 			usage();
 			return -1;
 		}
-		path = argv[1];
-		if ( path[ path.length()-1 ] != '/' )
-			path = path + "/";
-		word = argv[2]; // CONSOLA
+
+		if ( argc == 3 )
+		{
+			port = atoi( argv[1] );
+			word = argv[2];
+		}
+		else
+			word = argv[1];
 	}
 
 	// actionCode =
-	// params     = param1|param2|param3
-	// cada param a su vez puede ser: param1#value1,value2,value3
-	// ej: thin_client.exe?actionCode=1&params=tagsId#1,1|statesId#2,-1
+	// params     = param1|||param2|||param3
+	// cada param a su vez puede ser: param1||#value1||,value2||,value3
+	// ej: thin_client.exe?actionCode=1&params=tagsId||#1||,1|||statesId||#2||,-1
 	if ( word == "" )
 	{
 		showError( "[thin_client] - No se especificaron parametros." );
 		return 0;
 	}
+
 	cgi.Load( word );
+
+	if ( port == 0 ) port = atoi( cgi.GetValue( "port" ).c_str() );
+	if ( port == 0 )
+	{
+		showError( "[thin_client] - No se especifico el puerto de conexion." );
+		return 0;
+	}
 	string actionCode = cgi.GetValue( "actionCode" );
 	string params     = cgi.GetValue( "params" );
 
-	MQTraits q_cgi_server;
-	MQTraits q_server_cgi;
 	try
 	{
-		q_cgi_server.OpenChannel( path + "mq_cgi_to_server" );
-		q_server_cgi.OpenChannel( path + "mq_server_to_cgi" );
-	}
-	catch ( string msg )
-	{
-		/*if( argc > 1 )
+		std::string resultCode = "0";
+		std::string response = "";
+		std::string ack = "OK";
+		std::string hasResult = "";
+		ClientSocket client_socket ( "localhost", port );
+    	try
 		{
-			cout << endl << "[thin_client] - Error comunicandose con el server. La mensajeria no esta habilitada. Mensaje: " << std::flush;
-			perror( msg.c_str() );
+			client_socket << actionCode;
+	  		client_socket >> ack;
+
+			params.size() > 0 ? client_socket << "1" : client_socket << "0";
+			client_socket >> ack;
+			if ( params.size() > 0 )
+			{
+				client_socket << params;
+				client_socket >> ack;
+			}
+
+			client_socket >> resultCode;
+			client_socket << ack;
+			client_socket >> hasResult;
+			client_socket << ack;
+			if ( hasResult != "0" )
+			{
+				client_socket >> response;
+				client_socket << ack;
+			}
+
+			if ( resultCode == "0" )
+			{
+				cout << "Content-type: text/xml" << endl << endl;
+				cout << "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>";
+				cout << "<response><status error=\"0\" message=\"\"/>";
+				cout << response;
+				cout << "</response>";
+			}
+			else showError( response );
 		}
-		else*/ showError( "[thin_client] - Error comunicandose con el server. La mensajeria no esta habilitada. Mensaje: " + msg );
-	}
-
-	try
-	{
-		q_cgi_server.WriteField( actionCode );
-		q_cgi_server.WriteField( params     );
-
-		string isError;
-		q_server_cgi.ReadField( isError  );
-		string response;
-		q_server_cgi.ReadField( response );
-
-		if ( isError == "0" )
+      	catch ( SocketException& ) { }
+		catch ( string msg )
 		{
-			cout << "Content-type: text/xml" << endl << endl;
-			cout << "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>";
-			cout << "<response><status error=\"0\" message=\"\"/>";
-			cout << response;
-			cout << "</response>";
+			showError( "[thin_client] - Error procesando la accion. Mensaje: " + msg );
 		}
-		else showError( response );
-	}
-	catch ( string msg )
-	{
-		/*
-		if( argc > 1 )
-		{
-			cout << endl << "[thin_client] - Error procesando la accion. Mensaje: " << std::flush;
-			perror( msg.c_str() );
-		}
-		else */
-		showError( "[thin_client] - Error procesando la accion. Mensaje: " + msg );
-	}
+    }
+  	catch ( SocketException& e )
+    {
+		showError( "[thin_client] - Error en la comunicacion con el server. Mensaje: " + e.description() );
+    }
 
 	return 0;
 }
