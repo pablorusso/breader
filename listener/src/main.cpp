@@ -62,11 +62,13 @@ void listen( int argc, char* argv[] )
 					std::string ack  = "OK";
 
 					string action; string params; string hasParams;
+					// acccion
 					new_sock >> action;
 					new_sock << ack;
+
+					// parametros
 					new_sock >> hasParams;
 					new_sock << ack;
-
 					if ( hasParams != "0" )
 					{
 						new_sock >> params;
@@ -79,11 +81,13 @@ void listen( int argc, char* argv[] )
 						string result = processAction( action, params, actionsMap );
 						cout << endl << "[listener] - Enviando respuesta: " << result << std::flush;
 
+						// responseCode
 						new_sock << "0";
 						new_sock >> ack;
+
+						// response
 						result.size() > 0 ? new_sock << "1" : new_sock << "0";
 						new_sock >> ack;
-
 						if ( result.size() > 0 )
 						{
 							new_sock << result;
@@ -94,9 +98,10 @@ void listen( int argc, char* argv[] )
 					}
 					catch ( string msg )
 					{
+						// responseCode de error
 						new_sock << "1";
 						new_sock >> ack;
-						msg.size() > 0 ? new_sock << "1" : new_sock << "0";
+						msg.size() > 0 ? new_sock << "1": new_sock << "0";
 						new_sock >> ack;
 
 						if ( msg.size() > 0 )
