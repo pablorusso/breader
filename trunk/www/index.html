@@ -271,13 +271,15 @@
 				}
 				else showDiv( document, 'processing_div', null );
 
-				params = '?port=6157&'+params;
+				params = '?port=12000&'+params;
 				//SimpleAJAXCall ( pageName + params, SimpleCallback, "GET", handler );
 				MakeNewAJAXCall( pageName + params, SimpleCallback, "GET", null, handler, null );
 			}
 
 			function doAction( params, handler, type )
 			{
+				// "do_action.php"
+				// "bin/thin_client.exe"
 				doActionWithName( "bin/thin_client.exe", params, handler, type );
 			}
 
