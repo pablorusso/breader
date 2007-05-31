@@ -5,9 +5,6 @@
 
 typedef enum {A5_ARCHIVO_CORRUPTO, A5_IDCAT_FUERA_DE_RANGO} A5_error;
 
-/**
- * Excepciones del modulo TipoDeFuente
- */
 class eArchivo5 : public std::exception::exception, public IException {
 
 private:
@@ -22,14 +19,16 @@ public:
 	 * @param l la linea
 	 * @param f el archivo
 	 */
-	eArchivo5(A5_error e, unsigned int l, std::string f)
-	  :errnumber(e), line(l), file(f) {}
+	eArchivo5(A5_error e, unsigned int l, const std::string &f)
+	  :IException(l, f), errnumber(e) {}
+
 	/**
 	 * Destructor default
 	 */
 	~eArchivo5() throw() {}
+
 	/**
-	 * Metodo sobrecargado de la clase exeption
+	 * Metodo sobrecargado de la clase exception
 	 * @return una secuencia de chars terminada en NULL con una descripcion
 	 * del error 
 	 */
@@ -48,17 +47,6 @@ public:
 				break;
 			}
 		}
-	}
-	/**
-	 * Indica donde se arrojo la exepcion
-	 * @return un string con una descripcion del lugar en donde se arrojo la
-	 * exepcion
-	 */ 
-	const std::string where() const throw(){
-		std::stringstream oss;
-		oss << "FILE: " << this->file << " LINE: " << this->line;
-		std::string ret(oss.str());
-		return ret;
 	}
 	
 	/**

@@ -7,6 +7,7 @@
 #include "Articulo.h"
 #include <queue>
 #include <map>
+#include <cstdio>
 
 // BORRAR
 #include <iostream>
@@ -43,8 +44,8 @@ class feedHandler {
 		 * @param uri la uri del feed
 		 * @param name el nombre del feed
 		 * @return el id del feed asignado.
-		 * @throw eArchivo6 si el Archivo6 esta corrupto
-		 * @throw eFeed si los parametros no son integros (size()>0)
+		 * @throw eFeedHandler si el Archivo6 esta corrupto
+		 * @throw eFeedHandler si los parametros del feedno son integros
 		 */
 		t_idfeed altaFeed(const string &uri, const string &name);
 
@@ -54,7 +55,7 @@ class feedHandler {
 		 * @param idfeed el id del feed
 		 * @return true si fue dado de baja, false de lo contrario (el feed no
 		 *         existia)
-		 * @throw eArchivo6 si el Archivo6 esta corrupto
+		 * @throw eFeedHandler si el Archivo6 esta corrupto
 		 */
 		bool bajaFeed(const t_idfeed &idfeed);
 
@@ -65,7 +66,7 @@ class feedHandler {
 		 * @param art el articulo a dar de alta
 		 * @return el id del articulo asignado
 		 * @throw eFeedHandler si el idfeed no existia
-		 * @throw eArchivo2 si el Archivo2 esta corrupto
+		 * @throw eFeedHandler si el Archivo2 esta corrupto
 		 */
  		t_idart altaArticulo(const t_idfeed &idfeed, const Articulo &art);
 
@@ -76,7 +77,7 @@ class feedHandler {
 		 * @param c_art la cola de articulos a dar de alta
 		 * @return una cola con los ids asignados a los articulos
 		 * @throw eFeedHandler si el idfeed no existia
-		 * @throw eArchivo2 si el Archivo2 esta corrupto
+		 * @throw eFeedHandler si el Archivo2 esta corrupto
 		 */
 		t_cola_idart altaArticulo(const t_idfeed &idfeed,
 		  const t_cola_art &c_art);
@@ -88,8 +89,8 @@ class feedHandler {
 		 * @param si_no si se quiere marcarlo como leido o como no leido
 		 *              (0=no leido, 1=leido)
 		 * @throw eFeedHandler si el idfeed no existia
-		 * @throw eArchivo2 si el Archivo2 esta corrupto
-		 * @throw eArchivo2 si el idart esta fuera de rango
+		 * @throw eFeedHandler si el Archivo2 esta corrupto
+		 * @throw eFeedHandler si el idart esta fuera de rango
 		 */
 		void leerArticulo(const t_idfeed &idfeed, const t_idart &idart,
 		  const bool si_no);
@@ -100,8 +101,8 @@ class feedHandler {
 		 * @param idfeed el id del feed cuyo articulo hay que leer/desleer
 		 * @param idart el id del articulo que hay que leer/desleer
 		 * @throw eFeedHandler si el idfeed no existia
-		 * @throw eArchivo2 si el Archivo2 esta corrupto
-		 * @throw eArchivo2 si el idart esta fuera de rango
+		 * @throw eFeedHandler si el Archivo2 esta corrupto
+		 * @throw eFeedHandler si el idart esta fuera de rango
 		 */
 		void invertirLecturaArticulo(const t_idfeed &idfeed,
 		  const t_idart &idart);
@@ -112,8 +113,8 @@ class feedHandler {
 		 * @param idfeed el id del feed cuyo articulo hay que invertir
 		 * @param idart el id del articulo que hay que invertir
 		 * @throw eFeedHandler si el idfeed no existia
-		 * @throw eArchivo2 si el Archivo2 esta corrupto
-		 * @throw eArchivo2 si el idart esta fuera de rango
+		 * @throw eFeedHandler si el Archivo2 esta corrupto
+		 * @throw eFeedHandler si el idart esta fuera de rango
 		 */
 		void invertirFavorito(const t_idfeed &idfeed, const t_idart &idart);
 
@@ -158,7 +159,7 @@ class feedHandler {
 		 *              parametro es modificado por el metodo, dejandolo en
 		 *              un idart que este clasificado con idcat, o en -1 si
 		 *              no hay ningun articulo anterior clasificado con idcat
- 		 * @throw eArchivo2 si el Archivo2 esta corrupto
+ 		 * @throw eFeedHandler si el Archivo2 esta corrupto
 		 */
 		void iterateMapCat(const t_idcat &idcat, const t_idfeed &idfeed,
 		  t_idart &idart);
@@ -189,7 +190,7 @@ class feedHandler {
 		/**
 		 * Devuelve una cola con los idfeed del Archivo6
 		 * @return una cola con los idfeed del Archivo6
-		 * @throw eArchivo6 si el Archivo6 esta corrupto
+		 * @throw eFeedHandler si el Archivo6 esta corrupto
 		 */
 		t_cola_idfeeds getColaIdFeeds()
 		  {return this->a6.getColaIdFeeds();}
@@ -198,8 +199,8 @@ class feedHandler {
 		 * Devuelve el feed indicado por idfeed
 		 * @return el feed indicado por idfeed
 		 * @param idfeed el idfeed a obtener, debe estar en rango
-		 * @throw eArchivo6 si el Archivo6 esta corrupto
-		 * @throw eArchivo6 si el idfeed esta fuera de rango, o el feed
+		 * @throw eFeedHandler si el Archivo6 esta corrupto
+		 * @throw eFeedHandler si el idfeed esta fuera de rango, o el feed
 		 *                  estaba borrado
 		 */
 		Feed getFeed(const t_idfeed &idfeed)
@@ -226,12 +227,42 @@ class feedHandler {
 		 *         con ese idcat, esta bien???
 		 * @param idcat el id de la categoria a borrar
 		 * @throw eFeedHandler si el idcat esta fuera de rango
-		 * @throw eArchivo6 si el Archivo6 esta corrupto
-		 * @throw eArchivo2 si el Archivo2 esta corrupto
+		 * @throw eFeedHandler si el Archivo6 esta corrupto
+		 * @throw eFeedHandler si el Archivo2 esta corrupto
 		 */
 		void bajaCategoria(const t_idcat &idcat);
 
+		/**
+		 * Reestructura el Archivo5 y el Acrhivo6, para que no tengan espacio
+		 * libre innecesario. Esto cambia los idfeeds y, por lo tanto, los
+		 * nombres del Archivo_2_f y del Archivo_1_f
+		 * @throw eFeedHandler si el Archivo6 esta corrupto
+		 * @throw eFeedHandler si el Archivo2 esta corrupto
+		 */
+		void reestructurar();
+
+		/**
+		 * Reestructura el Archivo5 y el Acrhivo6, para que tengan MAX_CAT
+		 * cantidad de ids de categorias. Ademas, tiene el mismo resultado que
+		 * reestructurar()
+		 * Nota: si NEW_MAX_CAT es menor que MAX_CAT este metodono tiene
+		 * efecto. Si NEW_MAX_CAT no es multiplo de 8 se toma el siguiente
+		 * multiplo de 8.
+		 * @param NEW_MAX_CAT la maxima cantidad de categorias nueva.
+		 * @throw eFeedHandler si el Archivo6 esta corrupto
+		 * @throw eFeedHandler si el Archivo2 esta corrupto
+		 */
+		void set_MAX_CAT(const t_idcat &NEW_MAX_CAT);
+
 	private:
+		/**
+		 * Renombra el Archivo_1_f y el Archivo_2_f
+		 * @param idfeed_old el id feed viejo
+		 * @param idfeed_old el id feed nuevo
+		 */
+		static void renameFeed(const t_idfeed &idfeed_old,
+		  const t_idfeed &idfeed_new);
+
 		//Archivo2 a2;
 		Archivo6 a6; //!< el Archivo6
 		t_idart ultArt; //!< el ultimo articulo devuelto (para usar con

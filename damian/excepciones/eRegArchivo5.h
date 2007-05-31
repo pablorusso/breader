@@ -5,16 +5,11 @@
 
 typedef enum {REGA5_IDCAT_FUERA_DE_RANGO, REGA5_NO_LIBRE} REGA5_error;
 
-/**
- * Excepciones del modulo TipoDeFuente
- */
 class eRegArchivo5 : public std::exception::exception, public IException {
 
 private:
-	REGA5_error errnumber; //!< El numero de error que arrojo la exepcion
-	unsigned int line; //!< La linea en donde se arrojo la exepcion
-	std::string file; //!< El archivo en donde se arrojo la exepcion
-	  
+	REGA5_error errnumber; //!< El numero de error que arrojo la excepcion
+
 public:
 	/**
 	 * Constructor de la excepcion
@@ -23,7 +18,7 @@ public:
 	 * @param f el archivo
 	 */
 	eRegArchivo5(REGA5_error e, unsigned int l, std::string f)
-	  :errnumber(e), line(l), file(f) {}
+	  :IException(l, f), errnumber(e) {}
 	/**
 	 * Destructor default
 	 */
@@ -48,17 +43,6 @@ public:
 				break;
 			}
 		}
-	}
-	/**
-	 * Indica donde se arrojo la exepcion
-	 * @return un string con una descripcion del lugar en donde se arrojo la
-	 * exepcion
-	 */ 
-	const std::string where() const throw(){
-		std::stringstream oss;
-		oss << "FILE: " << this->file << " LINE: " << this->line;
-		std::string ret(oss.str());
-		return ret;
 	}
 	
 	/**

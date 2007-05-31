@@ -6,15 +6,10 @@
 typedef enum {A2_ARCHIVO_CORRUPTO, A2_IDART_FUERA_DE_RANGO,
   A2_IDCAT_FUERA_DE_RANGO} A2_error;
 
-/**
- * Excepciones del modulo TipoDeFuente
- */
 class eArchivo2 : public std::exception::exception, public IException {
 
 private:
-	A2_error errnumber; //!< El numero de error que arrojo la exepcion
-	unsigned int line; //!< La linea en donde se arrojo la exepcion
-	std::string file; //!< El archivo en donde se arrojo la exepcion
+	A2_error errnumber; //!< El numero de error que arrojo la excepcion
 	  
 public:
 	/**
@@ -23,8 +18,8 @@ public:
 	 * @param l la linea
 	 * @param f el archivo
 	 */
-	eArchivo2(A2_error e, unsigned int l, std::string f)
-	  :errnumber(e), line(l), file(f) {}
+	eArchivo2(A2_error e, unsigned int l, const std::string &f)
+	  :IException(l, f), errnumber(e){}
 	/**
 	 * Destructor default
 	 */
@@ -53,17 +48,6 @@ public:
 				break;
 			}
 		}
-	}
-	/**
-	 * Indica donde se arrojo la exepcion
-	 * @return un string con una descripcion del lugar en donde se arrojo la
-	 * exepcion
-	 */ 
-	const std::string where() const throw(){
-		std::stringstream oss;
-		oss << "FILE: " << this->file << " LINE: " << this->line;
-		std::string ret(oss.str());
-		return ret;
 	}
 	
 	/**

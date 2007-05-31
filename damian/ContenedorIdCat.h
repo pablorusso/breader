@@ -54,6 +54,14 @@ class ContenedorIdCat {
 		void writeCat(fstream &f);
 
 		/**
+		 * Efectua un OR entre las categorias escritas y las que contiene.
+		 * Escribe el resultado. Debe estar posicionado.
+		 * @param f el archivo a escribir
+		 * @throw fstream::failure si el archivo esta corrupto
+		 */
+		void writeCatOR(fstream &f);
+
+		/**
 		 * Lee de un archivo las categorias. Debe estar posicionado.
 		 * @param f el archivo a leer
 		 * @throw fstream::failure si el archivo esta corrupto
@@ -83,6 +91,19 @@ class ContenedorIdCat {
 		 * @return la maxima cantidad de categorias
 		 */
 		t_idcat getMAX_CAT() const {return this->MAX_CAT;}
+
+		/**
+		 * Reestructura el contenedor para que tenga MAX_CAT cantidad de ids de
+		 * categorias.
+		 * Nota: si NEW_MAX_CAT es menor que MAX_CAT este metodono tiene
+		 * efecto
+		 * @param NEW_MAX_CAT la maxima cantidad de categorias nueva.
+		 */
+		void set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
+			this->categorias.reserve(NEW_MAX_CAT);
+			this->MAX_CAT = NEW_MAX_CAT;
+		}
+
 
 		friend ostream &operator<<(ostream &stream,
 		  const ContenedorIdCat &cont);

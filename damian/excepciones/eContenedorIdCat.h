@@ -5,16 +5,11 @@
 
 typedef enum {CIDCAT_IDCAT_FUERA_DE_RANGO} CIDCAT_error;
 
-/**
- * Excepciones del modulo TipoDeFuente
- */
 class eContenedorIdCat : public std::exception::exception, public IException {
 
 private:
-	CIDCAT_error errnumber; //!< El numero de error que arrojo la exepcion
-	unsigned int line; //!< La linea en donde se arrojo la exepcion
-	std::string file; //!< El archivo en donde se arrojo la exepcion
-	  
+	CIDCAT_error errnumber; //!< El numero de error que arrojo la excepcion
+
 public:
 	/**
 	 * Constructor de la excepcion
@@ -23,7 +18,8 @@ public:
 	 * @param f el archivo
 	 */
 	eContenedorIdCat(CIDCAT_error e, unsigned int l, std::string f)
-	  :errnumber(e), line(l), file(f) {}
+	  :IException(l, f), errnumber(e) {}
+
 	/**
 	 * Destructor default
 	 */
@@ -45,18 +41,7 @@ public:
 			}
 		}
 	}
-	/**
-	 * Indica donde se arrojo la exepcion
-	 * @return un string con una descripcion del lugar en donde se arrojo la
-	 * exepcion
-	 */ 
-	const std::string where() const throw(){
-		std::stringstream oss;
-		oss << "FILE: " << this->file << " LINE: " << this->line;
-		std::string ret(oss.str());
-		return ret;
-	}
-	
+
 	/**
 	 * @see IException#getErrorMensaje()
 	 */

@@ -9,10 +9,11 @@
 #include <fstream>
 
 
-#define A2_PATH "data/A2"
 #define LIBRE 0
 #define OCUPADO 1
 #define A2_SIZEOF_HEADER  (sizeof(t_idcat))
+#define A2_BASE_PATH "data/A2"
+#define A2_BASE_PATH_BIS "data/A2_bis"
 
 // BORRAR
 #include <iostream>
@@ -33,6 +34,7 @@ typedef struct t_headerArchivo2 {
 using namespace std;
 class Archivo2 {
 	public:
+
 		/**
 		 * Constructor. Inicializa los archivos necesarios. Deja el archivo
 		 * abierto para lectura/escritura.
@@ -40,6 +42,16 @@ class Archivo2 {
 		 * @param idfeed el id del feed del archivo
 		 */
 		Archivo2(const t_idcat &MAX_CAT, const t_idfeed &idfeed);
+
+		/**
+		 * Constructor del archivo bis. Es igual al original pero crea un
+		 * Archivo2 con el sufijo "bis".
+		 * @param idcat la cantidad maxima de categorias
+		 * @param idfeed el id del feed del archivo
+		 * @param bis se ignora
+		 */
+		Archivo2(const t_idcat &MAX_CAT, const t_idfeed &idfeed,
+		  const bool bis);
 
 		/**
 		 * Destructor. Escribe el nuevo encabezado y cierra el archivo.
@@ -59,6 +71,14 @@ class Archivo2 {
 		 * @return el nombre del archivo
 		 */
 		static string genFileName(const t_idfeed &idfeed);
+
+		/**
+		 * Genera el nombre bis del archivo a partir de su idfeed
+		 * @param idfeed el id del feed del nombre a generar
+		 * @param bis se ignora
+		 * @return el nombre del archivo
+		 */
+		static string genFileName(const t_idfeed &idfeed, const bool bis);
 
 		/**
 		 * Agrega el articulo al final del Archivo2, y le asigna un idart
@@ -188,6 +208,13 @@ class Archivo2 {
 		t_idart numRegs; //!< el numero de registros (articulos) del archivo
 		t_idfeed idfeed; //!< el id del feed del archivo
 		Archivo1 a1; //!< el Archivo1
+
+		/**
+		 * Abre el Archivo2 o lo crea, de ser necesario
+		 * @param idcat la cantidad maxima de categorias (Archivo6)
+		 * @param fileName el nombre del Archivo2
+		 */
+		void open(const t_idcat &MAX_CAT, const string &fileName);
 
 		/**
 		 * Escribe el header en el archivo.

@@ -6,15 +6,10 @@
 typedef enum {A6_ARCHIVO_CORRUPTO, A6_PARAMETROS_FEED_INVALIDOS,
   A6_IDFEED_INVALIDO, A6_IDCAT_FUERA_DE_RANGO} A6_error;
 
-/**
- * Excepciones del modulo TipoDeFuente
- */
 class eArchivo6 : public std::exception::exception, public IException {
 
 private:
-	A6_error errnumber; //!< El numero de error que arrojo la exepcion
-	unsigned int line; //!< La linea en donde se arrojo la exepcion
-	std::string file; //!< El archivo en donde se arrojo la exepcion
+	A6_error errnumber; //!< El numero de error que arrojo la excepcion
 	  
 public:
 	/**
@@ -24,11 +19,13 @@ public:
 	 * @param f el archivo
 	 */
 	eArchivo6(A6_error e, unsigned int l, std::string f)
-	  :errnumber(e), line(l), file(f) {}
+	  :IException(l, f), errnumber(e) {}
+
 	/**
 	 * Destructor default
 	 */
 	~eArchivo6() throw() {}
+
 	/**
 	 * Metodo sobrecargado de la clase exeption
 	 * @return una secuencia de chars terminada en NULL con una descripcion
@@ -57,17 +54,6 @@ public:
 				break;
 			}
 		}
-	}
-	/**
-	 * Indica donde se arrojo la exepcion
-	 * @return un string con una descripcion del lugar en donde se arrojo la
-	 * exepcion
-	 */ 
-	const std::string where() const throw(){
-		std::stringstream oss;
-		oss << "FILE: " << this->file << " LINE: " << this->line;
-		std::string ret(oss.str());
-		return ret;
 	}
 	
 	/**

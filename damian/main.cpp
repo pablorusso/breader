@@ -255,13 +255,10 @@ int main(int argc, char** argv) {
 #include "feedHandler.h"
 // OJO: debe ser multiplo de 8 y >= que 32
 #define CONST_MAX_CAT 32
+
 using namespace std;
-int main(int argc, char** argv) {
-	std::cout << "Bienvenido al breader, probando Archivo2" << std::endl;
 
-	try {
-		feedHandler fh(CONST_MAX_CAT);
-
+void f1(feedHandler &fh) {
 		cout << "idfeed: " << fh.altaFeed("www.breader.com", "breader") << endl;
 		cout << "idfeed: " << fh.altaFeed("www.doogle.com", "doogle") << endl;
 		cout << "idfeed: " << fh.altaFeed("www.nosirve.com", "nosirve") << endl;
@@ -396,13 +393,34 @@ int main(int argc, char** argv) {
 
 		fh.invertirFavorito(0,0);
 		fh.invertirFavorito(0,0);
+}
+
+// **************** MAIN  ****************** //
+int main(int argc, char** argv) {
+	std::cout << "Bienvenido al breader, probando Archivo2" << std::endl;
+
+	try {
+		feedHandler fh(CONST_MAX_CAT);
+		f1(fh);
+
+		cout << "baja: " << fh.bajaFeed(0) << endl;
+		cout << "baja: " << fh.bajaFeed(1) << endl;
+		cout << "baja: " << fh.bajaFeed(2) << endl;
+
+		f1(fh);
 
 
+		fh.set_MAX_CAT(62); //64, jeje
 
+		fh.reestructurar();
+
+		t_cola_art c_art;
 		while (!c_art.empty()) c_art.pop(); // c_art.clear()
-		c_art = fh.getUltimosArticulosCat(11, 2);
+		c_art = fh.getUltimosArticulosCat(11, 99);
+
 		while (!c_art.empty()) {
-			cout << c_art.front().get_title() << " "<< c_art.front().get_timestamp() << endl;
+			cout << c_art.front().get_title() << " "<< c_art.front().get_timestamp();
+			cout << " " << c_art.front().get_idfeed() << endl;
 			c_art.pop();
 		}
 
@@ -414,16 +432,9 @@ int main(int argc, char** argv) {
 			c_art.pop();
 		}
 
-
 	}
-	catch (eArchivo6 e) {
-		cout << e.getErrorMensaje() << endl;
-	}
-	catch (eArchivo2 e) {
-		cout << e.getErrorMensaje() << endl;
-	}
-	catch (eFeed e) {
-		cout << e.getErrorMensaje() << endl;
+	catch (eFeedHandler e) {
+		cout << e.what() << endl;
 	}
 
 	cout << "Adios" << endl;

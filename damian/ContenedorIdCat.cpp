@@ -33,6 +33,18 @@ void ContenedorIdCat::writeCat(fstream &f) {
 		  sizeof(unsigned char)*this->MAX_CAT/8);
 }
 
+void ContenedorIdCat::writeCatOR(fstream &f) {
+	ContenedorIdCat c(this->MAX_CAT);
+	t_offset pos = f.tellp();
+	c.readCat(f);
+	for (t_idcat i = 0; i<this->MAX_CAT/8; ++i)
+		c.categorias[i] |= this->categorias[i];
+
+	f.seekp(pos);
+	f.write(reinterpret_cast<const char *>(&c.categorias[0]),
+		  sizeof(unsigned char)*this->MAX_CAT/8);
+}
+
 void ContenedorIdCat::readCat(fstream &f) {
 	// Leo los bits de idcat
 	f.read(reinterpret_cast<char *>(&this->categorias[0]),

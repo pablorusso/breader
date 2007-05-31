@@ -8,9 +8,10 @@
 #include <fstream>
 #include <set>
 
-#define A5_PATH "data/A5.txt"
 #define LIBRE 0
 #define OCUPADO 1
+#define A5_PATH "data/A5.txt"
+#define A5_PATH_BIS "data/A5_bis.txt"
 
 // BORRAR
 #include <iostream>
@@ -43,9 +44,39 @@ class Archivo5 {
 		Archivo5(const t_idcat &MAX_CAT);
 
 		/**
+		 * Constructor del archivo bis. Es igual al original pero crea un
+		 * Archivo5 con el sufijo "bis".
+		 * @param idcat la cantidad maxima de categorias
+		 * @param bis se ignora
+		 */
+		Archivo5(const t_idcat &MAX_CAT, const bool bis);
+
+		/**
 		 * Destructor. Escribe el nuevo encabezado y cierra el archivo.
 		 */
 		~Archivo5();
+
+void set_MAX_CAT(const t_idcat &MAX_CAT) {
+	this->MAX_CAT = MAX_CAT;
+}
+
+		/**
+		 * Genera el nombre del archivo
+		 * @return el nombre del archivo
+		 */
+		static string genFileName();
+		
+		/**
+		 * Genera el nombre bis del archivo
+		 * @param bis se ignora
+		 * @return el nombre del archivo
+		 */
+		static string genFileName(const bool bis);
+
+		/**
+		 * Cierra el Archivo5 y lo vuelve a abrir
+		 */
+		void reopen();
 
 		/**
 		 * Escribe un registro en el archivo
@@ -93,7 +124,8 @@ class Archivo5 {
 		bool remReg(const t_offset &offset);
 
 		/**
-		 * Escribe en el archivo la categorizacion
+		 * Escribe en el archivo la categorizacion (es un OR entre lo que esta
+		 * escrito y lo que hay que agregar)
 		 * @param offset el offset del registro a categorizar en el archivo
 		 * @param idcat el id de la categoria a agregar
 		 * @param si_no si se categoriza o se descategoriza
@@ -104,10 +136,18 @@ class Archivo5 {
 		  const bool si_no);
 
 		/**
+		 * Escribe en el archivo un contenedor de clasificaciones
+		 * @param offset el offset del registro a categorizar en el archivo
+		 * @param ContenedorIdCat el contenedor con las id de la categorias
+		 * @throw eArchivo5 si el archivo esta corrupto
+		 */
+		void writeCat(const t_offset &offset, ContenedorIdCat &c);
+
+		/**
 		 * Devuelve la cantidad maxima de categorias
 		 * @return la cantidad maxima de categorias
 		 */
-		t_idcat getMaxCat() const {return this->MAX_CAT;}
+		t_idcat get_MAX_CAT() const {return this->MAX_CAT;}
 
 		/**
 		 * Sobrecarga del operator<<
@@ -121,6 +161,13 @@ class Archivo5 {
 		fstream f; //!< el handler del archivo
 		t_idcat MAX_CAT; //!< la cantidad maxima de categorias
 		t_headerArchivo5 header; //!< el header del Archivo5
+
+		/**
+		 * Abre el Archivo5 o lo crea, de ser necesario
+		 * @param idcat la cantidad maxima de categorias
+		 * @param fileName el nombre del archivo a abrir
+		 */
+		void open(const t_idcat &MAX_CAT, const string &fileName);
 
 		/**
 		 * Escribe el header en el archivo.

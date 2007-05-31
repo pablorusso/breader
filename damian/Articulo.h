@@ -115,6 +115,25 @@ class Articulo {
 		void rem_cat(const t_idcat &idcat);
 
 		/**
+		 * Obtiene el maximo numero de categorias
+		 * @return el maximo numero de categorias
+		 */
+		t_idcat get_MAX_CAT() const {
+			return this->cont_idcat.getMAX_CAT();
+		}
+		/**
+		 * Reestructura el articulo para que tenga MAX_CAT cantidad de ids de
+		 * categorias.
+		 * Nota: si NEW_MAX_CAT es menor que MAX_CAT este metodo no tiene
+		 * efecto
+		 * @param NEW_MAX_CAT la maxima cantidad de categorias nueva.
+		 */
+		void set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
+			this->cont_idcat.set_MAX_CAT(NEW_MAX_CAT);
+			this->cont_usu_pc.set_MAX_CAT(NEW_MAX_CAT);
+		}
+
+		/**
 		 * Sobrecarga del operator<<
 		 * Imprime el contenido del articulo
 		 */

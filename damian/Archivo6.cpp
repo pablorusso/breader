@@ -2,40 +2,14 @@
 // ios::in es read
 // ios::out es write
 Archivo6::Archivo6(const t_idcat &MAX_CAT): a5(MAX_CAT), nextFeed(0) {
-	// Leo/Creo el Archivo6
-	this->f.open(A6_PATH, ios::in |ios::out | ios::binary);
-	if (this->f.good()) {
-		// leo el header
-		this->readHeader();
-		if (this->header.MAX_CAT != MAX_CAT) {  // TODO lo tendre que redimensionarrrrrr
-			this->header.MAX_CAT = MAX_CAT;
-			cout << "ERROR en MAX_CAT" << endl;
-		}
-		// Calculo el numero de registros, ya que son de ancho fijo
-		this->f.seekp(0,ios::end);
-		t_offset tmp = this->f.tellp();
-		this->numRegs = (tmp-A6_SIZEOF_HEADER)/A6_SIZEOF_REG;
-		cout << "numregs: " << this->numRegs << endl;
-	} else {
-		// El archivo no estaba creado, entonces, lo creo
-		// escribo el header por primera vez (no puedo usar writeHeader)
-		t_headerArchivo6 header;
-		this->f.open(A6_PATH, ios::out | ios::binary);
-		this->header.numFeeds = header.numFeeds = this->numRegs = 0;
-		this->header.primerLibre = header.primerLibre = 0;
-		this->header.MAX_CAT = header.MAX_CAT = MAX_CAT;
-		this->f.write(reinterpret_cast<const char *>(&header.numFeeds),
-		  sizeof(t_idfeed));
-		this->f.write(reinterpret_cast<const char *>(&header.primerLibre),
-		  sizeof(t_idfeed));
-		this->f.write(reinterpret_cast<const char *>(&header.MAX_CAT),
-		  sizeof(t_idcat));
-		// Lo reabro para que sirva para entrada/salida
-		this->f.close();
-		this->f.open(A6_PATH, ios::in |ios::out | ios::binary);
-	}
-	// Seteo para que arroje excepciones
-  	this->f.exceptions(fstream::eofbit | fstream::failbit | fstream::badbit);
+	string fileName = Archivo6::genFileName();
+	this->open(MAX_CAT, fileName);
+}
+
+Archivo6::Archivo6(const t_idcat &MAX_CAT, const bool bis): a5(MAX_CAT, bis),
+   nextFeed(0) {
+	string fileName = Archivo6::genFileName(1);
+	this->open(MAX_CAT, fileName);
 }
 
 Archivo6::~Archivo6() {
@@ -45,6 +19,30 @@ Archivo6::~Archivo6() {
 	}
 	catch (fstream::failure e){
 		// aca no se puede hacer nada
+	}
+}
+
+string Archivo6::genFileName() {
+	string fileName(A6_PATH);
+	return fileName;
+}
+
+string Archivo6::genFileName(const bool bis) {
+	string fileName(A6_PATH_BIS);
+	return fileName;
+}
+
+void Archivo6::reopen() {
+	try {
+		if (this->f.is_open()) {
+			this->f.close();
+			this->a5.reopen();
+		}
+		string fileName = Archivo6::genFileName();
+		this->open(this->header.MAX_CAT, fileName);
+	}
+	catch (fstream::failure e){
+		// Aca no se puede hacer nada
 	}
 }
 
@@ -84,11 +82,12 @@ t_idfeed Archivo6::addFeed(const string &uri, const string &nombre) {
 	return ret;
 }
 
-t_idfeed Archivo6::addFeed(const Feed &feed) {
+t_idfeed Archivo6::addFeed(Feed &feed) {
 	t_idfeed ret;
 	try {
 		// agrego en la primer posicion libre
 		ret = this->header.primerLibre;
+		feed.setIdFeed(ret);
 		t_offset offset = this->a5.writeReg(feed);
 		t_regArchivo6 regA6;
 		regA6.estado = OCUPADO;
@@ -124,6 +123,25 @@ Feed Archivo6::getFeed(const t_idfeed &idfeed) {
 	return feed;
 }
 
+void Archivo6::gotoFirstFeed() {
+	try {
+		this->nextFeed=0;
+		bool done=false;
+		while (!done) {
+			if (this->nextFeed >= this->numRegs) done = true;
+			else {
+				t_regArchivo6 regA6 = this->readReg(nextFeed);
+				if (regA6.estado == OCUPADO) done = true;
+				else ++this->nextFeed;
+			}
+		}
+	}
+	catch (fstream::failure e) {
+		if (this->f.is_open()) this->f.close();
+		THROW(eArchivo6, A6_ARCHIVO_CORRUPTO);
+	}
+}
+
 Feed Archivo6::getNextFeed() {
 	Feed feed(this->header.MAX_CAT);
 	// El usuario debe preguntar por el fin antes de llamar a getNextFeed
@@ -137,11 +155,13 @@ Feed Archivo6::getNextFeed() {
 			feed.setContIdCat(regA5.cont);
 			// calculo el next
 			bool done=false;
+			++this->nextFeed;
 			while (!done) {
-				if (++this->nextFeed >= this->numRegs) done = true;
+				if (this->nextFeed >= this->numRegs) done = true;
 				else {
-					regA6 = this->readReg(nextFeed);
+					t_regArchivo6 regA6 = this->readReg(nextFeed);
 					if (regA6.estado == OCUPADO) done = true;
+					else ++this->nextFeed;
 				}
 			}
 		}
@@ -158,7 +178,7 @@ Feed Archivo6::getNextFeed() {
 
 bool Archivo6::remFeed(const t_idfeed &idfeed) {
 	bool ret = false;
-	try {	
+	try {
 		if (idfeed < this->numRegs) {
 			t_regArchivo6 regRem = this->readReg(idfeed);
 			if (regRem.estado == OCUPADO){
@@ -231,15 +251,29 @@ void Archivo6::catFeed(const t_idfeed &idfeed, const t_idcat &idcat,
 			THROW(eArchivo6, A6_ARCHIVO_CORRUPTO);
 		}
 	} else THROW(eArchivo6, A6_IDFEED_INVALIDO);
+}
 
+void Archivo6::catFeed(const t_idfeed &idfeed, ContenedorIdCat &c) {
+	if (idfeed < this->numRegs) {
+		try {
+			t_regArchivo6 regA6 = this->readReg(idfeed);	
+			if (regA6.estado == LIBRE) THROW(eArchivo6, A6_IDFEED_INVALIDO);
+			else {
+				this->a5.writeCat(regA6.oArchivo5, c);
+			}
+		}
+		catch (fstream::failure e) {
+			if (this->f.is_open()) this->f.close();
+			THROW(eArchivo6, A6_ARCHIVO_CORRUPTO);
+		}
+	} else THROW(eArchivo6, A6_IDFEED_INVALIDO);
 }
 
 t_cola_idfeeds Archivo6::getColaIdFeeds() {
 	t_cola_idfeeds c_idfeeds;
 	this->gotoFirstFeed();
-	Feed feed(this->header.MAX_CAT);
 	while (this->nextIsOK()) {
-		feed = this->getNextFeed();
+		Feed feed = this->getNextFeed();
 		c_idfeeds.push(feed.getIdFeed());
 	}
 	return c_idfeeds;
@@ -253,6 +287,39 @@ void Archivo6::bajaCategoria(const t_idcat &idcat) {
 			c_idfeeds.pop();
 		}
 	} else THROW(eArchivo6, A6_IDCAT_FUERA_DE_RANGO);
+}
+
+
+void Archivo6::open(const t_idcat &MAX_CAT, const string &fileName) {
+	// Leo/Creo el Archivo6
+	this->f.open(fileName.c_str(), ios::in |ios::out | ios::binary);
+	if (this->f.good()) {
+		// leo el header
+		this->readHeader();
+		// Calculo el numero de registros, ya que son de ancho fijo
+		this->f.seekp(0,ios::end);
+		t_offset tmp = this->f.tellp();
+		this->numRegs = (tmp-A6_SIZEOF_HEADER)/A6_SIZEOF_REG;
+	} else {
+		// El archivo no estaba creado, entonces, lo creo
+		// escribo el header por primera vez (no puedo usar writeHeader)
+		t_headerArchivo6 header;
+		this->f.open(fileName.c_str(), ios::out | ios::binary);
+		this->header.numFeeds = header.numFeeds = this->numRegs = 0;
+		this->header.primerLibre = header.primerLibre = 0;
+		this->header.MAX_CAT = header.MAX_CAT = MAX_CAT;
+		this->f.write(reinterpret_cast<const char *>(&header.numFeeds),
+		  sizeof(t_idfeed));
+		this->f.write(reinterpret_cast<const char *>(&header.primerLibre),
+		  sizeof(t_idfeed));
+		this->f.write(reinterpret_cast<const char *>(&header.MAX_CAT),
+		  sizeof(t_idcat));
+		// Lo reabro para que sirva para entrada/salida
+		this->f.close();
+		this->f.open(fileName.c_str(), ios::in|ios::out|ios::binary);
+	}
+	// Seteo para que arroje excepciones
+  	this->f.exceptions(fstream::eofbit | fstream::failbit | fstream::badbit);
 }
 
 void Archivo6::writeHeader() {
