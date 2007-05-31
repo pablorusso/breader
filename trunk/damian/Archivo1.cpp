@@ -2,17 +2,12 @@
 
 Archivo1::Archivo1(const t_idfeed &idfeed) {
 	string fileName = Archivo1::genFileName(idfeed);
-	// Leo/Creo el Archivo2
-	this->f.open(fileName.c_str(), ios::in |ios::out | ios::binary);
-	if (!this->f.good()) {
-		// El archivo no estaba creado, entonces, lo creo
-		this->f.open(fileName.c_str(), ios::out | ios::binary);
-		// Lo reabro para que sirva para entrada/salida
-		this->f.close();
-		this->f.open(fileName.c_str(), ios::in |ios::out | ios::binary);
-	}
-	// Seteo para que arroje excepciones
-  	this->f.exceptions(fstream::eofbit | fstream::failbit | fstream::badbit);
+	this->open(fileName);
+}
+
+Archivo1::Archivo1(const t_idfeed &idfeed, const bool bis) {
+	string fileName = Archivo1::genFileName(idfeed, bis);
+	this->open(fileName);
 }
 
 Archivo1::~Archivo1() {
@@ -32,6 +27,16 @@ string Archivo1::genFileName(const t_idfeed &idfeed) {
 	fileName.append("_" + o.str() + ".txt");
 	return fileName;
 }
+
+string Archivo1::genFileName(const t_idfeed &idfeed, const bool bis) {
+	// Calculo el nombre del archivo como "A1_PATH_BIS"+"_"+idfeed+".txt"
+	string fileName = A1_PATH_BIS;
+	ostringstream o;
+	o << idfeed;
+	fileName.append("_" + o.str() + ".txt");
+	return fileName;
+}
+
 
 bool Archivo1::del(const t_idfeed &idfeed) {
 	bool ret = true;
@@ -180,3 +185,18 @@ void Archivo1::readArticulo(const t_offset &offset, Articulo &art) {
 		THROW(eArchivo1, A1_ARCHIVO_CORRUPTO);
 	}
 }
+
+void Archivo1::open(const string &fileName) {
+	// Leo/Creo el Archivo2
+	this->f.open(fileName.c_str(), ios::in |ios::out | ios::binary);
+	if (!this->f.good()) {
+		// El archivo no estaba creado, entonces, lo creo
+		this->f.open(fileName.c_str(), ios::out | ios::binary);
+		// Lo reabro para que sirva para entrada/salida
+		this->f.close();
+		this->f.open(fileName.c_str(), ios::in |ios::out | ios::binary);
+	}
+	// Seteo para que arroje excepciones
+  	this->f.exceptions(fstream::eofbit | fstream::failbit | fstream::badbit);
+}
+

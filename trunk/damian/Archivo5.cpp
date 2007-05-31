@@ -1,25 +1,14 @@
 #include "Archivo5.h"
 
 Archivo5::Archivo5(const t_idcat &MAX_CAT): MAX_CAT(MAX_CAT) {
-	// Leo/Creo el Archivo5
-	this->f.open(A5_PATH, ios::in |ios::out | ios::binary);
-	if (this->f.good()) {
-		// leo el header
-		this->readHeader();
- 	} else {
-		// El archivo no estaba creado, entonces, lo creo
-		// escribo el header por primera vez (no puedo usar writeHeader)
-		t_headerArchivo5 header;
-		this->f.open(A5_PATH, ios::out | ios::binary);
-		this->header.primerLibre = header.primerLibre = A5_SIZEOF_HEADER;
-		this->f.write(reinterpret_cast<const char *>(&this->header.primerLibre),
-		  sizeof(t_offset));
-		// Lo reabro para que sirva para entrada/salida
-		this->f.close();
-		this->f.open(A5_PATH, ios::in |ios::out | ios::binary);
-	}
-	// Seteo para que arroje excepciones
-	this->f.exceptions(fstream::eofbit | fstream::failbit | fstream::badbit);
+	string fileName = Archivo5::genFileName();
+	this->open(MAX_CAT, fileName);
+}
+
+Archivo5::Archivo5(const t_idcat &MAX_CAT, const bool bis):
+  MAX_CAT(MAX_CAT) {
+	string fileName = Archivo5::genFileName(1);
+	this->open(MAX_CAT, fileName);
 }
 
 Archivo5::~Archivo5() {
@@ -29,6 +18,29 @@ Archivo5::~Archivo5() {
 	}
 	catch (fstream::failure e){
 		// aca no se puede hacer nada
+	}
+}
+
+string Archivo5::genFileName() {
+	string fileName(A5_PATH);
+	return fileName;
+}
+
+string Archivo5::genFileName(const bool bis) {
+	string fileName(A5_PATH_BIS);
+	return fileName;
+}
+
+void Archivo5::reopen() {
+	try {
+		if (this->f.is_open()) {
+			this->f.close();
+		}
+		string fileName = Archivo5::genFileName();
+		this->open(this->MAX_CAT, fileName);
+	}
+	catch (fstream::failure e){
+		// Aca no se puede hacer nada
 	}
 }
 
@@ -100,27 +112,66 @@ bool Archivo5::remReg(const t_offset &offset) {
 
 void Archivo5::writeCat(const t_offset &offset, const t_idcat &idcat,
   const bool si_no) {
-	if (idcat < this->MAX_CAT) {
-		t_idcat d, m;
-		unsigned char byte;
-		t_offset back;
-		d = idcat / 8;
-		m = idcat % 8;
-		// me posiciono con el put en el byte a modificar
-		this->f.seekp(offset+sizeof(bool)+sizeof(t_freebytes)+d, ios::beg);
-		// guardo el offset para un futuro
-		back = this->f.tellp();
-		// me posiciono con el get en el byte a modificar
-		this->f.seekg(back, ios::beg);
-		// leo el byte a modificar
-		this->f.read(reinterpret_cast<char *>(&byte), sizeof(unsigned char));
-		// modifico el byte leido
-		bitOperator::setBit(byte, m, si_no);
-		// escribo el byte modificado
-		f.seekp(back, ios::beg); // No deberia hacer falta
-		this->f.write(reinterpret_cast<const char *>(&byte),
-		  sizeof(unsigned char));
-	} else THROW(eArchivo5, A5_IDCAT_FUERA_DE_RANGO);
+	try {
+		if (idcat < this->MAX_CAT) {
+			t_idcat d, m;
+			unsigned char byte;
+			t_offset back;
+			d = idcat / 8;
+			m = idcat % 8;
+			// me posiciono con el put en el byte a modificar
+			this->f.seekp(offset+sizeof(bool)+sizeof(t_freebytes)+d, ios::beg);
+			// guardo el offset para un futuro
+			back = this->f.tellp();
+			// me posiciono con el get en el byte a modificar
+			this->f.seekg(back, ios::beg);
+			// leo el byte a modificar
+			this->f.read(reinterpret_cast<char *>(&byte), sizeof(unsigned char));
+			// modifico el byte leido
+			bitOperator::setBit(byte, m, si_no);
+			// escribo el byte modificado
+			f.seekp(back, ios::beg); // No deberia hacer falta
+			this->f.write(reinterpret_cast<const char *>(&byte),
+			sizeof(unsigned char));
+		} else THROW(eArchivo5, A5_IDCAT_FUERA_DE_RANGO);
+	}
+	catch (fstream::failure e) {
+		THROW(eArchivo5, A5_ARCHIVO_CORRUPTO);
+	}
+}
+
+void Archivo5::writeCat(const t_offset &offset, ContenedorIdCat &c) {
+	try {
+		// me posiciono con el put en el comienzo de los idcat
+		this->f.seekp(offset+sizeof(bool)+sizeof(t_freebytes), ios::beg);
+		c.writeCatOR(this->f);
+	}
+	catch (fstream::failure e) {
+		THROW(eArchivo5, A5_ARCHIVO_CORRUPTO);
+	}
+
+}
+
+void Archivo5::open(const t_idcat &MAX_CAT, const string &fileName) {
+	// Leo/Creo el Archivo5
+	this->f.open(fileName.c_str(), ios::in |ios::out | ios::binary);
+	if (this->f.good()) {
+		// leo el header
+		this->readHeader();
+ 	} else {
+		// El archivo no estaba creado, entonces, lo creo
+		// escribo el header por primera vez (no puedo usar writeHeader)
+		t_headerArchivo5 header;
+		this->f.open(fileName.c_str(), ios::out | ios::binary);
+		this->header.primerLibre = header.primerLibre = A5_SIZEOF_HEADER;
+		this->f.write(reinterpret_cast<const char *>(&this->header.primerLibre),
+		  sizeof(t_offset));
+		// Lo reabro para que sirva para entrada/salida
+		this->f.close();
+		this->f.open(fileName.c_str(), ios::in|ios::out|ios::binary);
+	}
+	// Seteo para que arroje excepciones
+	this->f.exceptions(fstream::eofbit | fstream::failbit | fstream::badbit);
 }
 
 void Archivo5::writeHeader() {

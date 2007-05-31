@@ -7,6 +7,8 @@
 #include <fstream>
 
 #define A1_PATH "data/A1"
+#define A1_PATH_BIS "data/A1_bis"
+
 
 // BORRAR
 #include <iostream>
@@ -36,6 +38,19 @@ class Archivo1 {
 		Archivo1(const t_idfeed &idfeed);
 
 		/**
+		 * Constructor del archivo bis. Es igual al original pero crea un
+		 * Archivo1 con el sufijo "bis".
+		 * @param idfeed el id del feed del archivo
+		 * @param bis se ignora
+		 */
+		Archivo1(const t_idfeed &idfeed, const bool bis);
+
+		/**
+		 * Destructor. Cierra el archivo.
+		 */
+		~Archivo1();
+
+		/**
 		 * Borra el archivo indicado del disco duro
 		 * @param idfeed el id del feed del archivo a borrar
 		 * @return true si lo pudo borrar, false de lo contrario
@@ -50,9 +65,12 @@ class Archivo1 {
 		static string genFileName(const t_idfeed &idfeed);
 
 		/**
-		 * Destructor. Cierra el archivo.
+		 * Genera el nombre bis del archivo a partir de su idfeed
+		 * @param idfeed el id del feed del nombre a generar
+		 * @param bis se ignora
+		 * @return el nombre del archivo
 		 */
-		~Archivo1();
+		static string genFileName(const t_idfeed &idfeed, const bool bis);
 
 		/**
 		 * Agrega el articulo al final del Archivo1, devuelve el offset en
@@ -75,6 +93,13 @@ class Archivo1 {
 
 	private:
 		fstream f; //!< el handler del Archivo1
+
+		/**
+		 * Abre el Archivo1 o lo crea, de ser necesario
+		 * @param fileName el nombre del Archivo1
+		 */
+		void open(const string &fileName);
+
 };
 
 #endif

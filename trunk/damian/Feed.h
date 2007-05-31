@@ -44,6 +44,16 @@ class Feed {
 		void setContIdCat(const ContenedorIdCat &cat) {this->cat = cat;}
 
 		/**
+		 * Reestructura el feed para que tenga MAX_CAT cantidad de ids de 
+		 * categorias.
+		 * Nota: si NEW_MAX_CAT es menor que MAX_CAT este metodo no afecta
+		 * nada
+		 * @param NEW_MAX_CAT la maxima cantidad de categorias nueva.
+		 */
+		void set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
+			this->cat.set_MAX_CAT(NEW_MAX_CAT);
+		}
+		/**
 		 * Sobrecarga del operator<<
 		 * Imprime el contenido del feed
 		 */

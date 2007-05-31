@@ -1,36 +1,15 @@
 #include "Archivo2.h"
 
-Archivo2::Archivo2(const t_idcat &MAX_CAT, const t_idfeed &idfeed): a1(idfeed),
-  idfeed(idfeed) {
+Archivo2::Archivo2(const t_idcat &MAX_CAT, const t_idfeed &idfeed):
+  a1(idfeed), idfeed(idfeed) {
 	string fileName = Archivo2::genFileName(idfeed);
-	// Leo/Creo el Archivo2
-	this->f.open(fileName.c_str(), ios::in |ios::out | ios::binary);
-	if (this->f.good()) {
-		// leo el header
-		this->readHeader();
-		if (this->header.MAX_CAT != MAX_CAT) {  // TODO lo tendre que redimensionarrrrrr
-			this->header.MAX_CAT = MAX_CAT;
-			cout << "ERROR en MAX_CAT" << endl;
-		}
-		// Calculo el numero de registros, ya que son de ancho fijo
-		this->f.seekp(0,ios::end);
-		t_offset tmp = this->f.tellp();
-		this->numRegs = (tmp-A2_SIZEOF_HEADER)/this->sizeofReg();
-	} else {
-		// El archivo no estaba creado, entonces, lo creo
-		// escribo el header por primera vez (no puedo usar writeHeader)
-		t_headerArchivo2 header;
-		this->f.open(fileName.c_str(), ios::out | ios::binary);
-		this->header.MAX_CAT = header.MAX_CAT = MAX_CAT;
-		this->numRegs = 0;
-		this->f.write(reinterpret_cast<const char *>(&header.MAX_CAT),
-		  sizeof(t_idcat));
-		// Lo reabro para que sirva para entrada/salida
-		this->f.close();
-		this->f.open(fileName.c_str(), ios::in |ios::out | ios::binary);
-	}
-	// Seteo para que arroje excepciones
-  	this->f.exceptions(fstream::eofbit | fstream::failbit | fstream::badbit);
+	this->open(MAX_CAT, fileName);
+}
+
+Archivo2::Archivo2(const t_idcat &MAX_CAT, const t_idfeed &idfeed,
+  const bool bis): a1(idfeed, 1), idfeed(idfeed) {
+	string fileName = Archivo2::genFileName(idfeed,1);
+	this->open(MAX_CAT, fileName);
 }
 
 Archivo2::~Archivo2() {
@@ -44,13 +23,24 @@ Archivo2::~Archivo2() {
 }
 
 string Archivo2::genFileName(const t_idfeed &idfeed) {
-	// Calculo el nombre del archivo como "A2_PATH"+"_"+idfeed+".txt"
-	string fileName = A2_PATH;
+	// Calculo el nombre del archivo como "a2_baseFileName"+"_"+idfeed+".txt"
+	string fileName = A2_BASE_PATH;
 	ostringstream o;
 	o << idfeed;
 	fileName.append("_" + o.str() + ".txt");
 	return fileName;
 }
+
+string Archivo2::genFileName(const t_idfeed &idfeed, const bool bis) {
+	// Calculo el nombre del archivo como "a2_baseFileName"+"_bis"+
+	// "_"+idfeed+".txt"
+	string fileName = A2_BASE_PATH_BIS;
+	ostringstream o;
+	o << idfeed;
+	fileName.append("_" + o.str() + ".txt");
+	return fileName;
+}
+
 
 bool Archivo2::del(const t_idfeed &idfeed) {
 	bool ret = true;
@@ -221,6 +211,33 @@ void Archivo2::bajaCategoria(const t_idcat &idcat) {//TODO
 		}
 	} else THROW(eArchivo2, A2_IDCAT_FUERA_DE_RANGO);
 	
+}
+
+void Archivo2::open(const t_idcat &MAX_CAT, const string &fileName) {
+	// Leo/Creo el Archivo2
+	this->f.open(fileName.c_str(), ios::in |ios::out | ios::binary);
+	if (this->f.good()) {
+		// leo el header
+		this->readHeader();
+		// Calculo el numero de registros, ya que son de ancho fijo
+		this->f.seekp(0,ios::end);
+		t_offset tmp = this->f.tellp();
+		this->numRegs = (tmp-A2_SIZEOF_HEADER)/this->sizeofReg();
+	} else {
+		// El archivo no estaba creado, entonces, lo creo
+		// escribo el header por primera vez (no puedo usar writeHeader)
+		t_headerArchivo2 header;
+		this->f.open(fileName.c_str(), ios::out | ios::binary);
+		this->header.MAX_CAT = header.MAX_CAT = MAX_CAT;
+		this->numRegs = 0;
+		this->f.write(reinterpret_cast<const char *>(&header.MAX_CAT),
+		  sizeof(t_idcat));
+		// Lo reabro para que sirva para entrada/salida
+		this->f.close();
+		this->f.open(fileName.c_str(), ios::in |ios::out | ios::binary);
+	}
+	// Seteo para que arroje excepciones
+  	this->f.exceptions(fstream::eofbit | fstream::failbit | fstream::badbit);
 }
 
 void Archivo2::writeHeader() {

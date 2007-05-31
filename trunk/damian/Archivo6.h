@@ -8,11 +8,13 @@
 #include "excepciones/eFeed.h"
 #include <fstream>
 
-#define A6_PATH "data/A6.txt"
+
 #define LIBRE 0
 #define OCUPADO 1
 #define A6_SIZEOF_REG ((sizeof(bool)) + (sizeof(t_offset)))
 #define A6_SIZEOF_HEADER ((sizeof(t_idfeed))*(2)+ sizeof(t_idcat))
+#define A6_PATH "data/A6.txt"
+#define A6_PATH_BIS "data/A6_bis.txt"
 
 // BORRAR
 #include <iostream>
@@ -47,14 +49,44 @@ class Archivo6 {
 		 * Constructor. Inicializa los archivos necesarios. Deja el archivo
 		 * abierto para lectura/escritura.
 		 * Posiciona el puntero de getNextFeed al comienzo
-		 * @param la cantidad maxima de categorias (Archivo6)
+		 * @param idcat la cantidad maxima de categorias (Archivo6)
 		 */
 		Archivo6(const t_idcat &MAX_CAT);
+
+		/**
+		 * Constructor del archivo bis. Es igual al original pero crea un
+		 * Archivo6 con el sufijo "bis".
+		 * @param idcat la cantidad maxima de categorias
+		 * @param bis se ignora
+		 */
+		Archivo6(const t_idcat &MAX_CAT, const bool bis);
 
 		/**
 		 * Destructor. Escribe el nuevo encabezado y cierra el archivo.
 		 */
 		~Archivo6();
+
+void set_MAX_CAT(const t_idcat &MAX_CAT) {
+	this->a5.set_MAX_CAT(MAX_CAT);
+}
+
+		/**
+		 * Genera el nombre del archivo
+		 * @return el nombre del archivo
+		 */
+		static string genFileName();
+
+		/**
+		 * Genera el nombre bis del archivo a partir de su idfeed
+		 * @param bis se ignora
+		 * @return el nombre del archivo
+		 */
+		static string genFileName(const bool bis);
+
+		/**
+		 * Cierra el Archivo6 y lo vuelve a abrir
+		 */
+		void reopen();
 
 		/**
 		 * Devuelve la cantidad de feeds en el archivo
@@ -84,13 +116,14 @@ class Archivo6 {
 
 		/**
 		 * Agrega un feed al Archivo6
+		 * Nota: se modifica el idfeed del feed al "nuevo" idfeed
 		 * @param feed el feed a agregar
 		 * @return el idfeed asignado a ese feed
 		 * TODO: si se agrega y ya estaba, queda duplicado...?
 		 * @throw eArchivo6 si el archivo esta corrupto
 		 * @throw eArchivo6 si los parametros no son integros
 		 */
-		t_idfeed addFeed(const Feed &feed);
+		t_idfeed addFeed(Feed &feed);
 
 		/**
 		 * Obtiene un feed del Archivo6
@@ -108,12 +141,14 @@ class Archivo6 {
 		 * Nota: debe usarse siempre antes del getNextFeed
 		 * @return true si esta dentro del rango, false de lo contrario
 		 */
-		bool nextIsOK() {return (this->nextFeed < this->numRegs);}	
+		bool nextIsOK() {return (this->nextFeed < this->numRegs);}
 
 		/**
-		 * Posiciona el puntero de getNextFeed al comienzo
+		 * Posiciona el puntero de getNextFeed al comienzo (en el primer feed
+		 * ocupado)
+		 * @throw eArchivo6 si el archivo esta corrupto
 		 */
-		void gotoFirstFeed() {this->nextFeed = 0;}
+		void gotoFirstFeed();
 
 		/**
 		 * Obtiene el proximo feed del Archivo6
@@ -140,10 +175,29 @@ class Archivo6 {
 		 * @param si_no si se categoriza o se descategoriza
 		 * @throw eArchivo6 si el archivo esta corrupto
 		 * @throw eArchivo6 si el idfeed esta fuera de rango, o el feed
-		 *        estaba borrado
+		 *                  estaba borrado
 		 */
 		void catFeed(const t_idfeed &idfeed, const t_idcat &idcat,
 		  const bool si_no);
+
+		/**
+		 * Categoriza al feed con las idcat indicadas
+		 * @param idfeed el id del feed a categorizar
+		 * @param ContenedorIdCat contenedor con las clasificaciones
+		 * @throw eArchivo6 si el archivo esta corrupto
+		 * @throw eArchivo6 si el idfeed esta fuera de rango, o el feed
+		 *                  estaba borrado
+		 */
+		void catFeed(const t_idfeed &idfeed, ContenedorIdCat &c);
+
+		/**
+		 * Invierte el valor del bit de favorito, es decir, si estaba como
+		 * favorito deja de estarlo y viceversa.
+		 * @param idart el id del articulo que hay que invertir
+		 * @throw eArchivo6 si el Archivo2 esta corrupto
+		 * @throw eArchivo6 si el idart esta fuera de rango
+		 */
+		void invertirFavorito(const t_idfeed &idfeed);
 
 		/**
 		 * Devuelve una cola con los idfeed del archivo
@@ -181,8 +235,13 @@ class Archivo6 {
 		t_idfeed numRegs; //!< el numero de registros en total (ocupados o
 		                  //!< libres). No se guarda porque se deduce.
 		t_idfeed nextFeed; //!< el id del feed que se obtendra con getNextFeed
-			
 
+		/**
+		 * Abre el Archivo6 o lo crea, de ser necesario
+		 * @param idcat la cantidad maxima de categorias (Archivo6)
+		 * @param fileName el nombre del Archivo6
+		 */
+		void open(const t_idcat &MAX_CAT, const string &fileName);
 
 		/**
 		 * Escribe el header en el archivo.
