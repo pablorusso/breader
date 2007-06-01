@@ -39,9 +39,7 @@ typedef struct t_headerArchivo6 {
 /**
  * Clase que encapsula el comportamiento del Archivo6
  * En los registros no se guarda el idfeed, queda implicito (idfeed=posicion)
- * TODO reestructurarlo para eliminar muchos libres. En ese caso, hay que
- *      modificar los Archivo_2_f para que coincidan con las columnas. OJO.
- */
+*/
 using namespace std;
 class Archivo6 {
 	public:
@@ -65,10 +63,6 @@ class Archivo6 {
 		 * Destructor. Escribe el nuevo encabezado y cierra el archivo.
 		 */
 		~Archivo6();
-
-void set_MAX_CAT(const t_idcat &MAX_CAT) {
-	this->a5.set_MAX_CAT(MAX_CAT);
-}
 
 		/**
 		 * Genera el nombre del archivo
@@ -221,6 +215,8 @@ void set_MAX_CAT(const t_idcat &MAX_CAT) {
 		 */
 		t_idcat get_MAX_CAT() const 
 		  {return this->header.MAX_CAT;}
+
+
 		/**
 		 * Sobrecarga del operator<<
 		 * Imprime el contenido del Archivo6
@@ -238,10 +234,9 @@ void set_MAX_CAT(const t_idcat &MAX_CAT) {
 
 		/**
 		 * Abre el Archivo6 o lo crea, de ser necesario
-		 * @param idcat la cantidad maxima de categorias (Archivo6)
 		 * @param fileName el nombre del Archivo6
 		 */
-		void open(const t_idcat &MAX_CAT, const string &fileName);
+		void open(const string &fileName);
 
 		/**
 		 * Escribe el header en el archivo.
@@ -276,6 +271,16 @@ void set_MAX_CAT(const t_idcat &MAX_CAT) {
 		 * @throw fstream::failure si el archivo esta corrupto
 		 */
 		t_regArchivo6 readReg(const t_idfeed &numReg);
+
+		/**
+		 * Constructor copia, privado, para prevenir descuidos
+		 */
+		Archivo6(const Archivo6 &);
+
+		/**
+		 * Operador= sobrecargado, privado, para prevenir descuidos
+		 */
+		Archivo6 &operator=(const Archivo6 &);
 
 };
 #endif

@@ -23,7 +23,6 @@ short Articulo::find_cat(const t_idcat &idcat) {
 	return ret;
 }
 
-
 void Articulo::rem_cat(const t_idcat &idcat) {
 	if (idcat < this->cont_idcat.getMAX_CAT()) {
 		this->cont_idcat.setCat(idcat, 0);

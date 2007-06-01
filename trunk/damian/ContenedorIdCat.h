@@ -18,14 +18,40 @@ class ContenedorIdCat {
 	public:
 
 		/**
-		* Constructor
+		 * Constructor.
+		 * @param MAX_CAT la maxima cantidad de categorias (es
+		 *                redondeada al primer multiplo de 8 mayor)
 		*/
 		ContenedorIdCat(const t_idcat &MAX_CAT);
 
 		/**
-		* Destructor
+		 * Destructor
 		*/
 		~ContenedorIdCat();
+
+		/**
+		 * Matchea su propio contenido contra el del contenedor c_cat, teniendo
+		 * en cuenta c_si_no.
+		 * -----------------------------------
+		 * c_cat    c_si_no    this    match
+		 * 0        0          0       1
+		 * 0        0          1       1
+		 * 0        1          0       1
+		 * 0        1          1       1
+		 * 1        0          0       1
+		 * 1        0          1       0
+		 * 1        1          0       0
+		 * 1        1          1       1
+		 * -----------------------------------
+		 * Una expresion de lo de arriba seria:
+		 * (~c_cat) OR ( ~(c_si_no XOR this))
+		 * Si para todos los bits del contenedor, esta expresion vale 1,
+		 * entonces hay un match, de lo contrario no lo hay.
+		 * @param c_cat el contenedor contra el cual matchear
+		 * @param c_si_no el contenedor con los switch si_no
+		 * @return true si hay match, false de lo contrario
+		 */
+		bool match(ContenedorIdCat &c_cat, ContenedorIdCat &c_si_no);
 
 		/**
 		 * Agrega/quita una categoria del registro.
@@ -90,21 +116,21 @@ class ContenedorIdCat {
 		 * Obtiene la maxima cantidad de categorias
 		 * @return la maxima cantidad de categorias
 		 */
-		t_idcat getMAX_CAT() const {return this->MAX_CAT;}
+		t_idcat get_MAX_CAT() const {return this->MAX_CAT;}
 
 		/**
 		 * Reestructura el contenedor para que tenga MAX_CAT cantidad de ids de
 		 * categorias.
-		 * Nota: si NEW_MAX_CAT es menor que MAX_CAT este metodono tiene
+		 * Nota: si NEW_MAX_CAT es menor que MAX_CAT este metodo no tiene
 		 * efecto
-		 * @param NEW_MAX_CAT la maxima cantidad de categorias nueva.
+		 * @param NEW_MAX_CAT la maxima cantidad de categorias nueva. (es
+		 *                    redondeada al primer multiplo de 8 mayor)
 		 */
-		void set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
-			this->categorias.reserve(NEW_MAX_CAT);
-			this->MAX_CAT = NEW_MAX_CAT;
-		}
+		void set_MAX_CAT(const t_idcat &NEW_MAX_CAT);
 
-
+		/**
+		 * Sobrecarga del operador<<
+		 */
 		friend ostream &operator<<(ostream &stream,
 		  const ContenedorIdCat &cont);
 

@@ -50,6 +50,5 @@ class t_regArchivo2 {
 		 */
 		friend ostream &operator<<(ostream &stream,  t_regArchivo2 &reg);
 
-//	private:
 };
 #endif

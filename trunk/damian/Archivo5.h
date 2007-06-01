@@ -21,6 +21,7 @@
  * La estructura del header del Archivo5
  */
 typedef struct t_headerArchivo5 {
+	t_idcat MAX_CAT; //!< la cantidad maxima de categorias
 	t_offset primerLibre; //!< guardo el offset del primer reg libre
 };
 
@@ -55,10 +56,6 @@ class Archivo5 {
 		 * Destructor. Escribe el nuevo encabezado y cierra el archivo.
 		 */
 		~Archivo5();
-
-void set_MAX_CAT(const t_idcat &MAX_CAT) {
-	this->MAX_CAT = MAX_CAT;
-}
 
 		/**
 		 * Genera el nombre del archivo
@@ -147,27 +144,25 @@ void set_MAX_CAT(const t_idcat &MAX_CAT) {
 		 * Devuelve la cantidad maxima de categorias
 		 * @return la cantidad maxima de categorias
 		 */
-		t_idcat get_MAX_CAT() const {return this->MAX_CAT;}
+		t_idcat get_MAX_CAT() const {return this->header.MAX_CAT;}
 
 		/**
 		 * Sobrecarga del operator<<
 		 * Imprime el contenido del Archivo5 (solo imprime el header)
 		 * Nota: no es const porque tengo que leer y cambiar el fpointer
 		 */
-		friend std::ostream &operator<<(std::ostream &stream, Archivo5 &a);
+		friend ostream &operator<<(ostream &stream, Archivo5 &a);
 
 
 	private:
 		fstream f; //!< el handler del archivo
-		t_idcat MAX_CAT; //!< la cantidad maxima de categorias
 		t_headerArchivo5 header; //!< el header del Archivo5
 
 		/**
 		 * Abre el Archivo5 o lo crea, de ser necesario
-		 * @param idcat la cantidad maxima de categorias
 		 * @param fileName el nombre del archivo a abrir
 		 */
-		void open(const t_idcat &MAX_CAT, const string &fileName);
+		void open(const string &fileName);
 
 		/**
 		 * Escribe el header en el archivo.
@@ -180,6 +175,16 @@ void set_MAX_CAT(const t_idcat &MAX_CAT) {
 		 * @throw fstream::failure si el archivo esta corrupto
 		 */
 		void readHeader();
+
+		/**
+		 * Constructor copia, privado, para prevenir descuidos
+		 */
+		Archivo5(const Archivo5 &);
+
+		/**
+		 * Operador= sobrecargado, privado, para prevenir descuidos
+		 */
+		Archivo5 &operator=(const Archivo5 &);
 
 };
 

@@ -1,15 +1,17 @@
 #include "Archivo2.h"
 
 Archivo2::Archivo2(const t_idcat &MAX_CAT, const t_idfeed &idfeed):
-  a1(idfeed), idfeed(idfeed) {
-	string fileName = Archivo2::genFileName(idfeed);
-	this->open(MAX_CAT, fileName);
+  a1(idfeed), idfeed(idfeed)  {
+	this->header.MAX_CAT = MAX_CAT;
+	this->fileName = Archivo2::genFileName(idfeed);
+	this->open();
 }
 
 Archivo2::Archivo2(const t_idcat &MAX_CAT, const t_idfeed &idfeed,
   const bool bis): a1(idfeed, 1), idfeed(idfeed) {
-	string fileName = Archivo2::genFileName(idfeed,1);
-	this->open(MAX_CAT, fileName);
+	this->header.MAX_CAT = MAX_CAT;
+	this->fileName = Archivo2::genFileName(idfeed,1);
+	this->open();
 }
 
 Archivo2::~Archivo2() {
@@ -186,6 +188,23 @@ bool Archivo2::readCat(const t_idart &idart, const t_idcat &idcat) {
 	return ret;
 }
 
+ContenedorIdCat Archivo2::readCat(const t_idart &idart) {
+	ContenedorIdCat c(this->header.MAX_CAT);
+	if (idart < this->numRegs) {
+		try {
+			t_offset pos = A2_SIZEOF_HEADER + idart*this->sizeofReg() +
+			  sizeof(t_timestamp) + sizeof(t_offset) + sizeof(bool);
+			this->f.seekg(pos);
+			c.readCat(this->f);
+		}
+		catch (fstream::failure e) {
+			THROW(eArchivo2, A2_ARCHIVO_CORRUPTO);
+		}
+	} else THROW(eArchivo2, A2_IDART_FUERA_DE_RANGO);
+	return c;
+
+}
+
 bool Archivo2::readUsu_Pc(const t_idart &idart, const t_idcat &idcat) {
 	bool ret;
 	if (idart < this->numRegs) {
@@ -202,7 +221,7 @@ bool Archivo2::readUsu_Pc(const t_idart &idart, const t_idcat &idcat) {
 	return ret;
 }
 
-void Archivo2::bajaCategoria(const t_idcat &idcat) {//TODO
+void Archivo2::bajaCategoria(const t_idcat &idcat) {
 	if (idcat < this->header.MAX_CAT) {
 		t_idart idart = this->numRegs;
 		// Borro la categoria para todos los articulos
@@ -213,9 +232,9 @@ void Archivo2::bajaCategoria(const t_idcat &idcat) {//TODO
 	
 }
 
-void Archivo2::open(const t_idcat &MAX_CAT, const string &fileName) {
+void Archivo2::open() {
 	// Leo/Creo el Archivo2
-	this->f.open(fileName.c_str(), ios::in |ios::out | ios::binary);
+	this->f.open(this->fileName.c_str(), ios::in |ios::out | ios::binary);
 	if (this->f.good()) {
 		// leo el header
 		this->readHeader();
@@ -227,14 +246,14 @@ void Archivo2::open(const t_idcat &MAX_CAT, const string &fileName) {
 		// El archivo no estaba creado, entonces, lo creo
 		// escribo el header por primera vez (no puedo usar writeHeader)
 		t_headerArchivo2 header;
-		this->f.open(fileName.c_str(), ios::out | ios::binary);
-		this->header.MAX_CAT = header.MAX_CAT = MAX_CAT;
+		this->f.open(this->fileName.c_str(), ios::out | ios::binary);
+		header.MAX_CAT = this->header.MAX_CAT;
 		this->numRegs = 0;
 		this->f.write(reinterpret_cast<const char *>(&header.MAX_CAT),
 		  sizeof(t_idcat));
 		// Lo reabro para que sirva para entrada/salida
 		this->f.close();
-		this->f.open(fileName.c_str(), ios::in |ios::out | ios::binary);
+		this->f.open(this->fileName.c_str(), ios::in |ios::out | ios::binary);
 	}
 	// Seteo para que arroje excepciones
   	this->f.exceptions(fstream::eofbit | fstream::failbit | fstream::badbit);

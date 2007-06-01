@@ -1,12 +1,28 @@
 #include "ContenedorIdCat.h"
 
 ContenedorIdCat::ContenedorIdCat(const t_idcat &MAX_CAT): MAX_CAT(MAX_CAT) {
+	t_idcat MY_NEW_MAX_CAT = MAX_CAT;
+	t_idcat m = MAX_CAT % 8;
+	if (m!=0) MY_NEW_MAX_CAT += (8-m);
+	this->MAX_CAT = MY_NEW_MAX_CAT;
 	// reservo el espacio para la cant max_cat
-	this->categorias.resize(MAX_CAT/8,static_cast<unsigned char> (0));
+	this->categorias.resize(this->MAX_CAT/8,static_cast<unsigned char> (0));
 }
 
 ContenedorIdCat::~ContenedorIdCat() {}
 
+
+bool ContenedorIdCat::match(ContenedorIdCat &c_cat, ContenedorIdCat &c_si_no) {
+	bool match=true;
+	t_idcat i=0;
+	while ((match) && (i< this->MAX_CAT/8)){
+		t_byte byte = ~((~c_cat.categorias[i]) | ~(c_si_no.categorias[i]^this->categorias[i]));
+		if (byte != 0) match = false;
+		++i;
+	}
+
+	return match;
+}
 
 void ContenedorIdCat::setCat(const t_idcat &idcat, const bool si_no) {
 	if (idcat < this->MAX_CAT) {
@@ -119,6 +135,16 @@ void ContenedorIdCat::setOffsetNext(const t_offset &offset) {
 	this->categorias[3] = (unsigned char)tmpo;
 	
 }
+
+void ContenedorIdCat::set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
+	t_idcat MY_NEW_MAX_CAT = NEW_MAX_CAT;
+	t_idcat m = NEW_MAX_CAT % 8;
+	if (m!=0) MY_NEW_MAX_CAT += (8-m);
+
+	this->categorias.reserve(MY_NEW_MAX_CAT/8);
+	this->MAX_CAT = MY_NEW_MAX_CAT;
+}
+
 
 ostream &operator<<(ostream &stream, const ContenedorIdCat &cont) {
 	stream << "Imprimiendo el contenedor" << endl;

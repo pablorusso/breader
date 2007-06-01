@@ -158,6 +158,17 @@ class Archivo2 {
 		bool readCat(const t_idart &idart, const t_idcat &idcat);
 
 		/**
+		 * Lee todas las clasificaciones del archivo, para un articulo en
+		 *  particular
+		 * @param idart el id del articulo a leer
+		 * @return un contenedor con las clasificaciones del articulo
+		 * @throw eArchivo2 si el archivo esta corrupto
+		 * @throw eArchivo2 si el idart esta fuera de rango
+		 */
+		ContenedorIdCat readCat(const t_idart &idart);
+
+
+		/**
 		 * Lee una clasificacion del archivo, para un articulo en particular
 		 * Nota: este metodo lee por quien fue clasificado, para saber si esta
 		 *       clasificado o no ir a readCat()
@@ -200,21 +211,20 @@ class Archivo2 {
 		 * Imprime el contenido del Archivo2
 		 * Nota: no es const porque tengo que leer y cambiar el fpointer
 		 */
-		friend std::ostream &operator<<(std::ostream &stream, Archivo2 &a);
+		friend ostream &operator<<(ostream &stream, Archivo2 &a);
 
 	private:
 		fstream f; //!< el handler del Archivo2
 		t_headerArchivo2 header; //!< el header del Archivo2
 		t_idart numRegs; //!< el numero de registros (articulos) del archivo
-		t_idfeed idfeed; //!< el id del feed del archivo
+		string fileName; //!< el nombre del Archivo2
+		t_idfeed idfeed; //!< el id del feed del Archivo2
 		Archivo1 a1; //!< el Archivo1
 
 		/**
 		 * Abre el Archivo2 o lo crea, de ser necesario
-		 * @param idcat la cantidad maxima de categorias (Archivo6)
-		 * @param fileName el nombre del Archivo2
 		 */
-		void open(const t_idcat &MAX_CAT, const string &fileName);
+		void open();
 
 		/**
 		 * Escribe el header en el archivo.
@@ -242,6 +252,16 @@ class Archivo2 {
 		 * @throw fstream::failure si el archivo esta corrupto
 		 */
 		t_regArchivo2 readReg(const t_idart &numReg);
+
+		/**
+		 * Constructor copia, privado, para prevenir descuidos
+		 */
+		Archivo2(const Archivo2 &);
+
+		/**
+		 * Operador= sobrecargado, privado, para prevenir descuidos
+		 */
+		Archivo2 &operator=(const Archivo2 &);
 
 };
 

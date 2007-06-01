@@ -1,15 +1,16 @@
 #include "Archivo6.h"
-// ios::in es read
-// ios::out es write
+
 Archivo6::Archivo6(const t_idcat &MAX_CAT): a5(MAX_CAT), nextFeed(0) {
+	this->header.MAX_CAT = MAX_CAT;
 	string fileName = Archivo6::genFileName();
-	this->open(MAX_CAT, fileName);
+	this->open(fileName);
 }
 
 Archivo6::Archivo6(const t_idcat &MAX_CAT, const bool bis): a5(MAX_CAT, bis),
    nextFeed(0) {
+	this->header.MAX_CAT = MAX_CAT;
 	string fileName = Archivo6::genFileName(1);
-	this->open(MAX_CAT, fileName);
+	this->open(fileName);
 }
 
 Archivo6::~Archivo6() {
@@ -39,7 +40,7 @@ void Archivo6::reopen() {
 			this->a5.reopen();
 		}
 		string fileName = Archivo6::genFileName();
-		this->open(this->header.MAX_CAT, fileName);
+		this->open(fileName);
 	}
 	catch (fstream::failure e){
 		// Aca no se puede hacer nada
@@ -148,7 +149,19 @@ Feed Archivo6::getNextFeed() {
 	if (this->nextFeed < this->numRegs) {
 		try {
 			t_regArchivo6 regA6 = this->readReg(nextFeed);
+
+
 			t_regArchivo5 regA5 = this->a5.readReg(regA6.oArchivo5);
+/*
+cout << "STOP" << endl;
+cout << "regA6.oArchivo5: " << regA6.oArchivo5 << endl;
+//cout << "regA5: " << regA5 << endl;
+cout << this->header.MAX_CAT << endl;
+cout << this->a5.get_MAX_CAT() << endl;
+
+string tmp;
+cin >> tmp;
+*/
 			feed.setIdFeed(nextFeed);
 			feed.setName(regA5.name);
 			feed.setUri(regA5.uri);
@@ -189,7 +202,8 @@ bool Archivo6::remFeed(const t_idfeed &idfeed) {
 				if (idfeed < this->header.primerLibre) {
 					// Tengo que borrar un registro antes del primer libre
 					// Hago el encadenamiento de libres
-					regRem.oArchivo5 = static_cast<t_offset>(this->header.primerLibre);
+					regRem.oArchivo5 = static_cast<t_offset>
+					  (this->header.primerLibre);
 					this->writeReg(idfeed, regRem); // borro
 					this->header.primerLibre = idfeed;
 				} else {
@@ -290,7 +304,7 @@ void Archivo6::bajaCategoria(const t_idcat &idcat) {
 }
 
 
-void Archivo6::open(const t_idcat &MAX_CAT, const string &fileName) {
+void Archivo6::open(const string &fileName) {
 	// Leo/Creo el Archivo6
 	this->f.open(fileName.c_str(), ios::in |ios::out | ios::binary);
 	if (this->f.good()) {
@@ -307,7 +321,7 @@ void Archivo6::open(const t_idcat &MAX_CAT, const string &fileName) {
 		this->f.open(fileName.c_str(), ios::out | ios::binary);
 		this->header.numFeeds = header.numFeeds = this->numRegs = 0;
 		this->header.primerLibre = header.primerLibre = 0;
-		this->header.MAX_CAT = header.MAX_CAT = MAX_CAT;
+		header.MAX_CAT = this->header.MAX_CAT;
 		this->f.write(reinterpret_cast<const char *>(&header.numFeeds),
 		  sizeof(t_idfeed));
 		this->f.write(reinterpret_cast<const char *>(&header.primerLibre),
