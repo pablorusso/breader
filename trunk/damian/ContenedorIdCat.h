@@ -121,7 +121,6 @@ class ContenedorIdCat {
 		 */
 		t_idcat get_MAX_CAT() const {return this->MAX_CAT;}
 
-<<<<<<< .mine
 		/**
 		 * Reestructura el contenedor para que tenga MAX_CAT cantidad de ids de
 		 * categorias.
@@ -136,21 +135,6 @@ class ContenedorIdCat {
 		 * Sobrecarga del operator<<
 		 * Imprime el contenido del contenedor de categorias
 		 */
-=======
-		/**
-		 * Reestructura el contenedor para que tenga MAX_CAT cantidad de ids de
-		 * categorias.
-		 * Nota: si NEW_MAX_CAT es menor que MAX_CAT este metodo no tiene
-		 * efecto
-		 * @param NEW_MAX_CAT la maxima cantidad de categorias nueva. (es
-		 *                    redondeada al primer multiplo de 8 mayor)
-		 */
-		void set_MAX_CAT(const t_idcat &NEW_MAX_CAT);
-
-		/**
-		 * Sobrecarga del operador<<
-		 */
->>>>>>> .r32
 		friend ostream &operator<<(ostream &stream,
 		  const ContenedorIdCat &cont);
 
