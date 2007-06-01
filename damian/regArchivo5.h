@@ -13,7 +13,7 @@
 #define LIBRE 0
 #define OCUPADO 1
 
-#define A5_SIZEOF_HEADER (sizeof(t_offset))
+#define A5_SIZEOF_HEADER (sizeof(t_idcat) + sizeof(t_offset))
 // BORRAR
 #include <iostream>
 // BORRAR
@@ -131,6 +131,5 @@ class t_regArchivo5 {
 		 */
 		friend ostream &operator<<(ostream &stream,  t_regArchivo5 &reg);
 
-//	private:
 };
 #endif

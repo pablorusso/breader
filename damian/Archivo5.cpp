@@ -1,14 +1,15 @@
 #include "Archivo5.h"
 
-Archivo5::Archivo5(const t_idcat &MAX_CAT): MAX_CAT(MAX_CAT) {
+Archivo5::Archivo5(const t_idcat &MAX_CAT) {
+	this->header.MAX_CAT = MAX_CAT;
 	string fileName = Archivo5::genFileName();
-	this->open(MAX_CAT, fileName);
+	this->open(fileName);
 }
 
-Archivo5::Archivo5(const t_idcat &MAX_CAT, const bool bis):
-  MAX_CAT(MAX_CAT) {
+Archivo5::Archivo5(const t_idcat &MAX_CAT, const bool bis) {
+	this->header.MAX_CAT = MAX_CAT;
 	string fileName = Archivo5::genFileName(1);
-	this->open(MAX_CAT, fileName);
+	this->open(fileName);
 }
 
 Archivo5::~Archivo5() {
@@ -37,7 +38,7 @@ void Archivo5::reopen() {
 			this->f.close();
 		}
 		string fileName = Archivo5::genFileName();
-		this->open(this->MAX_CAT, fileName);
+		this->open(fileName);
 	}
 	catch (fstream::failure e){
 		// Aca no se puede hacer nada
@@ -59,7 +60,7 @@ t_offset Archivo5::writeReg(t_regArchivo5 &reg) {
 t_offset Archivo5::writeReg(const string &uri, const string &name) {
 	t_offset ret;
 	try {
-		t_regArchivo5 reg(this->MAX_CAT);
+		t_regArchivo5 reg(this->header.MAX_CAT);
 		reg.estado = OCUPADO;
 		reg.name = name;
 		reg.uri = uri;
@@ -74,7 +75,7 @@ t_offset Archivo5::writeReg(const string &uri, const string &name) {
 t_offset Archivo5::writeReg(const Feed &feed) {
 	t_offset ret;
 	try {
-		t_regArchivo5 reg(this->MAX_CAT);
+		t_regArchivo5 reg(this->header.MAX_CAT);
 		reg.estado = OCUPADO;
 		reg.name = feed.getName();
 		reg.uri = feed.getUri();
@@ -88,7 +89,7 @@ t_offset Archivo5::writeReg(const Feed &feed) {
 }
 
 t_regArchivo5 Archivo5::readReg(const t_offset &offset) {
-	t_regArchivo5 reg(this->MAX_CAT);
+	t_regArchivo5 reg(this->header.MAX_CAT);
 	try {
 		reg.readReg(f,offset);
 	}
@@ -101,7 +102,7 @@ t_regArchivo5 Archivo5::readReg(const t_offset &offset) {
 bool Archivo5::remReg(const t_offset &offset) {
 	bool ret = false;
 	try {
-		t_regArchivo5 regRem(this->MAX_CAT);
+		t_regArchivo5 regRem(this->header.MAX_CAT);
 		ret = regRem.remReg(this->f, offset, this->header.primerLibre);
 	}
 	catch (fstream::failure e) {
@@ -113,7 +114,7 @@ bool Archivo5::remReg(const t_offset &offset) {
 void Archivo5::writeCat(const t_offset &offset, const t_idcat &idcat,
   const bool si_no) {
 	try {
-		if (idcat < this->MAX_CAT) {
+		if (idcat < this->header.MAX_CAT) {
 			t_idcat d, m;
 			unsigned char byte;
 			t_offset back;
@@ -152,7 +153,7 @@ void Archivo5::writeCat(const t_offset &offset, ContenedorIdCat &c) {
 
 }
 
-void Archivo5::open(const t_idcat &MAX_CAT, const string &fileName) {
+void Archivo5::open(const string &fileName) {
 	// Leo/Creo el Archivo5
 	this->f.open(fileName.c_str(), ios::in |ios::out | ios::binary);
 	if (this->f.good()) {
@@ -164,6 +165,9 @@ void Archivo5::open(const t_idcat &MAX_CAT, const string &fileName) {
 		t_headerArchivo5 header;
 		this->f.open(fileName.c_str(), ios::out | ios::binary);
 		this->header.primerLibre = header.primerLibre = A5_SIZEOF_HEADER;
+		header.MAX_CAT = this->header.MAX_CAT;
+		this->f.write(reinterpret_cast<const char *>(&this->header.MAX_CAT),
+		  sizeof(t_idcat));
 		this->f.write(reinterpret_cast<const char *>(&this->header.primerLibre),
 		  sizeof(t_offset));
 		// Lo reabro para que sirva para entrada/salida
@@ -176,12 +180,17 @@ void Archivo5::open(const t_idcat &MAX_CAT, const string &fileName) {
 
 void Archivo5::writeHeader() {
 	this->f.seekp(0, ios::beg);
+	this->f.write(reinterpret_cast<const char *>(&this->header.MAX_CAT),
+	  sizeof(t_idcat));
 	this->f.write(reinterpret_cast<const char *>(&this->header.primerLibre),
 	  sizeof(t_offset));
+
 }
 
 void Archivo5::readHeader() {
 	this->f.seekg(0, ios::beg);
+	this->f.read(reinterpret_cast<char *>(&this->header.MAX_CAT),
+	  sizeof(t_idcat));
 	this->f.read(reinterpret_cast<char *>(&this->header.primerLibre),
 	  sizeof(t_offset));
 }

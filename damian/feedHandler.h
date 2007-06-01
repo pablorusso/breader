@@ -151,19 +151,6 @@ class feedHandler {
 		t_cola_art getProximosArticulos(const t_idart &cant_art);
 
 		/**
-		 * Itera a traves de los id art de un feed buscando uno que este
-		 * clasificado con idcat
-		 * @param idcat el idcat a buscar
-		 * @param idfeed el idfeed sobre el cual buscar articulos
-		 * @param idart el id del articulo sobre el que se iterara. Este
-		 *              parametro es modificado por el metodo, dejandolo en
-		 *              un idart que este clasificado con idcat, o en -1 si
-		 *              no hay ningun articulo anterior clasificado con idcat
- 		 * @throw eFeedHandler si el Archivo2 esta corrupto
-		 */
-		void iterateMapCat(const t_idcat &idcat, const t_idfeed &idfeed,
-		  t_idart &idart);
-		/**
 		 * Devuelve una cola de articulos con los cant_art mas recientes de una
 		 * categoria
 		 * Nota: trabaja en conjunto con getProximosArticulos()
@@ -186,6 +173,36 @@ class feedHandler {
 		 *                     getUltimosArticulos()
 		 */
 		t_cola_art getProximosArticulosCat(const t_idart &cant_art);
+
+
+		/**
+		 * Devuelve una cola de articulos con los cant_art mas recientes que
+		 * satisfacen la "consulta booleana" (ej: CAT1 AND ~CAT12 AND ~CAT15)
+		 * Entonces los parametros indican que categorias participan en los AND
+		 * y si participan como SI o como NO (~)
+		 * Nota: trabaja en conjunto con getProximosArticulosBool()
+		 * @param c_cat un contenedor con los ids de las categorias que
+		 *              participan en la "consulta booleana"
+		 * @param c_si_no un contenedor con la opcion de "si o no" para cada
+		 *                una de las categorias
+		 * @return una cola con los cant_art que matchean la consulta.
+		 *         Si no hay articulos, devuelve una cola vacia.
+
+		 */
+		t_cola_art getUltimosArticulosBool(ContenedorIdCat &c_cat,
+		  ContenedorIdCat &c_si_no, const t_idart &cant_art);
+
+		/**
+		 * Devuelve una cola de articulos con los cant_art mas recientes de un
+		 * feed, que matchean la consulta, despues del ultimo articulo pedido.
+		 * Nota: trabaja en conjunto con getUltimosArticulosbool()
+		 * @return una cola con los cant_art que matchean la consulta.
+		 *         Si no hay articulos, devuelve una cola vacia.
+		 * @throw eFeedHandler si no se habia llamado antes a
+		 *                     getUltimosArticulosBool()
+		 */
+		t_cola_art getProximosArticulosBool(const t_idart &cant_art);
+
 
 		/**
 		 * Devuelve una cola con los idfeed del Archivo6
@@ -255,15 +272,6 @@ class feedHandler {
 		void set_MAX_CAT(const t_idcat &NEW_MAX_CAT);
 
 	private:
-		/**
-		 * Renombra el Archivo_1_f y el Archivo_2_f
-		 * @param idfeed_old el id feed viejo
-		 * @param idfeed_old el id feed nuevo
-		 */
-		static void renameFeed(const t_idfeed &idfeed_old,
-		  const t_idfeed &idfeed_new);
-
-		//Archivo2 a2;
 		Archivo6 a6; //!< el Archivo6
 		t_idart ultArt; //!< el ultimo articulo devuelto (para usar con
 		                //!< getUltimosArticulos)
@@ -276,6 +284,58 @@ class feedHandler {
 		bool ultArtCat_pedido; //!< para saber si ya se utilizo el metodo
 		                       //!< getUltimosArticulosCat()
 		t_map_ultCat map_ultCat; //!< utilizado en getUltimosArticulosCat()
+
+		ContenedorIdCat bool_c_cat; //!< contenedor de los id_cat utilizado en
+		                             //!< getUltimosArticulosBool();
+		ContenedorIdCat bool_c_si_no; //!< contenedor de los si_no utilizado en
+		                               //!< getUltimosArticulosBool();
+		bool bool_ultArt_pedido; //!< para saber si ya se utilizo el metodo
+		                       //!< getUltimosArticulosBool()
+		/**
+		 * Renombra el Archivo_1_f y el Archivo_2_f
+		 * @param idfeed_old el id feed viejo
+		 * @param idfeed_old el id feed nuevo
+		 */
+		static void renameFeed(const t_idfeed &idfeed_old,
+		  const t_idfeed &idfeed_new);
+
+		/**
+		 * Itera a traves de los id art de un feed buscando uno que este
+		 * clasificado con idcat
+		 * @param idcat el idcat a buscar
+		 * @param idfeed el idfeed sobre el cual buscar articulos
+		 * @param idart el id del articulo sobre el que se iterara. Este
+		 *              parametro es modificado por el metodo, dejandolo en
+		 *              un idart que este clasificado con idcat, o en -1 si
+		 *              no hay ningun articulo anterior clasificado con idcat
+		 * @return el nuevo timestamp del articulo (ignorar si idart==-1)
+ 		 * @throw eFeedHandler si el Archivo2 esta corrupto
+		 */
+		t_timestamp iterateMapCat(const t_idcat &idcat, const t_idfeed &idfeed,
+		  t_idart &idart);
+
+		/**
+		 * Itera a traves de los id art de un feed buscando uno que matchee
+		 * con bool_c_cat y bool_c_si_no
+		 * @param idfeed el idfeed sobre el cual buscar articulos
+		 * @param idart el id del articulo sobre el que se iterara. Este
+		 *              parametro es modificado por el metodo, dejandolo en
+		 *              un idart que matchee, o en -1 si no hay ningun articulo
+		 *              que matchee
+		 * @return el nuevo timestamp del articulo (ignorar si idart==-1)
+ 		 * @throw eFeedHandler si el Archivo2 esta corrupto
+		 */
+		t_timestamp iterateMapBool(const t_idfeed &idfeed, t_idart &idart);
+
+		/**
+		 * Constructor copia, privado, para prevenir descuidos
+		 */
+		feedHandler(const feedHandler &);
+
+		/**
+		 * Operador= sobrecargado, privado, para prevenir descuidos
+		 */
+		feedHandler &operator=(const feedHandler &);
 };
 
 #endif

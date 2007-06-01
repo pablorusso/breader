@@ -1,7 +1,8 @@
 #include "feedHandler.h"
 
 feedHandler::feedHandler(const t_idcat &MAX_CAT): a6(MAX_CAT),
-  ultArt(0), feed_ultArt(0), idcat_ultCat(0), ultArt_pedido(false) {}
+  ultArt(0), feed_ultArt(0), idcat_ultCat(0), ultArt_pedido(false),
+  bool_ultArt_pedido(false), bool_c_cat(MAX_CAT), bool_c_si_no(MAX_CAT) {}
 
 feedHandler::~feedHandler() {}
 
@@ -40,9 +41,12 @@ bool feedHandler::bajaFeed(const t_idfeed &idfeed) {
 
 t_idart feedHandler::altaArticulo(const t_idfeed &idfeed, const Articulo &art) {
 	t_idart ret;
+
 	try {
+		Articulo miart = art;
+		miart.set_MAX_CAT(this->a6.get_MAX_CAT());
 		Archivo2 a2(this->a6.get_MAX_CAT(), idfeed);
-		ret = a2.writeArticulo(art);
+		ret = a2.writeArticulo(miart);
 	}
 	catch (IException &e) {
 		eFeedHandler mie(e.getErrorMensaje());
@@ -58,8 +62,10 @@ t_cola_idart feedHandler::altaArticulo(const t_idfeed &idfeed,
 		t_cola_art mic_art = c_art;
 		Archivo2 a2(this->a6.get_MAX_CAT(), idfeed);
 		while (!mic_art.empty()) {
-			mic_idart.push(a2.writeArticulo(mic_art.front()));
-			ContenedorIdCat c = mic_art.front().get_cont_idcat();
+			Articulo miart = mic_art.front();
+			miart.set_MAX_CAT(this->a6.get_MAX_CAT());
+			mic_idart.push(a2.writeArticulo(miart));
+			ContenedorIdCat c = miart.get_cont_idcat();
 			this->a6.catFeed(idfeed, c);
 			mic_art.pop();
 		}
@@ -165,25 +171,28 @@ t_cola_art feedHandler::getProximosArticulos(const t_idart &cant_art) {
 			throw(mie);
 		}
 	} else {
-		eFeedHandler mie("Se pidieron los proximos articulos sin pedir los ultimos");
+		eFeedHandler mie("Se pidieron los proximos articulos sin pedir los \
+		                  ultimos");
 		throw(mie);
 	}
 	return c_art;
 }
 
-void feedHandler::iterateMapCat(const t_idcat &idcat, const t_idfeed &idfeed,
-  t_idart &idart) {
+t_timestamp feedHandler::iterateMapCat(const t_idcat &idcat,
+  const t_idfeed &idfeed, t_idart &idart) {
+	t_timestamp timestamp;
 	try {
 		Archivo2 a2(this->a6.get_MAX_CAT(), idfeed);
 		bool cat = false;
 		while ((!cat) && (idart!=-1))
 			cat = a2.readCat(idart--, idcat);
-		if (cat) ++idart;
+		if (cat) timestamp = a2.readTimestamp(++idart);
 	}
 	catch (IException &e) {
 		eFeedHandler mie(e.getErrorMensaje());
 		throw(mie);
 	}
+	return timestamp;
 }
 
 t_cola_art feedHandler::getUltimosArticulosCat(const t_idcat &idcat,
@@ -212,7 +221,7 @@ t_cola_art feedHandler::getUltimosArticulosCat(const t_idcat &idcat,
 		// con idcat, lo elimino del map
 		t_map_ultCat::iterator it = this->map_ultCat.begin();
 		while (it!=this->map_ultCat.end()) {
-			iterateMapCat(idcat, it->first, it->second.first);
+			it->second.second=iterateMapCat(idcat,it->first,it->second.first);
 			if (it->second.first == -1) {
 				// Tengo que tener cuidado al borrar un elemento
 				t_map_ultCat::iterator it2 = it++;
@@ -238,7 +247,7 @@ t_cola_art feedHandler::getUltimosArticulosCat(const t_idcat &idcat,
 			c_art.push(a2.readArticulo(this->map_ultCat[max_idfeed].first));
 			// Disminuyo el idart correspondiente, y busco el proximo idart
 			// que matchee con idcat
-			this->iterateMapCat(idcat, max_idfeed,
+			it->second.second = this->iterateMapCat(idcat, max_idfeed,
 				--this->map_ultCat[max_idfeed].first);
 			if (this->map_ultCat[max_idfeed].first == -1)
 				this->map_ultCat.erase(max_idfeed);
@@ -255,15 +264,16 @@ t_cola_art feedHandler::getProximosArticulosCat(const t_idart &cant_art) {
 	t_cola_art c_art;
 	if (this->ultArtCat_pedido) {
 		try {
-			// Hacer hasta que haya encontrado todos los cant_art necesarios, o
+			// Hacer hasta que hayan encontrado todos los cant_art necesarios, o
 			// hasta que el map este vacio (no tengo suficientes matches para
 			// llenar la cola)
 			while ((c_art.size() < cant_art) && (!this->map_ultCat.empty())) {
 				// Recorro el map para buscar el menor timestamp
 				t_timestamp max_timestamp= 0;
-				t_idfeed max_idfeed; // el idfeed correspondiente al max timestamp
+				t_idfeed max_idfeed; // el idfeed del max timestamp
 				t_map_ultCat::iterator it;
-				for (it=this->map_ultCat.begin(); it!=this->map_ultCat.end(); ++it){
+				for (it=this->map_ultCat.begin(); it!=this->map_ultCat.end();
+				  ++it){
 					if (it->second.second > max_timestamp) {
 						max_timestamp = it->second.second;
 						max_idfeed = it->first;
@@ -274,8 +284,8 @@ t_cola_art feedHandler::getProximosArticulosCat(const t_idart &cant_art) {
 				c_art.push(a2.readArticulo(this->map_ultCat[max_idfeed].first));
 				// Disminuyo el idart correspondiente, y busco el proximo idart
 				// que matchee con idcat
-				this->iterateMapCat(this->idcat_ultCat, max_idfeed,
-					--this->map_ultCat[max_idfeed].first);
+				it->second.second = this->iterateMapCat(this->idcat_ultCat,
+				  max_idfeed, --this->map_ultCat[max_idfeed].first);
 				if (this->map_ultCat[max_idfeed].first == -1)
 					this->map_ultCat.erase(max_idfeed);
 			}
@@ -285,7 +295,143 @@ t_cola_art feedHandler::getProximosArticulosCat(const t_idart &cant_art) {
 			throw(mie);
 		}
 	} else {
-		eFeedHandler mie("Se pidieron los proximos articulos sin pedir los ultimos");
+		eFeedHandler mie("Se pidieron los proximos articulos sin pedir los \
+		                  ultimos");
+		throw(mie);
+	}
+
+	return c_art;
+}
+
+t_timestamp feedHandler::iterateMapBool(const t_idfeed &idfeed, t_idart &idart){
+	t_timestamp timestamp;
+	try {
+		Archivo2 a2(this->a6.get_MAX_CAT(), idfeed);
+		bool match = false;
+		while ((!match) && (idart!=-1)) {
+			ContenedorIdCat c = a2.readCat(idart--);
+			match = c.match(this->bool_c_cat, this->bool_c_si_no);
+
+		}
+		if (match) timestamp = a2.readTimestamp(++idart);
+	}
+	catch (IException &e) {
+		eFeedHandler mie(e.getErrorMensaje());
+		throw(mie);
+	}
+	return timestamp;
+}
+
+t_cola_art feedHandler::getUltimosArticulosBool(ContenedorIdCat &c_cat,
+  ContenedorIdCat &c_si_no, const t_idart &cant_art) {
+	t_cola_art c_art;
+	try {
+		// Seteo los atributos para que se puedan utilizar en
+		// getProximosArticulosBool()
+		this->bool_ultArt_pedido = true;
+		this->bool_c_cat = c_cat;
+		this->bool_c_si_no = c_si_no;
+		this->bool_c_cat.set_MAX_CAT(this->a6.get_MAX_CAT());
+		this->bool_c_si_no.set_MAX_CAT(this->a6.get_MAX_CAT());
+
+
+		// Obtengo los idfeeds y creo un map con (idfeed, idart, timestamp)
+		// donde idart es el id del ultimo articulo del feed correspondiente, y
+		// si no hay articulos ni se agrega el feed (lo borro despues)
+		// Tambien inicializo el timestamp
+		t_cola_idfeeds c_idfeeds = this->a6.getColaIdFeeds();
+		while (!c_idfeeds.empty()) {
+			Archivo2 a2(this->a6.get_MAX_CAT(), c_idfeeds.front());
+			t_idart numArt = a2.cantidadArticulos();
+			if (numArt > 0)
+				this->map_ultCat[c_idfeeds.front()] = t_emap_ultCat(numArt-1,
+					a2.readTimestamp(numArt-1));
+			c_idfeeds.pop();
+		}
+
+		// Recorro una vez el map, para apuntar los idart a articulos que
+		// matcheen la consulta. Si un feed no tiene articulos que lo hagan,
+		// con idcat, lo elimino del map
+		t_map_ultCat::iterator it = this->map_ultCat.begin();
+		while (it!=this->map_ultCat.end()) {
+			it->second.second = this->iterateMapBool(it->first,
+			  it->second.first);
+			if (it->second.first == -1) {
+				// Tengo que tener cuidado al borrar un elemento
+				t_map_ultCat::iterator it2 = it++;
+				this->map_ultCat.erase(it2);
+			}
+			else ++it;
+		}
+		// Hacer hasta que hayan encontrado todos los cant_art necesarios, o
+		// hasta que el map este vacio (no tengo suficientes matches para
+		// llenar la cola)
+		while ((c_art.size() < cant_art) && (!this->map_ultCat.empty())) {
+
+			// Recorro el map para buscar el menor timestamp
+			t_timestamp max_timestamp= 0;
+			t_idfeed max_idfeed; // el idfeed correspondiente al max timestamp
+			for (it=this->map_ultCat.begin(); it!=this->map_ultCat.end(); ++it){
+				if (it->second.second > max_timestamp) {
+					max_timestamp = it->second.second;
+					max_idfeed = it->first;
+				}
+			}
+			// Agrego el art con mayor timestamp a la cola
+			Archivo2 a2(this->a6.get_MAX_CAT(), max_idfeed);
+			c_art.push(a2.readArticulo(this->map_ultCat[max_idfeed].first));
+			// Disminuyo el idart correspondiente, y busco el proximo idart
+			// que matchee con idcat
+			it->second.second = this->iterateMapBool(max_idfeed,
+			  --this->map_ultCat[max_idfeed].first);
+			if (this->map_ultCat[max_idfeed].first == -1)
+				this->map_ultCat.erase(max_idfeed);
+		}
+	}
+	catch (IException &e) {
+		eFeedHandler mie(e.getErrorMensaje());
+		throw(mie);
+	}
+	return c_art;
+}
+
+t_cola_art feedHandler::getProximosArticulosBool(const t_idart &cant_art) {
+	t_cola_art c_art;
+	if (this->ultArtCat_pedido) {
+		try {
+			// Hacer hasta que haya encontrado todos los cant_art necesarios, o
+			// hasta que el map este vacio (no tengo suficientes matches para
+			// llenar la cola)
+			while ((c_art.size() < cant_art) && (!this->map_ultCat.empty())) {
+				// Recorro el map para buscar el menor timestamp
+				t_timestamp max_timestamp= 0;
+				t_idfeed max_idfeed; // el idfeed del max timestamp
+				t_map_ultCat::iterator it;
+				for (it=this->map_ultCat.begin(); it!=this->map_ultCat.end();
+				  ++it){
+					if (it->second.second > max_timestamp) {
+						max_timestamp = it->second.second;
+						max_idfeed = it->first;
+					}
+				}
+				// Agrego el art con mayor timestamp a la cola
+				Archivo2 a2(this->a6.get_MAX_CAT(), max_idfeed);
+				c_art.push(a2.readArticulo(this->map_ultCat[max_idfeed].first));
+				// Disminuyo el idart correspondiente, y busco el proximo idart
+				// que matchee con idcat
+				it->second.second = this->iterateMapCat(this->idcat_ultCat,
+				  max_idfeed, --this->map_ultCat[max_idfeed].first);
+				if (this->map_ultCat[max_idfeed].first == -1)
+					this->map_ultCat.erase(max_idfeed);
+			}
+		}
+		catch (IException &e) {
+			eFeedHandler mie(e.getErrorMensaje());
+			throw(mie);
+		}
+	} else {
+		eFeedHandler mie("Se pidieron los proximos articulos sin pedir los \
+		                  ultimos");
 		throw(mie);
 	}
 
@@ -357,6 +503,8 @@ void feedHandler::set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
 			t_idcat MY_NEW_MAX_CAT = NEW_MAX_CAT;
 			t_idcat m = NEW_MAX_CAT % 8;
 			if (m!=0) MY_NEW_MAX_CAT += (8-m);
+			this->bool_c_cat.set_MAX_CAT(MY_NEW_MAX_CAT);
+			this->bool_c_si_no.set_MAX_CAT(MY_NEW_MAX_CAT);
 			{ // Este scope es para que se cierre el a6_bis
 				// Creo un Archivo6 y un Archivo5 nuevos, con capacidad para
 				// NEW_MAX_CAT
@@ -383,8 +531,8 @@ void feedHandler::set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
 					}
 				}
 	
-					string fileNameOld = Archivo2::genFileName(idfeed_old);
-					string fileNameNewBis = Archivo2::genFileName(idfeed_new, 1);
+					string fileNameOld=Archivo2::genFileName(idfeed_old);
+					string fileNameNewBis=Archivo2::genFileName(idfeed_new,1);
 	
 					::remove(fileNameOld.c_str());
 					::rename(fileNameNewBis.c_str(), fileNameOld.c_str());
@@ -397,12 +545,6 @@ void feedHandler::set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
 					c_idfeed.pop();
 				}
 			}
-	/*
-	cout << "STOP" << endl;
-	string tmp;
-	cin >> tmp;
-	*/
-	
 			// Borro los archivos viejos y renombro los nuevos
 			::remove(A6_PATH);
 			::rename(A6_PATH_BIS, A6_PATH);
@@ -410,7 +552,6 @@ void feedHandler::set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
 			::rename(A5_PATH_BIS, A5_PATH);
 			//Reabro el archivo6 (y el archivo5)
 			this->a6.reopen();
-			this->a6.set_MAX_CAT(MY_NEW_MAX_CAT); // TODO mejorar parchecito
 		}
 	}
 	catch (IException &e) {
@@ -434,5 +575,5 @@ void feedHandler::renameFeed(const t_idfeed &idfeed_old,
 	catch (IException &e) {
 		eFeedHandler mie(e.getErrorMensaje());
 		throw(mie);
-	}	
+	}
 }

@@ -26,6 +26,8 @@ class Articulo {
 	public:
 		/**
 		 * Constructor. Inicializa atributos.
+		 * @param MAX_CAT la maxima cantidad de categorias nueva. (es
+		 *                redondeada al primer multiplo de 8 mayor)
 		 */
 		Articulo(const t_idcat &MAX_CAT);
 		/**
@@ -119,14 +121,15 @@ class Articulo {
 		 * @return el maximo numero de categorias
 		 */
 		t_idcat get_MAX_CAT() const {
-			return this->cont_idcat.getMAX_CAT();
+			return this->cont_idcat.get_MAX_CAT();
 		}
 		/**
 		 * Reestructura el articulo para que tenga MAX_CAT cantidad de ids de
 		 * categorias.
 		 * Nota: si NEW_MAX_CAT es menor que MAX_CAT este metodo no tiene
 		 * efecto
-		 * @param NEW_MAX_CAT la maxima cantidad de categorias nueva.
+		 * @param NEW_MAX_CAT la maxima cantidad de categorias nueva. (es
+		 *                    redondeada al primer multiplo de 8 mayor)
 		 */
 		void set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
 			this->cont_idcat.set_MAX_CAT(NEW_MAX_CAT);
@@ -157,6 +160,7 @@ class Articulo {
 		t_idfeed idfeed; //!< el numero de feed al que pertenece
 		ContenedorIdCat cont_idcat; //!< contenedor con los idcat del articulo
 		ContenedorIdCat cont_usu_pc; //!< por quien fue clasificado
+
 };
 
 #endif

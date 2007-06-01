@@ -64,6 +64,6 @@ class Feed {
 		string name; //!< el nombre del feed
 		string uri; //!< la uri del feed
 		ContenedorIdCat cat; //!< las categorias del feed
-		
+
 };
 #endif

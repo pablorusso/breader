@@ -57,6 +57,21 @@ class bitOperator {
 		static void invertBit(fstream &f, const t_offset &pos);
 
 	private:
+
+		/**
+		 * Constructor, privado
+		 */
+		bitOperator();
+
+		/**
+		 * Constructor copia, privado, para prevenir descuidos
+		 */
+		bitOperator(const bitOperator &);
+
+		/**
+		 * Operador= sobrecargado, privado, para prevenir descuidos
+		 */
+		bitOperator &operator=(const bitOperator &);
 		/**
 		 * Setea un bit de un byte en 1
 		 * @param byte el byte sobre el que se va a setear el bit

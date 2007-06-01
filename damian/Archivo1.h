@@ -93,12 +93,23 @@ class Archivo1 {
 
 	private:
 		fstream f; //!< el handler del Archivo1
+		t_idfeed idfeed; //!< el id del feed del Archivo1
 
 		/**
 		 * Abre el Archivo1 o lo crea, de ser necesario
 		 * @param fileName el nombre del Archivo1
 		 */
 		void open(const string &fileName);
+
+		/**
+		 * Constructor copia, privado, para prevenir descuidos
+		 */
+		Archivo1(const Archivo1 &);
+
+		/**
+		 * Operador= sobrecargado, privado, para prevenir descuidos
+		 */
+		Archivo1 &operator=(const Archivo1 &);
 
 };
 
