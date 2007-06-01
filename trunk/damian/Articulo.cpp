@@ -7,7 +7,7 @@ Articulo::Articulo(const t_idcat &MAX_CAT):title(""), uri(""), description(""),
 Articulo::~Articulo() {}
 
 void Articulo::add_cat(const t_idcat &idcat, const bool usu_pc) {
-	if (idcat < this->cont_idcat.getMAX_CAT()) {
+	if (idcat < this->cont_idcat.get_MAX_CAT()) {
 		this->cont_idcat.setCat(idcat, 1);
 		this->cont_usu_pc.setCat(idcat, usu_pc);
 	} else THROW(eContenedorIdCat, CIDCAT_IDCAT_FUERA_DE_RANGO);
@@ -15,7 +15,7 @@ void Articulo::add_cat(const t_idcat &idcat, const bool usu_pc) {
 
 short Articulo::find_cat(const t_idcat &idcat) {
 	short ret=-1;
-	if (idcat < this->cont_idcat.getMAX_CAT()) {
+	if (idcat < this->cont_idcat.get_MAX_CAT()) {
 		if (this->cont_idcat.getCat(idcat)) {
 			ret = this->cont_usu_pc.getCat(idcat);
 		}
@@ -24,7 +24,7 @@ short Articulo::find_cat(const t_idcat &idcat) {
 }
 
 void Articulo::rem_cat(const t_idcat &idcat) {
-	if (idcat < this->cont_idcat.getMAX_CAT()) {
+	if (idcat < this->cont_idcat.get_MAX_CAT()) {
 		this->cont_idcat.setCat(idcat, 0);
 		this->cont_usu_pc.setCat(idcat, 0);
 	} else THROW(eContenedorIdCat, CIDCAT_IDCAT_FUERA_DE_RANGO);
