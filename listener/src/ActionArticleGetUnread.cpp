@@ -9,3 +9,9 @@ string ActionArticleGetUnread::getName()
 {
 	return "ActionArticleGetUnread";
 }
+
+vector<string> ActionArticleGetUnread::getNeededParams()
+{
+	vector<string> result;
+	return result;
+}

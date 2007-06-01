@@ -10,3 +10,9 @@ string ActionFeedGetAll::getName()
 	return "ActionFeedGetAll";
 }
 
+vector<string> ActionFeedGetAll::getNeededParams()
+{
+	vector<string> result;
+	return result;
+}
+

@@ -11,3 +11,10 @@ string ActionTagCreate::getName()
 	return "ActionTagCreate";
 }
 
+vector<string> ActionTagCreate::getNeededParams()
+{
+	vector<string> result;
+	result.push_back( "tagName" );
+	return result;
+}
+

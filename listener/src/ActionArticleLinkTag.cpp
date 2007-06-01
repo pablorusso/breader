@@ -12,3 +12,11 @@ string ActionArticleLinkTag::getName()
 	return "ActionArticleLinkTag";
 }
 
+vector<string> ActionArticleLinkTag::getNeededParams()
+{
+	vector<string> result;
+	result.push_back( "artId" );
+	result.push_back( "tagId" );
+	return result;
+}
+

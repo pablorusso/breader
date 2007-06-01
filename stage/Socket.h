@@ -15,7 +15,7 @@
 
 const int MAXHOSTNAME = 200;
 const int MAXCONNECTIONS = 5;
-const int MAXRECV = 100024;
+const int MAXRECV = 10240;
 
 class Socket
 {
@@ -36,13 +36,11 @@ class Socket
   bool send ( const std::string ) const;
   int recv ( std::string& ) const;
 
-
   void set_non_blocking ( const bool );
-
   bool is_valid() const { return m_sock != -1; }
+  sockaddr_in getAddress();
 
  private:
-
   int m_sock;
   sockaddr_in m_addr;
 

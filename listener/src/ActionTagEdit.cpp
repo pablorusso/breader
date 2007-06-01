@@ -12,3 +12,11 @@ string ActionTagEdit::getName()
 {
 	return "ActionTagEdit";
 }
+
+vector<string> ActionTagEdit::getNeededParams()
+{
+	vector<string> result;
+	result.push_back( "tagId" );
+	result.push_back( "tagName" );
+	return result;
+}

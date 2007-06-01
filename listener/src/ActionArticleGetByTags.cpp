@@ -27,3 +27,11 @@ string ActionArticleGetByTags::getName()
 {
 	return "ActionArticleGetByTags";
 }
+
+vector<string> ActionArticleGetByTags::getNeededParams()
+{
+	vector<string> result;
+	result.push_back( "tagIds" );
+	result.push_back( "tagStates" );
+	return result;
+}

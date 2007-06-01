@@ -9,12 +9,52 @@
 
 void usage()
 {
-	cerr <<	"usage: listener [type] [puerto{si type=1}] [action{si type=2}] [params{si type=2}]" << endl;
-	cerr << "       donde [type] puede ser 1=consola o 2=sockets" << endl;
-	cerr << "       para type = 1 se debe especificar una accion y parametros"  << endl;
-	cerr << " 		y para type = 2 se debe especificar solamente un puerto donde se reciben acciones" << endl;
-	cerr << "       ex: listener 1 actionCode=F2 params=tagId#1" << endl;
-	cerr << "       ex: listener 2 6157" << endl;
+	ActionsMap actionsMap;
+	cerr << endl;
+	cerr <<	"Ayuda:" << endl;
+	cerr << "./listener.exe [type] [puerto{si type=1}] [action{si type=2}] [params{si type=2}]" << endl << endl;
+	cerr << "donde [type] puede ser 1=consola o 2=sockets" << endl;
+	cerr << "type = 1 se debe especificar una accion y parametros, el listener las procesara" << endl;
+	cerr << "type = 2 se debe especificar solamente un puerto donde se reciben acciones" << endl;
+	cerr << "Ejemplos: " << endl;
+	cerr << "  listener 1 T2 tagId||#1" << endl;
+	cerr << "  listener 2 12000" << endl;
+
+	cerr << endl << "Las acciones disponibles son:";
+	vector<string> codeList = actionsMap.GetAvailableCodes();
+	for( vector<string>::iterator itCode = codeList.begin(); itCode != codeList.end(); itCode ++ )
+	{
+		Action *a = actionsMap.GetAction( *itCode );
+
+		cerr << endl << *itCode;
+		for( uint i = 0; i < ( 5 - itCode->size() ); i++ ) cerr << " ";
+
+		cerr << "-  " << a->GetName();
+		vector<string> paramList = a->GetNeededParams();
+		if ( paramList.size() > 0 )
+		{
+			bool first = true;
+			cerr << "( ";
+			for( vector<string>::iterator itP = paramList.begin(); itP != paramList.end(); itP++)
+			{
+				if ( !first ) cerr << ", "; else first = false;
+				cerr << *itP;
+			}
+			cerr << " )";
+		}
+		else cerr << "()";
+
+	}
+	cerr << endl << endl;
+	cerr << "El listener espera los parametros en el siguiente formato:" << endl;
+	cerr << "[nombre1]||#[valor1]|||[nombre2]||#[valor2]|||[nombre3]||#[valor3]" << endl;
+	cerr << "es decir, el '||#' como separador entre nombre y valor y" << endl;
+	cerr << "el '|||' como separador de parametros" << endl << endl;
+	cerr << "A su vez, si los valores de un parametro son muchos (una lista de valores)" << endl;
+	cerr << "la misma se codifica asi: [valor1.1]||,[valor1.2]||,[valor1.3]" << endl;
+	cerr << "es decir, utilizando la '||,' como separador de valores." << endl;
+	cerr << "Ej: tagIds||#1||,2||,3|||tagStates||#1||,0||,1" << endl;
+	cerr << endl;
 	::exit( 1 );
 }
 
@@ -24,10 +64,50 @@ string processAction( string actionCode, string params, ActionsMap &actionsMap )
 	if ( action == NULL )
 		throw string ( "[listener][ERROR] - No se encontro una accion asociada al codigo " + actionCode );
 
-	cout << endl << "[listener] - Ejecutando accion " << action->GetName() << " con parametros " << params << std::flush;
+	cout << endl << "[listener] - Ejecutando accion " << action->GetName() << std::flush;
+	if ( params.size() > 0 ) cout << " con parametros " << params << std::flush;
+
 	string result = action->ProcessAction( params );
+
 	cout << endl << "[listener] - Accion procesada exitosamente" << std::flush;
 	return result;
+}
+
+string &readFromSocket( ServerSocket &socket, string &result )
+{
+	uint size;
+	string temp;
+	string ack = "OK";
+
+	result = "";
+
+	socket >> size;
+	socket << ack;
+	if ( size > 0 )
+	{
+		socket >> result;
+		while ( result.size() < size )
+		{
+			socket >> temp;
+			result += temp;
+		}
+		socket << ack;
+	}
+	return result;
+}
+
+void writeToSocket( ServerSocket &socket, string &data )
+{
+	string ack = "OK";
+	uint size = data.size();
+
+	socket << size;
+	socket >> ack;
+	if ( size > 0 )
+	{
+		socket << data;
+		socket >> ack;
+	}
 }
 
 void listen( int argc, char* argv[] )
@@ -47,70 +127,59 @@ void listen( int argc, char* argv[] )
 	{
 		cout << endl << "[listener] - Abriendo el socket" ;
 		ServerSocket server ( port );
-		cout << endl << "[listener] - Escuchando..." << std::flush;
+		cout << endl << "[listener] - Escuchando..." << endl << std::flush;
 
 		while ( true )
 		{
 
 	  		ServerSocket new_sock;
 	  		server.accept ( new_sock );
+
+			char *ip =inet_ntoa( new_sock.getAddress().sin_addr );
+			int  aceptedPort = ntohs( new_sock.getAddress().sin_port );
+			cout << endl << "[listener] - Conexion aceptada de " << ip << ":" << aceptedPort << std::flush;
 	  		try
 	    	{
 	      		while ( true )
 				{
-		  			std::string data;
-					std::string ack  = "OK";
+					std::string ack = "OK";
 
-					string action; string params; string hasParams;
 					// acccion
-					new_sock >> action;
-					new_sock << ack;
+					string action;
+					readFromSocket( new_sock, action );
 
 					// parametros
-					new_sock >> hasParams;
-					new_sock << ack;
-					if ( hasParams != "0" )
-					{
-						new_sock >> params;
-						new_sock << ack;
-					}
+					string params;
+					readFromSocket( new_sock, params );
 
 					try
 					{
-						cout << endl << "[listener] - Mensaje recibido" << std::flush;
+						cout << endl << "[listener] - Mensaje recibido: " << std::flush;
+						cout << action << std::flush;
+						if ( params.size() > 0 ) cout << " " << params << std::flush;
+
 						string result = processAction( action, params, actionsMap );
+
 						cout << endl << "[listener] - Enviando respuesta: " << result << std::flush;
 
 						// responseCode
-						new_sock << "0";
-						new_sock >> ack;
+						string respCode("0");
+						writeToSocket( new_sock, respCode );
 
 						// response
-						result.size() > 0 ? new_sock << "1" : new_sock << "0";
-						new_sock >> ack;
-						if ( result.size() > 0 )
-						{
-							new_sock << result;
-							new_sock >> ack;
-						}
+						writeToSocket( new_sock, result );
 
-						cout << endl << "[listener] - Respuesta enviada exitosamente" << std::flush;
+						cout << endl << "[listener] - Respuesta enviada exitosamente" << endl << std::flush;
 					}
 					catch ( string msg )
 					{
 						// responseCode de error
-						new_sock << "1";
-						new_sock >> ack;
-						msg.size() > 0 ? new_sock << "1": new_sock << "0";
-						new_sock >> ack;
+						string respCode("1");
+						writeToSocket( new_sock, respCode );
+						// mensaje de error
+						writeToSocket( new_sock, msg );
 
-						if ( msg.size() > 0 )
-						{
-							new_sock << msg;
-							new_sock >> ack;
-						}
-
-						cout << endl << "[listener] - Error realizando la operacion. Mensaje: " << msg << ". " << std::flush;
+						cout << endl << "[listener] - Error realizando la operacion. Mensaje: " << msg << endl << std::flush;
 					}
 				}
 	    	}
@@ -119,11 +188,11 @@ void listen( int argc, char* argv[] )
 	}
 	catch ( SocketException& e )
 	{
-		cout << endl << "[listener] - Error en la comunicacion entre el cliente y el servidor. Mensaje: " << e.description() << ". " << std::flush;
+		cout << endl << "[listener] - Error en la comunicacion entre el cliente y el servidor. Mensaje: " << e.description() << endl << std::flush;
 	}
 	catch ( string msg )
 	{
-		cout << endl << "[listener] - Error inicializando la cola. Mensaje: " << msg << ". " << std::flush;
+		cout << endl << "[listener] - Error inicializando la cola. Mensaje: " << msg << endl << std::flush;
 	}
 }
 

@@ -9,3 +9,9 @@ string ActionTagGetAll::getName()
 {
 	return "ActionTagGetAll";
 }
+
+vector<string> ActionTagGetAll::getNeededParams()
+{
+	vector<string> result;
+	return result;
+}

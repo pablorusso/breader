@@ -11,6 +11,7 @@ class ActionFeedDelete : public Action
 	protected:
 		virtual string processAction();
 		virtual string getName();
+		virtual vector<string> getNeededParams();
 };
 
 #endif

@@ -221,6 +221,7 @@
 					return;
 				}
 
+				lastShowBody = "actionCode=" + escape( "A5" ) + '&params=' + escape( "feedId||#" + feedId );
 				doActionWithName ( "refresh_feed.php", "feedUrl=" + escape( feedUrl ) + "&lastUpdate=" + escape( lastUpdate ), refreshFeedHandler, '' );
 			}
 
@@ -432,7 +433,7 @@
 							<table>
 								<tr>
 									<td class="menuName">
-										<input type="text" id="quickadd" name="quickadd" value="http://magpierss.sf.net/test.rss"/>
+										<input type="text" id="quickadd" name="quickadd" value=""/>
 									</td>
 									<td class="menuName">
 										<a class="link" onclick="addFeed( 'quickadd' )">
