@@ -93,10 +93,13 @@ class ContenedorIdCat {
 		 * @throw fstream::failure si el archivo esta corrupto
 		 */
 		void readCat(fstream &f);
+
 		/**
-		 * Sobrecarga del operator<<
-		 * Imprime el contenido del contenedor de categorias
+		 * Realiza la operacion logica de OR entre las categorias que contiene
+		 * y las pasadas por parametro. El resultado es guardado en this
+		 * @param c el contenedor con el cual hacer el OR
 		 */
+		void catOR(ContenedorIdCat &c);
 
 		/**
 		 * En caso de que el registro este libre, devuelve el offset del
@@ -118,6 +121,22 @@ class ContenedorIdCat {
 		 */
 		t_idcat get_MAX_CAT() const {return this->MAX_CAT;}
 
+<<<<<<< .mine
+		/**
+		 * Reestructura el contenedor para que tenga MAX_CAT cantidad de ids de
+		 * categorias.
+		 * Nota: si NEW_MAX_CAT es menor que MAX_CAT este metodo no tiene
+		 * efecto
+		 * @param NEW_MAX_CAT la maxima cantidad de categorias nueva. (es
+		 *                    redondeada al primer multiplo de 8 mayor)
+		 */
+		void set_MAX_CAT(const t_idcat &NEW_MAX_CAT);
+
+		/**
+		 * Sobrecarga del operator<<
+		 * Imprime el contenido del contenedor de categorias
+		 */
+=======
 		/**
 		 * Reestructura el contenedor para que tenga MAX_CAT cantidad de ids de
 		 * categorias.
@@ -131,6 +150,7 @@ class ContenedorIdCat {
 		/**
 		 * Sobrecarga del operador<<
 		 */
+>>>>>>> .r32
 		friend ostream &operator<<(ostream &stream,
 		  const ContenedorIdCat &cont);
 

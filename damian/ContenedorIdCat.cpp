@@ -46,6 +46,18 @@ bool ContenedorIdCat::getCat(const t_idcat &idcat) const {
 
 void ContenedorIdCat::writeCat(fstream &f) {
 	f.write(reinterpret_cast<const char *>(&this->categorias[0]),
+	  sizeof(unsigned char)*this->MAX_CAT/8);
+}
+
+void ContenedorIdCat::writeCatOR(fstream &f) {
+	ContenedorIdCat c(this->MAX_CAT);
+	t_offset pos = f.tellp();
+	c.readCat(f);
+	for (t_idcat i = 0; i<this->MAX_CAT/8; ++i)
+		c.categorias[i] |= this->categorias[i];
+
+	f.seekp(pos);
+	f.write(reinterpret_cast<const char *>(&c.categorias[0]),
 		  sizeof(unsigned char)*this->MAX_CAT/8);
 }
 
@@ -67,6 +79,10 @@ void ContenedorIdCat::readCat(fstream &f) {
 	  sizeof(unsigned char)*this->MAX_CAT/8);
 }
 
+void ContenedorIdCat::catOR(ContenedorIdCat &c) {
+	for (t_idcat i = 0; i<this->MAX_CAT/8; ++i)
+		this->categorias[i] |= c.categorias[i];
+}
 
 t_offset ContenedorIdCat::getOffsetNext() const {
 	// Necesito leer los primeros cuatro bytes de las categorias, juntandolas
@@ -136,6 +152,20 @@ void ContenedorIdCat::setOffsetNext(const t_offset &offset) {
 	
 }
 
+<<<<<<< .mine
+void ContenedorIdCat::set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
+	t_idcat MY_NEW_MAX_CAT = NEW_MAX_CAT;
+	t_idcat m = NEW_MAX_CAT % 8;
+	if (m!=0) MY_NEW_MAX_CAT += (8-m);
+
+	this->categorias.reserve(MY_NEW_MAX_CAT/8);
+	for (t_idcat i = this->MAX_CAT/8; i< MY_NEW_MAX_CAT/8; ++i)
+		this->categorias[i]=0;
+	this->MAX_CAT = MY_NEW_MAX_CAT;
+}
+
+
+=======
 void ContenedorIdCat::set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
 	t_idcat MY_NEW_MAX_CAT = NEW_MAX_CAT;
 	t_idcat m = NEW_MAX_CAT % 8;
@@ -146,6 +176,7 @@ void ContenedorIdCat::set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
 }
 
 
+>>>>>>> .r32
 ostream &operator<<(ostream &stream, const ContenedorIdCat &cont) {
 	stream << "Imprimiendo el contenedor" << endl;
 	for (t_idcat i = 0; i< cont.MAX_CAT; ++i) {
