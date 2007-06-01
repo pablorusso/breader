@@ -9,3 +9,9 @@ string ActionArticleGetUnclassified::getName()
 {
 	return "ActionArticleGetUnclassfied";
 }
+
+vector<string> ActionArticleGetUnclassified::getNeededParams()
+{
+	vector<string> result;
+	return result;
+}

@@ -98,22 +98,8 @@ function transformXML( stylesheetName, node, element )
 	if ( processor )
 	{
 		var fragment = processor.transformToFragment( node, document );
+		element.innerHTML = "";
 		element.appendChild( fragment );
-
-		// Si es el body tengo que reemplazar el encoding del texto
-		if ( element.id == 'chrome' )
-		{
-			var childs = element.childNodes.item(0).childNodes.item(0).childNodes.item(0).childNodes.item(0).childNodes.item(0).childNodes;
-			for( i = 0; i < childs.length; i++ )
-			{
-				var node = childs.item(i).childNodes.item(0).childNodes.item(0).childNodes.item(1).childNodes.item(1).childNodes.item(0).childNodes.item(3);
-				var oriText = node.innerHTML;
-				var output  = oriText.replace( /&amp;/gi, '&' ).replace( /&lt;/gi, '<' ).replace( /&gt;/gi, '>' ).replace( /&quot;/gi, '\"' );
-				node.innerHTML = output;
-			}
-
-		}
-
 	}
 	else
 		if ("transformNode" in node)

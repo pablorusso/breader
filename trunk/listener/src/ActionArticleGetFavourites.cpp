@@ -9,3 +9,9 @@ string ActionArticleGetFavourites::getName()
 {
 	return "ActionArticleGetFavourites";
 }
+
+vector<string> ActionArticleGetFavourites::getNeededParams()
+{
+	vector<string> result;
+	return result;
+}

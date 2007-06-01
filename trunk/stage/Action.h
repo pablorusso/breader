@@ -20,10 +20,13 @@ class Action
 		// Procesa una accion y devuelve un xml con el resultado
 		string ProcessAction( string params );
 		string GetName();
+		vector<string> GetNeededParams();
 
 	protected:
 		virtual string processAction() = 0;
 		virtual string getName() = 0;
+		virtual vector<string> getNeededParams() = 0;
+
 		//virtual Action *newInstance() = 0;
 		Values *getParamValue( string paramName );
 	private:

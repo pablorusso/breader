@@ -19,6 +19,44 @@ void usage()
 	::exit( 1 );
 }
 
+string &readFromSocket( ClientSocket &socket, string &result )
+{
+	uint size;
+	string temp;
+	string ack = "OK";
+
+	result = "";
+
+	socket >> size;
+	socket << ack;
+	if ( size > 0 )
+	{
+		socket >> result;
+		while ( result.size() < size )
+		{
+			socket >> temp;
+			result += temp;
+		}
+		socket << ack;
+	}
+
+	return result;
+}
+
+void writeToSocket( ClientSocket &socket, string &data )
+{
+	uint size = data.size();
+	string ack = "OK";
+
+	socket << size;
+	socket >> ack;
+	if ( size > 0 )
+	{
+		socket << data;
+		socket >> ack;
+	}
+}
+
 int main(int argc, char* argv[])
 {
 	CGIClass cgi;
@@ -71,33 +109,19 @@ int main(int argc, char* argv[])
 
 	try
 	{
-		std::string resultCode = "0";
-		std::string response = "";
 		std::string ack = "OK";
-		std::string hasResult = "";
 		ClientSocket client_socket ( "localhost", port );
     	try
 		{
-			client_socket << actionCode;
-	  		client_socket >> ack;
+			writeToSocket( client_socket, actionCode );
 
-			params.size() > 0 ? client_socket << "1" : client_socket << "0";
-			client_socket >> ack;
-			if ( params.size() > 0 )
-			{
-				client_socket << params;
-				client_socket >> ack;
-			}
+			writeToSocket( client_socket, params );
 
-			client_socket >> resultCode;
-			client_socket << ack;
-			client_socket >> hasResult;
-			client_socket << ack;
-			if ( hasResult != "0" )
-			{
-				client_socket >> response;
-				client_socket << ack;
-			}
+			std::string resultCode = "0";
+			readFromSocket( client_socket, resultCode );
+
+			std::string response = "";
+			readFromSocket( client_socket, response );
 
 			if ( resultCode == "0" )
 			{

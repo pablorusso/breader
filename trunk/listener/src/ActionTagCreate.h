@@ -12,6 +12,7 @@ class ActionTagCreate : public Action
 		// Procesa una accion y devuelve un xml con el resultado
 		virtual string processAction( );
 		virtual string getName();
+		virtual vector<string> getNeededParams();
 };
 
 #endif

@@ -24,6 +24,18 @@ function showBody( docToUse, bodyDoc )
 	var divBody = docToUse.getElementById('chrome');
 	applyXSLT( 'body.xslt', divBody, bodyDoc );
 
+	// tengo que reemplazar el encoding del texto
+	if ( divBody.childNodes.length )
+	{
+		var childs = divBody.childNodes.item(0).childNodes.item(0).childNodes.item(0).childNodes.item(0).childNodes.item(0).childNodes;
+		for( i = 0; i < childs.length; i++ )
+		{
+			var node = childs.item(i).childNodes.item(0).childNodes.item(0).childNodes.item(1).childNodes.item(1).childNodes.item(0).childNodes.item(3);
+			var oriText = node.innerHTML;
+			var output  = oriText.replace( /&amp;/gi, '&' ).replace( /&lt;/gi, '<' ).replace( /&gt;/gi, '>' ).replace( /&quot;/gi, '\"' );
+			node.innerHTML = output;
+		}
+	}
 	showDiv( docToUse, 'chrome', null );
 	hideDiv( docToUse, 'loading_body', null );
 	hideDiv( docToUse, 'processing_div', null );

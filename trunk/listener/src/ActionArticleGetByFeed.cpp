@@ -10,3 +10,10 @@ string ActionArticleGetByFeed::getName()
 {
 	return "ActionArticleGetByFeed";
 }
+
+vector<string> ActionArticleGetByFeed::getNeededParams()
+{
+	vector<string> result;
+	result.push_back( "feedId" );
+	return result;
+}

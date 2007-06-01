@@ -11,3 +11,10 @@ string ActionArticleChangeReadState::getName()
 	return "ActionArticleChangeReadState";
 }
 
+vector<string> ActionArticleChangeReadState::getNeededParams()
+{
+	vector<string> result;
+	result.push_back( "artId" );
+	return result;
+}
+

@@ -15,3 +15,15 @@ string ActionArticleCreate::getName()
 {
 	return "ArticleCreate";
 }
+
+vector<string> ActionArticleCreate::getNeededParams()
+{
+	vector<string> result;
+	result.push_back( "title" );
+	result.push_back( "summary" );
+	result.push_back( "link" );
+	result.push_back( "author" );
+	result.push_back( "date" );
+	result.push_back( "feedName" );
+	return result;
+}

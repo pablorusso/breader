@@ -14,8 +14,6 @@ depends:
 	@$(MKDIR) $(LIB)
 	@echo 'Cropiando dependencias binarias: ' $(COPY) $(STAGE)thin_client.exe $(LIB)
 	@$(COPY) $(STAGE)thin_client.exe $(LIB)
-	@$(COPY) $(STAGE)mq_cgi_to_server $(LIB)
-	@$(COPY) $(STAGE)mq_server_to_cgi $(LIB)
 
 
 rebuild : clean build

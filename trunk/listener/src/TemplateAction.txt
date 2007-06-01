@@ -9,3 +9,10 @@ string [ActionName]::getName()
 {
 	return "[ActionName]";
 }
+
+vector<string> [ActionName]::getNeededParams()
+{
+	vector<string> result;
+	result.push_back( "" );
+	return result;
+}

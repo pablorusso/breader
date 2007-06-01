@@ -5,8 +5,6 @@
 #include <errno.h>
 #include <fcntl.h>
 
-
-
 Socket::Socket() : m_sock ( -1 )
 {
   memset ( &m_addr, 0, sizeof ( m_addr ) );
@@ -64,11 +62,16 @@ bool Socket::listen() const
   	return true;
 }
 
+sockaddr_in Socket::getAddress()
+{
+	return m_addr;
+}
 
 bool Socket::accept ( Socket& new_socket ) const
 {
   	int addr_length = sizeof ( m_addr );
   	new_socket.m_sock = ::accept ( m_sock, ( sockaddr * ) &m_addr, ( socklen_t * ) &addr_length );
+	new_socket.m_addr = m_addr;
 
 	if ( new_socket.m_sock <= 0 )
 		return false;
@@ -103,7 +106,6 @@ int Socket::recv ( std::string& s ) const
 
   	if ( status == -1 )
     {
-    	//std::cout << "status == -1   errno == " << errno << "  in Socket::recv\n";
       	return 0;
     }
   	else

@@ -142,3 +142,10 @@ string Action::GetName()
 {
 	return this->getName();
 }
+
+vector<string> Action::GetNeededParams()
+{
+	return this->getNeededParams();
+}
+
+

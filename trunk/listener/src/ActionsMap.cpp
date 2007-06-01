@@ -38,6 +38,17 @@ ActionsMap::~ActionsMap()
 	}
 }
 
+vector<string> ActionsMap::GetAvailableCodes()
+{
+	vector<string> result;
+
+	MAP_CODE_ACTION::iterator it;
+	for( it = _actionMap.begin(); it != _actionMap.end(); it++ )
+		result.push_back( it->first );
+
+	return result;
+}
+
 Action *ActionsMap::GetAction( string actionCode )
 {
 	return _actionMap[ actionCode ];

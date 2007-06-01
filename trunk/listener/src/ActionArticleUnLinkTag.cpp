@@ -12,3 +12,11 @@ string ActionArticleUnLinkTag::getName()
 	return "ActionArticleUnLinkTag";
 }
 
+vector<string> ActionArticleUnLinkTag::getNeededParams()
+{
+	vector<string> result;
+	result.push_back( "artId" );
+	result.push_back( "tagId" );
+	return result;
+}
+

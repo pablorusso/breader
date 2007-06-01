@@ -10,3 +10,10 @@ string ActionTagDelete::getName()
 {
 	return "ActionTagDelete";
 }
+
+vector<string> ActionTagDelete::getNeededParams()
+{
+	vector<string> result;
+	result.push_back( "tagId" );
+	return result;
+}

@@ -12,3 +12,11 @@ string ActionArticleApproveTag::getName()
 	return "ActionArticleApproveTag";
 }
 
+vector<string> ActionArticleApproveTag::getNeededParams()
+{
+	vector<string> result;
+	result.push_back( "artId" );
+	result.push_back( "tagId" );
+	return result;
+}
+
