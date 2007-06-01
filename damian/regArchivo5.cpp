@@ -21,7 +21,7 @@ t_offset t_regArchivo5::writeReg(fstream &f, t_offset &primerLibre) {
 		t_offset posPrev, posCur;
 		posPrev = posCur = primerLibre;
 		string::size_type spaceNeeded = this->uri.size()+this->name.size()+2;
-		t_regArchivo5 regLeido(this->cont.getMAX_CAT());
+		t_regArchivo5 regLeido(this->cont.get_MAX_CAT());
 			
 		while (!done) {
 			if (posCur >= posLast) done = true; //si es mayor es error...
@@ -71,7 +71,7 @@ t_offset t_regArchivo5::writeReg(fstream &f, t_offset &primerLibre) {
 				ret = posCur;
 			} else { // el espacio libre no es el primero
 				// Tengo que encadenar libres
-				t_regArchivo5 regTmp(this->cont.getMAX_CAT());
+				t_regArchivo5 regTmp(this->cont.get_MAX_CAT());
 				regTmp.readReg(f, posCur);
 				t_offset next = regTmp.getOffsetNext();
 				regLeido.readReg(f, posPrev); // leo el previo
@@ -161,8 +161,8 @@ bool t_regArchivo5::remReg(fstream &f, const t_offset &offset,
 			// que tengo que borrar
 			bool done = false;
 			// Registros libres
-			t_regArchivo5 regPrev(this->cont.getMAX_CAT());
-			t_regArchivo5 regNext(this->cont.getMAX_CAT());
+			t_regArchivo5 regPrev(this->cont.get_MAX_CAT());
+			t_regArchivo5 regNext(this->cont.get_MAX_CAT());
 			f.seekp(0,ios::end);
 			t_offset posLast = f.tellp();
 			t_offset posPrev, posNext;
