@@ -6,15 +6,9 @@
 	<xsl:output method="html"/>
 
 	<xsl:template match="articles">
-		<table>
-			<tr>
-				<td>
-					<div id="entries" >
-						<xsl:apply-templates select="article"/>
-					</div>
-				</td>
-			</tr>
-		</table>
+		<div id="entries" >
+			<xsl:apply-templates select="article"/>
+		</div>
 	</xsl:template>
 
 	<xsl:template match="article">

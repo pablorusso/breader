@@ -33,7 +33,7 @@
 
 	<xsl:template match="feed">
 		<tr>
-			<td class="menuName">
+			<td class="menuIcon">
 				<a class="link">
 					<xsl:attribute name="onclick">
 						doAction( 'actionCode=' + escape( 'F2' ) + '&amp;params=' + escape( 'feedId||#<xsl:value-of select="@id"/>' ), delFeedHandler, '' )
@@ -42,7 +42,7 @@
 				</a>
 			</td>
 
-			<td class="menuName">
+			<td class="menuIcon">
 				<a class="link">
 					<xsl:attribute name="onclick">
 						refreshFeed( <xsl:value-of select="@id"/> )

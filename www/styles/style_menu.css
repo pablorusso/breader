@@ -1,11 +1,12 @@
 #nav
 {
-	position:absolute;
+	margin: 2px 2pt;
+	position:relative;
 	float: left;
-	width:  16%;
+	width:  200px;
 	z-index: 2;
-	overflow: auto;
-	margin-top:6px;
+	overflow: hidden;
+	margin-top:3px;
 }
 
 #loading_tags,
@@ -13,10 +14,9 @@
 {
 	color: #000;
 	z-index: 50;
-	margin: 2px 2pt;
-	width:98%;
+	width:100%;
 	position: relative;
-	overflow: auto;
+	float: top;
 	font-weight: bold;
 	font-size: 150%;
 	text-decoration: blink;
@@ -41,30 +41,37 @@
 	font-weight: bold;
 }
 
+.menuIcon
+{
+	background-color: transparent;
+	width: 30px;
+}
+
 .menuName
 {
 	font-weight: normal;
-	font-size: 85%;
+	font-size: 80%;
 	background-color: transparent;
+	width: 100%
+
 }
 
-#menu_main, 
+#menu_main,
 #menu_tags,
 #menu_feeds,
-#menu_add_feed 
+#menu_add_feed
 {
 	color: #000;
 	z-index: 50;
-	margin: 2px 2pt;
-	width:98%;
+	width: 100%;
 	position: relative;
-	overflow: hidden;	
+	float: top;
 }
 
 #menu_main td.s,
 #menu_tags td.s,
 #menu_feeds td.s,
-#menu_add_feed td.s 
+#menu_add_feed td.s
 {
 	background-color: #6bc290;
 }
@@ -75,7 +82,9 @@
 #menu_add_feed .c
 {
 	background: #b5edbc;
-	width:98%;
+	width: 100%;
+	position: relative;
+	float: top;
 }
 
 #quick-add-helptext,
@@ -84,11 +93,15 @@ clear: both;
 color: #555;
 font-size: 75%;
 }
-#quick-add-helptext a {
-font-weight: bold;
+#quick-add-helptext a
+{
+	font-weight: bold;
 }
-#quickadd {
-width: 100px;
+#quickadd
+{
+	width: 100%;
+	position: relative;
+	float: top;
 }
 
 #selectors-box1,
@@ -101,12 +114,15 @@ width: 100px;
 
 
 #selectors-box1 .c,
-#selectors-box2 .c, 
-#selectors-box3 .c, 
-#selectors-box4 .c 
+#selectors-box2 .c,
+#selectors-box3 .c,
+#selectors-box4 .c
 {
 	padding: 0 0 0 8px;
 	width: 97%;
+	position: relative;
+	float: top;
+
 }
 
 #selectors-box1 ul,
@@ -116,7 +132,7 @@ width: 100px;
 #selectors-box3 ul,
 #selectors-box3 li,
 #selectors-box4 ul,
-#selectors-box4 li 
+#selectors-box4 li
 {
 	padding: 0;
 	margin: 0;
