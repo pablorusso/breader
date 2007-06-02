@@ -34,7 +34,7 @@
 	<xsl:template match="tag">
 		<xsl:if test="@readOnly = 0">
 			<tr>
-				<td class="menuName">
+				<td class="menuIcon">
 					<a class="link">
 						<xsl:attribute name="onclick">
 							doAction( 'actionCode=' + escape('T2') + '&amp;params=' + escape( tagId||#<xsl:value-of select="@id"/>' ), delTagHandler, '')
@@ -43,7 +43,7 @@
 					</a>
 				</td>
 
-				<td class="menuName">
+				<td class="menuIcon">
 					<a class="link">
 						<xsl:attribute name="onclick">
 							editTag( '<xsl:value-of select="@id"/>', '<xsl:value-of select="@name"/>' )

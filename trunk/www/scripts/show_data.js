@@ -27,7 +27,7 @@ function showBody( docToUse, bodyDoc )
 	// tengo que reemplazar el encoding del texto
 	if ( divBody.childNodes.length )
 	{
-		var childs = divBody.childNodes.item(0).childNodes.item(0).childNodes.item(0).childNodes.item(0).childNodes.item(0).childNodes;
+		var childs = divBody.childNodes.item(0).childNodes;
 		for( i = 0; i < childs.length; i++ )
 		{
 			var node = childs.item(i).childNodes.item(0).childNodes.item(0).childNodes.item(1).childNodes.item(1).childNodes.item(0).childNodes.item(3);

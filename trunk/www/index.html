@@ -315,6 +315,7 @@
 
 	<body onload="reload()">
 		<input type="hidden" value="" id="artId"/>
+		<div id="pag">
 		<div id="nav">
 			<div id="menu_main">
 				<table cellspacing="0" cellpadding="0" border="0" id="selectors-box1" class="round-box">
@@ -329,7 +330,7 @@
 				            <div class="sub-tree-header">Inicio</div>
 						    <table>
 							    <tr>
-								    <td class="menuName">
+								    <td class="menuIcon">
 									    <a class="link" onclick="doAction ( 'actionCode=A6', bodyHandler, 'A' );">
 									    <img style="border:0" src="images/status_unread.png" title="Icono de status no leido" alt="Icono de status no leido"/>
 									    </a>
@@ -339,7 +340,7 @@
 								    </td>
 							    </tr>
 							    <tr>
-								    <td class="menuName">
+								    <td class="menuIcon">
 									    <a class="link" onclick="doAction ( 'actionCode=A7', bodyHandler, 'A' );">
 									    <img style="border:0" src="images/status_unclasi.png" title="Icono de status no clasificado" alt="Icono de status no clasificado"/>
 									    </a>
@@ -350,7 +351,7 @@
 							    </tr>
 
 							    <tr>
-								    <td class="menuName">
+								    <td class="menuIcon">
 									    <a class="link" onclick="doAction ( 'actionCode=A10', bodyHandler, 'A' )">
 										    <img style="border:0" src="images/status_fav.png" title="Icono de status favorito" alt="Icono de status favorito"/>
 									    </a>
@@ -435,7 +436,7 @@
 									<td class="menuName">
 										<input type="text" id="quickadd" name="quickadd" value=""/>
 									</td>
-									<td class="menuName">
+									<td class="menuIcon">
 										<a class="link" onclick="addFeed( 'quickadd' )">
 											<img style="border:0" src="images/action_feed_add.png" alt="Agregar feed" title="Agregar feed"/>
 										</a>
@@ -458,12 +459,10 @@
 			<div id="processing_div" class="processing" style="display: none">Procesando...</div>
 		</div>
 
-		<div id="loading_body">
-			Buscando articulos, aguarde un momento...
-		</div>
-
 		<div id="error_tag" class="error" style="display: none">Aca va a ir el mensaje de error cuando este ocurra</div>
 
+		<div id="loading_body">Buscando articulos, aguarde un momento...</div>
 		<div id="chrome"></div>
+		</div>
 	</body>
 </html>
