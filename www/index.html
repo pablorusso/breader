@@ -16,7 +16,8 @@
 			var bodyDocument  ;
 			var lastShowBody = "";
 
-			// HANDLERS
+			// START ARTICLE
+			var amIInDiv = false;
 			function bodyHandler( result )
 			{
 				result = checkError( document, result );
@@ -39,15 +40,54 @@
 				bodyDocument.documentElement.childNodes[1].replaceChild( result.documentElement.childNodes[1], nodeFound );
 				showBody( document, bodyDocument );
 			}
-
-			function tagsHandler( result )
+			function keepCatsVisible()
 			{
-				result = checkError( document, result );
-				if ( result == null ) return;
-				tagsDocument = result;
-				showTags( document, tagsDocument );
+				if ( !amIInDiv ) amIInDiv = true;
 			}
+			function startTimerToSelectCat()
+			{
+				if ( amIInDiv ) amIInDiv = false;
+				setTimeout( 'hideCatsMenu()', '800' );
+			}
+			function hideCatsMenu()
+			{
+				if ( amIInDiv ) return;
+				var divWithCats = document.getElementById( 'tagsToLink' )
+				hideDiv( document, 'tagsToLink', null );
+			}
+			function showCatsMenu( artId )
+			{
+				var allTagsDoc = tagsDocument.documentElement.childNodes[1]
+				var artDoc = findNodeById( bodyDocument.documentElement.childNodes[1], artId );
+				var tagsDoc = allTagsDoc.childNodes;
 
+				var tagsUnlinkedText = "<tags>";
+				for(i = 0;i < tagsDoc.length;i++)
+				{
+					var node = tagsDoc.item(i);
+					var idTag = getNodeAttr( node, 'id' );
+					var linkedTagNode = findNodeById( artDoc.childNodes[1], idTag );
+					if ( linkedTagNode == null )
+						tagsUnlinkedText += serializeXML( node );
+				}
+				tagsUnlinkedText += "</tags>";
+				var tagsUnlinkedDoc = parseXML( tagsUnlinkedText );
+
+				var divWithCats = document.getElementById( 'tagsToLink' )
+				applyXSLT( 'add_tags.xslt', divWithCats, tagsUnlinkedDoc, 'artId', artId );
+				assignPosition( divWithCats );
+				showDiv( document, 'tagsToLink', null );
+			}
+			function linkTag( artId, tagId )
+			{
+				doAction ( "actionCode=" + escape( "A1" ) + "&params=" + escape( "tagId||#" + tagId + "|||artId||#" + artId ), editArticleHandler );
+				if ( amIInDiv ) amIInDiv = false;
+				hideCatsMenu();
+			}
+			// END ARTICLE
+
+			// START FEEDS
+			var countToRefresh = 0;
 			function feedsHandler( result )
 			{
 				result = checkError( document, result );
@@ -55,45 +95,6 @@
 				if ( result == null ) return;
 				feedsDocument = result;
 				showFeeds( document, feedsDocument );
-			}
-
-			function editTagHandler( result )
-			{
-				result = checkError( document, result );
-				if ( result == null ) return;
-
-				var idToFind = getNodeAttr( result.documentElement.childNodes[1], 'id' );
-				if ( idToFind == null )
-				{
-					showDiv( document, 'error_tag', "Editar Categoria - El nodo no tiene id" );
-					return;
-				}
-				var nodeFound = findNodeById( tagsDocument.documentElement.childNodes[1], idToFind );
-				tagsDocument.documentElement.childNodes[1].replaceChild( result.documentElement.childNodes[1], nodeFound );
-				showTags( document, tagsDocument );
-			}
-			function delTagHandler( result )
-			{
-				result = checkError( document, result );
-				if ( result == null ) return;
-
-				var idToFind = getNodeAttr( result.documentElement.childNodes[1], 'id' );
-				if ( idToFind == null )
-				{
-					showDiv( document, 'error_tag', "Borrar Categoria - El nodo no tiene id" );
-					return;
-				}
-				var nodeFound = findNodeById( tagsDocument.documentElement.childNodes[1], idToFind );
-				tagsDocument.documentElement.childNodes[1].removeChild( nodeFound.childNodes[1] )
-				showTags( document, tagsDocument );
-			}
-			function addTagHandler( result )
-			{
-				result = checkError( document, result );
-				if ( result == null ) return;
-
-				tagsDocument.documentElement.childNodes[1].appendChild( result.documentElement.childNodes[1] );
-				showTags( document, tagsDocument );
 			}
 			function delFeedHandler( result )
 			{
@@ -110,8 +111,6 @@
 				feedsDocument.documentElement.childNodes[1].removeChild( nodeFound )
 				showFeeds( document, feedsDocument );
 			}
-
-
 			function addFeedHandlerForReal( result )
 			{
 				result = checkError( document, result );
@@ -132,7 +131,6 @@
 					doAction ( "actionCode=F3", feedsHandler, 'F' );
 				}
 			}
-
 			function addFeedHandler( result )
 			{
 				result = checkError( document, result );
@@ -147,8 +145,6 @@
 				}
 				doAction ( "actionCode=" + escape( "F1" ) + "&params=" + escape( "feedUrl||#" + feedUrl + "|||feedName||#" + feedName ), addFeedHandlerForReal, '' );
 			}
-
-			var countToRefresh = 0;
 			function refreshFeedHandler( result )
 			{
 				result = checkError( document, result );
@@ -202,8 +198,6 @@
 					doAction ( "actionCode=F3", feedsHandler, 'F' );
 				}
 			}
-
-			// ACCIONES COMPUESTAS
 			function refreshFeed( feedId )
 			{
 				var node = findNodeById( feedsDocument.documentElement.childNodes[1], feedId );
@@ -224,7 +218,6 @@
 				lastShowBody = "actionCode=" + escape( "A5" ) + '&params=' + escape( "feedId||#" + feedId );
 				doActionWithName ( "refresh_feed.php", "feedUrl=" + escape( feedUrl ) + "&lastUpdate=" + escape( lastUpdate ), refreshFeedHandler, '' );
 			}
-
 			function addFeed( inputId )
 			{
 				var txtInput = document.getElementById( inputId );
@@ -234,8 +227,68 @@
 					alert( 'Debe ingresar la direccion del feed' );
 					return;
 				}
-				//txtInput.value = "";
+				txtInput.value = "";
 				doActionWithName ( "add_feed.php", "feedUrl=" + escape( url ), addFeedHandler, '' );
+			}
+			// END FEEDS
+
+			// START TAGS
+			function tagsHandler( result )
+			{
+				result = checkError( document, result );
+				if ( result == null ) return;
+				tagsDocument = result;
+				showTags( document, tagsDocument );
+			}
+			function editTagHandler( result )
+			{
+				result = checkError( document, result );
+				if ( result == null ) return;
+
+				var idToFind = getNodeAttr( result.documentElement.childNodes[1], 'id' );
+				if ( idToFind == null )
+				{
+					showDiv( document, 'error_tag', "Editar Categoria - El nodo no tiene id" );
+					return;
+				}
+				var nodeFound = findNodeById( tagsDocument.documentElement.childNodes[1], idToFind );
+				tagsDocument.documentElement.childNodes[1].replaceChild( result.documentElement.childNodes[1], nodeFound );
+				showTags( document, tagsDocument );
+			}
+			function delTagHandler( result )
+			{
+				result = checkError( document, result );
+				if ( result == null ) return;
+
+				var idToFind = getNodeAttr( result.documentElement.childNodes[1], 'id' );
+				if ( idToFind == null )
+				{
+					showDiv( document, 'error_tag', "Borrar Categoria - El nodo no tiene id" );
+					return;
+				}
+				var nodeFound = findNodeById( tagsDocument.documentElement.childNodes[1], idToFind );
+				tagsDocument.documentElement.childNodes[1].removeChild( nodeFound )
+				showTags( document, tagsDocument );
+			}
+			function addTagHandler( result )
+			{
+				result = checkError( document, result );
+				if ( result == null ) return;
+
+				tagsDocument.documentElement.childNodes[1].appendChild( result.documentElement.childNodes[1] );
+				showTags( document, tagsDocument );
+			}
+			function addTag( inputId )
+			{
+				var txtInput = document.getElementById( inputId );
+				var name = txtInput.value;
+				if ( name == '' )
+				{
+					alert( 'Debe ingresar el nombre de la categoria' );
+					return;
+				}
+				txtInput.value = "";
+				doAction ( "actionCode=" + escape( "T1" ) + "&params=" + escape( "tagName||#" + name ), addTagHandler, '' );
 			}
 			function editTag( tagId, oldTagName )
 			{
@@ -243,11 +296,7 @@
 				if ( name != oldTagName )
 					doAction ( "actionCode=" + escape( "T3" ) + "&params=" + escape( "tagId||#" + tagId + "|||tagName||#" + name ), editTagHandler, '' );
 			}
-			function addTag( artId )
-			{
-				document.getElementById( 'artId' ).value = artId;
-				window.open( "addTag.html", "addTag", "width=350;height=80;menubar=no;personalbar=no;resizable=no;scrollbars=yes;status=no;toolbar=no" );
-			}
+			// END TAGS
 
 			// GENERAL
 			function doActionWithName( pageName, params, handler, type )
@@ -276,19 +325,15 @@
 				//SimpleAJAXCall ( pageName + params, SimpleCallback, "GET", handler );
 				MakeNewAJAXCall( pageName + params, SimpleCallback, "GET", null, handler, null );
 			}
-
 			function doAction( params, handler, type )
 			{
 				// "do_action.php"
-				// "bin/thin_client.exe"
 				doActionWithName( "bin/thin_client.exe", params, handler, type );
 			}
-
 			function SimpleCallback( in_text, in_param )
 			{
 				in_param( in_text );
 			}
-
 			function reload()
 			{
 				hideDiv( document, 'processing_div', null );
@@ -302,167 +347,238 @@
 			}
 			function document_keyPress( e )
 			{
-				var el = document.getElementById( 'quickadd' );
-				if ( e.target == el && e.which == 13 )
+				var el1 = document.getElementById( 'quickaddFeed' );
+				var el2 = document.getElementById( 'quickaddTag' );
+				if ( e.which == 13 )
 				{
-					addFeed( 'quickadd' )
-					return false;
+					if ( e.target == el1 )
+					{
+						addFeed( 'quickaddFeed' )
+						return false;
+					}
+
+					if ( e.target == el2 )
+					{
+						addTag( 'quickaddTag' )
+						return false;
+					}
+
 				}
 			}
+
+
+			var cX = 0; var cY = 0;
+			function updateCursorPosition( e )
+			{
+				cX = e.pageX;
+				cY = e.pageY;
+			}
+			function updateCursorPositionDocAll( e )
+			{
+				cX = event.clientX;
+				cY = event.clientY;
+			}
+			function assignPosition( d )
+			{
+				d.style.left = (cX+10) + "px";
+				d.style.top = (cY+10) + "px";
+			}
+
+			if ( document.all )
+				document.onmousemove = updateCursorPositionDocAll;
+			else
+				document.onmousemove = updateCursorPosition;
+
 		</script>
 
 	</head>
 
 	<body onload="reload()">
-		<input type="hidden" value="" id="artId"/>
 		<div id="pag">
-		<div id="nav">
-			<div id="menu_main">
-				<table cellspacing="0" cellpadding="0" border="0" id="selectors-box1" class="round-box">
-					<tr>
-						<td class="s tl"/>
-						<td class="s"/>
-						<td class="s tr"/>
-					</tr>
-					<tr>
-						<td class="s"/>
-						<td class="c">
-				            <div class="sub-tree-header">Inicio</div>
-						    <table>
-							    <tr>
-								    <td class="menuIcon">
-									    <a class="link" onclick="doAction ( 'actionCode=A6', bodyHandler, 'A' );">
-									    <img style="border:0" src="images/status_unread.png" title="Icono de status no leido" alt="Icono de status no leido"/>
-									    </a>
-								    </td>
-								    <td class="menuName">
-									    <a class="link" onclick="doAction ( 'actionCode=A6', bodyHandler, 'A' );">No Leidos</a>
-								    </td>
-							    </tr>
-							    <tr>
-								    <td class="menuIcon">
-									    <a class="link" onclick="doAction ( 'actionCode=A7', bodyHandler, 'A' );">
-									    <img style="border:0" src="images/status_unclasi.png" title="Icono de status no clasificado" alt="Icono de status no clasificado"/>
-									    </a>
-								    </td>
-								    <td class="menuName">
-									    <a class="link" onclick="doAction ( 'actionCode=A7', bodyHandler, 'A' );">No Clasificados</a>
-								    </td>
-							    </tr>
+			<div id="nav">
+				<div id="menu_main">
+					<table cellspacing="0" cellpadding="0" border="0" id="selectors-box" class="round-box">
+						<tr>
+							<td class="s tl"/>
+							<td class="s"/>
+							<td class="s tr"/>
+						</tr>
+						<tr>
+							<td class="s"/>
+							<td class="c">
+								<div class="sub-tree-header">Inicio</div>
+								<table>
+									<tr>
+										<td class="menuIcon">
+											<a class="link" onclick="doAction ( 'actionCode=A6', bodyHandler, 'A' );">
+											<img style="border:0" src="images/status_unread.png" title="Icono de status no leido" alt="Icono de status no leido"/>
+											</a>
+										</td>
+										<td class="menuName">
+											<a class="link" onclick="doAction ( 'actionCode=A6', bodyHandler, 'A' );">No Leidos</a>
+										</td>
+									</tr>
+									<tr>
+										<td class="menuIcon">
+											<a class="link" onclick="doAction ( 'actionCode=A7', bodyHandler, 'A' );">
+											<img style="border:0" src="images/status_unclasi.png" title="Icono de status no clasificado" alt="Icono de status no clasificado"/>
+											</a>
+										</td>
+										<td class="menuName">
+											<a class="link" onclick="doAction ( 'actionCode=A7', bodyHandler, 'A' );">No Clasificados</a>
+										</td>
+									</tr>
 
-							    <tr>
-								    <td class="menuIcon">
-									    <a class="link" onclick="doAction ( 'actionCode=A10', bodyHandler, 'A' )">
-										    <img style="border:0" src="images/status_fav.png" title="Icono de status favorito" alt="Icono de status favorito"/>
-									    </a>
-								    </td>
-								    <td class="menuName">
-									    <a class="link" onclick="doAction ( 'actionCode=A10', bodyHandler, 'A' )">Favoritos</a>
-								    </td>
-							    </tr>
+									<tr>
+										<td class="menuIcon">
+											<a class="link" onclick="doAction ( 'actionCode=A10', bodyHandler, 'A' )">
+												<img style="border:0" src="images/status_fav.png" title="Icono de status favorito" alt="Icono de status favorito"/>
+											</a>
+										</td>
+										<td class="menuName">
+											<a class="link" onclick="doAction ( 'actionCode=A10', bodyHandler, 'A' )">Favoritos</a>
+										</td>
+									</tr>
 
-						    </table>
-						</td>
-						<td class="s"/>
-					</tr>
-					<tr>
-						<td class="s bl"/>
-						<td class="s"/>
-						<td class="s br"/>
-					</tr>
-				</table>
+								</table>
+							</td>
+							<td class="s"/>
+						</tr>
+						<tr>
+							<td class="s bl"/>
+							<td class="s"/>
+							<td class="s br"/>
+						</tr>
+					</table>
+				</div>
+
+				<div id="loading_tags">
+					<table cellspacing="0" cellpadding="0" border="0" id="selectors-box" class="round-box">
+						<tr>
+							<td class="s tl"/>
+							<td class="s"/>
+							<td class="s tr"/>
+						</tr>
+						<tr>
+							<td class="s"/>
+							<td class="c">
+								<div class="sub-tree-header-loading">Cargando categorias...</div>
+							</td>
+							<td class="s"/>
+						</tr>
+						<tr>
+							<td class="s bl"/>
+							<td class="s"/>
+							<td class="s br"/>
+						</tr>
+					</table>
+				</div>
+				<div id="menu_tags"></div>
+				<div id="menu_add_tag">
+					<table cellspacing="0" cellpadding="0" border="0" id="selectors-box" class="round-box">
+						<tr>
+							<td class="s tl"/>
+							<td class="s"/>
+							<td class="s tr"/>
+						</tr>
+						<tr>
+							<td class="s"/>
+							<td class="c" align="center">
+								<div class="sub-tree-header">Crear Categoria</div>
+								<span id="quick-add-instructions">Ingrese el nombre</span>
+								<table>
+									<tr>
+										<td class="menuName">
+											<input type="text" id="quickaddTag" name="quickaddTag" class="quickAddTag" value=""/>
+										</td>
+										<td class="menuIcon">
+											<a class="link" onclick="addTag( 'quickaddTag' )">
+												<img style="border:0" src="images/action_feed_add.png" alt="Agregar feed" title="Agregar feed"/>
+											</a>
+										</td>
+									</tr>
+								</table>
+
+
+							</td>
+							<td class="s"/>
+						</tr>
+						<tr>
+							<td class="s bl"/>
+							<td class="s"/>
+							<td class="s br"/>
+						</tr>
+					</table>
+				</div>
+				<div id="loading_feeds">
+					<table cellspacing="0" cellpadding="0" border="0" id="selectors-box" class="round-box">
+						<tr>
+							<td class="s tl"/>
+							<td class="s"/>
+							<td class="s tr"/>
+						</tr>
+						<tr>
+							<td class="s"/>
+							<td class="c">
+								<div class="sub-tree-header-loading">Cargando feeds...</div>
+							</td>
+							<td class="s"/>
+						</tr>
+						<tr>
+							<td class="s bl"/>
+							<td class="s"/>
+							<td class="s br"/>
+						</tr>
+					</table>
+				</div>
+				<div id="menu_feeds"></div>
+
+				<div id="menu_add_feed">
+					<table cellspacing="0" cellpadding="0" border="0" id="selectors-box" class="round-box">
+						<tr>
+							<td class="s tl"/>
+							<td class="s"/>
+							<td class="s tr"/>
+						</tr>
+						<tr>
+							<td class="s"/>
+							<td class="c" align="center">
+								<div class="sub-tree-header">Suscribirse</div>
+								<span id="quick-add-instructions">Ingrese la direccion</span>
+								<table>
+									<tr>
+										<td class="menuName">
+											<input type="text" id="quickaddFeed" name="quickaddFeed" class="quickaddFeed" value=""/>
+										</td>
+										<td class="menuIcon">
+											<a class="link" onclick="addFeed( 'quickaddFeed' )">
+												<img style="border:0" src="images/action_feed_add.png" alt="Agregar feed" title="Agregar feed"/>
+											</a>
+										</td>
+									</tr>
+								</table>
+
+
+							</td>
+							<td class="s"/>
+						</tr>
+						<tr>
+							<td class="s bl"/>
+							<td class="s"/>
+							<td class="s br"/>
+						</tr>
+					</table>
+				</div>
+
+				<div id="processing_div" class="processing" style="display: none">Procesando...</div>
 			</div>
 
-			<div id="loading_tags">
-				<table cellspacing="0" cellpadding="0" border="0" id="selectors-box2" class="round-box">
-					<tr>
-						<td class="s tl"/>
-						<td class="s"/>
-						<td class="s tr"/>
-					</tr>
-					<tr>
-						<td class="s"/>
-						<td class="c">
-							<div class="sub-tree-header-loading">Cargando categorias...</div>
-						</td>
-						<td class="s"/>
-					</tr>
-					<tr>
-						<td class="s bl"/>
-						<td class="s"/>
-						<td class="s br"/>
-					</tr>
-				</table>
-			</div>
-			<div id="menu_tags"></div>
+			<div id="error_tag" class="error" style="display: none">Aca va a ir el mensaje de error cuando este ocurra</div>
 
-			<div id="loading_feeds">
-				<table cellspacing="0" cellpadding="0" border="0" id="selectors-box3" class="round-box">
-					<tr>
-						<td class="s tl"/>
-						<td class="s"/>
-						<td class="s tr"/>
-					</tr>
-					<tr>
-						<td class="s"/>
-						<td class="c">
-							<div class="sub-tree-header-loading">Cargando feeds...</div>
-						</td>
-						<td class="s"/>
-					</tr>
-					<tr>
-						<td class="s bl"/>
-						<td class="s"/>
-						<td class="s br"/>
-					</tr>
-				</table>
-			</div>
-			<div id="menu_feeds"></div>
+			<div id="loading_body">Buscando articulos, aguarde un momento...</div>
+			<div id="chrome"></div>
 
-			<div id="menu_add_feed">
-				<table cellspacing="0" cellpadding="0" border="0" id="selectors-box4" class="round-box">
-					<tr>
-						<td class="s tl"/>
-						<td class="s"/>
-						<td class="s tr"/>
-					</tr>
-					<tr>
-						<td class="s"/>
-						<td class="c" align="center">
-							<div class="sub-tree-header">Suscribirse</div>
-							<span id="quick-add-instructions">Ingrese la direccion</span>
-							<table>
-								<tr>
-									<td class="menuName">
-										<input type="text" id="quickadd" name="quickadd" value=""/>
-									</td>
-									<td class="menuIcon">
-										<a class="link" onclick="addFeed( 'quickadd' )">
-											<img style="border:0" src="images/action_feed_add.png" alt="Agregar feed" title="Agregar feed"/>
-										</a>
-									</td>
-								</tr>
-							</table>
-
-
-						</td>
-						<td class="s"/>
-					</tr>
-					<tr>
-						<td class="s bl"/>
-						<td class="s"/>
-						<td class="s br"/>
-					</tr>
-				</table>
-			</div>
-
-			<div id="processing_div" class="processing" style="display: none">Procesando...</div>
-		</div>
-
-		<div id="error_tag" class="error" style="display: none">Aca va a ir el mensaje de error cuando este ocurra</div>
-
-		<div id="loading_body">Buscando articulos, aguarde un momento...</div>
-		<div id="chrome"></div>
+			<div id="tagsToLink" onmouseout='startTimerToSelectCat()' onmouseover='keepCatsVisible()'><div>
 		</div>
 	</body>
 </html>

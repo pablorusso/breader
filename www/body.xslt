@@ -128,7 +128,10 @@
 									<td>
 										<a class="link">
 											<xsl:attribute name="onclick">
-												addTag( '<xsl:value-of select="@id"/>' )
+												showCatsMenu( '<xsl:value-of select="@id"/>' );
+											</xsl:attribute>
+											<xsl:attribute name="onmouseout">
+												startTimerToSelectCat();
 											</xsl:attribute>
 											<img style="border:0" src="images/action_tag_add.png" title="Agregar categoria" alt="Agregar categoria"/>
 										</a>

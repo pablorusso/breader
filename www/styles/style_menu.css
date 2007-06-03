@@ -4,7 +4,7 @@
 	position:relative;
 	float: left;
 	width:  200px;
-	z-index: 2;
+	z-index: 1;
 	overflow: hidden;
 	margin-top:3px;
 }
@@ -16,12 +16,11 @@
 	z-index: 50;
 	width:100%;
 	position: relative;
-	float: top;
 	font-weight: bold;
 	font-size: 150%;
 	text-decoration: blink;
 	display: none;
-	z-index: 4;
+	z-index: 2;
 }
 #loading_tags td.s,
 #loading_feeds td.s
@@ -59,19 +58,19 @@
 #menu_main,
 #menu_tags,
 #menu_feeds,
-#menu_add_feed
+#menu_add_feed,
+#menu_add_tag
 {
 	color: #000;
-	z-index: 50;
 	width: 100%;
 	position: relative;
-	float: top;
 }
 
 #menu_main td.s,
 #menu_tags td.s,
 #menu_feeds td.s,
-#menu_add_feed td.s
+#menu_add_feed td.s,
+#menu_add_tag td.s
 {
 	background-color: #6bc290;
 }
@@ -79,60 +78,45 @@
 #menu_main .c,
 #menu_tags .c,
 #menu_feeds .c,
-#menu_add_feed .c
+#menu_add_feed .c,
+#menu_add_tag .c
 {
 	background: #b5edbc;
 	width: 100%;
 	position: relative;
-	float: top;
 }
 
 #quick-add-helptext,
 #quick-add-instructions {
 clear: both;
 color: #555;
-font-size: 75%;
+font-size: 85%;
 }
 #quick-add-helptext a
 {
 	font-weight: bold;
 }
-#quickadd
+.quickaddFeed, .quickaddTag
 {
 	width: 100%;
 	position: relative;
-	float: top;
 }
 
-#selectors-box1,
-#selectors-box2,
-#selectors-box3,
-#selectors-box4
+#selectors-box
 {
 	margin: 2px 0;
 }
 
 
-#selectors-box1 .c,
-#selectors-box2 .c,
-#selectors-box3 .c,
-#selectors-box4 .c
+#selectors-box .c
 {
 	padding: 0 0 0 8px;
 	width: 97%;
 	position: relative;
-	float: top;
-
 }
 
-#selectors-box1 ul,
-#selectors-box1 li,
-#selectors-box2 ul,
-#selectors-box2 li,
-#selectors-box3 ul,
-#selectors-box3 li,
-#selectors-box4 ul,
-#selectors-box4 li
+#selectors-box ul,
+#selectors-box li
 {
 	padding: 0;
 	margin: 0;

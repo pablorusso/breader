@@ -28,12 +28,8 @@ function parseXML(text)
 	if (typeof DOMParser != "undefined")
 	{
 		var toParse = '<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>' + text;
-		alert( toParse );
 		var output  = (new DOMParser( )).parseFromString( toParse, "application/xml");
-		alert( serializeXML( output ) );
 		return output;
-		// Mozilla, Firefox, and related browsers
-		//return (new DOMParser( )).parseFromString(text, "application/xml");
 	}
 	else if (typeof ActiveXObject != "undefined")
 	{
@@ -79,7 +75,7 @@ function getXslProcessor( fileName )
 	return xsltProcessor;
 }
 
-function transformXML( stylesheetName, node, element )
+function transformXML( stylesheetName, node, element, paramName, param )
 {
 	var stylesheet = null;
 	var processor = null;
@@ -97,6 +93,9 @@ function transformXML( stylesheetName, node, element )
 
 	if ( processor )
 	{
+		if ( param != null )
+			processor.setParameter( null, paramName, param );
+
 		var fragment = processor.transformToFragment( node, document );
 		element.innerHTML = "";
 		element.appendChild( fragment );
@@ -112,7 +111,7 @@ function transformXML( stylesheetName, node, element )
 		}
 };
 
-function applyXSLT( xsltFileName, divToUpdate, xmlDoc )
+function applyXSLT( xsltFileName, divToUpdate, xmlDoc, paramName, param )
 {
-	transformXML( xsltFileName, xmlDoc, divToUpdate );
+	transformXML( xsltFileName, xmlDoc, divToUpdate, paramName, param );
 }
