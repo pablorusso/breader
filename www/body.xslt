@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <xsl:transform
 	xmlns:xsl = "http://www.w3.org/1999/XSL/Transform"
 	xmlns:fn  = "http://www.w3.org/2005/02/xpath-functions"
@@ -6,7 +7,49 @@
 	<xsl:output method="html"/>
 
 	<xsl:template match="articles">
-		<div id="entries" >
+		<div id="entries">
+			<xsl:if test="count(article) = 0">
+				<div class="entry" style="height: 100%;">
+					<table class="card" style="height: 100%;">
+						<tr>
+							<td class="ctl"/>
+							<td class="ct"/>
+							<td class="ctr"/>
+						</tr>
+						<tr style="height: 100%;">
+							<td class="cl"/>
+							<td class="cc" align="center">
+								<div class="entry-container entry-main">
+									<div class="entry-date"/>
+									<table>
+										<tr>
+											<td/>
+											<td/>
+											<td/>
+											<td>
+												<h2 class="entry-title">
+													<span align="center">No se encontraron articulos</span>
+												</h2>
+											</td>
+
+											<td/>
+										</tr>
+									</table>
+									<div class="entry-author"/>
+									<div class="entry-body"/>
+								</div>
+							</td>
+							<td class="cr"/>
+						</tr>
+						<tr class="card-bottomrow">
+							<td class="cbl"/>
+							<td class="cb"/>
+							<td class="cbr"/>
+						</tr>
+					</table>
+				</div>
+			</xsl:if>
+
 			<xsl:apply-templates select="article"/>
 		</div>
 	</xsl:template>
@@ -133,11 +176,11 @@
 											<xsl:attribute name="onmouseout">
 												startTimerToSelectCat();
 											</xsl:attribute>
-											<img style="border:0" src="images/action_tag_add.png" title="Agregar categoria" alt="Agregar categoria"/>
+											<img style="border:0" src="images/action_tag_add.png" title="Asociar categoría" alt="Asociar categoría"/>
 										</a>
 									</td>
 									<td class="star">
-											Categorias :
+											Categorías :
 									</td>
 									<td>
 										<xsl:apply-templates select="tags"/>
@@ -184,7 +227,7 @@
 						<xsl:attribute name="onclick">
 							doAction( 'actionCode=' + escape( 'A2' ) + '&amp;params=' + escape( 'artId||#<xsl:value-of select="../../@id"/>|||tagId||#<xsl:value-of select="@id"/>' ), editArticleHandler, '')
 						</xsl:attribute>
-						<img style="border:0" src="images/action_tag_del.png" title="Borrar categoria" alt="Borrar categoria"/>
+						<img style="border:0" src="images/action_tag_del.png" title="Desasociar categoría" alt="Desasociar categoría"/>
 					</a>
 					</td>
 					<td class="star">

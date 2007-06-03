@@ -14,7 +14,6 @@
 			var tagsDocument  ;
 			var feedsDocument ;
 			var bodyDocument  ;
-			var lastShowBody = "";
 
 			// START ARTICLE
 			var amIInDiv = false;
@@ -126,8 +125,7 @@
 				countToRefresh--;
 				if ( countToRefresh == 0 )
 				{
-					if ( lastShowBody == "" ) lastShowBody = "actionCode=A6";
-					doAction ( lastShowBody, bodyHandler, 'A' );
+					doAction ( getCurrentBody(), bodyHandler, 'A' );
 					doAction ( "actionCode=F3", feedsHandler, 'F' );
 				}
 			}
@@ -193,8 +191,7 @@
 
 				if ( countToRefresh == 0 )
 				{
-					if ( lastShowBody == "" ) lastShowBody = "actionCode=A6";
-					doAction ( lastShowBody, bodyHandler, 'A' );
+					doAction ( getCurrentBody(), bodyHandler, 'A' );
 					doAction ( "actionCode=F3", feedsHandler, 'F' );
 				}
 			}
@@ -215,7 +212,7 @@
 					return;
 				}
 
-				lastShowBody = "actionCode=" + escape( "A5" ) + '&params=' + escape( "feedId||#" + feedId );
+				setCurrentBody( "actionCode=" + escape( "A5" ) + '&params=' + escape( "feedId||#" + feedId ) );
 				doActionWithName ( "refresh_feed.php", "feedUrl=" + escape( feedUrl ) + "&lastUpdate=" + escape( lastUpdate ), refreshFeedHandler, '' );
 			}
 			function addFeed( inputId )
@@ -248,7 +245,7 @@
 				var idToFind = getNodeAttr( result.documentElement.childNodes[1], 'id' );
 				if ( idToFind == null )
 				{
-					showDiv( document, 'error_tag', "Editar Categoria - El nodo no tiene id" );
+					showDiv( document, 'error_tag', "Editar Categoría - El nodo no tiene id" );
 					return;
 				}
 				var nodeFound = findNodeById( tagsDocument.documentElement.childNodes[1], idToFind );
@@ -263,7 +260,7 @@
 				var idToFind = getNodeAttr( result.documentElement.childNodes[1], 'id' );
 				if ( idToFind == null )
 				{
-					showDiv( document, 'error_tag', "Borrar Categoria - El nodo no tiene id" );
+					showDiv( document, 'error_tag', "Borrar Categoría - El nodo no tiene id" );
 					return;
 				}
 				var nodeFound = findNodeById( tagsDocument.documentElement.childNodes[1], idToFind );
@@ -284,7 +281,7 @@
 				var name = txtInput.value;
 				if ( name == '' )
 				{
-					alert( 'Debe ingresar el nombre de la categoria' );
+					alert( 'Debe ingresar el nombre de la categoría' );
 					return;
 				}
 				txtInput.value = "";
@@ -292,7 +289,7 @@
 			}
 			function editTag( tagId, oldTagName )
 			{
-				var name = prompt( 'Ingrese el nuevo nombre de la categoria', oldTagName );
+				var name = prompt( 'Ingrese el nuevo nombre de la categoría', oldTagName );
 				if ( name != oldTagName )
 					doAction ( "actionCode=" + escape( "T3" ) + "&params=" + escape( "tagId||#" + tagId + "|||tagName||#" + name ), editTagHandler, '' );
 			}
@@ -305,17 +302,19 @@
 
 				if ( type == 'F' )
 				{
+					setCurrentFeed( params );
 					showDiv( document, 'loading_feeds', null );
 					hideDiv( document, 'menu_feeds', '' );
 				}
 				else if ( type == 'T' )
 				{
+					setCurrentTag( params );
 					showDiv( document, 'loading_tags', null );
 					hideDiv( document, 'menu_tags', '' );
 				}
 				else if ( type == 'A' )
 				{
-					lastShowBody = params;
+					setCurrentBody( params );
 					showDiv( document, 'loading_body', null );
 					hideDiv( document, 'chrome', '' );
 				}
@@ -338,10 +337,9 @@
 			{
 				hideDiv( document, 'processing_div', null );
 
-				if ( lastShowBody == "" ) lastShowBody = "actionCode=A6";
-				doAction ( lastShowBody, bodyHandler, 'A' );
-				doAction ( "actionCode=F3", feedsHandler, 'F' );
-				doAction ( "actionCode=T4", tagsHandler  , 'T' );
+				doAction ( getCurrentBody(), bodyHandler, 'A' );
+				doAction ( getCurrentFeed(), feedsHandler, 'F' );
+				doAction ( getCurrentTag(), tagsHandler  , 'T' );
 
 				document.addEventListener( "keypress", document_keyPress, false);
 			}
@@ -366,6 +364,31 @@
 				}
 			}
 
+
+			function getCurrentBody()
+			{
+				return document.getElementById('currentBody').value;
+			}
+			function getCurrentFeed()
+			{
+				return document.getElementById('currentFeed').value;
+			}
+			function getCurrentTag()
+			{
+				return document.getElementById('currentTag').value;
+			}
+			function setCurrentBody( queryString )
+			{
+				document.getElementById('currentBody').value = queryString;
+			}
+			function setCurrentFeed( queryString )
+			{
+				document.getElementById('currentFeed').value = queryString;
+			}
+			function setCurrentTag( queryString )
+			{
+				document.getElementById('currentTag').value  = queryString;
+			}
 
 			var cX = 0; var cY = 0;
 			function updateCursorPosition( e )
@@ -394,6 +417,10 @@
 	</head>
 
 	<body onload="reload()">
+		<input id="currentBody"  name="currentBody"  type="hidden" value="actionCode=A6" />
+		<input id="currentFeed" name="currentFeeds" type="hidden" value="actionCode=F3" />
+		<input id="currentTag"  name="currentTags"  type="hidden" value="actionCode=T4" />
+
 		<div id="pag">
 			<div id="nav">
 				<div id="menu_main">
@@ -462,7 +489,7 @@
 						<tr>
 							<td class="s"/>
 							<td class="c">
-								<div class="sub-tree-header-loading">Cargando categorias...</div>
+								<div class="sub-tree-header-loading">Cargando categorías...</div>
 							</td>
 							<td class="s"/>
 						</tr>
@@ -484,7 +511,7 @@
 						<tr>
 							<td class="s"/>
 							<td class="c" align="center">
-								<div class="sub-tree-header">Crear Categoria</div>
+								<div class="sub-tree-header">Crear Categoría</div>
 								<span id="quick-add-instructions">Ingrese el nombre</span>
 								<table>
 									<tr>
@@ -493,7 +520,7 @@
 										</td>
 										<td class="menuIcon">
 											<a class="link" onclick="addTag( 'quickaddTag' )">
-												<img style="border:0" src="images/action_feed_add.png" alt="Agregar feed" title="Agregar feed"/>
+												<img style="border:0" src="images/action_tag_add.png" title="Agregar categoría" alt="Agregar categoría"/>
 											</a>
 										</td>
 									</tr>
@@ -544,7 +571,7 @@
 							<td class="s"/>
 							<td class="c" align="center">
 								<div class="sub-tree-header">Suscribirse</div>
-								<span id="quick-add-instructions">Ingrese la direccion</span>
+								<span id="quick-add-instructions">Ingrese la dirección</span>
 								<table>
 									<tr>
 										<td class="menuName">

@@ -369,6 +369,7 @@ string EntitiesManager::ArticleLinkTag( string artId, string tagId )
 	r->isApproved = "1";
 
 	Articles[ artId ]->tags[ tagId ] = r;
+	Articles[ artId ]->isClassified = "1";
 	return encodeXML( Articles[ artId ]->getXML() );
 }
 
