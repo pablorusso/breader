@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 	<xsl:param name="artId"></xsl:param>
 
@@ -17,7 +18,7 @@
 						<tr>
 							<td class="catName">
 								<xsl:if test="count(tag) = 0">
-									No hay categorias para agregar.
+									No hay categorías para agregar.
 								</xsl:if>
 
 								<xsl:for-each select="tag">

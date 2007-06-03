@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
 	<xsl:output method="html"/>
@@ -14,7 +15,7 @@
 					<td class="s"/>
 					<td class="c">
 						<ul>
-							<div class="sub-tree-header">Categorias</div>
+							<div class="sub-tree-header">Categorías</div>
 							<table>
 								<xsl:apply-templates select="tag"/>
 							</table>
@@ -39,7 +40,7 @@
 						<xsl:attribute name="onclick">
 							doAction( 'actionCode=' + escape('T2') + '&amp;params=' + escape( 'tagId||#<xsl:value-of select="@id"/>' ), delTagHandler, '')
 						</xsl:attribute>
-						<img style="border:0" src="images/action_tag_del.png" title="Borrar categoria" alt="Borrar categoria"/>
+						<img style="border:0" src="images/action_tag_del.png" title="Borrar categoría" alt="Borrar categoría"/>
 					</a>
 				</td>
 
@@ -48,7 +49,7 @@
 						<xsl:attribute name="onclick">
 							editTag( '<xsl:value-of select="@id"/>', '<xsl:value-of select="@name"/>' )
 						</xsl:attribute>
-						<img style="border:0" src="images/action_tag_edit.png" title="Editar categoria" alt="Editar categoria"/>
+						<img style="border:0" src="images/action_tag_edit.png" title="Editar categoría" alt="Editar categoría"/>
 					</a>
 				</td>
 

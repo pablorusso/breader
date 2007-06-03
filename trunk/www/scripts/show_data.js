@@ -30,10 +30,13 @@ function showBody( docToUse, bodyDoc )
 		var childs = divBody.childNodes.item(0).childNodes;
 		for( i = 0; i < childs.length; i++ )
 		{
-			var node = childs.item(i).childNodes.item(0).childNodes.item(0).childNodes.item(1).childNodes.item(1).childNodes.item(0).childNodes.item(3);
-			var oriText = node.innerHTML;
-			var output  = oriText.replace( /&amp;/gi, '&' ).replace( /&lt;/gi, '<' ).replace( /&gt;/gi, '>' ).replace( /&quot;/gi, '\"' );
-			node.innerHTML = output;
+			if ( childs.item(i).childNodes.length > 0 )
+			{
+				var node = childs.item(i).childNodes.item(0).childNodes.item(0).childNodes.item(1).childNodes.item(1).childNodes.item(0).childNodes.item(3);
+				var oriText = node.innerHTML;
+				var output  = oriText.replace( /&amp;/gi, '&' ).replace( /&lt;/gi, '<' ).replace( /&gt;/gi, '>' ).replace( /&quot;/gi, '\"' );
+				node.innerHTML = output;
+			}
 		}
 	}
 	showDiv( docToUse, 'chrome', null );
