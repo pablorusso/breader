@@ -3,7 +3,7 @@
 	<xsl:output method="html"/>
 
 	<xsl:template match="feeds">
-		<table cellspacing="0" cellpadding="0" border="0" id="selectors-box3" class="round-box">
+		<table cellspacing="0" cellpadding="0" border="0" id="selectors-box" class="round-box">
 			<tbody>
 				<tr>
 					<td class="s tl"/>

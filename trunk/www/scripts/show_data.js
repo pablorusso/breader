@@ -22,7 +22,7 @@ function hideDiv( docToUse, divName, innerText )
 function showBody( docToUse, bodyDoc )
 {
 	var divBody = docToUse.getElementById('chrome');
-	applyXSLT( 'body.xslt', divBody, bodyDoc );
+	applyXSLT( 'body.xslt', divBody, bodyDoc, null, null );
 
 	// tengo que reemplazar el encoding del texto
 	if ( divBody.childNodes.length )
@@ -43,7 +43,7 @@ function showBody( docToUse, bodyDoc )
 function showTags( docToUse, tagsDoc )
 {
 	var divTags = docToUse.getElementById('menu_tags');
-	applyXSLT( 'tags.xslt', divTags, tagsDoc );
+	applyXSLT( 'tags.xslt', divTags, tagsDoc, null, null );
 
 	showDiv( docToUse, 'menu_tags', null );
 	hideDiv( docToUse, 'loading_tags', null );
@@ -52,7 +52,7 @@ function showTags( docToUse, tagsDoc )
 function showFeeds( docToUse, feedsDoc )
 {
 	var divFeeds = docToUse.getElementById('menu_feeds');
-	applyXSLT( 'feeds.xslt', divFeeds, feedsDoc );
+	applyXSLT( 'feeds.xslt', divFeeds, feedsDoc, null, null );
 
 	showDiv( docToUse, 'menu_feeds', null );
 	hideDiv( docToUse, 'loading_feeds', null );

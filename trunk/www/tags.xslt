@@ -3,7 +3,7 @@
 	<xsl:output method="html"/>
 
 	<xsl:template match="tags">
-		<table cellspacing="0" cellpadding="0" border="0" id="selectors-box2" class="round-box">
+		<table cellspacing="0" cellpadding="0" border="0" id="selectors-box" class="round-box">
 			<tbody>
 				<tr>
 					<td class="s tl"/>
@@ -37,7 +37,7 @@
 				<td class="menuIcon">
 					<a class="link">
 						<xsl:attribute name="onclick">
-							doAction( 'actionCode=' + escape('T2') + '&amp;params=' + escape( tagId||#<xsl:value-of select="@id"/>' ), delTagHandler, '')
+							doAction( 'actionCode=' + escape('T2') + '&amp;params=' + escape( 'tagId||#<xsl:value-of select="@id"/>' ), delTagHandler, '')
 						</xsl:attribute>
 						<img style="border:0" src="images/action_tag_del.png" title="Borrar categoria" alt="Borrar categoria"/>
 					</a>
