@@ -17,7 +17,6 @@
 #include "ActionArticleChangeReadState.h"
 #include "ActionArticleGetFavourites.h"
 #include "ActionArticleCreate.h"
-
 #include <sstream>
 
 ActionsMap::ActionsMap()

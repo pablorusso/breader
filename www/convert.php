@@ -1,10 +1,6 @@
 <?
-// May 18, 2007 9:42 AM
-// date - F j, Y G
-//        %B %e, %Y %R %Z  string strftime ( string $format [, int $timestamp] )
-
-// 1180478460
-
+	// Convierte un timestamp a una fecha legible,
+	// lo hago en php porque desde el xslt no se puede
 	if (!ini_get("register_globals"))
     	import_request_variables('GPC');
 

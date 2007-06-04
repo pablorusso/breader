@@ -9,7 +9,7 @@
 	<xsl:template match="articles">
 		<div id="entries">
 			<xsl:if test="count(article) = 0">
-				<div class="entry" style="height: 100%;">
+				<div id="no_art" class="entry" style="height: 100%;">
 					<table class="card" style="height: 100%;">
 						<tr>
 							<td class="ctl"/>
@@ -122,7 +122,7 @@
 							</div>
 
 							<!--resumen-->
-							<div class="entry-body">
+							<div id="summary" class="entry-body">
 								<xsl:value-of select="summary" disable-output-encoding="yes"/>
 							</div>
 						</div>

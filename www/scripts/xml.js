@@ -34,9 +34,9 @@ function parseXML(text)
 	else if (typeof ActiveXObject != "undefined")
 	{
 		// Internet Explorer.
-		var doc = XML.newDocument( ); // Create an empty document
-		doc.loadXML(text); // Parse text into it
-		return doc; // Return it
+		var doc = XML.newDocument();
+		doc.loadXML(text);
+		return doc;
 	}
 	else
 	{
@@ -63,14 +63,12 @@ function getXslProcessor( fileName )
 {
 	var xsltProcessor = new XSLTProcessor();
 
-	// Load the xsl file using synchronous (third param is set to false) XMLHttpRequest
 	var myXMLHTTPRequest = new XMLHttpRequest();
 	myXMLHTTPRequest.open("GET", fileName, false);
 	myXMLHTTPRequest.send(null);
 
 	var xslRef = myXMLHTTPRequest.responseXML;
 
-	// Finally import the .xsl
 	xsltProcessor.importStylesheet(xslRef);
 	return xsltProcessor;
 }
@@ -88,7 +86,7 @@ function transformXML( stylesheetName, node, element, paramName, param )
 	else
 		processor = getXslProcessor( stylesheetName );
 
-	if (typeof element == "string")
+	if (element != null && typeof element == "string")
 		element = document.getElementById(element);
 
 	if ( processor )
@@ -97,13 +95,20 @@ function transformXML( stylesheetName, node, element, paramName, param )
 			processor.setParameter( null, paramName, param );
 
 		var fragment = processor.transformToFragment( node, document );
-		element.innerHTML = "";
-		element.appendChild( fragment );
+		if ( element != null )
+		{
+			element.innerHTML = "";
+			element.appendChild( fragment );
+		}
+		return fragment;
 	}
 	else
 		if ("transformNode" in node)
 		{
-			element.innerHTML = node.transformNode( stylesheet );
+			var t = node.transformNode( stylesheet )
+			if ( element != null )
+				element.innerHTML = t;
+			return t;
 		}
 		else
 		{
@@ -113,5 +118,5 @@ function transformXML( stylesheetName, node, element, paramName, param )
 
 function applyXSLT( xsltFileName, divToUpdate, xmlDoc, paramName, param )
 {
-	transformXML( xsltFileName, xmlDoc, divToUpdate, paramName, param );
+	return transformXML( xsltFileName, xmlDoc, divToUpdate, paramName, param );
 }

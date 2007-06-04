@@ -19,8 +19,12 @@ string ActionArticleGetByTags::processAction( )
 		statesToSend.push_back( *stateIt );
 		stateIt++;
 	}
+	string startPosition = *(this->getParamValue( "startPosition" )->begin());
+	string quantity      = *(this->getParamValue( "quantity" )->begin());
 
-	return EntitiesManager::getInstance()->ArticleGetByTags( tagsToSend, statesToSend );
+	if ( startPosition == "0" )
+		return EntitiesManager::getInstance()->ArticleGetByTags( tagsToSend, statesToSend, quantity );
+	return EntitiesManager::getInstance()->ArticleGetByTagsNext( tagsToSend, statesToSend, quantity );
 }
 
 string ActionArticleGetByTags::getName()
@@ -33,5 +37,7 @@ vector<string> ActionArticleGetByTags::getNeededParams()
 	vector<string> result;
 	result.push_back( "tagIds" );
 	result.push_back( "tagStates" );
+	result.push_back( "startPosition" );
+	result.push_back( "quantity" );
 	return result;
 }

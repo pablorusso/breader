@@ -6,6 +6,7 @@
 	position:absolute;
 	top: 100px;
 	z-index: 3;
+
 }
 #tagsToLink td.s
 {
@@ -15,6 +16,7 @@
 #tagsToLink .c
 {
 	background: #b5edbc;
+	height: 30px;/*96%;*/
 }
 
 #selectors-box2
@@ -47,12 +49,20 @@
 	font-size: 150%;
 	text-decoration: blink;
 	display: none;
-	margin-left: 40%;
+	/*margin-left: 40%;*/
+	margin-left: 4px;
 	position:relative;
 	margin-top:5px;
 	width:auto;
 	height:99%;
 	z-index: 2;
+
+	position:relative;
+	margin-left:4px;
+	margin-top:5px;
+	width:auto;
+	height:99%;
+	overflow: auto;
 }
 
 #chrome
@@ -240,6 +250,187 @@ background-position: bottom right;
 }
 
 #entries .entry .card .card-bottomrow {
+font-size: 0px;
+line-height: 0px;
+}
+
+
+
+
+
+#entries_loading
+{
+	outline-color:invert;
+	outline-style:none;
+	outline-width:0pt;
+	padding:0pt;
+	position:relative;
+	float:left;
+	width:99%;
+	height:100%;
+}
+#entries_loading .entry
+{
+	position: relative;
+	background: #fff;
+	margin: 0;
+}
+
+#entries_loading .entry-body
+{
+	padding-top: .5em;
+	font-size: 85%;
+
+}
+
+#entries_loading .entry-main
+{
+	margin-right: .5em;
+	margin-left: 10px;
+}
+
+#entries_loading .entry-actions
+{
+	position: relative;
+	left: -2px;
+	font-size: 90%;
+}
+
+#entries_loading .entry-actions a,
+#entries_loading .entry-actions .link {
+text-decoration: none;
+font-size: 85%;
+}
+#entries_loading .entry-actions .star
+{
+background-repeat: no-repeat;
+background-color: transparent;
+padding: 1px 8px 1px 16px;
+background-position: 0 50%;
+font-size: 85%;
+}
+
+#entries_loading .entry .card .entry-container .entry-date {
+float: right;
+font-size: 85%;
+}
+#entries_loading .entry-title {
+font-size: 130%;
+margin: 0;
+}
+#entries_loading .entry-title a {
+text-decoration: none;
+}
+#entries_loading .entry-title a * {
+display: inline;
+}
+#entries_loading .entry-title a br {
+display: none;
+}
+#entries_loading .entry-title .entry-title-go-to {
+border: 0;
+padding-left: 0.25em;
+vertical-align: top;
+}
+#entries_loading .entry-source-title {
+font-size: 85%;
+text-decoration: none;
+}
+
+#entries_loading .entry-author,
+#entries_loading .entry-date {
+font-size: 80%;
+color: #666;
+text-decoration: none;
+}
+
+#entries_loading .entry .entry-container {
+position: relative;
+padding-bottom: 0.5em;
+}
+
+#entries_loading .entry .card {
+border-spacing: 0;
+border-collapse: collapse;
+border: 0;
+width:100%;
+}
+#entries_loading .entry .card td {
+background-color: transparent;
+background-repeat: no-repeat;
+border: 0;
+padding: 0;
+}
+
+#entries_loading .entry .card .ctl,
+#entries_loading .entry .card .cl,
+#entries_loading .entry .card .cbl,
+#entries_loading .entry .card .ctr,
+#entries_loading .entry .card .cr,
+#entries_loading .entry .card .cbr,
+#entries_loading .entry .card .cal,
+#entries_loading .entry .card .car,
+#entries_loading .entry .card .caal,
+#entries_loading .entry .card .caar {
+width: 15px;
+}
+#entries_loading .entry .card .ctl,
+#entries_loading .entry .card .ct,
+#entries_loading .entry .card .ctr {
+height: 13px;
+}
+
+#entries_loading .entry .card .ctl {
+background-image: url("../images/entry_card_corners.gif");
+}
+#entries_loading .entry .card .ct {
+background-image: url("../images/entry_card_ct-cb.gif");
+background-repeat: repeat-x;
+}
+#entries_loading .entry .card .ctr {
+background-image: url("../images/entry_card_corners.gif");
+background-position: top right;
+}
+#entries_loading .entry .card .cl
+{
+	background-image: url("../images/entry_card_cl-cr.gif");
+	background-repeat: repeat-y;
+}
+
+#entries_loading .entry .card .cr
+{
+	background-image: url("../images/entry_card_cl-cr.gif");
+	background-repeat: repeat-y;
+	background-position: top right;
+}
+
+#entries_loading .entry .card .cal {
+background-image: url("../images/entry_card_corners.gif");
+background-position: 0px -14px;
+}
+#entries_loading .entry .card .ca {
+background-color: #eee
+}
+#entries_loading .entry .card .car {
+background-image: url("../images/entry_card_corners.gif");
+background-position: -16px -14px;
+}
+#entries_loading .entry .card .cbl {
+background-image: url("../images/entry_card_corners.gif");
+background-position: bottom left;
+}
+#entries_loading .entry .card .cb {
+background-image: url("../images/entry_card_ct-cb.gif");
+background-repeat: repeat-x;
+background-position: bottom left;
+padding-bottom: 12px;
+}
+#entries_loading .entry .card .cbr {
+background-image: url("../images/entry_card_corners.gif");
+background-position: bottom right;
+}
+
+#entries_loading .entry .card .card-bottomrow {
 font-size: 0px;
 line-height: 0px;
 }

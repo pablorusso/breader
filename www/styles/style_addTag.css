@@ -55,6 +55,7 @@ cursor: pointer;
 
 .catName {
 font-size: 90%;
+height: 200px;/*96%;*/
 }
 
 .catList
@@ -63,7 +64,7 @@ font-size: 90%;
 	margin-top: 2%;
 	margin-left: 2%;
 	width: 94%;
-	height: 96%;
+	height: 200px;/*96%;*/
 	padding: 2px 0 2px 10px;
 	font-weight: bold;
 }

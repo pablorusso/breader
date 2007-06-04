@@ -17,13 +17,60 @@
 
 			// START ARTICLE
 			var amIInDiv = false;
+			function replaceEncoding ( divBody )
+			{
+				// tengo que reemplazar el encoding del texto
+				if ( divBody.childNodes.length )
+				{
+					var childs = divBody.childNodes.item(0).childNodes;
+					for( i = 0; i < childs.length; i++ )
+					{
+						if ( childs.item(i).childNodes.length > 0 )
+						{
+							var node = childs.item(i).childNodes.item(0).childNodes.item(0).childNodes.item(1).childNodes.item(1).childNodes.item(0).childNodes.item(3);
+							var oriText = node.innerHTML;
+							var output  = oriText.replace( /&amp;/gi, '&' ).replace( /&lt;/gi, '<' ).replace( /&gt;/gi, '>' ).replace( /&quot;/gi, '\"' );
+							node.innerHTML = output;
+						}
+					}
+				}
+
+			}
+
+			function showBody( docToUse, bodyDoc )
+			{
+				var divBody  = docToUse.getElementById('chrome');
+				var fragment = applyXSLT( 'body.xslt', divBody, bodyDoc, null, null );
+
+				replaceEncoding ( divBody );
+
+				showDiv( docToUse, 'chrome', null );
+				hideDiv( docToUse, 'loading_body', null );
+				hideDiv( docToUse, 'processing_div', null );
+			}
 			function bodyHandler( result )
 			{
 				result = checkError( document, result );
 				if ( result == null ) return;
 				bodyDocument = result;
 				showBody( document, bodyDocument );
+				setTimeout( 'showScroll()', 1000 );
 			}
+			function updateBodyHandler( result )
+			{
+				result = checkError( document, result );
+				if ( result == null ) return;
+
+				var newArticles = result.documentElement.childNodes[1].childNodes;
+				for( i = 0; i < newArticles.length; i++ )
+					bodyDocument.documentElement.childNodes[1].appendChild( newArticles[i] );
+				showBody( document, bodyDocument );
+
+				// Si ya no trae mas articulos, no tiene sentido seguir yendo a buscar mas
+				if ( newArticles.length > 0 )
+					setTimeout( 'showScroll()', 1000 );
+			}
+
 			function editArticleHandler( result )
 			{
 				result = checkError( document, result );
@@ -44,6 +91,7 @@
 				if ( !amIInDiv ) amIInDiv = true;
 			}
 			function startTimerToSelectCat()
+
 			{
 				if ( amIInDiv ) amIInDiv = false;
 				setTimeout( 'hideCatsMenu()', '800' );
@@ -83,10 +131,128 @@
 				if ( amIInDiv ) amIInDiv = false;
 				hideCatsMenu();
 			}
+			function advancedSearch()
+			{
+				var advSearchText = document.getElementById( 'advSearch' ).value;
+				if ( advSearchText == null || advSearchText == '' )
+				{
+					alert('No hay categorias seleccionadas para buscar');
+					return;
+				}
+
+				var tagIds = ''; var tagStates = '';
+				var tagsAndValues = advSearchText.split(';');
+				for( i=0; i < tagsAndValues.length; i++ )
+				{
+					var tagAndValue = tagsAndValues[i].split('=');
+					var tagId    = tagAndValue[0];
+					var tagValue = tagAndValue[1];
+
+					if ( tagValue == '2' || tagValue == '3' )
+					{
+						if ( tagIds != '' ) tagIds += '||,';
+						tagIds += tagId;
+
+						var state = tagValue == '2' ? '1' : '0';
+						if ( tagStates != '' ) tagStates += '||,';
+						tagStates += state;
+					}
+				}
+
+				if ( tagIds == '' )
+				{
+					alert('No hay categorias seleccionadas para buscar');
+					return;
+				}
+
+				doAction ( 'actionCode=' + escape('A4') + '&params=' + escape( 'tagIds||#' + tagIds + '|||tagStates||#' + tagStates + '|||' ), bodyHandler, 'A' )
+			}
+
+			function setSearchState( tagId, type )
+			{
+				var inputTag = document.getElementById( 'searchtype_' + tagId );
+				var imgTag   = document.getElementById( 'searchtypeImg_' + tagId );
+				inputTag.value = type;
+
+				if ( type == "1" )
+				{
+					imgSrc   ="images/action_tag_ignore.gif";
+					imgTitle ="Ignorar en busqueda avanzada";
+				}
+				else
+				{
+					if ( type == "2" )
+					{
+						imgSrc   ="images/action_tag_include.gif";
+						imgTitle ="Incluir en busqueda avanzada";
+					}
+					else
+					{
+						imgSrc="images/action_tag_exclude.gif";
+						imgTitle="Excluir en busqueda avanzada";
+					}
+				}
+				imgTag.src   = imgSrc;
+				imgTag.title = imgTitle;
+				imgTag.alt   = imgTitle;
+			}
+
+			function updateSearchState()
+			{
+				var advSearchText = '';
+				var tagsDoc = tagsDocument.documentElement.childNodes[1].childNodes;
+				for( i = 0;i < tagsDoc.length;i++)
+				{
+					var node = tagsDoc.item(i);
+					var idTag = getNodeAttr( node, 'id' );
+					var inputTag = document.getElementById( 'searchtype_' + idTag );
+
+					if ( advSearchText != '' )
+						advSearchText += ';';
+					advSearchText += idTag + '=' + inputTag.value;
+				}
+				document.getElementById( 'advSearch' ).value = advSearchText;
+			}
+			function swapSearch( tagId )
+			{
+				var oldType = document.getElementById( 'searchtype_' + tagId ).value
+
+				var newType = "1";
+				if ( oldType == "1" ) newType = "2";
+				else if ( oldType == "2" ) newType = "3";
+				setSearchState( tagId, newType );
+				updateSearchState();
+			}
+
+			function reloadSearchState()
+			{
+				var advSearchText = document.getElementById( 'advSearch' ).value;
+				if ( advSearchText == null || advSearchText == '' ) return;
+
+				var tagsAndValues = advSearchText.split(';');
+				for( i=0; i < tagsAndValues.length; i++ )
+				{
+					var tagAndValue = tagsAndValues[i].split('=');
+
+					var tagId    = tagAndValue[0];
+					var tagValue = tagAndValue[1];
+					setSearchState( tagId, tagValue );
+				}
+			}
 			// END ARTICLE
 
 			// START FEEDS
 			var countToRefresh = 0;
+			function showFeeds( docToUse, feedsDoc )
+			{
+				var divFeeds = docToUse.getElementById('menu_feeds');
+				applyXSLT( 'feeds.xslt', divFeeds, feedsDoc, null, null );
+
+				showDiv( docToUse, 'menu_feeds', null );
+				hideDiv( docToUse, 'loading_feeds', null );
+				hideDiv( docToUse, 'processing_div', null );
+			}
+
 			function feedsHandler( result )
 			{
 				result = checkError( document, result );
@@ -212,14 +378,14 @@
 					return;
 				}
 
-				setCurrentBody( "actionCode=" + escape( "A5" ) + '&params=' + escape( "feedId||#" + feedId ) );
+				setCurrentBody( "actionCode=" + escape( "A5" ) + '&params=' + escape( "feedId||#" + feedId + '|||' ) );
 				doActionWithName ( "refresh_feed.php", "feedUrl=" + escape( feedUrl ) + "&lastUpdate=" + escape( lastUpdate ), refreshFeedHandler, '' );
 			}
 			function addFeed( inputId )
 			{
 				var txtInput = document.getElementById( inputId );
 				var url = txtInput.value;
-				if ( url == '' )
+				if ( url == null || url == '' )
 				{
 					alert( 'Debe ingresar la direccion del feed' );
 					return;
@@ -230,12 +396,24 @@
 			// END FEEDS
 
 			// START TAGS
+			function showTags( docToUse, tagsDoc )
+			{
+				var divTags = docToUse.getElementById('menu_tags');
+				applyXSLT( 'tags.xslt', divTags, tagsDoc, null, null );
+
+				showDiv( docToUse, 'menu_tags', null );
+				hideDiv( docToUse, 'loading_tags', null );
+				hideDiv( docToUse, 'processing_div', null );
+			}
+
 			function tagsHandler( result )
 			{
 				result = checkError( document, result );
 				if ( result == null ) return;
 				tagsDocument = result;
 				showTags( document, tagsDocument );
+				if ( document.getElementById( 'advSearch' ).value == '' ) updateSearchState();
+				reloadSearchState();
 			}
 			function editTagHandler( result )
 			{
@@ -251,6 +429,7 @@
 				var nodeFound = findNodeById( tagsDocument.documentElement.childNodes[1], idToFind );
 				tagsDocument.documentElement.childNodes[1].replaceChild( result.documentElement.childNodes[1], nodeFound );
 				showTags( document, tagsDocument );
+				reloadSearchState();
 			}
 			function delTagHandler( result )
 			{
@@ -265,6 +444,9 @@
 				}
 				var nodeFound = findNodeById( tagsDocument.documentElement.childNodes[1], idToFind );
 				tagsDocument.documentElement.childNodes[1].removeChild( nodeFound )
+
+				// reinicio la busqueda avanzada
+				document.getElementById( 'advSearch' ).value = '';
 				showTags( document, tagsDocument );
 			}
 			function addTagHandler( result )
@@ -274,12 +456,15 @@
 
 				tagsDocument.documentElement.childNodes[1].appendChild( result.documentElement.childNodes[1] );
 				showTags( document, tagsDocument );
+
+				reloadSearchState();
+				updateSearchState();
 			}
 			function addTag( inputId )
 			{
 				var txtInput = document.getElementById( inputId );
 				var name = txtInput.value;
-				if ( name == '' )
+				if ( name == null || name == '' )
 				{
 					alert( 'Debe ingresar el nombre de la categoría' );
 					return;
@@ -290,6 +475,7 @@
 			function editTag( tagId, oldTagName )
 			{
 				var name = prompt( 'Ingrese el nuevo nombre de la categoría', oldTagName );
+				if ( name == null ) return;
 				if ( name != oldTagName )
 					doAction ( "actionCode=" + escape( "T3" ) + "&params=" + escape( "tagId||#" + tagId + "|||tagName||#" + name ), editTagHandler, '' );
 			}
@@ -315,12 +501,16 @@
 				else if ( type == 'A' )
 				{
 					setCurrentBody( params );
+					var startQS = getCurrentBody() + escape('quantity||#10|||startPosition||#0');
+					document.getElementById( 'start_pos').value = 0;
+					params += startQS;
+
 					showDiv( document, 'loading_body', null );
 					hideDiv( document, 'chrome', '' );
 				}
 				else showDiv( document, 'processing_div', null );
 
-				params = '?port=12000&'+params;
+				params = '?port=12001&'+params;
 				//SimpleAJAXCall ( pageName + params, SimpleCallback, "GET", handler );
 				MakeNewAJAXCall( pageName + params, SimpleCallback, "GET", null, handler, null );
 			}
@@ -333,13 +523,36 @@
 			{
 				in_param( in_text );
 			}
+			function updateArticleCount()
+			{
+				var startPos = parseInt( document.getElementById( 'start_pos').value );
+				if ( startPos == 0 ) startPos = 10;
+				else startPos = startPos + 5;
+				document.getElementById( 'start_pos').value = startPos;
+
+				var startQS = getCurrentBody() + escape('quantity||#5|||startPosition||#' + startPos );
+				doAction ( startQS, updateBodyHandler, '' );
+			}
+
+			function showScroll()
+			{
+				var chromeEl  = document.getElementById( 'chrome');
+				var posActual = chromeEl.scrollTop + chromeEl.offsetHeight;
+				var posFinal  = chromeEl.scrollHeight;
+				var por       = (posFinal*8)/100;
+
+				if ( chromeEl.scrollHeight > chromeEl.offsetHeight && posActual+por >= posFinal )
+					updateArticleCount();
+				else
+					setTimeout( 'showScroll()', 1000 );
+			}
 			function reload()
 			{
 				hideDiv( document, 'processing_div', null );
 
 				doAction ( getCurrentBody(), bodyHandler, 'A' );
 				doAction ( getCurrentFeed(), feedsHandler, 'F' );
-				doAction ( getCurrentTag(), tagsHandler  , 'T' );
+				doAction ( getCurrentTag(),  tagsHandler  , 'T' );
 
 				document.addEventListener( "keypress", document_keyPress, false);
 			}
@@ -417,9 +630,12 @@
 	</head>
 
 	<body onload="reload()">
-		<input id="currentBody"  name="currentBody"  type="hidden" value="actionCode=A6" />
+		<input id="currentBody" name="currentBody"  type="hidden" value="actionCode=A6&params="/>
 		<input id="currentFeed" name="currentFeeds" type="hidden" value="actionCode=F3" />
 		<input id="currentTag"  name="currentTags"  type="hidden" value="actionCode=T4" />
+		<input id="advSearch"   name="advSearch"    type="hidden" value="" />
+		<input id="start_pos"   name="start_pos"    type="hidden" value="0" />
+		<!--input id="start_pos_2"   name="start_pos_2"    type="button" value="updateArticleCount" onclick="updateArticleCount()"/-->
 
 		<div id="pag">
 			<div id="nav">
@@ -437,33 +653,33 @@
 								<table>
 									<tr>
 										<td class="menuIcon">
-											<a class="link" onclick="doAction ( 'actionCode=A6', bodyHandler, 'A' );">
+											<a class="link" onclick="doAction ( 'actionCode=A6&amp;params=', bodyHandler, 'A' );">
 											<img style="border:0" src="images/status_unread.png" title="Icono de status no leido" alt="Icono de status no leido"/>
 											</a>
 										</td>
 										<td class="menuName">
-											<a class="link" onclick="doAction ( 'actionCode=A6', bodyHandler, 'A' );">No Leidos</a>
+											<a class="link" onclick="doAction ( 'actionCode=A6&amp;params=', bodyHandler, 'A' );">No Leidos</a>
 										</td>
 									</tr>
 									<tr>
 										<td class="menuIcon">
-											<a class="link" onclick="doAction ( 'actionCode=A7', bodyHandler, 'A' );">
+											<a class="link" onclick="doAction ( 'actionCode=A7&amp;params=', bodyHandler, 'A' );">
 											<img style="border:0" src="images/status_unclasi.png" title="Icono de status no clasificado" alt="Icono de status no clasificado"/>
 											</a>
 										</td>
 										<td class="menuName">
-											<a class="link" onclick="doAction ( 'actionCode=A7', bodyHandler, 'A' );">No Clasificados</a>
+											<a class="link" onclick="doAction ( 'actionCode=A7&amp;params=', bodyHandler, 'A' );">No Clasificados</a>
 										</td>
 									</tr>
 
 									<tr>
 										<td class="menuIcon">
-											<a class="link" onclick="doAction ( 'actionCode=A10', bodyHandler, 'A' )">
+											<a class="link" onclick="doAction ( 'actionCode=A10&amp;params=', bodyHandler, 'A' );">
 												<img style="border:0" src="images/status_fav.png" title="Icono de status favorito" alt="Icono de status favorito"/>
 											</a>
 										</td>
 										<td class="menuName">
-											<a class="link" onclick="doAction ( 'actionCode=A10', bodyHandler, 'A' )">Favoritos</a>
+											<a class="link" onclick="doAction ( 'actionCode=A10&amp;params=', bodyHandler, 'A' );">Favoritos</a>
 										</td>
 									</tr>
 
@@ -512,7 +728,7 @@
 							<td class="s"/>
 							<td class="c" align="center">
 								<div class="sub-tree-header">Crear Categoría</div>
-								<span id="quick-add-instructions">Ingrese el nombre</span>
+								<div align="left"><span id="quick-add-instructions">Ingrese el nombre</span></div>
 								<table>
 									<tr>
 										<td class="menuName">
@@ -559,7 +775,6 @@
 					</table>
 				</div>
 				<div id="menu_feeds"></div>
-
 				<div id="menu_add_feed">
 					<table cellspacing="0" cellpadding="0" border="0" id="selectors-box" class="round-box">
 						<tr>
@@ -571,7 +786,7 @@
 							<td class="s"/>
 							<td class="c" align="center">
 								<div class="sub-tree-header">Suscribirse</div>
-								<span id="quick-add-instructions">Ingrese la dirección</span>
+								<div align="left"><span id="quick-add-instructions">Ingrese la dirección</span></div>
 								<table>
 									<tr>
 										<td class="menuName">
@@ -596,13 +811,51 @@
 						</tr>
 					</table>
 				</div>
-
 				<div id="processing_div" class="processing" style="display: none">Procesando...</div>
 			</div>
 
 			<div id="error_tag" class="error" style="display: none">Aca va a ir el mensaje de error cuando este ocurra</div>
 
-			<div id="loading_body">Buscando articulos, aguarde un momento...</div>
+			<div id="loading_body">
+				<div id="entries">
+					<div class="entry" style="height: 100%;">
+						<table class="card" style="height: 100%;">
+							<tr>
+								<td class="ctl"/>
+								<td class="ct"/>
+								<td class="ctr"/>
+							</tr>
+							<tr style="height: 100%;">
+								<td class="cl"/>
+								<td class="cc" valign="center" align="center">
+									<div class="entry-container entry-main">
+										<table>
+											<tr>
+												<td/>
+												<td/>
+												<td/>
+												<td>
+													<h2 class="entry-title">
+														<span align="center" style="color: FF0000">Buscando articulos, aguarde un momento...</span>
+													</h2>
+												</td>
+
+												<td/>
+											</tr>
+										</table>
+									</div>
+								</td>
+								<td class="cr"/>
+							</tr>
+							<tr class="card-bottomrow">
+								<td class="cbl"/>
+								<td class="cb"/>
+								<td class="cbr"/>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
 			<div id="chrome"></div>
 
 			<div id="tagsToLink" onmouseout='startTimerToSelectCat()' onmouseover='keepCatsVisible()'><div>

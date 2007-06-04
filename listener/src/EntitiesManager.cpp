@@ -90,7 +90,7 @@ void EntitiesManager::createArticles()
 	tr->tag = Tags[ "2" ]; tr->isApproved = "1";
 	art->tags[ tr->tag->id ] = tr;
 	Articles[art->id] = art;
-/*
+
 	art= new Article();
 	art->id = "2";
 	art->isClassified = "1";
@@ -131,7 +131,7 @@ void EntitiesManager::createArticles()
 	tr = new TagArticleRelation();
 	tr->tag = Tags[ "2" ]; tr->isApproved = "1";
 	art->tags[ tr->tag->id ] = tr;
-	Articles[art->id] = art;*/
+	Articles[art->id] = art;
 }
 
 EntitiesManager::EntitiesManager()
@@ -221,6 +221,7 @@ string EntitiesManager::ArticleChangeFavState( string id )
 		Articles[ id ]->isFav = "0";
 	return encodeXML( Articles[ id ]->getXML() );
 }
+
 string EntitiesManager::ArticleChangeReadState( string id )
 {
 	if ( Articles[ id ]->isRead == "0" )
@@ -230,36 +231,23 @@ string EntitiesManager::ArticleChangeReadState( string id )
 	return encodeXML(  Articles[ id ]->getXML() );
 }
 
-string EntitiesManager::ArticleGetFavourites()
-{
-	if ( Articles.size() == 0 ) return encodeXML( "<articles/>" );
-
-	vector< Article *> toShow;
-	map< string, Article * >::iterator artsIt;
-	for( artsIt = Articles.begin(); artsIt != Articles.end(); artsIt++ )
-		if ( ( static_cast< Article * > ( artsIt->second ) )->isFav == "1" )
-			toShow.push_back( static_cast< Article * > ( artsIt->second ) );
-
-	if ( toShow.size() == 0 ) return encodeXML( "<articles/>" );
-
-	string response = "<articles>";
-	vector< Article *>::iterator toShowIt;
-	for( toShowIt = toShow.begin(); toShowIt != toShow.end(); toShowIt++ )
-		response += (*toShowIt)->getXML();
-	response += "</articles>";
-	return encodeXML( response );
-}
 
 string EntitiesManager::ArticleGetByFeed( string feedId )
 {
-	if ( Articles.size() == 0 ) return encodeXML( "<articles/>" );
-
+	if ( lastPos == Articles.end() ) return encodeXML( "<articles/>" );
 	string feedName = Feeds[ feedId ]->name;
+
+	int i = 0;
 	vector< Article *> toShow;
-	map< string, Article * >::iterator artsIt;
-	for( artsIt = Articles.begin(); artsIt != Articles.end(); artsIt++ )
-		if ( ( static_cast< Article * > ( artsIt->second ) )->feedName == feedName )
-			toShow.push_back( static_cast< Article * > ( artsIt->second ) );
+	while( lastPos != Articles.end() && i < quantity )
+	{
+		if ( ( static_cast< Article * > ( lastPos->second ) )->feedName == feedName )
+		{
+			toShow.push_back( static_cast< Article * > ( lastPos->second ) );
+			i++;
+		}
+		lastPos++;
+	}
 
 	if ( toShow.size() == 0 ) return encodeXML( "<articles/>" );
 
@@ -271,10 +259,65 @@ string EntitiesManager::ArticleGetByFeed( string feedId )
 	return encodeXML( response );
 }
 
+string EntitiesManager::ArticleGetByFeed( string feedId, string quantity )
+{
+	int qty;
+	std::istringstream iss( quantity );
+	if(!(iss >> qty))
+		throw string( "La cantidad recibida no es valida" );
+	this->quantity = qty;
+
+	lastPos = Articles.begin();
+	return ArticleGetByFeed( feedId );
+}
+
+string EntitiesManager::ArticleGetByFeedNext( string feedId, string quantity )
+{
+	int qty;
+	std::istringstream iss( quantity );
+	if(!(iss >> qty))
+		throw string( "La cantidad recibida no es valida" );
+	this->quantity = qty;
+
+	return ArticleGetByFeed( feedId );
+}
+
+
 string EntitiesManager::ArticleGetByTags( vector< string > tagIds, vector< string > state )
 {
-	if ( Articles.size() == 0 ) return encodeXML( "<articles/>" );
+	if ( lastPos == Articles.end() ) return encodeXML( "<articles/>" );
 
+	int i = 0;
+	vector< Article *> toShow;
+	while ( lastPos != Articles.end() && i < quantity )
+	{
+		Article *current = static_cast< Article * > ( lastPos->second );
+
+		bool isOk = true;
+		vector< string >::iterator tagIdsIt = tagIds.begin() ;
+		vector< string >::iterator stateIt  = state.begin();
+		while( tagIdsIt != tagIds.end() && isOk )
+		{
+			string currentTagId = *tagIdsIt;
+			string currentState = *stateIt;
+			isOk =	(
+						( currentState == "1" && current->tags.find( currentTagId ) != current->tags.end() )
+			   			||
+						( currentState == "0" && current->tags.find( currentTagId ) == current->tags.end() )
+					);
+			tagIdsIt++;
+			stateIt++;
+		}
+
+		if ( isOk )
+		{
+			toShow.push_back( current );
+			i++;
+		}
+		lastPos++;
+	}
+
+	/*
 	vector< Article *> toFilter;
 	vector< string >::iterator tagIdsIt ;
 	vector< string >::iterator stateIt = state.begin();
@@ -313,6 +356,55 @@ string EntitiesManager::ArticleGetByTags( vector< string > tagIds, vector< strin
 	}
 
 	if ( toShow.size() == 0 ) return encodeXML( "<articles/>" );
+	*/
+	string response = "<articles>";
+	vector< Article *>::iterator toShowIt;
+	for( toShowIt = toShow.begin(); toShowIt != toShow.end(); toShowIt++ )
+		response += (*toShowIt)->getXML();
+	response += "</articles>";
+	return encodeXML( response );
+}
+
+string EntitiesManager::ArticleGetByTags( vector< string > tagIds, vector< string > state, string quantity )
+{
+	int qty;
+	std::istringstream iss( quantity );
+	if(!(iss >> qty))
+		throw string( "La cantidad recibida no es valida" );
+	this->quantity = qty;
+
+	lastPos = Articles.begin();
+	return ArticleGetByTags( tagIds, state );
+}
+
+string EntitiesManager::ArticleGetByTagsNext( vector< string > tagIds, vector< string > state, string quantity )
+{
+	int qty;
+	std::istringstream iss( quantity );
+	if(!(iss >> qty))
+		throw string( "La cantidad recibida no es valida" );
+	this->quantity = qty;
+
+	return ArticleGetByTags( tagIds, state );
+}
+
+
+string EntitiesManager::ArticleGetFavourites()
+{
+	if ( lastPos == Articles.end() ) return encodeXML( "<articles/>" );
+
+	int i = 0;
+	vector< Article *> toShow;
+	while( lastPos != Articles.end() && i < quantity )
+	{
+		if ( ( static_cast< Article * > ( lastPos->second ) )->isFav == "1" )
+		{
+			toShow.push_back( static_cast< Article * > ( lastPos->second ) );
+			i++;
+		}
+		lastPos++;
+	}
+	if ( toShow.size() == 0 ) return encodeXML( "<articles/>" );
 
 	string response = "<articles>";
 	vector< Article *>::iterator toShowIt;
@@ -321,17 +413,46 @@ string EntitiesManager::ArticleGetByTags( vector< string > tagIds, vector< strin
 	response += "</articles>";
 	return encodeXML( response );
 }
+
+string EntitiesManager::ArticleGetFavourites( string quantity )
+{
+	int qty;
+	std::istringstream iss( quantity );
+	if(!(iss >> qty))
+		throw string( "La cantidad recibida no es valida" );
+	this->quantity = qty;
+
+	lastPos = Articles.begin();
+	return ArticleGetFavourites();
+}
+
+string EntitiesManager::ArticleGetFavouritesNext( string quantity )
+{
+	int qty;
+	std::istringstream iss( quantity );
+	if(!(iss >> qty))
+		throw string( "La cantidad recibida no es valida" );
+	this->quantity = qty;
+
+	return ArticleGetFavourites();
+}
+
 
 string EntitiesManager::ArticleGetUnclassified()
 {
-	if ( Articles.size() == 0 ) return encodeXML( "<articles/>" );
+	if ( lastPos == Articles.end() ) return encodeXML( "<articles/>" );
 
+	int i = 0;
 	vector< Article *> toShow;
-	map< string, Article * >::iterator artsIt;
-	for( artsIt = Articles.begin(); artsIt != Articles.end(); artsIt++ )
-		if ( ( static_cast< Article * > ( artsIt->second ) )->isClassified == "0" )
-			toShow.push_back( static_cast< Article * > ( artsIt->second ) );
-
+	while( lastPos != Articles.end() && i < quantity )
+	{
+		if ( ( static_cast< Article * > ( lastPos->second ) )->isClassified == "0" )
+		{
+			toShow.push_back( static_cast< Article * > ( lastPos->second ) );
+			i++;
+		}
+		lastPos++;
+	}
 	if ( toShow.size() == 0 ) return encodeXML( "<articles/>" );
 
 	string response = "<articles>";
@@ -341,17 +462,46 @@ string EntitiesManager::ArticleGetUnclassified()
 	response += "</articles>";
 	return encodeXML( response );
 }
+
+string EntitiesManager::ArticleGetUnclassified( string quantity )
+{
+	int qty;
+	std::istringstream iss( quantity );
+	if(!(iss >> qty))
+		throw string( "La cantidad recibida no es valida" );
+	this->quantity = qty;
+
+	lastPos = Articles.begin();
+	return ArticleGetUnclassified();
+}
+
+string EntitiesManager::ArticleGetUnclassifiedNext( string quantity )
+{
+	int qty;
+	std::istringstream iss( quantity );
+	if(!(iss >> qty))
+		throw string( "La cantidad recibida no es valida" );
+	this->quantity = qty;
+
+	return ArticleGetUnclassified();
+}
+
 
 string EntitiesManager::ArticleGetUnread()
 {
-	if ( Articles.size() == 0 ) return encodeXML( "<articles/>" );
+	if ( lastPos == Articles.end() ) return encodeXML( "<articles/>" );
 
-	vector< Article *> toShow;
-	map< string, Article * >::iterator artsIt;
-	for( artsIt = Articles.begin(); artsIt != Articles.end(); artsIt++ )
-		if ( ( static_cast< Article * > ( artsIt->second ) )->isRead == "0" )
-			toShow.push_back( static_cast< Article * > ( artsIt->second ) );
-
+	int i = 0;
+	vector<Article *> toShow;
+	while( lastPos != Articles.end() && i < quantity )
+	{
+		if ( ( static_cast< Article * > ( lastPos->second ) )->isRead == "0" )
+		{
+			toShow.push_back( static_cast< Article * > ( lastPos->second ) );
+			i++;
+		}
+		lastPos++;
+	}
 	if ( toShow.size() == 0 ) return encodeXML( "<articles/>" );
 
 	string response = "<articles>";
@@ -361,6 +511,30 @@ string EntitiesManager::ArticleGetUnread()
 	response += "</articles>";
 	return encodeXML( response );
 }
+
+string EntitiesManager::ArticleGetUnread( string quantity )
+{
+	int qty;
+	std::istringstream iss( quantity );
+	if(!(iss >> qty))
+		throw string( "La cantidad recibida no es valida" );
+	this->quantity = qty;
+
+	lastPos = Articles.begin();
+	return ArticleGetUnread();
+}
+
+string EntitiesManager::ArticleGetUnreadNext( string quantity )
+{
+	int qty;
+	std::istringstream iss( quantity );
+	if(!(iss >> qty))
+		throw string( "La cantidad recibida no es valida" );
+	this->quantity = qty;
+
+	return ArticleGetUnread();
+}
+
 
 string EntitiesManager::ArticleLinkTag( string artId, string tagId )
 {

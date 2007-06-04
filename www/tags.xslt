@@ -15,7 +15,25 @@
 					<td class="s"/>
 					<td class="c">
 						<ul>
-							<div class="sub-tree-header">Categorías</div>
+								<table>
+									<tr>
+										<td style="width: 100%">
+											<div class="sub-tree-header">Categorías</div>
+										</td>
+										<xsl:if test="count(tag) &gt; 0">
+											<td class="menuIcon">
+												<a class="link">
+													<xsl:attribute name="onclick">
+														advancedSearch()
+													</xsl:attribute>
+													<img style="border:0" src="images/action_adv_search.gif" title="Busqueda avanzada" alt="Busqueda avanzada"/>
+												</a>
+											</td>
+										</xsl:if>
+									</tr>
+								</table>
+
+
 							<table>
 								<xsl:apply-templates select="tag"/>
 							</table>
@@ -56,9 +74,17 @@
 				<td class="menuName">
 					<a class="link">
 						<xsl:attribute name="onclick">
-							doAction ( 'actionCode=' + escape('A4') + '&amp;params=' + escape( 'tagIds||#<xsl:value-of select="@id"/>|||tagStates||#1' ), bodyHandler, 'A' )
+							doAction ( 'actionCode=' + escape('A4') + '&amp;params=' + escape( 'tagIds||#<xsl:value-of select="@id"/>|||tagStates||#1|||' ), bodyHandler, 'A' )
 						</xsl:attribute>
 						<xsl:value-of select="@name"/>
+					</a>
+				</td>
+
+				<td class="menuName">
+					<a class="link">
+						<xsl:attribute name="onclick">swapSearch( '<xsl:value-of select="@id"/>' );</xsl:attribute>
+						<input type="hidden" value="1"><xsl:attribute name="id">searchtype_<xsl:value-of select="@id"/></xsl:attribute></input>
+						<img style="border:0" src="images/action_tag_ignore.gif" title="Ignorar en busqueda avanzada" alt="Ignorar en busqueda avanzada"><xsl:attribute name="id">searchtypeImg_<xsl:value-of select="@id"/></xsl:attribute></img>
 					</a>
 				</td>
 			</tr>
