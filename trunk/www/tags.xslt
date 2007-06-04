@@ -24,7 +24,7 @@
 											<td class="menuIcon">
 												<a class="link">
 													<xsl:attribute name="onclick">
-														advancedSearch()
+														advancedSearch( 'advSearch' )
 													</xsl:attribute>
 													<img style="border:0" src="images/action_adv_search.gif" title="Busqueda avanzada" alt="Busqueda avanzada"/>
 												</a>

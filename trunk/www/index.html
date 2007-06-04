@@ -3,171 +3,28 @@
 		<title>::Breader:: El lector de noticias inteligente</title>
 		<link href="styles/style_menu.css"   rel="stylesheet" type="text/css" />
 		<link href="styles/style_common.css" rel="stylesheet" type="text/css" />
-		<link href="styles/style_body.css" rel="stylesheet" type="text/css"   />
+		<link href="styles/style_body.css"   rel="stylesheet" type="text/css"   />
 
 		<script type="text/javascript" src="scripts/xml.js"></script>
 		<script type="text/javascript" src="scripts/show_data.js"></script>
-		<script type="text/javascript" src="scripts/ajax_queue.js"></script>
+		<script type="text/javascript" src="scripts/feed.js"></script>
+		<script type="text/javascript" src="scripts/tag.js"></script>
+		<script type="text/javascript" src="scripts/article.js"></script>
 		<script type="text/javascript" src="scripts/ajax_threads.js"></script>
 
 		<script type="text/javascript">
-			var tagsDocument  ;
-			var feedsDocument ;
-			var bodyDocument  ;
+			// Cada cuanto busca nuevos articulos en los feeeds
+			var autoUpdateTimeout  	= 5*60*1000; // 5 minutos
 
-			// START ARTICLE
-			var amIInDiv = false;
-			function replaceEncoding ( divBody )
-			{
-				// tengo que reemplazar el encoding del texto
-				if ( divBody.childNodes.length )
-				{
-					var childs = divBody.childNodes.item(0).childNodes;
-					for( i = 0; i < childs.length; i++ )
-					{
-						if ( childs.item(i).childNodes.length > 0 )
-						{
-							var node = childs.item(i).childNodes.item(0).childNodes.item(0).childNodes.item(1).childNodes.item(1).childNodes.item(0).childNodes.item(3);
-							var oriText = node.innerHTML;
-							var output  = oriText.replace( /&amp;/gi, '&' ).replace( /&lt;/gi, '<' ).replace( /&gt;/gi, '>' ).replace( /&quot;/gi, '\"' );
-							node.innerHTML = output;
-						}
-					}
-				}
+			// Puerto con el cual acceder al server
+			var portNum       		= 12000;
 
-			}
+			// DOM de los feeds, tags y articulos que se estan mostrando
+			var tagsDocument  		= null;
+			var feedsDocument 		= null;
+			var bodyDocument  		= null;
 
-			function showBody( docToUse, bodyDoc )
-			{
-				var divBody  = docToUse.getElementById('chrome');
-				var fragment = applyXSLT( 'body.xslt', divBody, bodyDoc, null, null );
-
-				replaceEncoding ( divBody );
-
-				showDiv( docToUse, 'chrome', null );
-				hideDiv( docToUse, 'loading_body', null );
-				hideDiv( docToUse, 'processing_div', null );
-			}
-			function bodyHandler( result )
-			{
-				result = checkError( document, result );
-				if ( result == null ) return;
-				bodyDocument = result;
-				showBody( document, bodyDocument );
-				setTimeout( 'showScroll()', 1000 );
-			}
-			function updateBodyHandler( result )
-			{
-				result = checkError( document, result );
-				if ( result == null ) return;
-
-				var newArticles = result.documentElement.childNodes[1].childNodes;
-				for( i = 0; i < newArticles.length; i++ )
-					bodyDocument.documentElement.childNodes[1].appendChild( newArticles[i] );
-				showBody( document, bodyDocument );
-
-				// Si ya no trae mas articulos, no tiene sentido seguir yendo a buscar mas
-				if ( newArticles.length > 0 )
-					setTimeout( 'showScroll()', 1000 );
-			}
-
-			function editArticleHandler( result )
-			{
-				result = checkError( document, result );
-				if ( result == null ) return;
-
-				var idToFind = getNodeAttr( result.documentElement.childNodes[1], 'id' );
-				if ( idToFind == null )
-				{
-					showDiv( document, 'error_tag', "Editar Articulo - El nodo no tiene id" );
-					return;
-				}
-				var nodeFound = findNodeById( bodyDocument.documentElement.childNodes[1], idToFind );
-				bodyDocument.documentElement.childNodes[1].replaceChild( result.documentElement.childNodes[1], nodeFound );
-				showBody( document, bodyDocument );
-			}
-			function keepCatsVisible()
-			{
-				if ( !amIInDiv ) amIInDiv = true;
-			}
-			function startTimerToSelectCat()
-
-			{
-				if ( amIInDiv ) amIInDiv = false;
-				setTimeout( 'hideCatsMenu()', '800' );
-			}
-			function hideCatsMenu()
-			{
-				if ( amIInDiv ) return;
-				var divWithCats = document.getElementById( 'tagsToLink' )
-				hideDiv( document, 'tagsToLink', null );
-			}
-			function showCatsMenu( artId )
-			{
-				var allTagsDoc = tagsDocument.documentElement.childNodes[1]
-				var artDoc = findNodeById( bodyDocument.documentElement.childNodes[1], artId );
-				var tagsDoc = allTagsDoc.childNodes;
-
-				var tagsUnlinkedText = "<tags>";
-				for(i = 0;i < tagsDoc.length;i++)
-				{
-					var node = tagsDoc.item(i);
-					var idTag = getNodeAttr( node, 'id' );
-					var linkedTagNode = findNodeById( artDoc.childNodes[1], idTag );
-					if ( linkedTagNode == null )
-						tagsUnlinkedText += serializeXML( node );
-				}
-				tagsUnlinkedText += "</tags>";
-				var tagsUnlinkedDoc = parseXML( tagsUnlinkedText );
-
-				var divWithCats = document.getElementById( 'tagsToLink' )
-				applyXSLT( 'add_tags.xslt', divWithCats, tagsUnlinkedDoc, 'artId', artId );
-				assignPosition( divWithCats );
-				showDiv( document, 'tagsToLink', null );
-			}
-			function linkTag( artId, tagId )
-			{
-				doAction ( "actionCode=" + escape( "A1" ) + "&params=" + escape( "tagId||#" + tagId + "|||artId||#" + artId ), editArticleHandler );
-				if ( amIInDiv ) amIInDiv = false;
-				hideCatsMenu();
-			}
-			function advancedSearch()
-			{
-				var advSearchText = document.getElementById( 'advSearch' ).value;
-				if ( advSearchText == null || advSearchText == '' )
-				{
-					alert('No hay categorias seleccionadas para buscar');
-					return;
-				}
-
-				var tagIds = ''; var tagStates = '';
-				var tagsAndValues = advSearchText.split(';');
-				for( i=0; i < tagsAndValues.length; i++ )
-				{
-					var tagAndValue = tagsAndValues[i].split('=');
-					var tagId    = tagAndValue[0];
-					var tagValue = tagAndValue[1];
-
-					if ( tagValue == '2' || tagValue == '3' )
-					{
-						if ( tagIds != '' ) tagIds += '||,';
-						tagIds += tagId;
-
-						var state = tagValue == '2' ? '1' : '0';
-						if ( tagStates != '' ) tagStates += '||,';
-						tagStates += state;
-					}
-				}
-
-				if ( tagIds == '' )
-				{
-					alert('No hay categorias seleccionadas para buscar');
-					return;
-				}
-
-				doAction ( 'actionCode=' + escape('A4') + '&params=' + escape( 'tagIds||#' + tagIds + '|||tagStates||#' + tagStates + '|||' ), bodyHandler, 'A' )
-			}
-
+			// START ADVANCED SEARCH
 			function setSearchState( tagId, type )
 			{
 				var inputTag = document.getElementById( 'searchtype_' + tagId );
@@ -196,7 +53,6 @@
 				imgTag.title = imgTitle;
 				imgTag.alt   = imgTitle;
 			}
-
 			function updateSearchState()
 			{
 				var advSearchText = '';
@@ -223,7 +79,6 @@
 				setSearchState( tagId, newType );
 				updateSearchState();
 			}
-
 			function reloadSearchState()
 			{
 				var advSearchText = document.getElementById( 'advSearch' ).value;
@@ -239,290 +94,54 @@
 					setSearchState( tagId, tagValue );
 				}
 			}
-			// END ARTICLE
+			// END ADVANCED SEARCH
 
-			// START FEEDS
-			var countToRefresh = 0;
-			function showFeeds( docToUse, feedsDoc )
-			{
-				var divFeeds = docToUse.getElementById('menu_feeds');
-				applyXSLT( 'feeds.xslt', divFeeds, feedsDoc, null, null );
-
-				showDiv( docToUse, 'menu_feeds', null );
-				hideDiv( docToUse, 'loading_feeds', null );
-				hideDiv( docToUse, 'processing_div', null );
-			}
-
-			function feedsHandler( result )
-			{
-				result = checkError( document, result );
-
-				if ( result == null ) return;
-				feedsDocument = result;
-				showFeeds( document, feedsDocument );
-			}
-			function delFeedHandler( result )
-			{
-				result = checkError( document, result );
-				if ( result == null ) return;
-
-				var idToFind = getNodeAttr( result.documentElement.childNodes[1], 'id' );
-				if ( idToFind == null )
-				{
-					showDiv( document, 'error_tag', "Borrar Feed - El nodo no tiene id" );
-					return;
-				}
-				var nodeFound = findNodeById( feedsDocument.documentElement.childNodes[1], idToFind );
-				feedsDocument.documentElement.childNodes[1].removeChild( nodeFound )
-				showFeeds( document, feedsDocument );
-			}
-			function addFeedHandlerForReal( result )
-			{
-				result = checkError( document, result );
-				if ( result == null ) return;
-				feedsDocument.documentElement.childNodes[1].appendChild( result.documentElement.childNodes[1] );
-				showFeeds( document, feedsDocument );
-			}
-			function refreshFeedHandlerForReal( result )
-			{
-				result = checkError( document, result );
-				if ( result == null ) return;
-
-				countToRefresh--;
-				if ( countToRefresh == 0 )
-				{
-					doAction ( getCurrentBody(), bodyHandler, 'A' );
-					doAction ( "actionCode=F3", feedsHandler, 'F' );
-				}
-			}
-			function addFeedHandler( result )
-			{
-				result = checkError( document, result );
-				if ( result == null ) return;
-
-				var feedUrl  = getNodeAttr ( result.documentElement.childNodes[1], 'url' );
-				var feedName = getNodeAttr ( result.documentElement.childNodes[1], 'name' );
-				if ( feedUrl == null || feedName == null )
-				{
-					showDiv( document, 'error_tag', 'No se pudo recuperar la informacion del feed' );
-					return;
-				}
-				doAction ( "actionCode=" + escape( "F1" ) + "&params=" + escape( "feedUrl||#" + feedUrl + "|||feedName||#" + feedName ), addFeedHandlerForReal, '' );
-			}
-			function refreshFeedHandler( result )
-			{
-				result = checkError( document, result );
-				if ( result == null ) return;
-
-				countToRefresh = 0;
-				var children = result.documentElement.childNodes[1].childNodes;
-				for( i = 0; i < children.length; i++ )
-				{
-					// Cada hijo es un articulo a agregar
-					var node = children.item(i);
-
-					var feedName = getNodeAttr( node, 'feedName' );
-					var title    = getNodeAttr( node, 'title'    );
-					var link     = getNodeAttr( node, 'link'     );
-					var author   = getNodeAttr( node, 'author'   );
-					var date     = getNodeAttr( node, 'date'     );
-
-					var summary  = null;
-					if ( node.firstChild != null )
-						summary = node.firstChild.textContent;
-
-					if ( 	feedName == null ||
-							title == null ||
-							summary == null ||
-							link == null ||
-							author == null ||
-							date == null )
-					{
-						showDiv( document, 'error_tag', 'No se pudo recuperar la informacion del articulo a actualizar' );
-						return;
-					}
-
-					var params = "";
-					params += "feedName||#" + feedName;
-					params += "|||title||#" + title;
-					params += "|||summary||#" + summary;
-					params += "|||link||#" + link;
-					params += "|||author||#" + author;
-					params += "|||date||#" + date;
-					params = escape( params );
-
-					countToRefresh++;
-					doAction ( "actionCode=" + escape( "A0" ) + "&params=" + params, refreshFeedHandlerForReal, '' );
-				}
-
-				if ( countToRefresh == 0 )
-				{
-					doAction ( getCurrentBody(), bodyHandler, 'A' );
-					doAction ( "actionCode=F3", feedsHandler, 'F' );
-				}
-			}
-			function refreshFeed( feedId )
-			{
-				var node = findNodeById( feedsDocument.documentElement.childNodes[1], feedId );
-				if ( node == null )
-				{
-					showDiv( document, 'error_tag', 'No se encontro el feed para actualizar' );
-					return;
-				}
-
-				var feedUrl    = getNodeAttr( node, 'url' );
-				var lastUpdate = getNodeAttr( node, 'lastUpdate' );
-				if ( feedUrl == null || lastUpdate == null )
-				{
-					showDiv( document, 'error_tag', 'No se encontro el feed para actualizar' );
-					return;
-				}
-
-				setCurrentBody( "actionCode=" + escape( "A5" ) + '&params=' + escape( "feedId||#" + feedId + '|||' ) );
-				doActionWithName ( "refresh_feed.php", "feedUrl=" + escape( feedUrl ) + "&lastUpdate=" + escape( lastUpdate ), refreshFeedHandler, '' );
-			}
-			function addFeed( inputId )
-			{
-				var txtInput = document.getElementById( inputId );
-				var url = txtInput.value;
-				if ( url == null || url == '' )
-				{
-					alert( 'Debe ingresar la direccion del feed' );
-					return;
-				}
-				txtInput.value = "";
-				doActionWithName ( "add_feed.php", "feedUrl=" + escape( url ), addFeedHandler, '' );
-			}
-			// END FEEDS
-
-			// START TAGS
-			function showTags( docToUse, tagsDoc )
-			{
-				var divTags = docToUse.getElementById('menu_tags');
-				applyXSLT( 'tags.xslt', divTags, tagsDoc, null, null );
-
-				showDiv( docToUse, 'menu_tags', null );
-				hideDiv( docToUse, 'loading_tags', null );
-				hideDiv( docToUse, 'processing_div', null );
-			}
-
-			function tagsHandler( result )
-			{
-				result = checkError( document, result );
-				if ( result == null ) return;
-				tagsDocument = result;
-				showTags( document, tagsDocument );
-				if ( document.getElementById( 'advSearch' ).value == '' ) updateSearchState();
-				reloadSearchState();
-			}
-			function editTagHandler( result )
-			{
-				result = checkError( document, result );
-				if ( result == null ) return;
-
-				var idToFind = getNodeAttr( result.documentElement.childNodes[1], 'id' );
-				if ( idToFind == null )
-				{
-					showDiv( document, 'error_tag', "Editar Categoría - El nodo no tiene id" );
-					return;
-				}
-				var nodeFound = findNodeById( tagsDocument.documentElement.childNodes[1], idToFind );
-				tagsDocument.documentElement.childNodes[1].replaceChild( result.documentElement.childNodes[1], nodeFound );
-				showTags( document, tagsDocument );
-				reloadSearchState();
-			}
-			function delTagHandler( result )
-			{
-				result = checkError( document, result );
-				if ( result == null ) return;
-
-				var idToFind = getNodeAttr( result.documentElement.childNodes[1], 'id' );
-				if ( idToFind == null )
-				{
-					showDiv( document, 'error_tag', "Borrar Categoría - El nodo no tiene id" );
-					return;
-				}
-				var nodeFound = findNodeById( tagsDocument.documentElement.childNodes[1], idToFind );
-				tagsDocument.documentElement.childNodes[1].removeChild( nodeFound )
-
-				// reinicio la busqueda avanzada
-				document.getElementById( 'advSearch' ).value = '';
-				showTags( document, tagsDocument );
-			}
-			function addTagHandler( result )
-			{
-				result = checkError( document, result );
-				if ( result == null ) return;
-
-				tagsDocument.documentElement.childNodes[1].appendChild( result.documentElement.childNodes[1] );
-				showTags( document, tagsDocument );
-
-				reloadSearchState();
-				updateSearchState();
-			}
-			function addTag( inputId )
-			{
-				var txtInput = document.getElementById( inputId );
-				var name = txtInput.value;
-				if ( name == null || name == '' )
-				{
-					alert( 'Debe ingresar el nombre de la categoría' );
-					return;
-				}
-				txtInput.value = "";
-				doAction ( "actionCode=" + escape( "T1" ) + "&params=" + escape( "tagName||#" + name ), addTagHandler, '' );
-			}
-			function editTag( tagId, oldTagName )
-			{
-				var name = prompt( 'Ingrese el nuevo nombre de la categoría', oldTagName );
-				if ( name == null ) return;
-				if ( name != oldTagName )
-					doAction ( "actionCode=" + escape( "T3" ) + "&params=" + escape( "tagId||#" + tagId + "|||tagName||#" + name ), editTagHandler, '' );
-			}
-			// END TAGS
-
-			// GENERAL
+			// START AJAX ACTIONS
 			function doActionWithName( pageName, params, handler, type )
 			{
 				hideDiv( document, 'error_tag', '' );
 
-				if ( type == 'F' )
+				if ( type != 'S' ) // silent
 				{
-					setCurrentFeed( params );
-					showDiv( document, 'loading_feeds', null );
-					hideDiv( document, 'menu_feeds', '' );
-				}
-				else if ( type == 'T' )
-				{
-					setCurrentTag( params );
-					showDiv( document, 'loading_tags', null );
-					hideDiv( document, 'menu_tags', '' );
-				}
-				else if ( type == 'A' )
-				{
-					setCurrentBody( params );
-					var startQS = getCurrentBody() + escape('quantity||#10|||startPosition||#0');
-					document.getElementById( 'start_pos').value = 0;
-					params += startQS;
+					if ( type == 'F' ) // feed
+					{
+						setCurrentFeed( params );
+						showDiv( document, 'loading_feeds', null );
+						hideDiv( document, 'menu_feeds', '' );
+					}
+					else if ( type == 'T' ) //tag
+					{
+						setCurrentTag( params );
+						showDiv( document, 'loading_tags', null );
+						hideDiv( document, 'menu_tags', '' );
+					}
+					else if ( type == 'A' ) //article
+					{
+						setCurrentBody( params );
+						var startQS = getCurrentBody() + escape('quantity||#10|||startPosition||#0');
+						document.getElementById( 'start_pos').value = 0;
+						params += startQS;
 
-					showDiv( document, 'loading_body', null );
-					hideDiv( document, 'chrome', '' );
+						showDiv( document, 'loading_body', null );
+						hideDiv( document, 'chrome', '' );
+					}
+					else showDiv( document, 'processing_div', null );
 				}
-				else showDiv( document, 'processing_div', null );
 
-				params = '?port=12001&'+params;
-				//SimpleAJAXCall ( pageName + params, SimpleCallback, "GET", handler );
+				params = '?port=' + portNum + '&' + params;
 				MakeNewAJAXCall( pageName + params, SimpleCallback, "GET", null, handler, null );
 			}
 			function doAction( params, handler, type )
 			{
-				// "do_action.php"
 				doActionWithName( "bin/thin_client.exe", params, handler, type );
 			}
 			function SimpleCallback( in_text, in_param )
 			{
 				in_param( in_text );
 			}
+			// END AJAX ACTIONS
+
+			// START SCROLL AUTO FETCH
 			function updateArticleCount()
 			{
 				var startPos = parseInt( document.getElementById( 'start_pos').value );
@@ -533,7 +152,6 @@
 				var startQS = getCurrentBody() + escape('quantity||#5|||startPosition||#' + startPos );
 				doAction ( startQS, updateBodyHandler, '' );
 			}
-
 			function showScroll()
 			{
 				var chromeEl  = document.getElementById( 'chrome');
@@ -546,38 +164,9 @@
 				else
 					setTimeout( 'showScroll()', 1000 );
 			}
-			function reload()
-			{
-				hideDiv( document, 'processing_div', null );
+			// END SCROLL AUTO FETCH
 
-				doAction ( getCurrentBody(), bodyHandler, 'A' );
-				doAction ( getCurrentFeed(), feedsHandler, 'F' );
-				doAction ( getCurrentTag(),  tagsHandler  , 'T' );
-
-				document.addEventListener( "keypress", document_keyPress, false);
-			}
-			function document_keyPress( e )
-			{
-				var el1 = document.getElementById( 'quickaddFeed' );
-				var el2 = document.getElementById( 'quickaddTag' );
-				if ( e.which == 13 )
-				{
-					if ( e.target == el1 )
-					{
-						addFeed( 'quickaddFeed' )
-						return false;
-					}
-
-					if ( e.target == el2 )
-					{
-						addTag( 'quickaddTag' )
-						return false;
-					}
-
-				}
-			}
-
-
+			// START SAVE STATE
 			function getCurrentBody()
 			{
 				return document.getElementById('currentBody').value;
@@ -602,7 +191,9 @@
 			{
 				document.getElementById('currentTag').value  = queryString;
 			}
+			// END SAVE STATE
 
+			// START TAG LINK DIV
 			var cX = 0; var cY = 0;
 			function updateCursorPosition( e )
 			{
@@ -619,25 +210,61 @@
 				d.style.left = (cX+10) + "px";
 				d.style.top = (cY+10) + "px";
 			}
+			// END TAG LINK DIV
 
-			if ( document.all )
-				document.onmousemove = updateCursorPositionDocAll;
-			else
-				document.onmousemove = updateCursorPosition;
+			// START LOAD AND EVENTS
+			function reload()
+			{
+				hideDiv( document, 'processing_div', null );
 
+				doAction ( getCurrentBody(), bodyHandler, 'A' );
+				doAction ( getCurrentFeed(), feedsHandler, 'F' );
+				doAction ( getCurrentTag(),  tagsHandler  , 'T' );
+
+				document.addEventListener( "keypress", document_keyPress, false);
+
+				if ( document.all )
+					document.onmousemove = updateCursorPositionDocAll;
+				else
+					document.onmousemove = updateCursorPosition;
+
+				timerId = setTimeout( 'refreshAllFeeds()', autoUpdateTimeout );
+			}
+			function document_keyPress( e )
+			{
+				var el1 = document.getElementById( 'quickaddFeed' );
+				var el2 = document.getElementById( 'quickaddTag' );
+				if ( e.which == 13 )
+				{
+					if ( e.target == el1 )
+					{
+						addFeed( 'quickaddFeed' )
+						return false;
+					}
+
+					if ( e.target == el2 )
+					{
+						addTag( 'quickaddTag' )
+						return false;
+					}
+
+				}
+			}
+			// END LOAD AND EVENTS
 		</script>
 
 	</head>
 
 	<body onload="reload()">
+		<!--TO SAVE STATE AND ALLOW REFRESH -->
 		<input id="currentBody" name="currentBody"  type="hidden" value="actionCode=A6&params="/>
 		<input id="currentFeed" name="currentFeeds" type="hidden" value="actionCode=F3" />
 		<input id="currentTag"  name="currentTags"  type="hidden" value="actionCode=T4" />
 		<input id="advSearch"   name="advSearch"    type="hidden" value="" />
 		<input id="start_pos"   name="start_pos"    type="hidden" value="0" />
-		<!--input id="start_pos_2"   name="start_pos_2"    type="button" value="updateArticleCount" onclick="updateArticleCount()"/-->
 
 		<div id="pag">
+			<!--MENU DE LA IZQUIERDA -->
 			<div id="nav">
 				<div id="menu_main">
 					<table cellspacing="0" cellpadding="0" border="0" id="selectors-box" class="round-box">
@@ -814,8 +441,10 @@
 				<div id="processing_div" class="processing" style="display: none">Procesando...</div>
 			</div>
 
+			<!-- EN CASO DE ERROR... -->
 			<div id="error_tag" class="error" style="display: none">Aca va a ir el mensaje de error cuando este ocurra</div>
 
+			<!-- CARGANDO ARTICULOS DE LA DERECHA -->
 			<div id="loading_body">
 				<div id="entries">
 					<div class="entry" style="height: 100%;">
@@ -856,8 +485,11 @@
 					</div>
 				</div>
 			</div>
+
+			<!-- ARTICULOS -->
 			<div id="chrome"></div>
 
+			<!-- VENTANA CON CATEGORIAS A LINKEAR -->
 			<div id="tagsToLink" onmouseout='startTimerToSelectCat()' onmouseover='keepCatsVisible()'><div>
 		</div>
 	</body>
