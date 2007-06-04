@@ -1,11 +1,12 @@
 #nav
 {
+	overflow: auto;
 	margin: 2px 2pt;
 	position:relative;
 	float: left;
 	width:  200px;
 	z-index: 1;
-	overflow: hidden;
+	height: 99%;
 	margin-top:3px;
 }
 

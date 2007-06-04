@@ -1,0 +1,220 @@
+// START FEEDS
+var countToRefresh     = 0;
+var feedsToRefresh     = 0;
+var feedRefreshHandler = 0;
+var timerId			   = 0;
+function showFeeds( docToUse, feedsDoc )
+{
+	var divFeeds = docToUse.getElementById('menu_feeds');
+	applyXSLT( 'feeds.xslt', divFeeds, feedsDoc, null, null );
+
+	showDiv( docToUse, 'menu_feeds', null );
+	hideDiv( docToUse, 'loading_feeds', null );
+	hideDiv( docToUse, 'processing_div', null );
+}
+function feedsHandler( result )
+{
+	result = checkError( document, result );
+
+	if ( result == null ) return;
+	feedsDocument = result;
+	showFeeds( document, feedsDocument );
+}
+function delFeedHandler( result )
+{
+	result = checkError( document, result );
+	if ( result == null ) return;
+
+	var idToFind = getNodeAttr( result.documentElement.childNodes[1], 'id' );
+	if ( idToFind == null )
+	{
+		showDiv( document, 'error_tag', "Borrar Feed - El nodo no tiene id" );
+		return;
+	}
+	var nodeFound = findNodeById( feedsDocument.documentElement.childNodes[1], idToFind );
+	feedsDocument.documentElement.childNodes[1].removeChild( nodeFound )
+	showFeeds( document, feedsDocument );
+}
+function addFeedHandlerForReal( result )
+{
+	result = checkError( document, result );
+	if ( result == null ) return;
+
+	var node = result.documentElement.childNodes[1];
+	var feedId = getNodeAttr( node, 'id' );
+	feedsDocument.documentElement.childNodes[1].appendChild( node );
+	showFeeds( document, feedsDocument );
+
+	refreshFeed( feedId );
+}
+function refreshFeedHandlerForReal( result )
+{
+	result = checkError( document, result );
+	if ( result == null ) return;
+
+	countToRefresh--;
+	if ( countToRefresh == 0 && feedRefreshHandler != null )
+		feedRefreshHandler( 1 );
+}
+function addFeedHandler( result )
+{
+	result = checkError( document, result );
+	if ( result == null ) return;
+
+	var feedUrl  = getNodeAttr ( result.documentElement.childNodes[1], 'url' );
+	var feedName = getNodeAttr ( result.documentElement.childNodes[1], 'name' );
+	if ( feedUrl == null || feedName == null )
+	{
+		showDiv( document, 'error_tag', 'No se pudo recuperar la informacion del feed' );
+		return;
+	}
+	doAction ( "actionCode=" + escape( "F1" ) + "&params=" + escape( "feedUrl||#" + feedUrl + "|||feedName||#" + feedName ), addFeedHandlerForReal, 'S' );
+}
+function refreshFeedHandler( result )
+{
+	result = checkError( document, result );
+	if ( result == null ) return;
+
+	countToRefresh = 0;
+	var children = result.documentElement.childNodes[1].childNodes;
+	if ( children.length > 0 )
+	{
+		for( i = 0; i < children.length; i++ )
+		{
+			// Cada hijo es un articulo a agregar
+			var node = children.item(i);
+
+			var feedName = getNodeAttr( node, 'feedName' );
+			var title    = getNodeAttr( node, 'title'    );
+			var link     = getNodeAttr( node, 'link'     );
+			var author   = getNodeAttr( node, 'author'   );
+			var date     = getNodeAttr( node, 'date'     );
+
+			var summary  = null;
+			if ( node.firstChild != null )
+				summary = node.firstChild.textContent;
+
+			if ( 	feedName == null ||
+					title == null ||
+					summary == null ||
+					link == null ||
+					author == null ||
+					date == null )
+			{
+				showDiv( document, 'error_tag', 'No se pudo recuperar la informacion del articulo a actualizar' );
+				return;
+			}
+
+			var params = "";
+			params += "feedName||#" + feedName;
+			params += "|||title||#" + title;
+			params += "|||summary||#" + summary;
+			params += "|||link||#" + link;
+			params += "|||author||#" + author;
+			params += "|||date||#" + date;
+			params = escape( params );
+
+			countToRefresh++;
+			doAction ( "actionCode=" + escape( "A0" ) + "&params=" + params, refreshFeedHandlerForReal, 'S' );
+		}
+	}
+	else
+	{
+		if ( feedRefreshHandler != null )
+		{
+			hideDiv( document, 'processing_div', null );
+			feedRefreshHandler( 0 );
+		}
+	}
+}
+
+function updateFeedsDiv( mustUpdate )
+{
+	if ( mustUpdate )
+	{
+		doAction ( getCurrentBody(), bodyHandler, 'A' );
+		doAction ( "actionCode=F3", feedsHandler, 'F' );
+	}
+
+	if ( !timerId )
+		timerId = setTimeout( 'refreshAllFeeds()', autoUpdateTimeout );
+}
+function autoUpdateFeedsDiv( mustUpdate )
+{
+	feedsToRefresh--;
+	if ( feedsToRefresh <= 0 )
+	{
+		if ( mustUpdate )
+			doAction ( "actionCode=F3", feedsHandler, 'F' );
+
+		timerId = setTimeout( 'refreshAllFeeds()', autoUpdateTimeout );
+	}
+}
+
+function doRefreshFeed( feedId, isSilent )
+{
+	var node = findNodeById( feedsDocument.documentElement.childNodes[1], feedId );
+	if ( node == null )
+	{
+		showDiv( document, 'error_tag', 'No se encontro el feed para actualizar' );
+		return;
+	}
+
+	var feedUrl    = getNodeAttr( node, 'url' );
+	var lastUpdate = getNodeAttr( node, 'lastUpdate' );
+	if ( feedUrl == null || lastUpdate == null )
+	{
+		showDiv( document, 'error_tag', 'No se encontro el feed para actualizar' );
+		return;
+	}
+
+	var type = isSilent ? 'S' : '';
+	doActionWithName ( "refresh_feed.php", "feedUrl=" + escape( feedUrl ) + "&lastUpdate=" + escape( lastUpdate ), refreshFeedHandler, type );
+}
+function refreshFeed( feedId )
+{
+	if ( timerId )
+	{
+		clearTimeout( timerId );
+		timerId = 0;
+	}
+
+	feedsToRefresh = 1;
+	feedRefreshHandler = updateFeedsDiv;
+
+	setCurrentBody( "actionCode=" + escape( "A5" ) + '&params=' + escape( "feedId||#" + feedId + '|||' ) );
+	doRefreshFeed( feedId, 0 );
+}
+function refreshAllFeeds()
+{
+	var feedsNode = feedsDocument.documentElement.childNodes[1].childNodes;
+
+	feedsToRefresh = feedsNode.length;
+	feedRefreshHandler = autoUpdateFeedsDiv;
+	for( i = 0; i < feedsNode.length; i++ )
+	{
+		var feedId = getNodeAttr( feedsNode[i], 'id' );
+		doRefreshFeed( feedId, 1 );
+	}
+}
+
+function addFeed( inputId )
+{
+	var txtInput = document.getElementById( inputId );
+	var url = txtInput.value;
+	if ( url == null || url == '' )
+	{
+		alert( 'Debe ingresar la direccion del feed' );
+		return;
+	}
+
+	if ( timerId )
+	{
+		clearTimeout( timerId );
+		timerId = 0;
+	}
+
+	txtInput.value = "";
+	doActionWithName ( "add_feed.php", "feedUrl=" + escape( url ), addFeedHandler, '' );
+}
+// END FEEDS
