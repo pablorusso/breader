@@ -2,7 +2,13 @@
 
 string ActionArticleGetFavourites::processAction()
 {
-	return EntitiesManager::getInstance()->ArticleGetFavourites();
+	string startPosition = *(this->getParamValue( "startPosition" )->begin());
+	string quantity      = *(this->getParamValue( "quantity" )->begin());
+
+	if ( startPosition == "0" )
+		return EntitiesManager::getInstance()->ArticleGetFavourites( quantity );
+	return EntitiesManager::getInstance()->ArticleGetFavouritesNext( quantity );
+
 }
 
 string ActionArticleGetFavourites::getName()
@@ -13,5 +19,7 @@ string ActionArticleGetFavourites::getName()
 vector<string> ActionArticleGetFavourites::getNeededParams()
 {
 	vector<string> result;
+	result.push_back( "startPosition" );
+	result.push_back( "quantity" );
 	return result;
 }

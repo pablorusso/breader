@@ -24,8 +24,17 @@ class EntitiesManager
 		int lastFeedId;
 		int lastArtId;
 
+		map< string, Article * >::iterator lastPos;
+		int quantity;
+
 		EntitiesManager();
 		~EntitiesManager();
+
+		string ArticleGetUnread();
+		string ArticleGetUnclassified();
+		string ArticleGetFavourites();
+		string ArticleGetByFeed( string feedId );
+		string ArticleGetByTags( vector< string > tagIds, vector< string > state );
 	public:
 		static EntitiesManager *_instance;
 		static EntitiesManager *getInstance();
@@ -38,13 +47,20 @@ class EntitiesManager
 		string ArticleApproveTag( string artId, string tagId );
 		string ArticleChangeFavState( string artId );
 		string ArticleChangeReadState( string artId );
-		string ArticleGetByFeed( string feedId );
-		string ArticleGetByTags( vector< string > tagIds, vector< string > state );
-		string ArticleGetUnclassified();
-		string ArticleGetUnread();
+
+		string ArticleGetByFeed( string feedId, string quantity );
+		string ArticleGetByFeedNext( string feedId, string quantity );
+		string ArticleGetByTags( vector< string > tagIds, vector< string > state, string quantity );
+		string ArticleGetByTagsNext( vector< string > tagIds, vector< string > state, string quantity );
+		string ArticleGetUnclassified( string quantity );
+		string ArticleGetUnclassifiedNext( string quantity );
+		string ArticleGetUnread( string quantity );
+		string ArticleGetUnreadNext( string quantity );
+		string ArticleGetFavourites( string quantity );
+		string ArticleGetFavouritesNext( string quantity );
+
 		string ArticleLinkTag( string artId, string tagId );
 		string ArticleUnLinkTag( string artId, string tagId );
-		string ArticleGetFavourites();
 
 		string FeedCreate( string name, string url );
 		string FeedDelete( string id );

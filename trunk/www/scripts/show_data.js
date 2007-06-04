@@ -18,54 +18,9 @@ function hideDiv( docToUse, divName, innerText )
 	}
 }
 
-// ACTUALIZAN PANTALLA
-function showBody( docToUse, bodyDoc )
-{
-	var divBody = docToUse.getElementById('chrome');
-	applyXSLT( 'body.xslt', divBody, bodyDoc, null, null );
-
-	// tengo que reemplazar el encoding del texto
-	if ( divBody.childNodes.length )
-	{
-		var childs = divBody.childNodes.item(0).childNodes;
-		for( i = 0; i < childs.length; i++ )
-		{
-			if ( childs.item(i).childNodes.length > 0 )
-			{
-				var node = childs.item(i).childNodes.item(0).childNodes.item(0).childNodes.item(1).childNodes.item(1).childNodes.item(0).childNodes.item(3);
-				var oriText = node.innerHTML;
-				var output  = oriText.replace( /&amp;/gi, '&' ).replace( /&lt;/gi, '<' ).replace( /&gt;/gi, '>' ).replace( /&quot;/gi, '\"' );
-				node.innerHTML = output;
-			}
-		}
-	}
-	showDiv( docToUse, 'chrome', null );
-	hideDiv( docToUse, 'loading_body', null );
-	hideDiv( docToUse, 'processing_div', null );
-}
-function showTags( docToUse, tagsDoc )
-{
-	var divTags = docToUse.getElementById('menu_tags');
-	applyXSLT( 'tags.xslt', divTags, tagsDoc, null, null );
-
-	showDiv( docToUse, 'menu_tags', null );
-	hideDiv( docToUse, 'loading_tags', null );
-	hideDiv( docToUse, 'processing_div', null );
-}
-function showFeeds( docToUse, feedsDoc )
-{
-	var divFeeds = docToUse.getElementById('menu_feeds');
-	applyXSLT( 'feeds.xslt', divFeeds, feedsDoc, null, null );
-
-	showDiv( docToUse, 'menu_feeds', null );
-	hideDiv( docToUse, 'loading_feeds', null );
-	hideDiv( docToUse, 'processing_div', null );
-}
-
+// CHEQUEA ERROR
 function checkError ( docToUse, nodeToCheck )
 {
-	//alert( serializeXML( nodeToCheck ) );
-
 	var parserError = nodeToCheck.firstChild.tagName;
 	if ( parserError == 'parsererror' )
 	{
@@ -92,5 +47,5 @@ function checkError ( docToUse, nodeToCheck )
 			}
 		}
 	}
-	return nodeToCheck; //parseXML( serializeXML( nodeToCheck.documentElement.childNodes[1] ) );
+	return nodeToCheck;
 }
