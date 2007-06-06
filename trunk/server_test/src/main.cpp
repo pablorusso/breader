@@ -141,6 +141,24 @@ void f1(feedHandler &fh) {
 
 		fh.invertirFavorito(0,0);
 		fh.invertirFavorito(0,0);
+
+		if (art1.estaClasificado()) cout << "ARTICULO1 CLASIFICADO" << endl;
+		else cout << "ARTICULO1 NO CLASIFICADO" << endl;
+
+		if (art7.estaClasificado()) cout << "ARTICULO7 CLASIFICADO" << endl;
+		else cout << "ARTICULO7 NO CLASIFICADO" << endl;
+
+		if (art7.esFavorito()) cout << "ARTICULO7 ES FAVORITO" << endl;
+		else cout << "ARTICULO7 NO ES FAVORITO" << endl;
+
+		cout << "Clasificando Articulo7 como favorito..." << endl;
+		art7.catFavorito();
+
+		if (art7.esFavorito()) cout << "ARTICULO7 ES FAVORITO" << endl;
+		else cout << "ARTICULO7 NO ES FAVORITO" << endl;
+
+		cout << "Idfeed0, fecha ultimo articulo: " << fh.getUltimaFecha(0) << endl;
+
 }
 
 // **************** MAIN  ****************** //
@@ -150,6 +168,7 @@ int main(int argc, char** argv) {
 	try {
 		feedHandler fh(CONST_MAX_CAT);
 		f1(fh);
+/*
 
 		cout << "baja: " << fh.bajaFeed(0) << endl;
 //		cout << "baja: " << fh.bajaFeed(1) << endl;
@@ -157,14 +176,12 @@ int main(int argc, char** argv) {
 
 		//f1(fh);
 
-/*
-cout << "STOP" << endl;
-string tmp;
-cin >> tmp;
+
+//cout << "STOP" << endl;
+//string tmp;
+//cin >> tmp;
+
 */
-
-
-
 		fh.set_MAX_CAT(62); //64, jeje
 
 		fh.reestructurar();
@@ -227,6 +244,7 @@ cin >> tmp;
 			c_art.pop();
 		}
 */
+
 	}
 	catch (eFeedHandler e) {
 		cout << e.what() << endl;
