@@ -26,7 +26,7 @@
 													<xsl:attribute name="onclick">
 														advancedSearch( 'advSearch' )
 													</xsl:attribute>
-													<img style="border:0" src="images/action_adv_search.gif" title="Busqueda avanzada" alt="Busqueda avanzada"/>
+													<img style="border:0" src="images/action_adv_search.png" title="Busqueda avanzada" alt="Busqueda avanzada"/>
 												</a>
 											</td>
 										</xsl:if>
