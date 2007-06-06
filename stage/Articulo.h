@@ -117,6 +117,30 @@ class Articulo {
 		void rem_cat(const t_idcat &idcat);
 
 		/**
+		 * Pregunta si el articulo esta clasificado o no
+		 * @return true si esta clasificado, false de lo contrario
+		 */
+		bool estaClasificado() {
+			return (this->cont_idcat.estaClasificado());
+		}
+
+		/**
+		 * Pregunta si el articulo es favorito (esta clasificado con IDCAT_FAV)
+		 * @return true si es favorito, false de lo contrario
+		 */
+		bool esFavorito() {
+			return this->cont_idcat.getCat(IDCAT_FAV);
+		}
+
+		/**
+		 * Clasifica al articulo como favorito (con IDCAT_FAV)
+		 * Nota: lo hace como si fuera el usuario, siempre.
+		 */
+		void catFavorito() {
+			this->cont_idcat.setCat(IDCAT_FAV, 1); // TODO como usuario, siempre??
+		}
+
+		/**
 		 * Obtiene el maximo numero de categorias
 		 * @return el maximo numero de categorias
 		 */

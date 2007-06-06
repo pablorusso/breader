@@ -3,8 +3,9 @@
 
 #include <queue>
 
-#define IDCAT_FAV 0
+#define IDCAT_FAV 1
 //!< Es el id de la categoria correspondiente a "favorito" o "starred"
+//!< (ojo que el cero no se puede usar)
 
 
 typedef unsigned int t_timestamp; //!< tipo formato timestamp (unix time)

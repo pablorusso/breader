@@ -119,6 +119,16 @@ class feedHandler {
 		void invertirFavorito(const t_idfeed &idfeed, const t_idart &idart);
 
 		/**
+		 * Devuelve el timestamp del ultimo articulo del feed indicado
+		 * Nota: devuelve cero si no tenia articulos, como la fecha mas reciente
+		 * @param idfeed el id del feed
+		 * @return el timestamp del ultimo articulo del feed indicado
+		 * @throw eFeedHandler si el idfeed no existia
+		 * @throw eFeedHandler si el Archivo2 esta corrupto
+		 */
+		t_timestamp getUltimaFecha(const t_idfeed &idfeed);
+
+		/**
 		 * Devuelve la cantidad de articulos pertenecientes a un feed
 		 * @param idfeed el id del feed sobre el cual contar articulos
 		 * @return la cantidad de articulos
