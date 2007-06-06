@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <map>
+// ACA EMPIEZA LA INTEGRACIO...: #include "feedHandler.h"
 
 using namespace std;
 
