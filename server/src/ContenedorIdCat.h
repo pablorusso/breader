@@ -116,6 +116,13 @@ class ContenedorIdCat {
 		void setOffsetNext(const t_offset &offset);
 
 		/**
+		 * Pregunta si el contenedor esta clasificado o no, es decir, si tiene
+		 * algun idcat=1
+		 * @return true si esta clasificado, false de lo contrario
+		 */
+		bool estaClasificado();
+
+		/**
 		 * Obtiene la maxima cantidad de categorias
 		 * @return la maxima cantidad de categorias
 		 */
