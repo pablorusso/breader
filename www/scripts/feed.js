@@ -1,7 +1,6 @@
 // START FEEDS
 var countToRefresh     = 0;
-var feedsToRefresh     = 0;
-var feedRefreshHandler = 0;
+var feedRefreshHandler = null;
 var timerId			   = 0;
 function showFeeds( docToUse, feedsDoc )
 {
@@ -53,7 +52,7 @@ function refreshFeedHandlerForReal( result )
 	if ( result == null ) return;
 
 	countToRefresh--;
-	if ( countToRefresh == 0 && feedRefreshHandler != null )
+	if ( countToRefresh <= 0 && feedRefreshHandler != null )
 		feedRefreshHandler( 1 );
 }
 function addFeedHandler( result )
@@ -75,7 +74,6 @@ function refreshFeedHandler( result )
 	result = checkError( document, result );
 	if ( result == null ) return;
 
-	countToRefresh = 0;
 	var children = result.documentElement.childNodes[1].childNodes;
 	if ( children.length > 0 )
 	{
@@ -120,7 +118,7 @@ function refreshFeedHandler( result )
 	}
 	else
 	{
-		if ( feedRefreshHandler != null )
+		if ( countToRefresh <= 0 && feedRefreshHandler != null )
 		{
 			hideDiv( document, 'processing_div', null );
 			feedRefreshHandler( 0 );
@@ -135,20 +133,19 @@ function updateFeedsDiv( mustUpdate )
 		doAction ( getCurrentBody(), bodyHandler, 'A' );
 		doAction ( "actionCode=F3", feedsHandler, 'F' );
 	}
+	else hideDiv( docToUse, 'processing_div', null );
 
 	if ( !timerId )
 		timerId = setTimeout( 'refreshAllFeeds()', autoUpdateTimeout );
 }
 function autoUpdateFeedsDiv( mustUpdate )
 {
-	feedsToRefresh--;
-	if ( feedsToRefresh <= 0 )
-	{
-		if ( mustUpdate )
-			doAction ( "actionCode=F3", feedsHandler, 'F' );
+	if ( mustUpdate )
+		doAction ( "actionCode=F3", feedsHandler, 'F' );
+	else
+		hideDiv( docToUse, 'processing_div', null );
 
-		timerId = setTimeout( 'refreshAllFeeds()', autoUpdateTimeout );
-	}
+	timerId = setTimeout( 'refreshAllFeeds()', autoUpdateTimeout );
 }
 
 function doRefreshFeed( feedId, isSilent )
@@ -179,17 +176,35 @@ function refreshFeed( feedId )
 		timerId = 0;
 	}
 
-	feedsToRefresh = 1;
+	countToRefresh = 0;
 	feedRefreshHandler = updateFeedsDiv;
 
 	setCurrentBody( "actionCode=" + escape( "A5" ) + '&params=' + escape( "feedId||#" + feedId + '|||' ) );
 	doRefreshFeed( feedId, 0 );
 }
+function refreshAllFeedsManual()
+{
+	if ( timerId )
+	{
+		clearTimeout( timerId );
+		timerId = 0;
+	}
+
+	var feedsNode = feedsDocument.documentElement.childNodes[1].childNodes;
+	countToRefresh = 0;
+	feedRefreshHandler = autoUpdateFeedsDiv;
+	for( i = 0; i < feedsNode.length; i++ )
+	{
+		var feedId = getNodeAttr( feedsNode[i], 'id' );
+		doRefreshFeed( feedId, 0 );
+	}
+}
+
 function refreshAllFeeds()
 {
 	var feedsNode = feedsDocument.documentElement.childNodes[1].childNodes;
 
-	feedsToRefresh = feedsNode.length;
+	countToRefresh = 0;
 	feedRefreshHandler = autoUpdateFeedsDiv;
 	for( i = 0; i < feedsNode.length; i++ )
 	{

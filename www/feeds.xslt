@@ -15,7 +15,25 @@
 					<td class="s"/>
 					<td class="c">
 						<ul>
-							<div class="sub-tree-header">Suscripciones</div>
+							<table>
+									<tr>
+										<td style="width: 100%">
+											<div class="sub-tree-header">Suscripciones</div>
+										</td>
+										<xsl:if test="count(feed) &gt; 0">
+											<td class="menuIcon">
+												<a class="link">
+													<xsl:attribute name="onclick">
+														refreshAllFeedsManual()
+													</xsl:attribute>
+													<img style="border:0" src="images/action_feed_refresh_all.png" title="Actualizar todos los feeds" alt="Actualizar todos los feeds"/>
+												</a>
+											</td>
+										</xsl:if>
+									</tr>
+								</table>
+
+
 							<table>
 								<xsl:apply-templates select="feed"/>
 							</table>
