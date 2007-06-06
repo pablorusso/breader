@@ -167,7 +167,6 @@ class Archivo2 {
 		 */
 		ContenedorIdCat readCat(const t_idart &idart);
 
-
 		/**
 		 * Lee una clasificacion del archivo, para un articulo en particular
 		 * Nota: este metodo lee por quien fue clasificado, para saber si esta

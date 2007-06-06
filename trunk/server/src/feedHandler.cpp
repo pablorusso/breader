@@ -124,6 +124,20 @@ void feedHandler::invertirFavorito(const t_idfeed &idfeed,
 	}
 }
 
+t_timestamp feedHandler::getUltimaFecha(const t_idfeed &idfeed) {
+	t_timestamp ret = 0;
+	try {
+		Archivo2 a2(this->a6.get_MAX_CAT(), idfeed);
+		t_idart count = a2.cantidadArticulos();
+		if (count > 0) ret = a2.readTimestamp(count-1);
+	}
+	catch (IException &e) {
+		eFeedHandler mie(e.getErrorMensaje());
+		throw(mie);
+	}
+	return ret;
+}
+
 t_idart feedHandler::cantidadArticulos(const t_idfeed &idfeed) {
 	t_idart ret;
 	try {
@@ -236,7 +250,7 @@ t_cola_art feedHandler::getUltimosArticulosCat(const t_idcat &idcat,
 		t_map_ultCat::iterator it = this->map_ultCat.begin();
 		while (it!=this->map_ultCat.end()) {
 			it->second.second=iterateMapCat(idcat,it->first,it->second.first);
-			if ( it->second.first == -1 )
+			if ( it->second.first == (t_idart)-1 )
 			{
 				// Tengo que tener cuidado al borrar un elemento
 				t_map_ultCat::iterator it2 = it++;
@@ -264,7 +278,7 @@ t_cola_art feedHandler::getUltimosArticulosCat(const t_idcat &idcat,
 			// que matchee con idcat
 			it->second.second = this->iterateMapCat(idcat, max_idfeed,
 				--this->map_ultCat[max_idfeed].first);
-			if (this->map_ultCat[max_idfeed].first == -1)
+			if (this->map_ultCat[max_idfeed].first == (t_idart)-1)
 				this->map_ultCat.erase(max_idfeed);
 		}
 	}
@@ -301,7 +315,7 @@ t_cola_art feedHandler::getProximosArticulosCat(const t_idart &cant_art) {
 				// que matchee con idcat
 				it->second.second = this->iterateMapCat(this->idcat_ultCat,
 				  max_idfeed, --this->map_ultCat[max_idfeed].first);
-				if (this->map_ultCat[max_idfeed].first == -1)
+				if (this->map_ultCat[max_idfeed].first == (t_idart)-1)
 					this->map_ultCat.erase(max_idfeed);
 			}
 		}
@@ -374,7 +388,7 @@ t_cola_art feedHandler::getUltimosArticulosBool(ContenedorIdCat &c_cat,
 		while (it!=this->map_ultCat.end()) {
 			it->second.second = this->iterateMapBool(it->first,
 			  it->second.first);
-			if (it->second.first == -1) {
+			if (it->second.first == (t_idart)-1) {
 				// Tengo que tener cuidado al borrar un elemento
 				t_map_ultCat::iterator it2 = it++;
 				this->map_ultCat.erase(it2);
@@ -402,7 +416,7 @@ t_cola_art feedHandler::getUltimosArticulosBool(ContenedorIdCat &c_cat,
 			// que matchee con idcat
 			it->second.second = this->iterateMapBool(max_idfeed,
 			  --this->map_ultCat[max_idfeed].first);
-			if (this->map_ultCat[max_idfeed].first == -1)
+			if (this->map_ultCat[max_idfeed].first == (t_idart)-1)
 				this->map_ultCat.erase(max_idfeed);
 		}
 	}
@@ -439,7 +453,7 @@ t_cola_art feedHandler::getProximosArticulosBool(const t_idart &cant_art) {
 				// que matchee con idcat
 				it->second.second = this->iterateMapCat(this->idcat_ultCat,
 				  max_idfeed, --this->map_ultCat[max_idfeed].first);
-				if (this->map_ultCat[max_idfeed].first == -1)
+				if (this->map_ultCat[max_idfeed].first == (t_idart)-1)
 					this->map_ultCat.erase(max_idfeed);
 			}
 		}
