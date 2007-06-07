@@ -72,6 +72,11 @@ function addTag( inputId )
 		alert( 'Debe ingresar el nombre de la categoría' );
 		return;
 	}
+	if ( name.length > 20 )
+	{
+		alert( 'La longitud maxima de la categoria es de 25 caracteres' );
+		return;
+	}
 	txtInput.value = "";
 	doAction ( "actionCode=" + escape( "T1" ) + "&params=" + escape( "tagName||#" + name ), addTagHandler, '' );
 }
