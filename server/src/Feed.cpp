@@ -1,6 +1,8 @@
 #include "Feed.h"
 
-Feed::Feed(const t_idcat &MAX_CAT): cat(MAX_CAT) {}
+Feed::Feed(const t_idcat &MAX_CAT) {
+	this->cont_cant.resize(MAX_CAT, 0);
+}
 
 Feed::~Feed() {}
 
@@ -19,6 +21,9 @@ ostream &operator<<(ostream &stream,  Feed &feed) {
 	stream << "idfeed: " << feed.idfeed << endl;
 	stream << "nombre: " << feed.name << endl;
 	stream << "uri: " << feed.uri<< endl;
-	stream << "categorias: " << feed.cat << endl;
+	for (t_idcat i=0; i<feed.cont_cant.size(); ++i) {
+		stream << "El feed esta clasificado con el idcat " << i << " "
+		  << feed.cont_cant[i] << " veces" << endl;
+	}
 	return stream;
 }

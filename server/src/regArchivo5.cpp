@@ -1,10 +1,18 @@
 #include "regArchivo5.h"
 
-t_regArchivo5::t_regArchivo5(const t_idcat &MAX_CAT): cont(MAX_CAT) {}
+t_regArchivo5::t_regArchivo5(const t_idcat &MAX_CAT): MAX_CAT(MAX_CAT) {
+	// Inicializo el contenedor con la cantidad de clasificaciones de cada
+	// categoria
+	this->cont_cant.resize(this->MAX_CAT, 0);
+}
 
 t_regArchivo5::t_regArchivo5 (const t_idcat &MAX_CAT, const bool &estado,
-  const string &name, const string &uri): estado(estado), name(name),
-  uri(uri), cont(MAX_CAT), freeBytes(0) {}
+  const string &name, const string &uri): estado(estado), freeBytes(0),
+  name(name), uri(uri) {
+	// Inicializo el contenedor con la cantidad de clasificaciones de cada
+	// categoria
+	this->cont_cant.resize(this->MAX_CAT, 0);
+}
 
 t_offset t_regArchivo5::writeReg(fstream &f, t_offset &primerLibre) {
 	t_offset ret;
@@ -21,7 +29,7 @@ t_offset t_regArchivo5::writeReg(fstream &f, t_offset &primerLibre) {
 		t_offset posPrev, posCur;
 		posPrev = posCur = primerLibre;
 		string::size_type spaceNeeded = this->uri.size()+this->name.size()+2;
-		t_regArchivo5 regLeido(this->cont.get_MAX_CAT());
+		t_regArchivo5 regLeido(this->MAX_CAT);
 			
 		while (!done) {
 			if (posCur >= posLast) done = true; //si es mayor es error...
@@ -71,7 +79,7 @@ t_offset t_regArchivo5::writeReg(fstream &f, t_offset &primerLibre) {
 				ret = posCur;
 			} else { // el espacio libre no es el primero
 				// Tengo que encadenar libres
-				t_regArchivo5 regTmp(this->cont.get_MAX_CAT());
+				t_regArchivo5 regTmp(this->MAX_CAT);
 				regTmp.readReg(f, posCur);
 				t_offset next = regTmp.getOffsetNext();
 				regLeido.readReg(f, posPrev); // leo el previo
@@ -103,7 +111,8 @@ void t_regArchivo5::writeRegOffset(fstream &f, const t_offset &offset) {
 	  sizeof(bool));
 	f.write(reinterpret_cast<const char *>(&this->freeBytes),
 	  sizeof(t_freebytes));
-	this->cont.writeCat(f);
+	f.write(reinterpret_cast<const char *>(&this->cont_cant[0]),
+	  this->MAX_CAT*sizeof(t_idart));
 	f.write(reinterpret_cast<const char *>(this->name.c_str()),
 	  this->name.size()*sizeof(char)+1); // +1 para el null
 	f.write(reinterpret_cast<const char *>(this->uri.c_str()),
@@ -122,8 +131,9 @@ void t_regArchivo5::readReg(fstream &f, const t_offset &offset) {
 	f.read(reinterpret_cast<char *>(&this->estado), sizeof(bool));
 	// Leo la cantidad de bytes libres en el registro
 	f.read(reinterpret_cast<char *>(&this->freeBytes), sizeof(t_freebytes));
-	// Leo las categorias
-	this->cont.readCat(f);
+	// Leo el cont_cant
+	f.read(reinterpret_cast<char *>(&this->cont_cant[0]),
+	  this->MAX_CAT*sizeof(t_idart));
 	// Leo el nombre, hasta un null
 	this->name.clear();
 	char c;
@@ -161,8 +171,8 @@ bool t_regArchivo5::remReg(fstream &f, const t_offset &offset,
 			// que tengo que borrar
 			bool done = false;
 			// Registros libres
-			t_regArchivo5 regPrev(this->cont.get_MAX_CAT());
-			t_regArchivo5 regNext(this->cont.get_MAX_CAT());
+			t_regArchivo5 regPrev(this->MAX_CAT);
+			t_regArchivo5 regNext(this->MAX_CAT);
 			f.seekp(0,ios::end);
 			t_offset posLast = f.tellp();
 			t_offset posPrev, posNext;
@@ -199,13 +209,13 @@ bool t_regArchivo5::remReg(fstream &f, const t_offset &offset,
 t_offset t_regArchivo5::getOffsetNext() const {
 	t_offset ret;
 	if (this->estado == 1)	THROW(eRegArchivo5, REGA5_NO_LIBRE);
-	else ret = this->cont.getOffsetNext();
+	else ret = static_cast<t_offset>(this->cont_cant[0]);
 	return ret;
 }
 
 void t_regArchivo5::setOffsetNext(const t_offset &offset) {
 	if (this->estado == 1)	THROW(eRegArchivo5, REGA5_NO_LIBRE);
-	else this->cont.setOffsetNext(offset);
+	else this->cont_cant[0] = static_cast<t_idart>(offset);
 }
 
 ostream &operator<<(ostream &stream,  t_regArchivo5 &reg) {
@@ -214,6 +224,7 @@ ostream &operator<<(ostream &stream,  t_regArchivo5 &reg) {
 	stream << "freeBytes: " << reg.freeBytes << endl;
 	stream << "name: " << reg.name << endl;
 	stream << "uri: " << reg.uri << endl;
-	stream << reg.cont << endl;
+	for (t_idcat i=0; i<reg.MAX_CAT; ++i)
+		stream << "idcat[ " << i << "], cant: " << reg.cont_cant[i] << endl;
 	return stream;
 }

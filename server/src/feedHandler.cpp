@@ -1,7 +1,7 @@
 #include "feedHandler.h"
 
 feedHandler::feedHandler(const t_idcat &MAX_CAT): a6(MAX_CAT),
-  ultArt(0), feed_ultArt(0), idcat_ultCat(0), ultArt_pedido(false),
+  ultArt(0), feed_ultArt(0), ultArt_pedido(false), idcat_ultCat(0),
   bool_ultArt_pedido(false), bool_c_cat(MAX_CAT), bool_c_si_no(MAX_CAT) {}
 
 feedHandler::~feedHandler() {}
@@ -38,10 +38,18 @@ bool feedHandler::bajaFeed(const t_idfeed &idfeed) {
 
 	return ret;
 }
+Feed feedHandler::getFeed(const t_idfeed &idfeed) {
+	try {
+		return this->a6.getFeed(idfeed);
+	}
+	catch (IException &e) {
+		eFeedHandler mie(e.getErrorMensaje());
+		throw(mie);
+	}
+}
 
 t_idart feedHandler::altaArticulo(const t_idfeed &idfeed, const Articulo &art) {
 	t_idart ret;
-
 	try {
 		Articulo miart = art;
 		miart.set_MAX_CAT(this->a6.get_MAX_CAT());
@@ -49,8 +57,6 @@ t_idart feedHandler::altaArticulo(const t_idfeed &idfeed, const Articulo &art) {
 		ret = a2.writeArticulo(miart);
 
 		ContenedorIdCat catArt = miart.get_cont_idcat();
-		ContenedorIdCat catFeed = (this->a6.getFeed(idfeed)).getContIdCat();
-		catFeed.catOR(catArt);
 		this->a6.catFeed(idfeed, catArt);
 	}
 	catch (IException &e) {
@@ -64,20 +70,13 @@ t_cola_idart feedHandler::altaArticulo(const t_idfeed &idfeed,
   const t_cola_art &c_art) {
 	t_cola_idart mic_idart;
 	try {
-		ContenedorIdCat catArt(this->a6.get_MAX_CAT());
 		t_cola_art mic_art = c_art;
 		Archivo2 a2(this->a6.get_MAX_CAT(), idfeed);
 		while (!mic_art.empty()) {
 			Articulo miart = mic_art.front();
-			miart.set_MAX_CAT(this->a6.get_MAX_CAT());
-			mic_idart.push(a2.writeArticulo(miart));
-			ContenedorIdCat catArt_tmp = miart.get_cont_idcat();
-			catArt.catOR(catArt_tmp);
+			this->altaArticulo(idfeed, miart);
 			mic_art.pop();
 		}
-		ContenedorIdCat catFeed = (this->a6.getFeed(idfeed)).getContIdCat();
-		catFeed.catOR(catArt);
-		this->a6.catFeed(idfeed, catFeed);
 	}
 	catch (IException &e) {
 		eFeedHandler mie(e.getErrorMensaje());
@@ -115,8 +114,10 @@ void feedHandler::invertirFavorito(const t_idfeed &idfeed,
   const t_idart &idart) {
 	try {
 		Archivo2 a2(this->a6.get_MAX_CAT(), idfeed);
-		a2.invertirFavorito(idart);
-		//this->a6.invertirFavorito(idfeed); //TODO
+		// Invierto la categoria, y lo pongo como si fue el usuario
+		bool si_no = ~a2.readCat(idart, IDCAT_FAV);
+		a2.writeCat(idart, IDCAT_FAV, si_no, 0);
+		this->a6.catFeed(idfeed, IDCAT_FAV, si_no);
 	}
 	catch (IException &e) {
 		eFeedHandler mie(e.getErrorMensaje());
@@ -207,13 +208,8 @@ t_timestamp feedHandler::iterateMapCat(const t_idcat &idcat,
 	try {
 		Archivo2 a2(this->a6.get_MAX_CAT(), idfeed);
 		bool cat = false;
-		bool end = false;
-		while ( !cat && !end )
-		{
-			cat = a2.readCat( idart, idcat );
-			end = idart == 0;
-			if ( !end ) idart--;
-		}
+		while ((!cat) && (idart!=static_cast<t_idart>(-1)))
+			cat = a2.readCat(idart--, idcat);
 		if (cat) timestamp = a2.readTimestamp(++idart);
 	}
 	catch (IException &e) {
@@ -250,8 +246,7 @@ t_cola_art feedHandler::getUltimosArticulosCat(const t_idcat &idcat,
 		t_map_ultCat::iterator it = this->map_ultCat.begin();
 		while (it!=this->map_ultCat.end()) {
 			it->second.second=iterateMapCat(idcat,it->first,it->second.first);
-			if ( it->second.first == (t_idart)-1 )
-			{
+			if (it->second.first == static_cast<t_idart>(-1)) {
 				// Tengo que tener cuidado al borrar un elemento
 				t_map_ultCat::iterator it2 = it++;
 				this->map_ultCat.erase(it2);
@@ -278,7 +273,7 @@ t_cola_art feedHandler::getUltimosArticulosCat(const t_idcat &idcat,
 			// que matchee con idcat
 			it->second.second = this->iterateMapCat(idcat, max_idfeed,
 				--this->map_ultCat[max_idfeed].first);
-			if (this->map_ultCat[max_idfeed].first == (t_idart)-1)
+			if (this->map_ultCat[max_idfeed].first == static_cast<t_idart>(-1))
 				this->map_ultCat.erase(max_idfeed);
 		}
 	}
@@ -315,7 +310,8 @@ t_cola_art feedHandler::getProximosArticulosCat(const t_idart &cant_art) {
 				// que matchee con idcat
 				it->second.second = this->iterateMapCat(this->idcat_ultCat,
 				  max_idfeed, --this->map_ultCat[max_idfeed].first);
-				if (this->map_ultCat[max_idfeed].first == (t_idart)-1)
+				if (this->map_ultCat[max_idfeed].first ==
+				  static_cast<t_idart>(-1))
 					this->map_ultCat.erase(max_idfeed);
 			}
 		}
@@ -337,13 +333,10 @@ t_timestamp feedHandler::iterateMapBool(const t_idfeed &idfeed, t_idart &idart){
 	try {
 		Archivo2 a2(this->a6.get_MAX_CAT(), idfeed);
 		bool match = false;
-		bool end = false;
-		while ( !match && !end )
-		{
-			ContenedorIdCat c = a2.readCat(idart);
+		while ((!match) && (idart!=static_cast<t_idart>(-1))) {
+			ContenedorIdCat c = a2.readCat(idart--);
 			match = c.match(this->bool_c_cat, this->bool_c_si_no);
-			end = idart == 0;
-			if ( !end ) idart--;
+
 		}
 		if (match) timestamp = a2.readTimestamp(++idart);
 	}
@@ -388,7 +381,7 @@ t_cola_art feedHandler::getUltimosArticulosBool(ContenedorIdCat &c_cat,
 		while (it!=this->map_ultCat.end()) {
 			it->second.second = this->iterateMapBool(it->first,
 			  it->second.first);
-			if (it->second.first == (t_idart)-1) {
+			if (it->second.first == static_cast<t_idart>(-1)) {
 				// Tengo que tener cuidado al borrar un elemento
 				t_map_ultCat::iterator it2 = it++;
 				this->map_ultCat.erase(it2);
@@ -416,7 +409,7 @@ t_cola_art feedHandler::getUltimosArticulosBool(ContenedorIdCat &c_cat,
 			// que matchee con idcat
 			it->second.second = this->iterateMapBool(max_idfeed,
 			  --this->map_ultCat[max_idfeed].first);
-			if (this->map_ultCat[max_idfeed].first == (t_idart)-1)
+			if (this->map_ultCat[max_idfeed].first == static_cast<t_idart>(-1))
 				this->map_ultCat.erase(max_idfeed);
 		}
 	}
@@ -429,7 +422,7 @@ t_cola_art feedHandler::getUltimosArticulosBool(ContenedorIdCat &c_cat,
 
 t_cola_art feedHandler::getProximosArticulosBool(const t_idart &cant_art) {
 	t_cola_art c_art;
-	if (this->ultArtCat_pedido) {
+	if (this->bool_ultArt_pedido) {
 		try {
 			// Hacer hasta que haya encontrado todos los cant_art necesarios, o
 			// hasta que el map este vacio (no tengo suficientes matches para
@@ -453,7 +446,8 @@ t_cola_art feedHandler::getProximosArticulosBool(const t_idart &cant_art) {
 				// que matchee con idcat
 				it->second.second = this->iterateMapCat(this->idcat_ultCat,
 				  max_idfeed, --this->map_ultCat[max_idfeed].first);
-				if (this->map_ultCat[max_idfeed].first == (t_idart)-1)
+				if (this->map_ultCat[max_idfeed].first ==
+				  static_cast<t_idart>(-1))
 					this->map_ultCat.erase(max_idfeed);
 			}
 		}
@@ -470,29 +464,30 @@ t_cola_art feedHandler::getProximosArticulosBool(const t_idart &cant_art) {
 	return c_art;
 }
 
-void feedHandler::clasificarArticulo(const t_idfeed &idfeed, const t_idcat
-  &idcat, const t_idart &idart, const bool si_no, const bool usu_pc) {
+t_cola_idfeeds feedHandler::getColaIdFeeds() {
 	try {
-		Archivo2 a2(this->a6.get_MAX_CAT(), idfeed);
-		a2.writeCat(idart, idcat, si_no, usu_pc);
-		if (si_no == 1) this->a6.catFeed(idfeed, idcat, 1);
-		else {
-			// Tengo que recorrer el Archivo2 correspondiente, para saber si
-			// este articulo que se descategorizo era el ultimo que contenia
-			// la categoria, para asi borrarla del Archivo5
-			t_idart max = a2.cantidadArticulos();
-			t_idart i = 0;
-			bool cat=false;
-			while ((i<max) && (!cat)) {
-				cat = a2.readCat(i, idcat);
-			}
-			if (!cat) this->a6.catFeed(idfeed, idcat, 0);
-		}
+		return this->a6.getColaIdFeeds();
 	}
 	catch (IException &e) {
 		eFeedHandler mie(e.getErrorMensaje());
 		throw(mie);
 	}
+}
+
+void feedHandler::clasificarArticulo(const t_idfeed &idfeed, const t_idcat
+  &idcat, const t_idart &idart, const bool si_no, const bool usu_pc) {
+	try {
+		Archivo2 a2(this->a6.get_MAX_CAT(), idfeed);
+		bool was_cat = a2.readCat(idart, idcat);
+		a2.writeCat(idart, idcat, si_no, usu_pc);
+		if (was_cat != si_no) {
+			this->a6.catFeed(idfeed, idcat, si_no);
+		} 
+	}
+	catch (IException &e) {
+		eFeedHandler mie(e.getErrorMensaje());
+		throw(mie);
+	}	
 }
 
 void feedHandler::bajaCategoria(const t_idcat &idcat) {
@@ -508,7 +503,7 @@ void feedHandler::bajaCategoria(const t_idcat &idcat) {
 	catch (IException &e) {
 		eFeedHandler mie(e.getErrorMensaje());
 		throw(mie);
-	}
+	}	
 }
 
 void feedHandler::reestructurar() {
@@ -537,7 +532,6 @@ void feedHandler::reestructurar() {
 		eFeedHandler mie(e.getErrorMensaje());
 		throw(mie);
 	}
-
 }
 
 void feedHandler::set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
@@ -559,11 +553,11 @@ void feedHandler::set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
 					t_idfeed idfeed_old = c_idfeed.front();
 					t_idfeed idfeed_new = a6_bis.addFeed(feed);
 					feedHandler::renameFeed(idfeed_old, idfeed_new);
-
+	
 				{ // Scope para que se cierren los Archivos2
 					Archivo2 a2_old(this->a6.get_MAX_CAT(), idfeed_old);
 					Archivo2 a2_new(MY_NEW_MAX_CAT, idfeed_new, 1);
-
+	
 					t_idart count=0;
 					t_idart max = a2_old.cantidadArticulos();
 					while (count < max) {
@@ -573,18 +567,18 @@ void feedHandler::set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
 						++count;
 					}
 				}
-
+	
 					string fileNameOld=Archivo2::genFileName(idfeed_old);
 					string fileNameNewBis=Archivo2::genFileName(idfeed_new,1);
-
+	
 					::remove(fileNameOld.c_str());
 					::rename(fileNameNewBis.c_str(), fileNameOld.c_str());
-
+	
 					fileNameOld = Archivo1::genFileName(idfeed_old);
 					fileNameNewBis = Archivo1::genFileName(idfeed_new, 1);
 					::remove(fileNameOld.c_str());
 					::rename(fileNameNewBis.c_str(), fileNameOld.c_str());
-
+	
 					c_idfeed.pop();
 				}
 			}
@@ -600,7 +594,7 @@ void feedHandler::set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
 	catch (IException &e) {
 		eFeedHandler mie(e.getErrorMensaje());
 		throw(mie);
-	}
+	}	
 }
 
 void feedHandler::renameFeed(const t_idfeed &idfeed_old,

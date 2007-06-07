@@ -122,7 +122,7 @@ class Archivo2 {
 		 * @throw eArchivo2 si el Archivo2 esta corrupto
 		 * @throw eArchivo2 si el idart esta fuera de rango
 		 */
-		void invertirLecturaArticulo( const t_idart &idart);
+		void invertirLecturaArticulo(const t_idart &idart);
 
 		/**
 		 * Invierte el valor del bit de favorito, es decir, si estaba como
@@ -166,6 +166,7 @@ class Archivo2 {
 		 * @throw eArchivo2 si el idart esta fuera de rango
 		 */
 		ContenedorIdCat readCat(const t_idart &idart);
+
 
 		/**
 		 * Lee una clasificacion del archivo, para un articulo en particular
@@ -213,13 +214,13 @@ class Archivo2 {
 		friend ostream &operator<<(ostream &stream, Archivo2 &a);
 
 	private:
+		Archivo1 a1; //!< el Archivo1
 		fstream f; //!< el handler del Archivo2
 		t_headerArchivo2 header; //!< el header del Archivo2
 		t_idart numRegs; //!< el numero de registros (articulos) del archivo
 		string fileName; //!< el nombre del Archivo2
-		Archivo1 a1; //!< el Archivo1
 		t_idfeed idfeed; //!< el id del feed del Archivo2
-
+		
 
 		/**
 		 * Abre el Archivo2 o lo crea, de ser necesario

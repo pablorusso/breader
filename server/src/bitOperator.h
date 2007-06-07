@@ -4,10 +4,6 @@
 #include "General.h"
 #include <fstream>
 
-//BORRAR
-#include <iostream>
-// BORRAR
-
 
 typedef unsigned char t_byte;
 

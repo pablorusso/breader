@@ -113,7 +113,7 @@ Feed Archivo6::getFeed(const t_idfeed &idfeed) {
 				feed.setIdFeed(idfeed);
 				feed.setName(regA5.name);
 				feed.setUri(regA5.uri);
-				feed.setContIdCat(regA5.cont);
+				feed.setContIdCat(regA5.cont_cant);
 			}
 		}
 		catch (fstream::failure e) {
@@ -165,7 +165,7 @@ cin >> tmp;
 			feed.setIdFeed(nextFeed);
 			feed.setName(regA5.name);
 			feed.setUri(regA5.uri);
-			feed.setContIdCat(regA5.cont);
+			feed.setContIdCat(regA5.cont_cant);
 			// calculo el next
 			bool done=false;
 			++this->nextFeed;
@@ -256,9 +256,7 @@ void Archivo6::catFeed(const t_idfeed &idfeed, const t_idcat &idcat,
 		try {
 			t_regArchivo6 regA6 = this->readReg(idfeed);	
 			if (regA6.estado == LIBRE) THROW(eArchivo6, A6_IDFEED_INVALIDO);
-			else {
-				this->a5.writeCat(regA6.oArchivo5, idcat, si_no);
-			}
+			else this->a5.writeCat(regA6.oArchivo5, idcat, si_no);
 		}
 		catch (fstream::failure e) {
 			if (this->f.is_open()) this->f.close();
@@ -273,7 +271,12 @@ void Archivo6::catFeed(const t_idfeed &idfeed, ContenedorIdCat &c) {
 			t_regArchivo6 regA6 = this->readReg(idfeed);	
 			if (regA6.estado == LIBRE) THROW(eArchivo6, A6_IDFEED_INVALIDO);
 			else {
-				this->a5.writeCat(regA6.oArchivo5, c);
+				// Ignoro el valor de retorno de writeCat porque no es posible
+				// "desclasificar" articulos con este catFeed
+				for(t_idcat i=0; i<c.get_MAX_CAT(); ++i) {
+					bool cat = c.getCat(i);
+					if (cat == true) this->a5.writeCat(regA6.oArchivo5, i, cat);
+				}
 			}
 		}
 		catch (fstream::failure e) {
@@ -297,7 +300,9 @@ void Archivo6::bajaCategoria(const t_idcat &idcat) {
 	if (idcat < this->header.MAX_CAT) {
 		t_cola_idfeeds c_idfeeds = this->getColaIdFeeds();
 		while (!c_idfeeds.empty()) {
-			this->catFeed(c_idfeeds.front(), idcat, 0);
+			t_regArchivo6 regA6 = this->readReg(c_idfeeds.front());	
+			this->a5.writeCat(regA6.oArchivo5, idcat, 0);
+			this->a5.remCat(regA6.oArchivo5, idcat);
 			c_idfeeds.pop();
 		}
 	} else THROW(eArchivo6, A6_IDCAT_FUERA_DE_RANGO);

@@ -72,15 +72,6 @@ void ContenedorIdCat::catOR(ContenedorIdCat &c) {
 		this->categorias[i] |= c.categorias[i];
 }
 
-bool ContenedorIdCat::estaClasificado() {
-	t_idcat i = 0;
-	bool cat = false;
-	while ((i < this->MAX_CAT/8) && (!cat))
-		if (this->categorias[i++] !=0) cat = true;
-
-	return cat;
-}
-
 void ContenedorIdCat::set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
 	t_idcat MY_NEW_MAX_CAT = NEW_MAX_CAT;
 	t_idcat m = NEW_MAX_CAT % 8;
@@ -92,6 +83,14 @@ void ContenedorIdCat::set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
 	this->MAX_CAT = MY_NEW_MAX_CAT;
 }
 
+bool ContenedorIdCat::estaClasificado() {
+	t_idcat i = 0;
+	bool cat = false;
+	while ((i < this->MAX_CAT/8) && (!cat))
+		if (this->categorias[i++] !=0) cat = true;
+
+	return cat;
+}
 
 ostream &operator<<(ostream &stream, const ContenedorIdCat &cont) {
 	stream << "Imprimiendo el contenedor" << endl;

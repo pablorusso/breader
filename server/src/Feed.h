@@ -16,7 +16,7 @@ class Feed {
 		* Constructor.
 		*/
 		Feed(const t_idcat &MAX_CAT);
-
+	
 		/**
 		* Destructor
 		*/
@@ -39,19 +39,20 @@ class Feed {
 		 * @throw eFeed si la uri esta vacia
 		 */
 		void setUri(const string &uri);
-		ContenedorIdCat getContIdCat() const
-		  {return this->cat;}
-		void setContIdCat(const ContenedorIdCat &cat) {this->cat = cat;}
+		t_c_cant_idcat getContCant() const
+		  {return this->cont_cant;}
+		void setContIdCat(const t_c_cant_idcat &cont_cant)
+		  {this->cont_cant = cont_cant;}
 
 		/**
-		 * Reestructura el feed para que tenga MAX_CAT cantidad de ids de
+		 * Reestructura el feed para que tenga MAX_CAT cantidad de ids de 
 		 * categorias.
 		 * Nota: si NEW_MAX_CAT es menor que MAX_CAT este metodo no afecta
 		 * nada
 		 * @param NEW_MAX_CAT la maxima cantidad de categorias nueva.
 		 */
 		void set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
-			this->cat.set_MAX_CAT(NEW_MAX_CAT);
+			this->cont_cant.resize(NEW_MAX_CAT, 0);
 		}
 		/**
 		 * Sobrecarga del operator<<
@@ -63,7 +64,7 @@ class Feed {
 		t_idfeed idfeed; //!< el id del feed
 		string name; //!< el nombre del feed
 		string uri; //!< la uri del feed
-		ContenedorIdCat cat; //!< las categorias del feed
+		t_c_cant_idcat cont_cant; //!< las categorias del feed
 
 };
 #endif
