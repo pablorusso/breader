@@ -29,10 +29,10 @@ typedef struct t_headerArchivo5 {
  * Encapsula el comportamiento del Archivo5
  * Usa un vector de bool MAX_CAT dimension, donde cada bit representa
  * a una categoria, en relacion a la posicion que ocupa, es decir, si
- * el bool esta en NO_CAT entonces esa categoria no esta en el feed, y
+ * el bool esta en 0 entonces esa categoria no esta en el feed, y
  * viceversa.
  * Implementa un encadenamiento de registros libres.
- *
+ * 
  */
 using namespace std;
 class Archivo5 {
@@ -62,7 +62,7 @@ class Archivo5 {
 		 * @return el nombre del archivo
 		 */
 		static string genFileName();
-
+		
 		/**
 		 * Genera el nombre bis del archivo
 		 * @param bis se ignora
@@ -103,7 +103,7 @@ class Archivo5 {
 		 * @throw eArchivo5 si el archivo esta corrupto
 		 */
 		t_offset writeReg(const Feed &feed);
-
+		
 		/**
 		 * Lee un registro del archivo
 		 * @param offset el offset del registro en el archivo
@@ -133,12 +133,11 @@ class Archivo5 {
 		  const bool si_no);
 
 		/**
-		 * Escribe en el archivo un contenedor de clasificaciones
-		 * @param offset el offset del registro a categorizar en el archivo
-		 * @param ContenedorIdCat el contenedor con las id de la categorias
-		 * @throw eArchivo5 si el archivo esta corrupto
+		 * Le da de baja a una categoria.
+		 * @param offset el offset del registro en el archivo
+		 * @param idcat el id de la categoria a borrar
 		 */
-		void writeCat(const t_offset &offset, ContenedorIdCat &c);
+		void remCat(const t_offset &offset, const t_idcat &idcat);
 
 		/**
 		 * Devuelve la cantidad maxima de categorias

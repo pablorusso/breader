@@ -123,7 +123,7 @@ void Archivo2::writeLeido(const t_idart &idart, const bool leido) {
 	} else THROW(eArchivo2, A2_IDART_FUERA_DE_RANGO);
 }
 
-void Archivo2::invertirLecturaArticulo( const t_idart &idart) {
+void Archivo2::invertirLecturaArticulo(const t_idart &idart) {
 	if (idart < this->numRegs) {
 		try {
 			bool leido;

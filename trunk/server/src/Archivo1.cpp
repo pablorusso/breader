@@ -180,6 +180,7 @@ void Archivo1::readArticulo(const t_offset &offset, Articulo &art) {
 		cptr[l] = (char)0;
 		art.set_summary(cptr);
 		delete []cptr;
+
 	}
 	catch (fstream::failure e) {
 		THROW(eArchivo1, A1_ARCHIVO_CORRUPTO);

@@ -79,8 +79,9 @@ t_offset Archivo5::writeReg(const Feed &feed) {
 		reg.estado = OCUPADO;
 		reg.name = feed.getName();
 		reg.uri = feed.getUri();
-		reg.cont = feed.getContIdCat();
+		reg.cont_cant = feed.getContCant();
 		ret = reg.writeReg(this->f, this->header.primerLibre);
+
 	}
 	catch (fstream::failure e) {
 		THROW(eArchivo5, A5_ARCHIVO_CORRUPTO);
@@ -115,25 +116,21 @@ void Archivo5::writeCat(const t_offset &offset, const t_idcat &idcat,
   const bool si_no) {
 	try {
 		if (idcat < this->header.MAX_CAT) {
-			t_idcat d, m;
-			unsigned char byte;
 			t_offset back;
-			d = idcat / 8;
-			m = idcat % 8;
-			// me posiciono con el put en el byte a modificar
-			this->f.seekp(offset+sizeof(bool)+sizeof(t_freebytes)+d, ios::beg);
-			// guardo el offset para un futuro
-			back = this->f.tellp();
+			t_idart cant;
 			// me posiciono con el get en el byte a modificar
-			this->f.seekg(back, ios::beg);
-			// leo el byte a modificar
-			this->f.read(reinterpret_cast<char *>(&byte), sizeof(unsigned char));
-			// modifico el byte leido
-			bitOperator::setBit(byte, m, si_no);
-			// escribo el byte modificado
-			f.seekp(back, ios::beg); // No deberia hacer falta
-			this->f.write(reinterpret_cast<const char *>(&byte),
-			sizeof(unsigned char));
+			this->f.seekg(offset+sizeof(bool)+sizeof(t_freebytes)+
+			  idcat*sizeof(t_idart), ios::beg);
+			// guardo el offset para un futuro
+			back = this->f.tellg();
+			// leo el idcat a clasificar
+			this->f.read(reinterpret_cast<char *>(&cant), sizeof(t_idart));
+			// Sumo o resto en uno cant
+			if (si_no==1) ++cant;
+			else --cant;
+			this->f.seekp(back, ios::beg);
+			this->f.write(reinterpret_cast<const char *>(&cant),
+			  sizeof(t_idart));
 		} else THROW(eArchivo5, A5_IDCAT_FUERA_DE_RANGO);
 	}
 	catch (fstream::failure e) {
@@ -141,16 +138,12 @@ void Archivo5::writeCat(const t_offset &offset, const t_idcat &idcat,
 	}
 }
 
-void Archivo5::writeCat(const t_offset &offset, ContenedorIdCat &c) {
-	try {
-		// me posiciono con el put en el comienzo de los idcat
-		this->f.seekp(offset+sizeof(bool)+sizeof(t_freebytes), ios::beg);
-		c.writeCatOR(this->f);
-	}
-	catch (fstream::failure e) {
-		THROW(eArchivo5, A5_ARCHIVO_CORRUPTO);
-	}
-
+void Archivo5::remCat(const t_offset &offset, const t_idcat &idcat) {
+	this->f.seekp(offset+sizeof(bool)+sizeof(t_freebytes)+
+	  idcat*sizeof(t_idart), ios::beg);
+	t_idart cant = 0;
+	this->f.write(reinterpret_cast<const char *>(&cant),
+	  sizeof(t_idart));
 }
 
 void Archivo5::open(const string &fileName) {
