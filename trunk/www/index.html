@@ -17,7 +17,8 @@
 			// Cada cuanto busca nuevos articulos en los feeeds
 			var autoUpdateTimeout  	= 5*60*1000; // 5 minutos
 
-			// Puerto con el cual acceder al server
+			// IP y Puerto con el cual acceder al server
+			var hostIP 				= "127.0.0.1";
 			var portNum       		= 12000;
 
 			// DOM de los feeds, tags y articulos que se estan mostrando
@@ -129,7 +130,7 @@
 					else showDiv( document, 'processing_div', null );
 				}
 
-				params = '?port=' + portNum + '&' + params;
+				params = '?port=' + portNum + '&host=' + hostIP + '&' + params;
 				MakeNewAJAXCall( pageName + params, SimpleCallback, "GET", null, handler, null );
 			}
 			function doAction( params, handler, type )

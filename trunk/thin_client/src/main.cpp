@@ -12,10 +12,10 @@ void showError( string msg )
 
 void usage()
 {
-	cerr <<	"usage: thin_client [puerto] [queryString]" << endl;
+	cerr <<	"usage: thin_client [host] [puerto] [queryString]" << endl;
 	cerr << "       enviara el queryString usando a traves del puerto" << endl;
 	cerr << "       el queryString tiene que respetar el html encoding, tal cual como lo enviaria un browser" << endl;
-	cerr << "       ex: thin_client 6157 \"?actionCode=F2&params=tagId#1\"" << endl;
+	cerr << "       ex: thin_client 127.0.0.1 6157 \"?actionCode=F2&params=tagId#1\"" << endl;
 	::exit( 1 );
 }
 
@@ -61,6 +61,7 @@ int main(int argc, char* argv[])
 {
 	CGIClass cgi;
 	string word;
+	string host = "";
 	int port = 0;
 
 	if ( argc == 1 )
@@ -71,19 +72,15 @@ int main(int argc, char* argv[])
 	}
 	else
 	{
-		if ( argc < 2 )
+		if ( argc != 4 )
 		{
 			usage();
 			return -1;
 		}
 
-		if ( argc == 3 )
-		{
-			port = atoi( argv[1] );
-			word = argv[2];
-		}
-		else
-			word = argv[1];
+		host = argv[1];
+		port = atoi( argv[2] );
+		word = argv[3];
 	}
 
 	// actionCode =
@@ -98,8 +95,15 @@ int main(int argc, char* argv[])
 
 	cgi.Load( word );
 
-	if ( port == 0 ) port = atoi( cgi.GetValue( "port" ).c_str() );
-	if ( port == 0 )
+	if ( host == "" ) host = cgi.GetValue( "host" );
+	if ( host == "" )
+	{
+		showError( "[thin_client] - No se especifico la direccion del server." );
+		return 0;
+	}
+
+	if ( port == 0  ) port = atoi( cgi.GetValue( "port" ).c_str() );
+	if ( port == 0  )
 	{
 		showError( "[thin_client] - No se especifico el puerto de conexion." );
 		return 0;
@@ -110,7 +114,7 @@ int main(int argc, char* argv[])
 	try
 	{
 		std::string ack = "OK";
-		ClientSocket client_socket ( "localhost", port );
+		ClientSocket client_socket ( host, port );
     	try
 		{
 			writeToSocket( client_socket, actionCode );
