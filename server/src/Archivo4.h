@@ -52,7 +52,7 @@ class Archivo4 {
 
 		/**
 		 * Encuentra una categoria en el Archivo4
-		 * @param idcategoria el id del categoria a buscar
+		 * @param idCat el id del categoria a buscar
 		 * @return true si lo encontro, false de lo contrario
 		 * @throw eArchivo4 si el archivo esta corrupto
 		 */
@@ -69,34 +69,39 @@ class Archivo4 {
 		 * @param firstBlockEmpty el primer bloque vacio para la categoria
 		 * @return el idcategoria asignado a ese categoria
 		 * @throw eArchivo4 si el archivo esta corrupto
+		 * @throw eArchivo4 si catName es demasiado grande (> NOM_CAT_MAX_LEN)
 		 */
+		 // TODO hacerlo bien
 		t_idcat addCategory(string catName, const t_quantity &artPositive,
 			const t_quantity &artNegative, const t_quantity &wordsPositive,
-			const t_quantity &wordsNegative, const t_offset &firstBlockTag,
-			const t_offset &firstBlockEmpty);
-
-        /**
-		 * Modifica una categoria del Archivo4
-		 * @param idCat el id de la categoria a obtener
-		 * @param reg el registro con al informacion modificada
-		 * @throw eArchivo4 si el archivo esta corrupto
-		 */
-		void modifyCategoryInfo(const t_idcat &idCategory, string catName, const t_quantity &artPositive,const t_quantity &artNegative, const t_quantity &wordsPositive,
 			const t_quantity &wordsNegative, const t_offset &firstBlockTag,
 			const t_offset &firstBlockEmpty);
 
 		/**
 		 * Obtiene un categoria del Archivo4
 		 * Nota: no es const porque tengo que leer y cambiar el fpointer
-		 * @param idcategoria el id del categoria a obtener
-		 * @return el categoria.......
+		 * @param idCategory el id del categoria a obtener
+		 * @return el registro de la categoria....... // TODO ?
 		 * @throw eArchivo4 si el archivo esta corrupto
-		 * TODO modificar, que devuelva el string y toda la bola
+		 * @throw eArchivo4 si idCategory esta fuera de rango
 		 */
 		t_regArchivo4 getCategoryInfo(const t_idcat &idCategory);
+
+        /**
+		 * Modifica una categoria del Archivo4
+		 * @param idCat el id de la categoria a obtener
+		 * @param reg el registro con al informacion modificada
+		 * @throw eArchivo4 si el archivo esta corrupto
+		 * @return true si la borro, false de lo contrario (no existia)
+		 */
+		 // TODO hacerlo bien
+		bool modifyCategoryInfo(const t_idcat &idCategory, string catName, const t_quantity &artPositive,const t_quantity &artNegative, const t_quantity &wordsPositive,
+			const t_quantity &wordsNegative, const t_offset &firstBlockTag,
+			const t_offset &firstBlockEmpty);
+
 		/**
-		 * Elimina un categoria del Archivo4
-		 * @param idcategoria el id del categoria a eliminar
+		 * Elimina una categoria del Archivo4
+		 * @param idCat el id del categoria a eliminar
 		 * @return false si no existia, true de lo contrario
 		 * @throw eArchivo4 si el archivo esta corrupto
 		 */
@@ -109,11 +114,9 @@ class Archivo4 {
 		 */
 		friend std::ostream &operator<<(std::ostream &stream, Archivo4 &a);
 
-
-		string a ;
 	private:
-		fstream f; //!< el handler del archivo
-		t_headerArchivo4 header; //!< el header del Archivo
+		fstream f; //!< el handler del Archivo4
+		t_headerArchivo4 header; //!< el header del Archivo4
 
 		/**
 		 * Escribe el header en el archivo.
@@ -126,12 +129,14 @@ class Archivo4 {
 		 * @throw fstream::failure si el archivo esta corrupto
 		 */
 		void readHeader();
+
 		/**
 		 * Escribe un registro en el archivo
 		 * @param reg el registro a escribir
 		 * @throw fstream::failure si el archivo esta corrupto
 		 */
-		void writeReg(string catName, const t_quantity &artPositive,const t_quantity &artNegative, const t_quantity &wordsPositive,
+		void writeReg(string catName, const t_quantity &artPositive,
+			const t_quantity &artNegative, const t_quantity &wordsPositive,
 			const t_quantity &wordsNegative, const t_offset &firstBlockTag,
 			const t_offset &firstBlockEmpty);
 

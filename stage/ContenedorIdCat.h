@@ -102,20 +102,6 @@ class ContenedorIdCat {
 		void catOR(ContenedorIdCat &c);
 
 		/**
-		 * En caso de que el registro este libre, devuelve el offset del
-		 * proximo libre, contenido en el mismo (en las primeras 32 idcat)
-		 * @return el offset del proximo libre, segun el registro
-		 */
-		t_offset getOffsetNext() const;
-
-		/**
-		 * En caso de que el registro este libre, setea el offset del
-		 * proximo libre (en las primeras 32 idcat)
-		 * @param offset el offset del proximo libre
-		 */
-		void setOffsetNext(const t_offset &offset);
-
-		/**
 		 * Pregunta si el contenedor esta clasificado o no, es decir, si tiene
 		 * algun idcat=1
 		 * @return true si esta clasificado, false de lo contrario

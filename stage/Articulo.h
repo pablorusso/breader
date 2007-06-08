@@ -71,12 +71,12 @@ class Articulo {
 		  {return this->leido;}
 		void set_idart(const t_idart &idart)
 		  {this->idart = idart;}
-		bool get_idart() const
+		t_idart get_idart() const
 		  {return this->idart;}
 
 		void set_idfeed(const t_idfeed &idfeed)
 		  {this->idfeed = idfeed;}
-		bool get_idfeed() const
+		t_idfeed get_idfeed() const
 		  {return this->idfeed;}
 
 		void set_cont_idcat(const ContenedorIdCat &cont_idcat)
