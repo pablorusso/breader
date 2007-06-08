@@ -337,6 +337,7 @@ void Archivo6::open(const string &fileName) {
 		this->f.close();
 		this->f.open(fileName.c_str(), ios::in|ios::out|ios::binary);
 	}
+	this->f.clear();
 	// Seteo para que arroje excepciones
   	this->f.exceptions(fstream::eofbit | fstream::failbit | fstream::badbit);
 }

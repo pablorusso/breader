@@ -23,7 +23,7 @@ public:
 	 * @param f el archivo
 	 */
 	eRegArchivo4(REGA4_error e, unsigned int l, std::string f)
-	  :IException(l,f), errnumber(e) {}
+	  :IException(l, f), errnumber(e) {}
 	/**
 	 * Destructor default
 	 */
@@ -49,7 +49,7 @@ public:
 			}
 		}
 	}
-
+	
 	/**
 	 * @see IException#getErrorMensaje()
 	 */

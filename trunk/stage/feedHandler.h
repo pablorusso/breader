@@ -14,7 +14,7 @@
 // BORRAR
 
 typedef std::queue<Articulo> t_cola_art; //!< el tipo COLA_ARTICULOS
-typedef std::pair<t_idart, t_timestamp> t_emap_ultCat;
+typedef std::pair<t_idart, t_timestamp> t_emap_ultCat; 
   //!< el tipo "elemento" del map de getUltimosArticulosCat()
 typedef std::map<t_idfeed, t_emap_ultCat> t_map_ultCat;
   //!< un mapa para utilizar en getUltimosArticulosCat()
@@ -45,7 +45,7 @@ class feedHandler {
 		 * @param name el nombre del feed
 		 * @return el id del feed asignado.
 		 * @throw eFeedHandler si el Archivo6 esta corrupto
-		 * @throw eFeedHandler si los parametros del feedno son integros
+		 * @throw eFeedHandler si los parametros del feed no son integros
 		 */
 		t_idfeed altaFeed(const string &uri, const string &name);
 
@@ -58,6 +58,16 @@ class feedHandler {
 		 * @throw eFeedHandler si el Archivo6 esta corrupto
 		 */
 		bool bajaFeed(const t_idfeed &idfeed);
+
+		/**
+		 * Devuelve el feed indicado por idfeed
+		 * @return el feed indicado por idfeed
+		 * @param idfeed el idfeed a obtener, debe estar en rango
+		 * @throw eFeedHandler si el Archivo6 esta corrupto
+		 * @throw eFeedHandler si el idfeed esta fuera de rango, o el feed
+		 *                  estaba borrado
+		 */
+		Feed getFeed(const t_idfeed &idfeed);
 
 		/**
 		 * Da de alta un articulo en un feed. Se lo agrega en el Archivo1 y en
@@ -213,25 +223,12 @@ class feedHandler {
 		 */
 		t_cola_art getProximosArticulosBool(const t_idart &cant_art);
 
-
 		/**
 		 * Devuelve una cola con los idfeed del Archivo6
 		 * @return una cola con los idfeed del Archivo6
 		 * @throw eFeedHandler si el Archivo6 esta corrupto
 		 */
-		t_cola_idfeeds getColaIdFeeds()
-		  {return this->a6.getColaIdFeeds();}
-
-		/**
-		 * Devuelve el feed indicado por idfeed
-		 * @return el feed indicado por idfeed
-		 * @param idfeed el idfeed a obtener, debe estar en rango
-		 * @throw eFeedHandler si el Archivo6 esta corrupto
-		 * @throw eFeedHandler si el idfeed esta fuera de rango, o el feed
-		 *                  estaba borrado
-		 */
-		Feed getFeed(const t_idfeed &idfeed)
-		  {return this->a6.getFeed(idfeed);}
+		t_cola_idfeeds getColaIdFeeds();
 
 		/**
 		 * Clasifica un articulo
@@ -287,16 +284,17 @@ class feedHandler {
 		                //!< getUltimosArticulos)
 		t_idfeed feed_ultArt; //!< el idfeed del ultimo articulo devuelto
 		                      //!< (para usar con getUltimosArticulos)
-		t_idcat idcat_ultCat; //!< el id de la categoria que se consulto en
-		                      //!< getUltimosArticulosCat()
 		bool ultArt_pedido; //!< para saber si ya se utilizo el metodo
 		                    //!< getUltimosArticulos()
+		t_idcat idcat_ultCat; //!< el id de la categoria que se consulto en
+		                      //!< getUltimosArticulosCat()
 		bool ultArtCat_pedido; //!< para saber si ya se utilizo el metodo
 		                       //!< getUltimosArticulosCat()
-		t_map_ultCat map_ultCat; //!< utilizado en getUltimosArticulosCat()
-
 		bool bool_ultArt_pedido; //!< para saber si ya se utilizo el metodo
 		                       //!< getUltimosArticulosBool()
+
+		t_map_ultCat map_ultCat; //!< utilizado en getUltimosArticulosCat()
+
 		ContenedorIdCat bool_c_cat; //!< contenedor de los id_cat utilizado en
 		                             //!< getUltimosArticulosBool();
 		ContenedorIdCat bool_c_si_no; //!< contenedor de los si_no utilizado en

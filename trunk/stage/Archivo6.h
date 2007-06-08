@@ -213,7 +213,7 @@ class Archivo6 {
 		 * Devuelve la cantidad maxima de categorias
 		 * @return la cantidad maxima de categorias
 		 */
-		t_idcat get_MAX_CAT() const
+		t_idcat get_MAX_CAT() const 
 		  {return this->header.MAX_CAT;}
 
 
@@ -257,7 +257,7 @@ class Archivo6 {
 		void writeReg(const t_regArchivo6 &reg);
 
 		/**
-		 * Escribe un registro en el archivo. Directamente lo escribe en la
+		 * Escribe un registro en el archivo. Directamente lo escribe en la 
 		 * posicion indicada
 		 * @param idfeed el id del registro a escribir
 		 * @param reg el registro a escribir

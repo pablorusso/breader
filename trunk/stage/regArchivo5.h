@@ -18,14 +18,15 @@
 #include <iostream>
 // BORRAR
 
+typedef vector<t_idart> t_c_cant_idcat;
+
 /**
  * La estructura de un registro del Archivo6. Sera asi:
- * ESTADO BYTESLIBRES IDCAT1 IDCAT2 ... IDCATk NAME URI
+ * ESTADO BYTESLIBRES CANTCAT1 CANTCAT2 ... CANTCATK NAME URI
  * (los strings se guardan con null al final)
  * Si el estado es ocupado, todos son significativos, en cambio, si el estado
- * es libre, los 4 bytes que como minimo se usan en las categorias seran
- * un offset relativo al proximo libre. De esta manera se encadenan los
- * registros libres.
+ * es libre, el primer idcat sera un offset relativo al proximo libre.
+ * De esta manera se encadenan los registros libres.
  */
 using namespace std;
 class t_regArchivo5 {
@@ -33,15 +34,13 @@ class t_regArchivo5 {
 		// Nota: todos estos atributos son publicos por comodidad, hay que
 		// tener precaucion al utilizarlos
 		bool estado; //!< LIBRE/OCUPADO
-		string name; //!< el nombre del feed
-		string uri; //!< el uri del feed
-		ContenedorIdCat cont; //!< las categorias del feed, agrupadas en chars
-						//!< (tambien pueden significar, en caso de
-						//!<  estado = 0, el offset relativo al proximo
-						//!<  registro libre)
+		t_idcat MAX_CAT; //!< el maximo numero de categorias
 		t_freebytes freeBytes; //!< cantidad de bytes libres en el registro
 		                       //!< (incluyen los string, pero no el contidcat)
-
+		t_c_cant_idcat cont_cant; //!< un contenedor con la cantidad de
+		                          //!< clasificados con cada categoria del feed
+		string name; //!< el nombre del feed
+		string uri; //!< el uri del feed
 
 		/**
 		 * Constructor, reserva memoria para el contenedor y lo  inicializa
@@ -102,7 +101,7 @@ class t_regArchivo5 {
 		 * Se borra del Archivo6, leyendo su contenido, y actualizandolo
 		 * @param f el archivo del que se borrara
 		 * @param offset el offset a borrar
-		 * @param primerLibre el primer registro libre, se puede llegar a
+		 * @param primerLibre el primer registro libre, se puede llegar a 
 		 *        actualizar, en caso de cambiar
 		 * @throw fstream::failure si el archivo esta corrupto
 		 * @return true si el registro estaba ocupado, false de lo contrario

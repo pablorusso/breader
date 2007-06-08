@@ -1,7 +1,5 @@
 #include "Archivo4.h"
 
-// ios::in es read
-// ios::out es write
 Archivo4::Archivo4()
 {
 	// Leo/Creo el Archivo4
@@ -22,17 +20,19 @@ Archivo4::Archivo4()
 		  sizeof(t_idcat));
 		// Lo reabro para que sirva para entrada/salida
 		this->f.close();
-		this->f.open(A4_PATH, ios::in |ios::out | ios::binary);
+		this->f.open(A4_PATH, ios::in | ios::out | ios::binary);
+
 	}
+	//this->f.clear();
 	// Seteo para que arroje excepciones
-  	this->f.exceptions(ifstream::eofbit | ifstream::failbit | ifstream::badbit);
+	this->f.exceptions(fstream::eofbit | fstream::failbit | fstream::badbit);
 }
 
 Archivo4::~Archivo4()
 {
 	try {
 		this->writeHeader();
-		this->f.close();
+		if (this->f.is_open()) this->f.close();
 	}
 	catch (fstream::failure e){
 		// aca no se puede hacer nada
@@ -44,32 +44,36 @@ bool Archivo4::findCategory(const t_idcat &idCat)
 {
 	bool ret = false;
 	try {
-		t_regArchivo4  reg;
-		reg.readReg(this->f,idCat );
-		if (reg.estado == OCUPADO) 
-			ret = true;
+		if (idCat < this->header.numCat) {
+			t_regArchivo4  reg;
+			reg.readReg(this->f,idCat);
+			if (reg.estado == OCUPADO)
+				ret = true;
+		}
 	}
 	catch (fstream::failure e){
-		if (this->f.is_open()) this->f.close();
 		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
 	}
 	return ret;
 }
 
-t_idcat Archivo4::addCategory(string catName, const t_quantity &artPositive,const t_quantity 				&artNegative, const t_quantity &wordsPositive,
+t_idcat Archivo4::addCategory(string catName, const t_quantity &artPositive,
+			const t_quantity &artNegative, const t_quantity &wordsPositive,
 			const t_quantity &wordsNegative, const t_offset &firstBlockTag,
 			const t_offset &firstBlockEmpty)
 {
 	t_idcat ret;
 	try {
+		if (catName.size() > NOM_CAT_MAX_LEN )
+			THROW(eArchivo4, A4_NOMBRE_CAT_ERROR);
 		// agrego en la primer posicion libre
 		ret = this->header.primerLibre;
 		//reg.nextFreeReg = 15;
-		this->writeReg( catName, artPositive,artNegative, wordsPositive,wordsNegative,firstBlockTag,firstBlockEmpty);
+		this->writeReg(catName, artPositive,artNegative, wordsPositive,
+			wordsNegative,firstBlockTag,firstBlockEmpty);
 
 	}
 	catch (fstream::failure e) {
-		if (this->f.is_open()) this->f.close();
 		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
 	}
 	return ret;
@@ -79,22 +83,31 @@ t_regArchivo4 Archivo4::getCategoryInfo(const t_idcat &idCat)
 {
 	t_regArchivo4 ret;
 	try {
-		ret.readReg(this->f,idCat);
+		if (idCat < this->header.numCat) {
+			ret.readReg(this->f,idCat);
+			if (ret.estado == LIBRE)
+				// Esto es para Sergio // TODO sergio: borrar este comentario
+				THROW(eArchivo4, A4_CATEGORY_INFO_NO_CAT);
+		} THROW(eArchivo4, A4_CATEGORY_INFO_NO_CAT);
 	}
 	catch (fstream::failure e) {
-		if (this->f.is_open()) this->f.close();
 		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
 	}
 	return ret;
 }
 
-void Archivo4::modifyCategoryInfo(const t_idcat &idCategory, string catName, const t_quantity 					&artPositive,const t_quantity &artNegative, const t_quantity 					&wordsPositive,	const t_quantity &wordsNegative, const t_offset 				&firstBlockTag,	const t_offset &firstBlockEmpty)
+bool Archivo4::modifyCategoryInfo(const t_idcat &idCategory, string catName,
+	const t_quantity &artPositive, const t_quantity &artNegative,
+	const t_quantity &wordsPositive, const t_quantity &wordsNegative,
+	const t_offset &firstBlockTag,	const t_offset &firstBlockEmpty)
 {
+	bool ret = false;
     try
     {
         if (this->findCategory(idCategory))
         {
-        	t_regArchivo4 reg;
+		ret = true;
+		t_regArchivo4 reg;
 		reg.estado = OCUPADO;
 		//reg.idCategory = idCategory;
 		reg.artPositive = artPositive;
@@ -107,9 +120,9 @@ void Archivo4::modifyCategoryInfo(const t_idcat &idCategory, string catName, con
 		reg.writeReg(this->f,idCategory);
         }
     }catch (fstream::failure e) {
-		if (this->f.is_open()) this->f.close();
 		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
 	}
+	return ret;
 }
 
 bool Archivo4::deleteCategory(const t_idcat &idCat)
@@ -139,7 +152,6 @@ bool Archivo4::deleteCategory(const t_idcat &idCat)
 					if (posNext >= this->header.numCat) {
 						// El proximo es el eof, es decir, estoy borrando
 						// el ultimo registro
-
 						t_regArchivo4 regLibre;
 						regLibre.estado = LIBRE;
 						regLibre.nextFreeReg = this->header.numCat;
@@ -167,7 +179,6 @@ bool Archivo4::deleteCategory(const t_idcat &idCat)
 		}
 	}
 	catch (fstream::failure e) {
-		if (this->f.is_open()) this->f.close();
 		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
 	}
 	return ret;
@@ -192,11 +203,11 @@ void Archivo4::readHeader()
 }
 
 
-void Archivo4::writeReg(string catName, const t_quantity &artPositive,const 						t_quantity &artNegative, const t_quantity &wordsPositive,
-			const t_quantity &wordsNegative, const t_offset &firstBlockTag,
-			const t_offset &firstBlockEmpty)
+void Archivo4::writeReg(string catName, const t_quantity &artPositive,
+	const t_quantity &artNegative, const t_quantity &wordsPositive,
+	const t_quantity &wordsNegative, const t_offset &firstBlockTag,
+	const t_offset &firstBlockEmpty)
 {
-	// Calculo la posicion del primer reg libre como base+offset
 	t_idcat tmp = this->header.primerLibre;
 	if (this->header.primerLibre < this->header.numCat) {
 		// Tengo un registro libre que no es el ultimo
@@ -209,7 +220,7 @@ void Archivo4::writeReg(string catName, const t_quantity &artPositive,const 				
 		++this->header.numCat;
 	}
 	// Escribo el registro
-	
+
 	t_regArchivo4 reg;
 	reg.estado = OCUPADO;
 	reg.artPositive = artPositive;
@@ -221,7 +232,6 @@ void Archivo4::writeReg(string catName, const t_quantity &artPositive,const 				
 	reg.firstBlockEmpty = firstBlockEmpty;
 
 	reg.writeReg(this->f,tmp);
-	
 }
 
 std::ostream &operator<<(std::ostream &stream,  Archivo4 &a) {
@@ -234,15 +244,15 @@ std::ostream &operator<<(std::ostream &stream,  Archivo4 &a) {
 		reg.readReg(a.f,i);
 		if (reg.estado == OCUPADO) {
 			stream << "IDCat: " << i << " estado: " << reg.estado <<
-			  " Nombre: " << reg.categoryName<< 
-			" qPos: " << reg.artPositive<< 
-			" qNeg: " << reg.artNegative<< 
-			" wPos: " << reg.wordsPositive<< 
-			" wNeg: " << reg.wordsNegative<< 
+			" Nombre: " << reg.categoryName<<
+			" qPos: " << reg.artPositive<<
+			" qNeg: " << reg.artNegative<<
+			" wPos: " << reg.wordsPositive<<
+			" wNeg: " << reg.wordsNegative<<
 			std::endl;
 		} else {
-			stream << "IDFeed: " << i << " borrado " <<  "proximoLibre: " <<
-			  reg.nextFreeReg << std::endl;
+			stream << "IDCat: " << i << " borrado " <<  "proximoLibre: " <<
+			reg.nextFreeReg << std::endl;
 		}
 	}
 	return stream;

@@ -32,7 +32,7 @@ class t_regArchivo2 {
 		bool leido; //!< si esta leido o no
 		ContenedorIdCat cont_idcat; //!< el contenedor con las categorias del
 		                            //!< articulo
-		ContenedorIdCat cont_usu_pc; //!< el contenedor con por quien fue
+		ContenedorIdCat cont_usu_pc; //!< el contenedor con por quien fue 
 		                           //!< clasificado
 
 
