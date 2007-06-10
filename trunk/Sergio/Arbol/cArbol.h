@@ -11,8 +11,8 @@
 
 /**Header del archivo que contiene a los nodos del arbol en disco.*/
 typedef struct {
-	unsigned int nroRaiz; /**Numero del nodo Raiz.*/
-	unsigned int cantNodos;/**Cantidad de nodos alamcenados.*/
+	unsigned int nroRaiz; //!< Numero del nodo Raiz.
+	unsigned int cantNodos;//!< Cantidad de nodos alamcenados.
 } tHeaderArbol;
 
 template < class CONT, class ELEM>
@@ -71,12 +71,12 @@ public:
 
 private:
 
-   cNodo<CONT,ELEM> *raiz;     /**Punteo a la raiz del arbol*/
-   cNodo<CONT,ELEM> *corriente;/**Puntero al nodo actual del arbol*/
-   std::string nameFile; /**Nombre del archivo donde se almacena el arbol*/
-   tHeaderArbol header; /**Header del archivo donde se guarda el arbol*/
-   bool isCreado;       /**Si esta o no creado el arbol*/
-   char limitLevel;     /**Nivel hasta donde se carga el arbol en memoria*/
+   cNodo<CONT,ELEM> *raiz;     //!< Punteo a la raiz del arbol
+   cNodo<CONT,ELEM> *corriente;//!< Puntero al nodo actual del arbol
+   std::string nameFile; //!< Nombre del archivo donde se almacena el arbol
+   tHeaderArbol header; //!< Header del archivo donde se guarda el arbol
+   bool isCreado;       //!< Si esta o no creado el arbol
+   char limitLevel;     //!< Nivel hasta donde se carga el arbol en memoria
    
  /**Agrega un elemento a un nodo que tiene espacio suficiente
    * @param ptr Puntero al nodo que se quiere inicializar.
