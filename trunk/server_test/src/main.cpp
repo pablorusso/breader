@@ -2,18 +2,16 @@
 #include <fstream>
 
 #include "Archivo4.h"
-
 ////////////////////
 // PARA EDUARDO ///
 ///////////////////
 // TODO general:
 // * No guardar basura en nextFreeReg (igual ese campo ni va)
-// * La longitud de las categorias es fija igual a 20, no hace falta guardar
-//   +1 bits en el caso de long=20
+//////////////// * La longitud de las categorias es fija igual a 20, no hace falta guardar
+////////////////   +1 bits en el caso de long=20
 // * Al borrar una categoria, no hace falta borrar su contenido. Y si lo haces,
 //   que no sea con basura
-// * Te arregle que no verificabas el idcat que te pasaban a remCat
-// * Te arregle un par de problemas en el read/writeReg.
+//////////////// * Te arregle que no verificabas el idcat que te pasaban a remCat
 // * Fijate addCategory y modifyCategoryInfo que no se le puede pedir que te
 //   pasen tooodo... son cosas que tenes que inicializar vos. El addCategory
 //   deberia tener solo el string del nombre, y nada mas, el resto es cosa tuya,
@@ -25,7 +23,7 @@
 //   supongo seria mas comodo poder incrementar/decrementar esos valores
 //   directamente... tipo incArtPositive(idcat, cant_a_incrementar), y asi
 //   Podes hacerlo de varias formas, igual... fijate que seria lo mas optimo.
-// * Te puse todo en el dir raiz, porque a pablo le gusta asi =P
+////////////// * Te puse todo en el dir raiz, porque a pablo le gusta asi =P
 
 using namespace std;
 int main(int argc, char** argv) {
@@ -34,20 +32,51 @@ int main(int argc, char** argv) {
 	try {
 		Archivo4 a4;
 
+		t_set_idcat idSet;
+		
+		idSet = a4.getCategoriesId();
+		
+		t_set_idcat::iterator iter;
+		
+		iter = idSet.begin();
+		
+		if(!idSet.empty())
+			cout << "Tiene Algo!!" << endl;
+		else
+			cout << "Vacio" << endl;
+		
+		while(iter != idSet.end())
+		{
+		      cout << "id_Category: " << *iter << endl;
+			iter++;	
+		}
 
-		cout << "id<Category0: " << a4.addCategory("Futbol", 1,1,1,1,1,1)  << endl;
-		cout << "id<Category1: " << a4.addCategory("Tenis", 2,2,2,2,1,1)  << endl;
-		cout << "id<Category2: " << a4.addCategory("Deportes", 3,3,3,3,1,1)  << endl;
+
+		cout << "id<Category0: " << a4.addCategory("Futbol")  << endl;
+		cout << "id<Category1: " << a4.addCategory("Tenis")  << endl;
+		cout << "id<Category2: " << a4.addCategory("Deportes")  << endl;
 
 
 		if(a4.findCategory(2))
 		{	cout << "Categoria 2 encontrada" << endl;
-			a4.modifyCategoryInfo(2,"FFFutbol", 1,1,1,1,1,1);
+			a4.modifyCategoryName(2,"FFFutbol");
 			cout << "Categoria 2 modificada" << endl;
 		}else
 		{
 			cout << "Category 2 NO encontrada" << endl;
 		}
+			
+		a4.incCategoryArt(2,2);
+		
+		a4.decCategoryArt(2, 1);
+
+		a4.incCategoryWord(2, 10);
+		
+		a4.decCategoryWord(2,5);
+
+		//modifyCategoryName(const t_idcat &idCategory, string catName);
+
+
 		if (a4.findCategory(0))  cout << "Categoria 1 encontrada" << endl;
 		else cout << "Categoria 1 NO encontrada" << endl;
 
@@ -63,9 +92,9 @@ int main(int argc, char** argv) {
 
 
 
-        	cout << "id<Category3: " << a4.addCategory("2Futbol", 4,4,4,4,1,1)  << endl;
-		cout << "id<Category4: " << a4.addCategory("2Tenis", 5,5,5,5,1,1)  << endl;
-		cout << "id<Category4: " << a4.addCategory("2Deportes", 6,6,6,6,1,1)  << endl;
+        	/*cout << "id<Category3: " << a4.addCategory("2Futbol")  << endl;
+		cout << "id<Category4: " << a4.addCategory("2Tenis")  << endl;
+		cout << "id<Category4: " << a4.addCategory("2Deportes")  << endl;*/
 
 
 		cout << a4 << endl;
