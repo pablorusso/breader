@@ -22,11 +22,11 @@ public:
 		}
 	}
 
-	unsigned int nroNodo; /**Numero de nodo, es unico y permite identificar la posicion
-	               *donde se almacena en disco.*/
-	unsigned int vecHijos[CANT_ELEM_X_NODO+1];/**Vector de nodos que contiene los numeros
-	                                   *que identifican a los nodos hijos. */
-	ELEM elem[CANT_ELEM_X_NODO]; /**Vector de Elementos del nodo*/
+	unsigned int nroNodo; //!< Numero de nodo, es unico y permite identificar la posicion
+	                      //!< donde se almacena en disco.
+	unsigned int vecHijos[CANT_ELEM_X_NODO+1]; //!< Vector de nodos que contiene los numeros
+                                               //!< que identifican a los nodos hijos.
+	ELEM elem[CANT_ELEM_X_NODO]; //!< Vector de Elementos del nodo
 };
 /*****************************************************************************/
 
@@ -48,13 +48,13 @@ class cNodo {
    ~cNodo();
 
 private:
-   unsigned int cantClavesUsadas; /** Claves usadas en el nodo */
-   CONT *dato;           /** Array de claves de elementos del nodo */
-   cNodo **ptr;          /** Array de punteros a cNodo */
-   unsigned int *ptrNroHijo;      /** Array de int que hace referencia al nodo en
-                           * que apunta en disco*/
-   cNodo *padre;         /** Puntero al nodo padre en memoria*/
-   unsigned int nroNodo;			 /** Identificador al nodo ante los demas*/
+   unsigned int cantClavesUsadas; //!< Claves usadas en el nodo 
+   CONT *dato;           //!< Array de claves de elementos del nodo 
+   cNodo **ptr;          //!< Array de punteros a cNodo 
+   unsigned int *ptrNroHijo; //!< Array de int que hace referencia al nodo en
+                             //!< que apunta en disco
+   cNodo *padre;         //!< Puntero al nodo padre en memoria
+   unsigned int nroNodo; //!< Identifica al nodo ante los demas
 
    cNodoDisco<ELEM> getNodoDisco();/**Devuelve el nodo en su formato para
                                      *ser almacenado*/

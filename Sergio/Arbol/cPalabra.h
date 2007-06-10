@@ -25,13 +25,13 @@ public:
 			palabra[i]='\0';	
 	}
 
-	char tipo;/**Estado de un elemento*/ 
+	char tipo; //!< Estado de un elemento.
 			  /* Tipo=0 palabra es una palabra 
 			     Tipo=1 palabra es un offset
 				 Tipo=2 palabra esta vacia 
 	           */
-	char palabra[MAX_LONG_PALABRA];	/**Palabra u offset ha almacenar*/
-	unsigned int nroBlock; /**Numero de bloque*/		
+	char palabra[MAX_LONG_PALABRA];	//!< Palabra u offset ha almacenar.
+	unsigned int nroBlock; //!< Numero de bloque.
 };
 /*****************************************************************************/
 
@@ -39,8 +39,8 @@ class cPalabra{
 
 private:
 
-	cElemento dato;  /**Elemento que se va a guardar en el arbol*/
-	std::string palabra; /**Palbra del elemento*/
+	cElemento dato;  //!< Elemento que se va a guardar en el arbol
+	std::string palabra; //!< Palbra del elemento
 
 public:
 	/**Constructor.	  

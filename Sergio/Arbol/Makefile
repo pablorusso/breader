@@ -18,7 +18,7 @@ extension = cpp
 # toma todos los archivos con la extensi� mencionada. Para especificar hay que
 # descomentar la l�ea (quitarle el '#' del principio).
 # NOTA: No poner cabeceras (.h). 
-fuentes = cPalabra.cpp principal.cpp
+#fuentes = 
 
 # Si es un programa GTK+, descoment�(quitale el '#' a) la siguiente l�ea.
 #gtk = si 
@@ -31,7 +31,9 @@ fuentes = cPalabra.cpp principal.cpp
 ###########################
 
 # Opciones para el compilador C/C++ en modo ansi.
-CFLAGS = -Wall -ansi -pedantic-errors
+CFLAGS = -Wall -ansi -pedantic-errors -O0 -g3 -c -fmessage-length=0 -Wcomment -Wimplicit -Wunused -Wreturn-type -Wconversion  
+#-Wshadow 
+#-Wsing-compare
 
 # Para que explote lo mas posible
 CFLAGS += -O3 -DNDEBUG
