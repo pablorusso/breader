@@ -7,9 +7,9 @@
 #include <string>
 #include <fstream>
 
-#define A4_SIZEOF_REG ((sizeof(bool)) + (sizeof(t_offset) * 3) + \
-                    (sizeof(t_quantity) * (4)) + (sizeof(t_idcat)) + \
-                    (NOM_CAT_MAX_LEN+1)* (sizeof(char)))
+#define A4_SIZEOF_REG ((sizeof(bool)) + (sizeof(t_offset) * 2) + \
+                    (sizeof(t_quantity) * (4))+ (sizeof(t_idcat)) +\
+                    (NOM_CAT_MAX_LEN +1 )* (sizeof(char)))
 #define A4_SIZEOF_HEADER ((sizeof(t_idcat))*(2))
 
 // BORRAR
@@ -23,7 +23,7 @@ using namespace std;
 class t_regArchivo4 {
 	public:
 		bool estado; //!< LIBRE/OCUPADO
-		t_offset nextFreeReg;
+		//t_offset nextFreeReg;
 				/*!<la idea es que por defecto va a guardar el proximo libre,
 				*  pero solo lo utilizaria cuando borre un registro para poder
 				*  hacer un encadenamiento de registros libres, ahi se

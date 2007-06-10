@@ -61,21 +61,11 @@ class Archivo4 {
 		/**
 		 * Agrega una categoria al Archivo4
 		 * @param catName el nombre del categoria
-		 * @param artPositive artculos clasif positivamete
-		 * @param artNegative artculos clasif negativamente
-		 * @param wordsPositive palabras clasif positivamente
-		 * @param wordsNegative palabras clasificadas negativamente
-		 * @param firstBlockTag el primer bloque de la categoria
-		 * @param firstBlockEmpty el primer bloque vacio para la categoria
-		 * @return el idcategoria asignado a ese categoria
+
 		 * @throw eArchivo4 si el archivo esta corrupto
-		 * @throw eArchivo4 si catName es demasiado grande (> NOM_CAT_MAX_LEN)
 		 */
 		 // TODO hacerlo bien
-		t_idcat addCategory(string catName, const t_quantity &artPositive,
-			const t_quantity &artNegative, const t_quantity &wordsPositive,
-			const t_quantity &wordsNegative, const t_offset &firstBlockTag,
-			const t_offset &firstBlockEmpty);
+		t_idcat addCategory(string catName);
 
 		/**
 		 * Obtiene un categoria del Archivo4
@@ -94,10 +84,35 @@ class Archivo4 {
 		 * @throw eArchivo4 si el archivo esta corrupto
 		 * @return true si la borro, false de lo contrario (no existia)
 		 */
-		 // TODO hacerlo bien
-		bool modifyCategoryInfo(const t_idcat &idCategory, string catName, const t_quantity &artPositive,const t_quantity &artNegative, const t_quantity &wordsPositive,
-			const t_quantity &wordsNegative, const t_offset &firstBlockTag,
-			const t_offset &firstBlockEmpty);
+		bool modifyCategoryInfo(const t_idcat &idCategory, string catName,
+			const t_quantity &artPositive,const t_quantity &artNegative,
+			const t_quantity &wordsPositive, const t_quantity &wordsNegative,
+			const t_offset &firstBlockTag, const t_offset &firstBlockEmpty);
+
+		// TODO comentar con doxygen estos metodos
+		bool incCategoryArt(const t_idcat &idCategory,const t_quantity &artToAdd);
+		
+		bool decCategoryArt(const t_idcat &idCategory,const t_quantity &artToDec);
+
+		bool incCategoryWord(const t_idcat &idCategory,
+			const t_quantity &wordToAdd);
+		
+		bool decCategoryWord(const t_idcat &idCategory,
+			const t_quantity &wordToDec);
+
+		bool modifyCategoryName(const t_idcat &idCategory, const string &catName);
+
+		bool incCategoryArtAndWord(const t_idcat &idCategory,
+			const t_quantity &artToAdd,const t_quantity &wordToAdd);
+
+		bool decCategoryArtAndWord(const t_idcat &idCategory,
+			const t_quantity &artToDec, const t_quantity &wordToDec);
+
+		bool modifyCategoryBlocks(const t_idcat &idCategory, 
+									const t_offset &firstBlockTag,	
+									const t_offset &firstBlockEmpty);
+
+		t_set_idcat getCategoriesId();
 
 		/**
 		 * Elimina una categoria del Archivo4
@@ -112,7 +127,7 @@ class Archivo4 {
 		 * Imprime el contenido del Archivo4
 		 * Nota: no es const porque tengo que leer y cambiar el fpointer
 		 */
-		friend std::ostream &operator<<(std::ostream &stream, Archivo4 &a);
+		friend ostream &operator<<(ostream &stream, Archivo4 &a);
 
 	private:
 		fstream f; //!< el handler del Archivo4
