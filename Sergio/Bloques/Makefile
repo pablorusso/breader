@@ -11,19 +11,19 @@
 # Nombre del ejecutable.
 target = tp
 
-# Extensi�n de los archivos a compilar (c para C, cpp o cc o cxx para C++).
+# Extensi� de los archivos a compilar (c para C, cpp o cc o cxx para C++).
 extension = cpp
 
-# Archivos con el c�digo fuente que componen el ejecutable. Si no se especifica,
-# toma todos los archivos con la extensi�n mencionada. Para especificar hay que
-# descomentar la l�nea (quitarle el '#' del principio).
+# Archivos con el c�igo fuente que componen el ejecutable. Si no se especifica,
+# toma todos los archivos con la extensi� mencionada. Para especificar hay que
+# descomentar la l�ea (quitarle el '#' del principio).
 # NOTA: No poner cabeceras (.h). 
-fuentes = main.cpp cFileManager.cpp
+#fuentes = 
 
-# Si es un programa GTK+, descoment� (quitale el '#' a) la siguiente l�nea.
+# Si es un programa GTK+, descoment�(quitale el '#' a) la siguiente l�ea.
 #gtk = si 
 
-# Si usa funciones de math.h, descoment� (quitale el '#' a) la siguiente l�nea.
+# Si usa funciones de math.h, descoment�(quitale el '#' a) la siguiente l�ea.
 #math = si 
 
 
@@ -31,13 +31,18 @@ fuentes = main.cpp cFileManager.cpp
 ###########################
 
 # Opciones para el compilador C/C++ en modo ansi.
-CFLAGS = -Wall -ansi -pedantic-errors
+CFLAGS = -Wall -ansi -pedantic-errors -O0 -g3 -c -fmessage-length=0 -Wcomment -Wimplicit -Wunused -Wreturn-type -Wconversion  
+#-Wshadow 
+#-Wsing-compare
 
 # Para que explote lo mas posible
-#CFLAGS += -O3 -DNDEBUG
+CFLAGS += -O3 -DNDEBUG
 
 # Para valgrind o debug
-CFLAGS += -ggdb -DDEBUG -fno-inline
+CFLAGS += -ggdb -DDEBUG
+
+# Opciones para el compilador C++.
+CXXFLAGS = $(CFLAGS) -fno-inline
 
 # Opciones del enlazador.
 #LDFLAGS=
@@ -58,7 +63,7 @@ ifdef math
 LDFLAGS += -lm
 endif
 
-# Uso enlazador de c++ si es c�digo no C.
+# Uso enlazador de c++ si es c�igo no C.
 ifeq ($(extension), c)
 enlazador = $(CC)
 else
@@ -79,12 +84,13 @@ all: $(target)
 o_files = $(patsubst %.$(extension),%.o,$(fuentes))
 
 $(target): $(o_files)
+
 	@if [ -z "$(o_files)" ]; \
 	then \
-		echo "No hay archivos de entrada, recuerde que la extensi�n debe ser '.$(extension)'."; \
+		echo "No hay archivos de entrada, recuerde que la extensi� debe ser '.$(extension)'."; \
 		false; \
 	fi >&2
-	$(enlazador) $(LDFLAGS) $(o_files) $(LOADLIBES) $(LDLIBS) -o $(target)
+	$(enlazador) $(LDFLAGS) $(o_files) $(LOADLIBES) $(LDLIBS) -o $(target)	
 
 clean:
 	@$(RM) -fv *.o $(target)
