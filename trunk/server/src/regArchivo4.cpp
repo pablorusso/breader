@@ -1,7 +1,7 @@
 #include "regArchivo4.h"
 
-t_regArchivo4::t_regArchivo4(): estado(0), nextFreeReg(0), idCategory(0),
-  artPositive(0), artNegative(0), wordsPositive(0), wordsNegative(0),
+t_regArchivo4::t_regArchivo4(): estado(0),idCategory(0), artPositive(0), 
+	artNegative(0), wordsPositive(0), wordsNegative(0),
   categoryName(""), firstBlockTag(0), firstBlockEmpty(0) {}
 
 /**
@@ -14,12 +14,12 @@ t_regArchivo4::t_regArchivo4(): estado(0), nextFreeReg(0), idCategory(0),
  * nextFreeReg sera, ponele, artPositive, si el estado es 0
  */
 void t_regArchivo4::writeReg(fstream &f,const t_idcat &idCat)
-{
+{ 
 	// Escribo el registro
 	f.seekp(A4_SIZEOF_HEADER+idCat*A4_SIZEOF_REG, ios::beg);
 	f.write(reinterpret_cast<const char *>(&this->estado),sizeof(bool));
-	f.write(reinterpret_cast<const char *>(&this->nextFreeReg),
-	  sizeof(t_offset));
+	/*f.write(reinterpret_cast<const char *>(&this->nextFreeReg),
+	  sizeof(t_offset));*/
 	f.write(reinterpret_cast<const char *>(&idCat),
 	  sizeof(t_idcat));
 	f.write(reinterpret_cast<const char *>(&this->artPositive),
@@ -35,7 +35,7 @@ void t_regArchivo4::writeReg(fstream &f,const t_idcat &idCat)
  	f.write(reinterpret_cast<const char *>(&this->firstBlockEmpty),
 	  sizeof(t_offset));
 	// Redimensiono el nombre de la categoria, agregandole ceros, para llegar
-	// a los Â¿Â¿NOM_CAT_MAX_LEN+1?? caracteres // TODO que no sean NOM_CAT_MAX_LEN+1 sino NOM_CAT_MAX_LEN
+	// a los ¿¿NOM_CAT_MAX_LEN+1?? caracteres
 	t_quantity oldSize = categoryName.size();
 	this->categoryName.reserve(NOM_CAT_MAX_LEN+1);
 	for (t_quantity i = oldSize+1; i<(NOM_CAT_MAX_LEN+1);++i) {
@@ -57,9 +57,9 @@ void t_regArchivo4::readReg(fstream &f,const t_idcat &idCat)
 	// que arroje una excepcion
 	t_offset offset= A4_SIZEOF_HEADER+idCat*A4_SIZEOF_REG;
 	f.seekg(offset,ios::beg);
-
+	//&this->idCategory = idCat;
 	f.read(reinterpret_cast<char *>(&this->estado), sizeof(bool));
-	f.read(reinterpret_cast<char *>(&this->nextFreeReg), sizeof(t_offset));
+	//f.read(reinterpret_cast<char *>(&this->nextFreeReg), sizeof(t_offset));
 	f.read(reinterpret_cast<char *>(&this->idCategory), sizeof(t_idcat));
 	f.read(reinterpret_cast<char *>(&this->artPositive), sizeof(t_quantity));
 	f.read(reinterpret_cast<char *>(&this->artNegative), sizeof(t_quantity));
@@ -75,7 +75,7 @@ void t_regArchivo4::readReg(fstream &f,const t_idcat &idCat)
 	f.read(reinterpret_cast<char *>(cptr), (NOM_CAT_MAX_LEN+1)*sizeof(char));
 	
 	this->categoryName = cptr;
-	cout << "this->categoryName: " << this->categoryName << endl;
+	//cout << "this->categoryName: " << this->categoryName << endl;
 	delete []cptr;
 }
 
