@@ -18,7 +18,7 @@ Archivo6::~Archivo6() {
 		this->writeHeader();
 		this->f.close();
 	}
-	catch (fstream::failure e){
+	catch (fstream::failure){
 		// aca no se puede hacer nada
 	}
 }
@@ -48,7 +48,7 @@ void Archivo6::reopen() {
 		string fileName = Archivo6::genFileName();
 		this->open(fileName);
 	}
-	catch (fstream::failure e){
+	catch (fstream::failure){
 		// Aca no se puede hacer nada
 	}
 }
@@ -61,7 +61,7 @@ bool Archivo6::findFeed(const t_idfeed &idfeed) {
 			if (reg.estado == OCUPADO) ret = true;
 		}
 	}
-	catch (fstream::failure e){
+	catch (fstream::failure){
 		if (this->f.is_open()) this->f.close();
 		THROW(eArchivo6, A6_ARCHIVO_CORRUPTO);
 	}
@@ -82,7 +82,7 @@ t_idfeed Archivo6::addFeed(const string &uri, const string &nombre) {
 		regA6.oArchivo5 = offset;
 		this->writeReg(regA6);
 	}
-	catch (fstream::failure e) {
+	catch (fstream::failure) {
 		if (this->f.is_open()) this->f.close();
 		THROW(eArchivo6, A6_ARCHIVO_CORRUPTO);
 	}
@@ -101,7 +101,7 @@ t_idfeed Archivo6::addFeed(Feed &feed) {
 		regA6.oArchivo5 = offset;
 		this->writeReg(regA6);
 	}
-	catch (fstream::failure e) {
+	catch (fstream::failure) {
 		if (this->f.is_open()) this->f.close();
 		THROW(eArchivo6, A6_ARCHIVO_CORRUPTO);
 	}
@@ -122,7 +122,7 @@ Feed Archivo6::getFeed(const t_idfeed &idfeed) {
 				feed.setContIdCat(regA5.cont_cant);
 			}
 		}
-		catch (fstream::failure e) {
+		catch (fstream::failure) {
 			if (this->f.is_open()) this->f.close();
 			THROW(eArchivo6, A6_ARCHIVO_CORRUPTO);
 		}
@@ -143,7 +143,7 @@ void Archivo6::gotoFirstFeed() {
 			}
 		}
 	}
-	catch (fstream::failure e) {
+	catch (fstream::failure) {
 		if (this->f.is_open()) this->f.close();
 		THROW(eArchivo6, A6_ARCHIVO_CORRUPTO);
 	}
@@ -184,7 +184,7 @@ cin >> tmp;
 				}
 			}
 		}
-		catch (fstream::failure e) {
+		catch (fstream::failure) {
 			if (this->f.is_open()) this->f.close();
 			THROW(eArchivo6, A6_ARCHIVO_CORRUPTO);
 		}
@@ -249,7 +249,7 @@ bool Archivo6::remFeed(const t_idfeed &idfeed) {
 			}
 		}		
 	}
-	catch (fstream::failure e) {
+	catch (fstream::failure) {
 		if (this->f.is_open()) this->f.close();
 		THROW(eArchivo6, A6_ARCHIVO_CORRUPTO);
 	}
@@ -264,7 +264,7 @@ void Archivo6::catFeed(const t_idfeed &idfeed, const t_idcat &idcat,
 			if (regA6.estado == LIBRE) THROW(eArchivo6, A6_IDFEED_INVALIDO);
 			else this->a5.writeCat(regA6.oArchivo5, idcat, si_no);
 		}
-		catch (fstream::failure e) {
+		catch (fstream::failure) {
 			if (this->f.is_open()) this->f.close();
 			THROW(eArchivo6, A6_ARCHIVO_CORRUPTO);
 		}
@@ -285,7 +285,7 @@ void Archivo6::catFeed(const t_idfeed &idfeed, ContenedorIdCat &c) {
 				}
 			}
 		}
-		catch (fstream::failure e) {
+		catch (fstream::failure) {
 			if (this->f.is_open()) this->f.close();
 			THROW(eArchivo6, A6_ARCHIVO_CORRUPTO);
 		}

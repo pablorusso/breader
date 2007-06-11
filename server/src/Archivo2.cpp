@@ -19,7 +19,7 @@ Archivo2::~Archivo2() {
 		this->writeHeader();
 		this->f.close();
 	}
-	catch (fstream::failure e){
+	catch (fstream::failure){
 		// aca no se puede hacer nada
 	}
 }
@@ -67,7 +67,7 @@ t_idart Archivo2::writeArticulo(const Articulo &art) {
 		this->writeReg(reg);
 		this->numRegs++;
 	}
-	catch (fstream::failure e){
+	catch (fstream::failure){
 		THROW(eArchivo2, A2_ARCHIVO_CORRUPTO);
 	}
 	return ret;
@@ -88,7 +88,7 @@ Articulo Archivo2::readArticulo(const t_idart &idart) {
 			// lo modifique
 			this->a1.readArticulo(reg.oArchivo1, ret);
 		}
-		catch (fstream::failure e) {
+		catch (fstream::failure) {
 			THROW(eArchivo2, A2_ARCHIVO_CORRUPTO);
 		}
 	} else THROW(eArchivo2, A2_IDART_FUERA_DE_RANGO);
@@ -103,7 +103,7 @@ t_timestamp Archivo2::readTimestamp(const t_idart &idart) {
 			this->f.read(reinterpret_cast<char *>(&ret),
 			  sizeof(t_timestamp));
 		}
-		catch (fstream::failure e) {
+		catch (fstream::failure) {
 			THROW(eArchivo2, A2_ARCHIVO_CORRUPTO);
 		}
 	} else THROW(eArchivo2, A2_IDART_FUERA_DE_RANGO);
@@ -120,7 +120,7 @@ void Archivo2::writeLeido(const t_idart &idart, const bool leido) {
 			this->f.write(reinterpret_cast<const char *>(&leido),
 			  sizeof(bool));
 		}
-		catch (fstream::failure e) {
+		catch (fstream::failure) {
 			THROW(eArchivo2, A2_ARCHIVO_CORRUPTO);
 		}
 	} else THROW(eArchivo2, A2_IDART_FUERA_DE_RANGO);
@@ -140,7 +140,7 @@ void Archivo2::invertirLecturaArticulo(const t_idart &idart) {
 			this->f.write(reinterpret_cast<const char *>(&leido),
 			  sizeof(bool));
 		}
-		catch (fstream::failure e) {
+		catch (fstream::failure) {
 			THROW(eArchivo2, A2_ARCHIVO_CORRUPTO);
 		}
 	} else THROW(eArchivo2, A2_IDART_FUERA_DE_RANGO);
@@ -154,7 +154,7 @@ void Archivo2::invertirFavorito(const t_idart &idart) {
 			  IDCAT_FAV;
 			bitOperator::invertBit(this->f, posEnBits);
 		}
-		catch (fstream::failure e) {
+		catch (fstream::failure) {
 			THROW(eArchivo2, A2_ARCHIVO_CORRUPTO);
 		}
 	} else THROW(eArchivo2, A2_IDART_FUERA_DE_RANGO);
@@ -170,7 +170,7 @@ void Archivo2::writeCat(const t_idart &idart, const t_idcat &idcat,
 			posEnBits += this->header.MAX_CAT;
 			bitOperator::writeBit(this->f, posEnBits, usu_pc);
 		}
-		catch (fstream::failure e) {
+		catch (fstream::failure) {
 			THROW(eArchivo2, A2_ARCHIVO_CORRUPTO);
 		}
 	} else THROW(eArchivo2, A2_IDART_FUERA_DE_RANGO);
@@ -184,7 +184,7 @@ bool Archivo2::readCat(const t_idart &idart, const t_idcat &idcat) {
 			  sizeof(t_timestamp) + sizeof(t_offset) + sizeof(bool))*8 + idcat;
 			ret = bitOperator::readBit(this->f, posEnBits);
 		}
-		catch (fstream::failure e) {
+		catch (fstream::failure) {
 			THROW(eArchivo2, A2_ARCHIVO_CORRUPTO);
 		}
 	} else THROW(eArchivo2, A2_IDART_FUERA_DE_RANGO);
@@ -200,7 +200,7 @@ ContenedorIdCat Archivo2::readCat(const t_idart &idart) {
 			this->f.seekg(pos);
 			c.readCat(this->f);
 		}
-		catch (fstream::failure e) {
+		catch (fstream::failure) {
 			THROW(eArchivo2, A2_ARCHIVO_CORRUPTO);
 		}
 	} else THROW(eArchivo2, A2_IDART_FUERA_DE_RANGO);
@@ -217,7 +217,7 @@ bool Archivo2::readUsu_Pc(const t_idart &idart, const t_idcat &idcat) {
 			  + this->header.MAX_CAT;
 			ret = bitOperator::readBit(this->f, posEnBits);
 		}
-		catch (fstream::failure e) {
+		catch (fstream::failure) {
 			THROW(eArchivo2, A2_ARCHIVO_CORRUPTO);
 		}
 	} else THROW(eArchivo2, A2_IDART_FUERA_DE_RANGO);
