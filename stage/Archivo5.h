@@ -10,8 +10,8 @@
 
 #define LIBRE 0
 #define OCUPADO 1
-#define A5_PATH "data/A5.txt"
-#define A5_PATH_BIS "data/A5_bis.txt"
+#define A5_FILENAME "A5"
+#define A5_FILENAME_BIS "A5_bis"
 
 // BORRAR
 #include <iostream>

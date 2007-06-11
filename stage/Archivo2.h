@@ -12,8 +12,8 @@
 #define LIBRE 0
 #define OCUPADO 1
 #define A2_SIZEOF_HEADER  (sizeof(t_idcat))
-#define A2_BASE_PATH "data/A2"
-#define A2_BASE_PATH_BIS "data/A2_bis"
+#define A2_FILENAME "A2"
+#define A2_FILENAME_BIS "A2_bis"
 
 // BORRAR
 #include <iostream>

@@ -2,8 +2,9 @@
 
 Archivo4::Archivo4()
 {
+	string fileName = Archivo4::genFileName();
 	// Leo/Creo el Archivo4
-	this->f.open(A4_PATH, ios::in |ios::out | ios::binary);
+	this->f.open(fileName.c_str(), ios::in |ios::out | ios::binary);
 	if (this->f.good()) {
 		// leo el header
 		this->readHeader();
@@ -11,7 +12,7 @@ Archivo4::Archivo4()
 		// El archivo no estaba creado, entonces, lo creo
 		// escribo el header por primera vez (no puedo usar writeHeader)
 		t_headerArchivo4 header;
-		this->f.open(A4_PATH, ios::out | ios::binary);
+		this->f.open(fileName.c_str(), ios::out | ios::binary);
 		this->header.numCat = header.numCat = 0;
 		this->header.primerLibre = header.primerLibre = 0;
 		this->f.write(reinterpret_cast<const char *>(&header.numCat),
@@ -20,7 +21,7 @@ Archivo4::Archivo4()
 		  sizeof(t_idcat));
 		// Lo reabro para que sirva para entrada/salida
 		this->f.close();
-		this->f.open(A4_PATH, ios::in | ios::out | ios::binary);
+		this->f.open(fileName.c_str(), ios::in | ios::out | ios::binary);
 
 	}
 	this->f.clear();
@@ -39,6 +40,14 @@ Archivo4::~Archivo4()
 	}
 }
 
+
+string Archivo4::genFileName() {
+	// Calculo el nombre del archivo como
+	// "DATA_PATH"+"A4_FILENAME"
+	string fileName(DATA_PATH);
+	fileName.append(A4_FILENAME);
+	return fileName;
+}
 
 bool Archivo4::findCategory(const t_idcat &idCat)
 {

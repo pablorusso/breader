@@ -3,6 +3,7 @@
 Archivo5::Archivo5(const t_idcat &MAX_CAT) {
 	this->header.MAX_CAT = MAX_CAT;
 	string fileName = Archivo5::genFileName();
+	cout << fileName << endl;
 	this->open(fileName);
 }
 
@@ -23,12 +24,18 @@ Archivo5::~Archivo5() {
 }
 
 string Archivo5::genFileName() {
-	string fileName(A5_PATH);
+	// Calculo el nombre del archivo como
+	// "DATA_PATH"+"A5_FILENAME"
+	string fileName(DATA_PATH);
+	fileName.append(A5_FILENAME);
 	return fileName;
 }
 
 string Archivo5::genFileName(const bool bis) {
-	string fileName(A5_PATH_BIS);
+	// Calculo el nombre del archivo como
+	// "DATA_PATH"+"A5_FILENAME_BIS"
+	string fileName(DATA_PATH);
+	fileName.append(A5_FILENAME_BIS);
 	return fileName;
 }
 
