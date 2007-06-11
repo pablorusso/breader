@@ -9,7 +9,7 @@
 #include <fstream>
 
 
-#define A4_PATH "data/A4.txt"
+#define A4_PATH "A4.txt"
 #define LIBRE 0
 #define OCUPADO 1
 
@@ -112,7 +112,7 @@ class Archivo4 {
 									const t_offset &firstBlockTag,	
 									const t_offset &firstBlockEmpty);
 
-		t_set_idcat getCategoriesId();
+		t_queue_idcat getCategoriesId();
 
 		/**
 		 * Elimina una categoria del Archivo4
@@ -121,6 +121,11 @@ class Archivo4 {
 		 * @throw eArchivo4 si el archivo esta corrupto
 		 */
 		bool deleteCategory(const t_idcat &idCat);
+
+		/**
+		 * // TODO comentar
+		 */
+		tRegistro3 getRegistro(const t_idcat &idCat);
 
 		/**
 		 * Sobrecarga del operator<<

@@ -63,6 +63,10 @@ public:
 		msg.append(this->where());
 		return msg;
 	}
+
+	A4_error getError(){
+		return errnumber;
+	}
 };
 
 #endif
