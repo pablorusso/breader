@@ -6,8 +6,8 @@
 #include "Articulo.h"
 #include <fstream>
 
-#define A1_PATH "data/A1"
-#define A1_PATH_BIS "data/A1_bis"
+#define A1_FILENAME "A1"
+#define A1_FILENAME_BIS "A1_bis"
 
 
 // BORRAR

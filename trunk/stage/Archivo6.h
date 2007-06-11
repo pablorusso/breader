@@ -13,8 +13,8 @@
 #define OCUPADO 1
 #define A6_SIZEOF_REG ((sizeof(bool)) + (sizeof(t_offset)))
 #define A6_SIZEOF_HEADER ((sizeof(t_idfeed))*(2)+ sizeof(t_idcat))
-#define A6_PATH "data/A6.txt"
-#define A6_PATH_BIS "data/A6_bis.txt"
+#define A6_FILENAME "A6"
+#define A6_FILENAME_BIS "A6_bis"
 
 // BORRAR
 #include <iostream>

@@ -521,10 +521,15 @@ void feedHandler::reestructurar() {
 			}
 		}
 		// Borro los archivos viejos y renombro los nuevos
-		::remove(A6_PATH);
-		::rename(A6_PATH_BIS, A6_PATH);
-		::remove(A5_PATH);
-		::rename(A5_PATH_BIS, A5_PATH);
+		string fileName = Archivo6::genFileName();
+		string fileNameBis = Archivo6::genFileName(true);
+		::remove(fileName.c_str());
+		::rename(fileNameBis.c_str(), fileName.c_str());
+
+		fileName = Archivo5::genFileName();
+		fileNameBis = Archivo5::genFileName(true);
+		::remove(fileName.c_str());
+		::rename(fileNameBis.c_str(), fileName.c_str());
 		//Reabro el archivo6 (y el archivo5)
 		this->a6.reopen();
 	}
@@ -583,10 +588,17 @@ void feedHandler::set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
 				}
 			}
 			// Borro los archivos viejos y renombro los nuevos
-			::remove(A6_PATH);
-			::rename(A6_PATH_BIS, A6_PATH);
-			::remove(A5_PATH);
-			::rename(A5_PATH_BIS, A5_PATH);
+
+			// Borro los archivos viejos y renombro los nuevos
+			string fileName = Archivo6::genFileName();
+			string fileNameBis = Archivo6::genFileName(true);
+			::remove(fileName.c_str());
+			::rename(fileNameBis.c_str(), fileName.c_str());
+			
+			fileName = Archivo5::genFileName();
+			fileNameBis = Archivo5::genFileName(true);
+			::remove(fileName.c_str());
+			::rename(fileNameBis.c_str(), fileName.c_str());
 			//Reabro el archivo6 (y el archivo5)
 			this->a6.reopen();
 		}

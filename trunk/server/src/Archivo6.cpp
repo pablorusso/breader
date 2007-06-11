@@ -24,12 +24,18 @@ Archivo6::~Archivo6() {
 }
 
 string Archivo6::genFileName() {
-	string fileName(A6_PATH);
+	// Calculo el nombre del archivo como
+	// "DATA_PATH"+"A6_FILENAME"
+	string fileName(DATA_PATH);
+	fileName.append(A6_FILENAME);
 	return fileName;
 }
 
 string Archivo6::genFileName(const bool bis) {
-	string fileName(A6_PATH_BIS);
+	// Calculo el nombre del archivo como
+	// "DATA_PATH"+"A6_FILENAME_BIS"
+	string fileName(DATA_PATH);
+	fileName.append(A6_FILENAME_BIS);
 	return fileName;
 }
 

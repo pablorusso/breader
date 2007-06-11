@@ -8,8 +8,7 @@
 #include <string>
 #include <fstream>
 
-
-#define A4_PATH "A4.txt"
+#define A4_FILENAME "A4"
 #define LIBRE 0
 #define OCUPADO 1
 
@@ -43,6 +42,12 @@ class Archivo4 {
 		 * Destructor. Escribe el nuevo encabezado y cierra el archivo.
 		 */
 		~Archivo4();
+
+		/**
+		 * Genera el nombre del archivo
+		 * @return el nombre del archivo
+		 */
+		static string genFileName();
 
 		/**
 		 * Devuelve la cantidad de categorias en el archivo

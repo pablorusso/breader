@@ -25,21 +25,24 @@ Archivo2::~Archivo2() {
 }
 
 string Archivo2::genFileName(const t_idfeed &idfeed) {
-	// Calculo el nombre del archivo como "a2_baseFileName"+"_"+idfeed+".txt"
-	string fileName = A2_BASE_PATH;
+	// Calculo el nombre del archivo como
+	// "DATA_PATH"+"A2_FILENAME"+"_"+idfeed
+	string fileName(DATA_PATH);
+	fileName.append(A2_FILENAME);
 	ostringstream o;
 	o << idfeed;
-	fileName.append("_" + o.str() + ".txt");
+	fileName.append("_" + o.str());
 	return fileName;
 }
 
 string Archivo2::genFileName(const t_idfeed &idfeed, const bool bis) {
-	// Calculo el nombre del archivo como "a2_baseFileName"+"_bis"+
-	// "_"+idfeed+".txt"
-	string fileName = A2_BASE_PATH_BIS;
+	// Calculo el nombre del archivo como
+	// "DATA_PATH"+"A2_FILENAME_BIS"+"_"+idfeed
+	string fileName(DATA_PATH);
+	fileName.append(A2_FILENAME_BIS);
 	ostringstream o;
 	o << idfeed;
-	fileName.append("_" + o.str() + ".txt");
+	fileName.append("_" + o.str());
 	return fileName;
 }
 
