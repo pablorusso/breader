@@ -1,6 +1,24 @@
 #ifndef GENERAL
 #define GENERAL
 
+
+/*****************************************************************************
+Imposiciones de Damian:
+----------------------
+
+Nro máximo de categorías: >=1
+Nro máximo de categorías: múltiplo de 8.
+sizeof(t_idart) = sizeof(t_offset)
+
+*****************************************************************************
+Imposiciones de Sergio:
+----------------------
+
+El idcat 0 no se usa
+
+*****************************************************************************/
+
+
 #include <queue>
 
 #define NOM_CAT_MAX_LEN 20
