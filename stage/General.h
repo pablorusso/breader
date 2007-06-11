@@ -8,7 +8,7 @@
 #define IDCAT_FAV 1
 //!< El id de la categoria correspondiente a "favorito" o "starred"
 //!< (ojo que el cero no se puede usar)
-#define DATA_PATH "../data/"
+#define DATA_PATH ""
 //!< El path del directorio donde se guardan los arhivos internos
 
 /*
