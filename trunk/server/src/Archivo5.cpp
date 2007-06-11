@@ -18,7 +18,7 @@ Archivo5::~Archivo5() {
 		this->writeHeader();
 		this->f.close();
 	}
-	catch (fstream::failure e){
+	catch (fstream::failure){
 		// aca no se puede hacer nada
 	}
 }
@@ -47,7 +47,7 @@ void Archivo5::reopen() {
 		string fileName = Archivo5::genFileName();
 		this->open(fileName);
 	}
-	catch (fstream::failure e){
+	catch (fstream::failure){
 		// Aca no se puede hacer nada
 	}
 }
@@ -58,7 +58,7 @@ t_offset Archivo5::writeReg(t_regArchivo5 &reg) {
 		// El writeReg tambien me modificara mi primerLibre, de ser necesario
 		ret = reg.writeReg(this->f, this->header.primerLibre);
 	}
-	catch (fstream::failure e) {
+	catch (fstream::failure) {
 		THROW(eArchivo5, A5_ARCHIVO_CORRUPTO);
 	}
 	return ret;
@@ -73,7 +73,7 @@ t_offset Archivo5::writeReg(const string &uri, const string &name) {
 		reg.uri = uri;
 		ret = reg.writeReg(this->f, this->header.primerLibre);
 	}
-	catch (fstream::failure e) {
+	catch (fstream::failure) {
 		THROW(eArchivo5, A5_ARCHIVO_CORRUPTO);
 	}
 	return ret;
@@ -90,7 +90,7 @@ t_offset Archivo5::writeReg(const Feed &feed) {
 		ret = reg.writeReg(this->f, this->header.primerLibre);
 
 	}
-	catch (fstream::failure e) {
+	catch (fstream::failure) {
 		THROW(eArchivo5, A5_ARCHIVO_CORRUPTO);
 	}
 	return ret;
@@ -101,7 +101,7 @@ t_regArchivo5 Archivo5::readReg(const t_offset &offset) {
 	try {
 		reg.readReg(f,offset);
 	}
-	catch (fstream::failure e) {
+	catch (fstream::failure) {
 		THROW(eArchivo5, A5_ARCHIVO_CORRUPTO);
 	}
 	return reg;
@@ -113,7 +113,7 @@ bool Archivo5::remReg(const t_offset &offset) {
 		t_regArchivo5 regRem(this->header.MAX_CAT);
 		ret = regRem.remReg(this->f, offset, this->header.primerLibre);
 	}
-	catch (fstream::failure e) {
+	catch (fstream::failure) {
 		THROW(eArchivo5, A5_ARCHIVO_CORRUPTO);
 	}
 	return ret;
@@ -140,7 +140,7 @@ void Archivo5::writeCat(const t_offset &offset, const t_idcat &idcat,
 			  sizeof(t_idart));
 		} else THROW(eArchivo5, A5_IDCAT_FUERA_DE_RANGO);
 	}
-	catch (fstream::failure e) {
+	catch (fstream::failure) {
 		THROW(eArchivo5, A5_ARCHIVO_CORRUPTO);
 	}
 }

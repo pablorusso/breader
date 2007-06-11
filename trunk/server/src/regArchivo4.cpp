@@ -32,10 +32,10 @@ void t_regArchivo4::writeReg(fstream &f,const t_idcat &idCat)
 	  sizeof(t_quantity));
 	f.write(reinterpret_cast<const char *>(&this->firstBlockTag),
 	  sizeof(t_offset));
- 	f.write(reinterpret_cast<const char *>(&this->firstBlockEmpty),
+	f.write(reinterpret_cast<const char *>(&this->firstBlockEmpty),
 	  sizeof(t_offset));
 	// Redimensiono el nombre de la categoria, agregandole ceros, para llegar
-	// a los ¿¿NOM_CAT_MAX_LEN+1?? caracteres
+	// a los NOM_CAT_MAX_LEN+1?? caracteres
 	t_quantity oldSize = categoryName.size();
 	this->categoryName.reserve(NOM_CAT_MAX_LEN+1);
 	for (t_quantity i = oldSize+1; i<(NOM_CAT_MAX_LEN+1);++i) {

@@ -5,17 +5,13 @@
 /*****************************************************************************
 Imposiciones de Damian:
 ----------------------
-
 Nro máximo de categorías: >=1
 Nro máximo de categorías: múltiplo de 8.
 sizeof(t_idart) = sizeof(t_offset)
-
 *****************************************************************************
 Imposiciones de Sergio:
 ----------------------
-
 El idcat 0 no se usa
-
 *****************************************************************************/
 
 
@@ -29,7 +25,7 @@ El idcat 0 no se usa
 #define DATA_PATH ""
 //!< El path del directorio donde se guardan los arhivos internos
 
-/*
+/* COMENTADO POR SERGIO */
 typedef unsigned int t_timestamp; //!< tipo formato timestamp (unix time)
 typedef unsigned int t_offset; //!< tipo ID para utilizar en los tipos offset
 typedef unsigned short t_idfeed; //!< tipo ID para utilizar en los tipos idfeed
@@ -41,9 +37,15 @@ typedef unsigned int t_quantity; //!< tipo para utilizar en los tipos cantidad
 typedef std::queue<t_idcat> t_queue_idcat; //!< tipo contenedor de idcat
 typedef unsigned int t_frecuency; //!< un tipo frecuencia
 typedef unsigned short t_cantReg; //!< un tipo csntidad de registros
-*/
+/* */ 
+typedef std::queue<t_idart> t_cola_idart; //!< el tipo cola de id de articulos
+typedef std::queue<t_idfeed> t_cola_idfeeds; //!< el tipo colaidfeeds
+typedef std::vector<t_idart> t_c_cant_idcat; //!< el tipo contenedor de
+                                             //!< cantidades de idcat
+typedef std::queue<std::string> t_word_cont; //!< el tipo contenedor de palabras
 
 
+/* COMENTADO POR DAMIAN
 typedef unsigned int t_timestamp; //!< tipo formato timestamp (unix time)
 typedef unsigned int t_offset; //!< tipo ID para utilizar en los tipos offset
 typedef unsigned short t_idfeed; //!< tipo ID para utilizar en los tipos idfeed
@@ -55,10 +57,6 @@ typedef unsigned int t_quantity; //!< tipo para utilizar en los tipos cantidad
 typedef std::queue<t_idcat> t_queue_idcat; //!< tipo contenedor de idcat
 typedef unsigned int t_frecuency; //!< un tipo frecuencia
 typedef unsigned int t_cantReg; //!< un tipo csntidad de registros
-
-typedef std::queue<t_idart> t_cola_idart; //!< el tipo cola de id de articulos
-typedef std::queue<t_idfeed> t_cola_idfeeds; //!< el tipo colaidfeeds
-typedef std::vector<t_idart> t_c_cant_idcat; //!< el tipo contenedor de
-                                             //!< cantidades de idcat
+*/ 
 
 #endif

@@ -14,7 +14,7 @@ Archivo1::~Archivo1() {
 	try {
 		this->f.close();
 	}
-	catch (fstream::failure e){
+	catch (fstream::failure){
 		// aca no se puede hacer nada
 	}
 }
@@ -112,7 +112,7 @@ t_offset Archivo1::writeArticulo(const Articulo &art) {
 		this->f.write(reinterpret_cast<const char *>(&l), sizeof(t_longRegA1));
 		this->f.write(reinterpret_cast<const char *>(d.c_str()), l);
 	}
-	catch (fstream::failure e){
+	catch (fstream::failure){
 		THROW(eArchivo1, A1_ARCHIVO_CORRUPTO);
 	}
 	return ret;
@@ -186,7 +186,7 @@ void Archivo1::readArticulo(const t_offset &offset, Articulo &art) {
 		delete []cptr;
 
 	}
-	catch (fstream::failure e) {
+	catch (fstream::failure) {
 		THROW(eArchivo1, A1_ARCHIVO_CORRUPTO);
 	}
 }

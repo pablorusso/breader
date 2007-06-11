@@ -35,7 +35,7 @@ Archivo4::~Archivo4()
 		this->writeHeader();
 		if (this->f.is_open()) this->f.close();
 	}
-	catch (fstream::failure e){
+	catch (fstream::failure){
 		// aca no se puede hacer nada
 	}
 }
@@ -60,7 +60,7 @@ bool Archivo4::findCategory(const t_idcat &idCat)
 				ret = true;
 		}
 	}
-	catch (fstream::failure e){
+	catch (fstream::failure){
 		if (this->f.is_open()) this->f.close();
 		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
 	}
@@ -71,12 +71,14 @@ t_idcat Archivo4::addCategory(string catName)
 {
 	t_idcat ret;
 	try {
+		if (catName.size() > NOM_CAT_MAX_LEN)
+			THROW(eArchivo4, A4_NOMBRE_CAT_ERROR);
 		// agrego en la primer posicion libre
 		ret = this->header.primerLibre;
 		this->writeReg(catName, 0,0,0,0,0,0);
 
 	}
-	catch (fstream::failure e) {
+	catch (fstream::failure) {
 		if (this->f.is_open()) this->f.close();
 		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
 	}
@@ -96,7 +98,7 @@ t_regArchivo4 Archivo4::getCategoryInfo(const t_idcat &idCat)
 		}
 		else THROW(eArchivo4, A4_CATEGORY_INFO_NO_CAT);
 	}
-	catch (fstream::failure e)
+	catch (fstream::failure)
 	{
 		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
 	}
@@ -136,7 +138,7 @@ bool Archivo4::modifyCategoryInfo(const t_idcat &idCategory, string catName,
 			reg.firstBlockEmpty = firstBlockEmpty;
 			reg.writeReg(this->f,idCategory);
 		}
-	}catch (fstream::failure e) {
+	}catch (fstream::failure) {
 		if (this->f.is_open()) this->f.close();
 		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
 	}
@@ -157,7 +159,7 @@ bool Archivo4::incCategoryArt(const t_idcat &idCategory,
 			reg.artPositive += artToAdd;
 			reg.writeReg(this->f,idCategory);
         }
-	}catch (fstream::failure e) {
+	}catch (fstream::failure) {
 		if (this->f.is_open()) this->f.close();
 		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
 	}
@@ -179,7 +181,7 @@ bool Archivo4::incCategoryArtAndWord(const t_idcat &idCategory,
 			reg.wordsPositive += wordToAdd;
 			reg.writeReg(this->f,idCategory);
 		}
-	}catch (fstream::failure e) {
+	}catch (fstream::failure) {
 		if (this->f.is_open()) this->f.close();
 		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
 	}
@@ -201,7 +203,7 @@ bool Archivo4::decCategoryArtAndWord(const t_idcat &idCategory,
 			reg.wordsNegative += wordToDec;
 			reg.writeReg(this->f,idCategory);
 		}
-    }catch (fstream::failure e) {
+    }catch (fstream::failure) {
 		if (this->f.is_open()) this->f.close();
 		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
 	}
@@ -221,7 +223,7 @@ bool Archivo4::decCategoryArt(const t_idcat &idCategory, const t_quantity &artTo
 			reg.artNegative += artToDec;
 			reg.writeReg(this->f,idCategory);
 		}
-    }catch (fstream::failure e) {
+    }catch (fstream::failure) {
 		if (this->f.is_open()) this->f.close();
 		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
 	}
@@ -242,7 +244,7 @@ bool Archivo4::incCategoryWord(const t_idcat &idCategory,
 			reg.wordsPositive += wordToAdd;
 			reg.writeReg(this->f,idCategory);
 		}
-    }catch (fstream::failure e) {
+    }catch (fstream::failure) {
 		if (this->f.is_open()) this->f.close();
 		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
 	}
@@ -263,7 +265,7 @@ bool Archivo4::decCategoryWord(const t_idcat &idCategory,
 			reg.wordsNegative += wordToDec;
 			reg.writeReg(this->f,idCategory);
 		}
-    }catch (fstream::failure e) {
+    }catch (fstream::failure) {
 		if (this->f.is_open()) this->f.close();
 		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
 	}
@@ -284,7 +286,7 @@ bool Archivo4::modifyCategoryName(const t_idcat &idCategory,
 			reg.categoryName = catName;
 			reg.writeReg(this->f,idCategory);
 		}
-    }catch (fstream::failure e) {
+    }catch (fstream::failure) {
 		if (this->f.is_open()) this->f.close();
 		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
 	}
@@ -307,7 +309,7 @@ bool Archivo4::modifyCategoryBlocks(const t_idcat &idCategory,
 			reg.firstBlockEmpty = firstBlockEmpty;
 			reg.writeReg(this->f,idCategory);
 		}
-    }catch (fstream::failure e) {
+    }catch (fstream::failure) {
 		if (this->f.is_open()) this->f.close();
 		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
 	}
@@ -367,7 +369,7 @@ bool Archivo4::deleteCategory(const t_idcat &idCat)
 			}
 		}
 	}
-	catch (fstream::failure e) {
+	catch (fstream::failure) {
 		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
 	}
 	return ret;
@@ -388,7 +390,7 @@ t_queue_idcat Archivo4::getCategoriesId()
 				s_idCat.push(idCategory);
 			idCategory++;
 		}
-	}catch (fstream::failure e)
+	}catch (fstream::failure)
 	{
 		if (this->f.is_open()) this->f.close();
 			THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
