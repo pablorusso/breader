@@ -77,19 +77,33 @@ t_idcat Archivo4::addCategory(string catName)
 t_regArchivo4 Archivo4::getCategoryInfo(const t_idcat &idCat)
 {
 	t_regArchivo4 ret;
-	try {
-		if (idCat < this->header.numCat) {
+	try
+	{
+		if ( idCat < this->header.numCat )
+		{
 			ret.readReg(this->f,idCat);
 			if (ret.estado == LIBRE)
-				// Esto es para Sergio // TODO sergio: borrar este comentario
 				THROW(eArchivo4, A4_CATEGORY_INFO_NO_CAT);
-		} THROW(eArchivo4, A4_CATEGORY_INFO_NO_CAT);
+		}
+		else THROW(eArchivo4, A4_CATEGORY_INFO_NO_CAT);
 	}
-	catch (fstream::failure e) {
+	catch (fstream::failure e)
+	{
 		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
 	}
 	return ret;
 }
+
+tRegistro3 Archivo4::getRegistro(const t_idcat &idCat)
+{
+	t_regArchivo4 reg;
+	tRegistro3 returnReg;
+	reg = this->getCategoryInfo(idCat);
+	returnReg.firstBlockTag = reg.firstBlockTag;
+	returnReg.firstBlockEmpty = reg.firstBlockEmpty;
+	return returnReg;
+}
+
 
 bool Archivo4::modifyCategoryInfo(const t_idcat &idCategory, string catName,
 	const t_quantity &artPositive, const t_quantity &artNegative,
@@ -131,7 +145,6 @@ bool Archivo4::incCategoryArt(const t_idcat &idCategory,
 			ret = true;
 			t_regArchivo4 reg;
 			reg.readReg(this->f,idCategory);
-			reg.estado = OCUPADO; // TODO hace falta?
 			reg.artPositive += artToAdd;
 			reg.writeReg(this->f,idCategory);
         }
@@ -153,7 +166,6 @@ bool Archivo4::incCategoryArtAndWord(const t_idcat &idCategory,
 			ret = true;
 			t_regArchivo4 reg;
 			reg.readReg(this->f,idCategory);
-			reg.estado = OCUPADO; // TODO hace falta?
 			reg.artPositive += artToAdd;
 			reg.wordsPositive += wordToAdd;
 			reg.writeReg(this->f,idCategory);
@@ -176,9 +188,8 @@ bool Archivo4::decCategoryArtAndWord(const t_idcat &idCategory,
 			ret = true;
 			t_regArchivo4 reg;
 			reg.readReg(this->f,idCategory);
-			reg.estado = OCUPADO; // TODO hace falta?
-			reg.artNegative += artToDec; // NO ES DECREMENTAR ??
-			reg.wordsNegative += wordToDec; // NO ES DECREMENTAR ??
+			reg.artNegative += artToDec;
+			reg.wordsNegative += wordToDec;
 			reg.writeReg(this->f,idCategory);
 		}
     }catch (fstream::failure e) {
@@ -198,7 +209,6 @@ bool Archivo4::decCategoryArt(const t_idcat &idCategory, const t_quantity &artTo
 			ret = true;
 			t_regArchivo4 reg;
 			reg.readReg(this->f,idCategory);
-			reg.estado = OCUPADO; // TODO hace falta?
 			reg.artNegative += artToDec;
 			reg.writeReg(this->f,idCategory);
 		}
@@ -220,7 +230,6 @@ bool Archivo4::incCategoryWord(const t_idcat &idCategory,
 			ret = true;
 			t_regArchivo4 reg;
 			reg.readReg(this->f,idCategory);
-			reg.estado = OCUPADO; // TODO hace falta?
 			reg.wordsPositive += wordToAdd;
 			reg.writeReg(this->f,idCategory);
 		}
@@ -242,7 +251,6 @@ bool Archivo4::decCategoryWord(const t_idcat &idCategory,
 			ret = true;
 			t_regArchivo4 reg;
 			reg.readReg(this->f,idCategory);
-			reg.estado = OCUPADO; // TODO hace falta?
 			reg.wordsNegative += wordToDec;
 			reg.writeReg(this->f,idCategory);
 		}
@@ -264,7 +272,6 @@ bool Archivo4::modifyCategoryName(const t_idcat &idCategory,
 			ret = true;
 			t_regArchivo4 reg;
 			reg.readReg(this->f,idCategory);
-			reg.estado = OCUPADO; // TODO hace falta?
 			reg.categoryName = catName;
 			reg.writeReg(this->f,idCategory);
 		}
@@ -287,7 +294,6 @@ bool Archivo4::modifyCategoryBlocks(const t_idcat &idCategory,
 			ret = true;
 			t_regArchivo4 reg;
 			reg.readReg(this->f,idCategory);
-			reg.estado = OCUPADO; // TODO hace falta?
 			reg.firstBlockTag = firstBlockTag;
 			reg.firstBlockEmpty = firstBlockEmpty;
 			reg.writeReg(this->f,idCategory);
@@ -306,7 +312,7 @@ bool Archivo4::deleteCategory(const t_idcat &idCat)
 			if (idCat < this->header.primerLibre) {
 				// Tengo que borrar un registro antes del primer libre
 				t_regArchivo4 reg;
-				reg.readReg(this->f,idCat);//leo lo que tenia y cambio el estado, nos se guarda basura.
+				reg.readReg(this->f,idCat);
 				reg.estado = LIBRE;
 				// Hago el encadenamiento de libres
 				reg.firstBlockTag = (t_offset)this->header.primerLibre;
@@ -359,9 +365,9 @@ bool Archivo4::deleteCategory(const t_idcat &idCat)
 }
 
 
-t_set_idcat Archivo4::getCategoriesId()
+t_queue_idcat Archivo4::getCategoriesId()
 {
-	t_set_idcat s_idCat;
+	t_queue_idcat s_idCat;
 	t_regArchivo4 reg;
 	t_idcat idCategory = 0;
 	try
@@ -369,12 +375,11 @@ t_set_idcat Archivo4::getCategoriesId()
 		while(this->header.numCat > idCategory)
 		{
 			reg.readReg(this->f,idCategory);
-			
 			if(reg.estado == OCUPADO)
-				s_idCat.insert(idCategory);
+				s_idCat.push(idCategory);
 			idCategory++;
 		}
-	}catch (fstream::failure e) 
+	}catch (fstream::failure e)
 	{
 		if (this->f.is_open()) this->f.close();
 			THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);

@@ -16,6 +16,12 @@
 #include <iostream>
 // BORRAR
 
+typedef struct{
+	t_offset firstBlockTag;
+	t_offset firstBlockEmpty;
+} tRegistro3;
+
+
 /**
  * // TODO comentar
  */
@@ -74,6 +80,12 @@ class t_regArchivo4 {
 		 * Nota: no es const porque tengo que usar el vector
 		 */
 		friend ostream &operator<<(ostream &stream,  t_regArchivo4 &reg);
+
+	  /** Retorna los datos administrativos de los bloques.
+		* @param t_idcat Id de la categoria.
+		* @return tRegistro3 Datos administrativos.
+		*/
+		tRegistro3 getRegistro(t_idcat idCat);
 
 };
 #endif
