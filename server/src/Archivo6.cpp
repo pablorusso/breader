@@ -15,7 +15,6 @@ Archivo6::Archivo6(const t_idcat &MAX_CAT, const bool bis): a5(MAX_CAT, bis),
 
 Archivo6::~Archivo6() {
 	try {
-		this->writeHeader();
 		this->f.close();
 	}
 	catch (fstream::failure){
@@ -158,16 +157,7 @@ Feed Archivo6::getNextFeed() {
 
 
 			t_regArchivo5 regA5 = this->a5.readReg(regA6.oArchivo5);
-/*
-cout << "STOP" << endl;
-cout << "regA6.oArchivo5: " << regA6.oArchivo5 << endl;
-//cout << "regA5: " << regA5 << endl;
-cout << this->header.MAX_CAT << endl;
-cout << this->a5.get_MAX_CAT() << endl;
 
-string tmp;
-cin >> tmp;
-*/
 			feed.setIdFeed(nextFeed);
 			feed.setName(regA5.name);
 			feed.setUri(regA5.uri);
@@ -203,6 +193,8 @@ bool Archivo6::remFeed(const t_idfeed &idfeed) {
 			if (regRem.estado == OCUPADO){
 				ret = true;
 				--this->header.numFeeds;
+				// Actualizo el header
+				this->writeHeader();
 				regRem.estado = LIBRE;
 				this->a5.remReg(regRem.oArchivo5); // lo borro del Archivo5
 				if (idfeed < this->header.primerLibre) {
@@ -212,6 +204,8 @@ bool Archivo6::remFeed(const t_idfeed &idfeed) {
 					  (this->header.primerLibre);
 					this->writeReg(idfeed, regRem); // borro
 					this->header.primerLibre = idfeed;
+					// Actualizo el header
+					this->writeHeader();
 				} else {
 					// Tengo que borrar un registro entre dos libres
 					// Recorro los libres, secuencialmente, hasta superar el id
@@ -380,6 +374,9 @@ void Archivo6::writeReg(const t_regArchivo6 &reg) {
 		++this->numRegs;
 	}
 	++this->header.numFeeds;
+
+	// Actualizo el header
+	this->writeHeader();
 	
 	// Escribo el registro
 	this->f.seekp(A6_SIZEOF_HEADER+tmp*A6_SIZEOF_REG, ios::beg);

@@ -32,7 +32,6 @@ Archivo4::Archivo4()
 Archivo4::~Archivo4()
 {
 	try {
-		this->writeHeader();
 		if (this->f.is_open()) this->f.close();
 	}
 	catch (fstream::failure){
@@ -329,6 +328,8 @@ bool Archivo4::deleteCategory(const t_idcat &idCat)
 				reg.firstBlockTag = (t_offset)this->header.primerLibre;
 				reg.writeReg(this->f,idCat); // borro (Piso el reg)
 				this->header.primerLibre = idCat;
+				// Actualizo el header
+				this->writeHeader();
 			} else {
 				// Tengo que borrar un registro entre dos libres
 				// Recorro los libres, secuencialmente, hasta superar el id
@@ -383,7 +384,7 @@ t_queue_idcat Archivo4::getCategoriesId()
 	t_idcat idCategory = 0;
 	try
 	{
-		while(this->header.numCat > idCategory)
+		while(idCategory < this->header.numCat)
 		{
 			reg.readReg(this->f,idCategory);
 			if(reg.estado == OCUPADO)
@@ -433,8 +434,11 @@ void Archivo4::writeReg(string catName, const t_quantity &artPositive,
 		++this->header.primerLibre;
 		++this->header.numCat;
 	}
-	// Escribo el registro
 
+	// Actualizo el header
+	this->writeHeader();
+
+	// Escribo el registro
 	t_regArchivo4 reg;
 	reg.estado = OCUPADO;
 	reg.artPositive = artPositive;

@@ -5,6 +5,7 @@
 #include "Articulo.h"
 #include "eArticleParser.h"
 #include <set>
+#include <cctype>
 
 // BORRAR
 #include <iostream>

@@ -15,7 +15,6 @@ Archivo5::Archivo5(const t_idcat &MAX_CAT, const bool bis) {
 
 Archivo5::~Archivo5() {
 	try {
-		this->writeHeader();
 		this->f.close();
 	}
 	catch (fstream::failure){
@@ -57,6 +56,9 @@ t_offset Archivo5::writeReg(t_regArchivo5 &reg) {
 	try {
 		// El writeReg tambien me modificara mi primerLibre, de ser necesario
 		ret = reg.writeReg(this->f, this->header.primerLibre);
+		// Actualizo el header
+		this->writeHeader();
+
 	}
 	catch (fstream::failure) {
 		THROW(eArchivo5, A5_ARCHIVO_CORRUPTO);
@@ -72,6 +74,8 @@ t_offset Archivo5::writeReg(const string &uri, const string &name) {
 		reg.name = name;
 		reg.uri = uri;
 		ret = reg.writeReg(this->f, this->header.primerLibre);
+		// Actualizo el header
+		this->writeHeader();
 	}
 	catch (fstream::failure) {
 		THROW(eArchivo5, A5_ARCHIVO_CORRUPTO);
@@ -88,7 +92,8 @@ t_offset Archivo5::writeReg(const Feed &feed) {
 		reg.uri = feed.getUri();
 		reg.cont_cant = feed.getContCant();
 		ret = reg.writeReg(this->f, this->header.primerLibre);
-
+		// Actualizo el header
+		this->writeHeader();
 	}
 	catch (fstream::failure) {
 		THROW(eArchivo5, A5_ARCHIVO_CORRUPTO);
@@ -112,6 +117,8 @@ bool Archivo5::remReg(const t_offset &offset) {
 	try {
 		t_regArchivo5 regRem(this->header.MAX_CAT);
 		ret = regRem.remReg(this->f, offset, this->header.primerLibre);
+		// Actualizo el header
+		this->writeHeader();
 	}
 	catch (fstream::failure) {
 		THROW(eArchivo5, A5_ARCHIVO_CORRUPTO);
