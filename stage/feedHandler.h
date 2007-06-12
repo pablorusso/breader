@@ -239,11 +239,12 @@ class feedHandler {
 		 * @param idart el id de la articulo a clasificar
 		 * @param si_no si se clasifica o des clasifica
 		 * @param usu_pc si es el usuario o la pc el que clasifica
+		 * @return el articulo clasificado
 		 * @throw eFeedHandler si el idfeed es inexistente
 		 * @throw eFeedHandler si el idcat esta fuera de rango
 		 * @throw eFeedHandler si el idart esta fuera de rango
 		 */
-		void clasificarArticulo(const t_idfeed &idfeed, const t_idcat &idcat,
+		Articulo clasificarArticulo(const t_idfeed &idfeed, const t_idcat &idcat,
 		  const t_idart &idart, const bool si_no, const bool usu_pc);
 
 		/**

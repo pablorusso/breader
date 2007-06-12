@@ -103,8 +103,7 @@ Articulo feedHandler::invertirLecturaArticulo(const t_idfeed &idfeed,
 	try {
 		Archivo2 a2(this->a6.get_MAX_CAT(), idfeed);
 		a2.invertirLecturaArticulo(idart);
-		Articulo art = a2.readArticulo(idart);
-		return art;
+		return a2.readArticulo(idart);
 	}
 	catch (IException &e) {
 		eFeedHandler mie(e.getErrorMensaje());
@@ -120,8 +119,7 @@ Articulo feedHandler::invertirFavorito(const t_idfeed &idfeed,
 		bool si_no = ~a2.readCat(idart, IDCAT_FAV);
 		a2.writeCat(idart, IDCAT_FAV, si_no, 0);
 		this->a6.catFeed(idfeed, IDCAT_FAV, si_no);
-		Articulo art = a2.readArticulo(idart);
-		return art;
+		return a2.readArticulo(idart);
 	}
 	catch (IException &e) {
 		eFeedHandler mie(e.getErrorMensaje());
@@ -478,7 +476,7 @@ t_cola_idfeeds feedHandler::getColaIdFeeds() {
 	}
 }
 
-void feedHandler::clasificarArticulo(const t_idfeed &idfeed, const t_idcat
+Articulo feedHandler::clasificarArticulo(const t_idfeed &idfeed, const t_idcat
   &idcat, const t_idart &idart, const bool si_no, const bool usu_pc) {
 	try {
 		Archivo2 a2(this->a6.get_MAX_CAT(), idfeed);
@@ -486,7 +484,8 @@ void feedHandler::clasificarArticulo(const t_idfeed &idfeed, const t_idcat
 		a2.writeCat(idart, idcat, si_no, usu_pc);
 		if (was_cat != si_no) {
 			this->a6.catFeed(idfeed, idcat, si_no);
-		} 
+		}
+		return a2.readArticulo(idart); 
 	}
 	catch (IException &e) {
 		eFeedHandler mie(e.getErrorMensaje());
