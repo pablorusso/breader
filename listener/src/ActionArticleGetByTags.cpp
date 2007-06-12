@@ -8,23 +8,23 @@ string ActionArticleGetByTags::processAction( )
 	if ( tagIds->size() != tagStates->size() )
 		throw string( "La cantidad de categorias tiene que ser igual a la cantidad de estados a filtrar" );
 
-	vector< string > tagsToSend;
-	vector< string > statesToSend;
+	vector< t_idcat > tagsToSend;
+	vector< bool > statesToSend;
 
 	Values::iterator tagIt;
 	Values::iterator stateIt = tagStates->begin();
 	for( tagIt = tagIds->begin(); tagIt != tagIds->end(); tagIt++ )
 	{
-		tagsToSend.push_back( *tagIt );
-		statesToSend.push_back( *stateIt );
+		tagsToSend.push_back( XmlUtils::strToushort( *tagIt ) );
+		statesToSend.push_back( *stateIt != "0" );
 		stateIt++;
 	}
 	string startPosition = *(this->getParamValue( "startPosition" )->begin());
 	string quantity      = *(this->getParamValue( "quantity" )->begin());
 
 	if ( startPosition == "0" )
-		return EntitiesManager::getInstance()->ArticleGetByTags( tagsToSend, statesToSend, quantity );
-	return EntitiesManager::getInstance()->ArticleGetByTagsNext( tagsToSend, statesToSend, quantity );
+		return EntitiesManager::getInstance()->ArticleGetByTags( tagsToSend, statesToSend, XmlUtils::strTouint( quantity ) );
+	return EntitiesManager::getInstance()->ArticleGetByTagsNext( XmlUtils::strTouint( quantity ) );
 }
 
 string ActionArticleGetByTags::getName()

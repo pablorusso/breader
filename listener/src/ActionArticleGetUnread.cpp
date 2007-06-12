@@ -6,8 +6,8 @@ string ActionArticleGetUnread::processAction( )
 	string quantity      = *(this->getParamValue( "quantity" )->begin());
 
 	if ( startPosition == "0" )
-		return EntitiesManager::getInstance()->ArticleGetUnread( quantity );
-	return EntitiesManager::getInstance()->ArticleGetUnreadNext( quantity );
+		return EntitiesManager::getInstance()->ArticleGetUnread( XmlUtils::strTouint( quantity ) );
+	return EntitiesManager::getInstance()->ArticleGetUnreadNext( XmlUtils::strTouint( quantity ) );
 }
 
 string ActionArticleGetUnread::getName()

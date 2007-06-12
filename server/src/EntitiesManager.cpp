@@ -39,24 +39,30 @@ string EntitiesManager::ArticleCreate( t_idfeed feedId, string title, string sum
 	art.set_idfeed( feedId );
 	t_idart idArt = _feedManager->altaArticulo( feedId, art );
 	art.set_idart( idArt );
-	return art.getXML();
+	Feed feed = _feedManager->getFeed( art.get_idfeed() );
+	return art.getXML( feed.getName() );
 }
 
 string EntitiesManager::ArticleApproveTag( t_idfeed feedId, t_idart artId, t_idcat tagId )
 {
 	Articulo art = _feedManager->clasificarArticulo( feedId, tagId, artId, true, false );
-	return art.getXML();
+	Feed feed = _feedManager->getFeed( art.get_idfeed() );
+	return art.getXML( feed.getName() );
+
 }
 
 string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 {
 	Articulo art = _feedManager->invertirFavorito( feedId, artId );
-	return art.getXML();
+	Feed feed = _feedManager->getFeed( art.get_idfeed() );
+	return art.getXML( feed.getName() );
 }
+
 string EntitiesManager::ArticleChangeReadState( t_idfeed feedId, t_idart artId )
 {
 	Articulo art = _feedManager->invertirLecturaArticulo( feedId, artId );
-	return art.getXML();
+	Feed feed = _feedManager->getFeed( art.get_idfeed() );
+	return art.getXML( feed.getName() );
 }
 
 string EntitiesManager::BuildArticlesList( t_cola_art colaArt )
@@ -66,7 +72,9 @@ string EntitiesManager::BuildArticlesList( t_cola_art colaArt )
 	string response = "<articles>";
 	while( ! colaArt.empty() )
 	{
-		response += colaArt.front().getXML();
+		Feed feed = _feedManager->getFeed( colaArt.front().get_idfeed() );
+		response += colaArt.front().getXML( feed.getName() );
+
 		colaArt.pop();
 	}
 	response += "</articles>";
@@ -148,12 +156,14 @@ string EntitiesManager::ArticleGetUnreadNext( t_idart quantity )
 string EntitiesManager::ArticleLinkTag( t_idfeed feedId, t_idart artId, t_idcat tagId )
 {
 	Articulo art = _feedManager->clasificarArticulo( feedId, tagId, artId, true, false );
-	return art.getXML();
+	Feed feed = _feedManager->getFeed( art.get_idfeed() );
+	return art.getXML( feed.getName() );
 }
 string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idcat tagId )
 {
 	Articulo art = _feedManager->clasificarArticulo( feedId, tagId, artId, false, false );
-	return art.getXML();
+	Feed feed = _feedManager->getFeed( art.get_idfeed() );
+	return art.getXML( feed.getName() );
 }
 
 

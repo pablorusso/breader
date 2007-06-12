@@ -2,8 +2,9 @@
 
 string ActionArticleChangeReadState::processAction( )
 {
+	string feedId = *(this->getParamValue( "feedId" )->begin());
 	string artId = *(this->getParamValue( "artId" )->begin());
-	return EntitiesManager::getInstance()->ArticleChangeReadState( artId );
+	return EntitiesManager::getInstance()->ArticleChangeReadState( XmlUtils::strToushort( feedId ), XmlUtils::strTouint( artId ) );
 }
 
 string ActionArticleChangeReadState::getName()
@@ -14,6 +15,7 @@ string ActionArticleChangeReadState::getName()
 vector<string> ActionArticleChangeReadState::getNeededParams()
 {
 	vector<string> result;
+	result.push_back( "feedId" );
 	result.push_back( "artId" );
 	return result;
 }

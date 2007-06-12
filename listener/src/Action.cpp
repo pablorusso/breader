@@ -118,8 +118,6 @@ void Action::parseParams( string params )
 
 string Action::ProcessAction( string params )
 {
-	// si se quiere simular un delay de 1 segundo
-	//usleep( 1000 * 1000 );
 	emptyParams();
 	parseParams( params );
 	return this->processAction();

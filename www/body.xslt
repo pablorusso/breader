@@ -118,7 +118,7 @@
 
 							<!--autor-->
 							<div class="entry-author">
-								publicado por <xsl:value-of select="@author"/> en <xsl:value-of select="@feed"/>
+								publicado por <xsl:value-of select="@author"/> en <xsl:value-of select="@feedName"/>
 							</div>
 
 							<!--resumen-->
