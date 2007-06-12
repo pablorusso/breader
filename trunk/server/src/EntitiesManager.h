@@ -16,13 +16,13 @@ class EntitiesManager
 {
 	private:
 		feedHandler *_feedManager;
+		static EntitiesManager *_instance;
 
 		EntitiesManager();
 		~EntitiesManager();
 
 		string BuildArticlesList( t_cola_art colaArt );
 	public:
-		static EntitiesManager *_instance;
 		static EntitiesManager *getInstance();
 
 		string ArticleCreate( t_idfeed feedId, string title, string summary, string link, string author, t_timestamp date );

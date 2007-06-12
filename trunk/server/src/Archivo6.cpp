@@ -25,7 +25,7 @@ Archivo6::~Archivo6() {
 string Archivo6::genFileName() {
 	// Calculo el nombre del archivo como
 	// "DATA_PATH"+"A6_FILENAME"
-	string fileName(DATA_PATH);
+	string fileName(General::getDataPath());
 	fileName.append(A6_FILENAME);
 	return fileName;
 }
@@ -33,7 +33,7 @@ string Archivo6::genFileName() {
 string Archivo6::genFileName(const bool bis) {
 	// Calculo el nombre del archivo como
 	// "DATA_PATH"+"A6_FILENAME_BIS"
-	string fileName(DATA_PATH);
+	string fileName(General::getDataPath());
 	fileName.append(A6_FILENAME_BIS);
 	return fileName;
 }
@@ -224,7 +224,7 @@ bool Archivo6::remFeed(const t_idfeed &idfeed) {
 							this->writeReg(idfeed, regRem); // borro
 							regPrev.oArchivo5 = static_cast<t_offset>(idfeed);
 							this->writeReg(posPrev, regPrev); // encadeno
-							done = true;	
+							done = true;
 						} else if (static_cast<t_idfeed>(posNext) > idfeed) {
 							// Ya me pase
 							regNext = this->readReg(posNext);
@@ -232,7 +232,7 @@ bool Archivo6::remFeed(const t_idfeed &idfeed) {
 							this->writeReg(idfeed, regRem); // borro
 							regPrev.oArchivo5 = static_cast<t_offset>(idfeed);
 							this->writeReg(posPrev, regPrev); // encadeno
-							done = true;	
+							done = true;
 						} else {
 							regNext = this->readReg(posNext);
 							regPrev = regNext;
@@ -241,7 +241,7 @@ bool Archivo6::remFeed(const t_idfeed &idfeed) {
 					} // fin del while
 				}
 			}
-		}		
+		}
 	}
 	catch (fstream::failure) {
 		if (this->f.is_open()) this->f.close();
@@ -254,7 +254,7 @@ void Archivo6::catFeed(const t_idfeed &idfeed, const t_idcat &idcat,
   const bool si_no) {
 	if (idfeed < this->numRegs) {
 		try {
-			t_regArchivo6 regA6 = this->readReg(idfeed);	
+			t_regArchivo6 regA6 = this->readReg(idfeed);
 			if (regA6.estado == LIBRE) THROW(eArchivo6, A6_IDFEED_INVALIDO);
 			else this->a5.writeCat(regA6.oArchivo5, idcat, si_no);
 		}
@@ -268,7 +268,7 @@ void Archivo6::catFeed(const t_idfeed &idfeed, const t_idcat &idcat,
 void Archivo6::catFeed(const t_idfeed &idfeed, ContenedorIdCat &c) {
 	if (idfeed < this->numRegs) {
 		try {
-			t_regArchivo6 regA6 = this->readReg(idfeed);	
+			t_regArchivo6 regA6 = this->readReg(idfeed);
 			if (regA6.estado == LIBRE) THROW(eArchivo6, A6_IDFEED_INVALIDO);
 			else {
 				// Ignoro el valor de retorno de writeCat porque no es posible
@@ -300,7 +300,7 @@ void Archivo6::bajaCategoria(const t_idcat &idcat) {
 	if (idcat < this->header.MAX_CAT) {
 		t_cola_idfeeds c_idfeeds = this->getColaIdFeeds();
 		while (!c_idfeeds.empty()) {
-			t_regArchivo6 regA6 = this->readReg(c_idfeeds.front());	
+			t_regArchivo6 regA6 = this->readReg(c_idfeeds.front());
 			this->a5.writeCat(regA6.oArchivo5, idcat, 0);
 			this->a5.remCat(regA6.oArchivo5, idcat);
 			c_idfeeds.pop();
@@ -377,7 +377,7 @@ void Archivo6::writeReg(const t_regArchivo6 &reg) {
 
 	// Actualizo el header
 	this->writeHeader();
-	
+
 	// Escribo el registro
 	this->f.seekp(A6_SIZEOF_HEADER+tmp*A6_SIZEOF_REG, ios::beg);
 	this->f.write(reinterpret_cast<const char *>(&reg.estado),

@@ -25,7 +25,7 @@ Archivo5::~Archivo5() {
 string Archivo5::genFileName() {
 	// Calculo el nombre del archivo como
 	// "DATA_PATH"+"A5_FILENAME"
-	string fileName(DATA_PATH);
+	string fileName(General::getDataPath());
 	fileName.append(A5_FILENAME);
 	return fileName;
 }
@@ -33,7 +33,7 @@ string Archivo5::genFileName() {
 string Archivo5::genFileName(const bool bis) {
 	// Calculo el nombre del archivo como
 	// "DATA_PATH"+"A5_FILENAME_BIS"
-	string fileName(DATA_PATH);
+	string fileName(General::getDataPath());
 	fileName.append(A5_FILENAME_BIS);
 	return fileName;
 }
