@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 
+#include "General.h"
 #include "ActionsMap.h"
 #include "Action.h"
 #include "ServerSocket.h"
@@ -12,13 +13,18 @@ void usage()
 	ActionsMap actionsMap;
 	cerr << endl;
 	cerr <<	"Ayuda:" << endl;
-	cerr << "./listener.exe [type] [puerto{si type=1}] [action{si type=2}] [params{si type=2}]" << endl << endl;
-	cerr << "donde [type] puede ser 1=consola o 2=sockets" << endl;
+	cerr << "./listener.exe [type] [variable-params]" << endl << endl;
+	cerr << "./listener.exe 1 [action{si type=1}] [params{si type=1}]" << endl;
+	cerr << "./listener.exe 2 [puerto{si type=2}] " << endl;
+	cerr << "./listener.exe 3" << endl << endl;
+	cerr << "donde [type] puede ser 1=consola, 2=sockets o 3=borrar datos" << endl;
 	cerr << "type = 1 se debe especificar una accion y parametros, el listener las procesara" << endl;
 	cerr << "type = 2 se debe especificar solamente un puerto donde se reciben acciones" << endl;
+	cerr << "type = 3 se borraran los archivos y no se necesitan parametros extra" << endl;
 	cerr << "Ejemplos: " << endl;
 	cerr << "  listener 1 T2 tagId||#1" << endl;
 	cerr << "  listener 2 12000" << endl;
+	cerr << "  listener 3" << endl;
 
 	cerr << endl << "Las acciones disponibles son:";
 	vector<string> codeList = actionsMap.GetAvailableCodes();
@@ -214,13 +220,29 @@ void readActionFromConsole( int argc, char* argv[] )
 
 int main(int argc, char* argv[])
 {
-	if ( argc < 3 ) usage();
+	if ( argc < 2 ) usage();
 
 	string type = argv[1];
-	if ( type == "1" )
-		readActionFromConsole( argc, argv );
+	if ( type == "3" )
+	{
+		string rmFiles("rm -fR ");
+		rmFiles.append( General::getDataPath() );
+		system(rmFiles.c_str());
+		cout << "Archivos eliminados" << endl;
+	}
 	else
-		listen( argc, argv );
+	{
+		if ( argc < 3 ) usage();
+
+		string makeDir("mkdir -p ");
+		makeDir.append( General::getDataPath() );
+		system(makeDir.c_str());
+
+		if ( type == "1" )
+			readActionFromConsole( argc, argv );
+		else
+			listen( argc, argv );
+	}
 
 	return 0;
 }

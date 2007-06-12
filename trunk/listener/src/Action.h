@@ -2,10 +2,10 @@
 #define	ACTION_H
 
 #include "EntitiesManager.h"
+#include "XmlUtils.h"
 #include <string>
 #include <vector>
 #include <map>
-// ACA EMPIEZA LA INTEGRACIO...: #include "feedHandler.h"
 
 using namespace std;
 

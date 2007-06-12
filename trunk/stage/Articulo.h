@@ -169,7 +169,7 @@ class Articulo {
 		/**
 		 * Serializa el articulo a XML para enviar al front
 		 */
-		string getXML();
+		string getXML( string feedName );
 	private:
 		//!< Las siguientes estan en ingles porque son del formato RSS
 		string title; //!< titulo (NUMREG = 0)

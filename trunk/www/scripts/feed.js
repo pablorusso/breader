@@ -82,7 +82,7 @@ function refreshFeedHandler( result )
 			// Cada hijo es un articulo a agregar
 			var node = children.item(i);
 
-			var feedName = getNodeAttr( node, 'feedName' );
+			var feedId   = getNodeAttr( node, 'feedId' );
 			var title    = getNodeAttr( node, 'title'    );
 			var link     = getNodeAttr( node, 'link'     );
 			var author   = getNodeAttr( node, 'author'   );
@@ -92,7 +92,7 @@ function refreshFeedHandler( result )
 			if ( node.firstChild != null )
 				summary = node.firstChild.textContent;
 
-			if ( 	feedName == null ||
+			if ( 	feedId == null ||
 					title == null ||
 					summary == null ||
 					link == null ||
@@ -104,7 +104,7 @@ function refreshFeedHandler( result )
 			}
 
 			var params = "";
-			params += "feedName||#" + feedName;
+			params += "feedId||#" + feedId;
 			params += "|||title||#" + title;
 			params += "|||summary||#" + summary;
 			params += "|||link||#" + link;
@@ -166,7 +166,7 @@ function doRefreshFeed( feedId, isSilent )
 	}
 
 	var type = isSilent ? 'S' : '';
-	doActionWithName ( "refresh_feed.php", "feedUrl=" + escape( feedUrl ) + "&lastUpdate=" + escape( lastUpdate ), refreshFeedHandler, type );
+	doActionWithName ( "refresh_feed.php", "feedId=" + escape( feedId ) + "&feedUrl=" + escape( feedUrl ) + "&lastUpdate=" + escape( lastUpdate ), refreshFeedHandler, type );
 }
 function refreshFeed( feedId )
 {

@@ -6,8 +6,8 @@ string ActionArticleGetFavourites::processAction()
 	string quantity      = *(this->getParamValue( "quantity" )->begin());
 
 	if ( startPosition == "0" )
-		return EntitiesManager::getInstance()->ArticleGetFavourites( quantity );
-	return EntitiesManager::getInstance()->ArticleGetFavouritesNext( quantity );
+		return EntitiesManager::getInstance()->ArticleGetFavourites( XmlUtils::strTouint( quantity ) );
+	return EntitiesManager::getInstance()->ArticleGetFavouritesNext( XmlUtils::strTouint( quantity ) );
 
 }
 

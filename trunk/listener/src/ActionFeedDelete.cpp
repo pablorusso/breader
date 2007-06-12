@@ -3,7 +3,7 @@
 string ActionFeedDelete::processAction()
 {
 	string feedId = *(this->getParamValue( "feedId" )->begin());
-	return EntitiesManager::getInstance()->FeedDelete( feedId );
+	return EntitiesManager::getInstance()->FeedDelete( XmlUtils::strToushort( feedId ) );
 }
 
 string ActionFeedDelete::getName()

@@ -48,7 +48,7 @@ ostream &operator<<(ostream &stream,  const Articulo &articulo) {
 	return stream;
 }
 
-string Articulo::getXML()
+string Articulo::getXML( string feedName )
 {
 	string isClassified = estaClasificado() ? "1" : "0";
 	string isFav = esFavorito() ? "1" : "0";
@@ -56,7 +56,7 @@ string Articulo::getXML()
 
 	string result = "";
 	result += "<article id=\"" + XmlUtils::xmlEncode( idart ) + "\" isClassified=\"" + XmlUtils::xmlEncode( isClassified ) + "\" isFavourite=\"" + XmlUtils::xmlEncode( isFav ) + "\" read=\"" + XmlUtils::xmlEncode( isRead );
-	result += "\" title=\"" + XmlUtils::xmlEncode( title ) + "\" date=\"" + XmlUtils::xmlEncode( timestamp ) + "\" author=\"" + XmlUtils::xmlEncode( description ) + "\" feed=\"" + XmlUtils::xmlEncode( idfeed ) + "\" link=\"" + XmlUtils::xmlEncode( uri ) + "\">";
+	result += "\" title=\"" + XmlUtils::xmlEncode( title ) + "\" date=\"" + XmlUtils::xmlEncode( timestamp ) + "\" author=\"" + XmlUtils::xmlEncode( description ) + "\" feedName=\"" + feedName + "\" feedId=\"" + XmlUtils::xmlEncode( idfeed ) + "\" link=\"" + XmlUtils::xmlEncode( uri ) + "\">";
 	result += "<summary>" + XmlUtils::xmlEncode( summary ) + "</summary>";
 
 	string tagsStr = "";

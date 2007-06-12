@@ -5,8 +5,8 @@ string ActionArticleGetUnclassified::processAction( )
 	string startPosition = *(this->getParamValue( "startPosition" )->begin());
 	string quantity      = *(this->getParamValue( "quantity" )->begin());
 	if ( startPosition == "0" )
-		return EntitiesManager::getInstance()->ArticleGetUnclassified( quantity );
-	return EntitiesManager::getInstance()->ArticleGetUnclassifiedNext( quantity );
+		return EntitiesManager::getInstance()->ArticleGetUnclassified( XmlUtils::strTouint( quantity ) );
+	return EntitiesManager::getInstance()->ArticleGetUnclassifiedNext( XmlUtils::strTouint( quantity ) );
 }
 
 string ActionArticleGetUnclassified::getName()
