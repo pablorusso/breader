@@ -125,6 +125,22 @@ void Archivo2::writeLeido(const t_idart &idart, const bool leido) {
 	} else THROW(eArchivo2, A2_IDART_FUERA_DE_RANGO);
 }
 
+bool Archivo2::getLeido(const t_idart &idart) {
+	bool ret;
+	if (idart < this->numRegs) {
+		try {
+			this->f.seekp(A2_SIZEOF_HEADER + idart*this->sizeofReg() +
+			  sizeof(t_timestamp) + sizeof(t_offset));
+			this->f.read(reinterpret_cast<char *>(&ret),
+			  sizeof(bool));
+		}
+		catch (fstream::failure) {
+			THROW(eArchivo2, A2_ARCHIVO_CORRUPTO);
+		}
+	} else THROW(eArchivo2, A2_IDART_FUERA_DE_RANGO);
+	return ret;
+}
+
 void Archivo2::invertirLecturaArticulo(const t_idart &idart) {
 	if (idart < this->numRegs) {
 		try {

@@ -136,6 +136,7 @@ void f1(feedHandler &fh) {
 		c_idart = fh.altaArticulo(2,c_art);
 
 
+/*
 		fh.invertirLecturaArticulo(0,0);
 		fh.invertirLecturaArticulo(0,0);
 
@@ -158,50 +159,50 @@ void f1(feedHandler &fh) {
 		else cout << "ARTICULO7 NO ES FAVORITO" << endl;
 
 		cout << "Idfeed0, fecha ultimo articulo: " << fh.getUltimaFecha(0) << endl;
+*/
 
 }
 
 // **************** MAIN  ****************** //
-int damianmain(int argc, char** argv) {
+int main(int argc, char** argv) {
 	std::cout << "Bienvenido al breader, probando Archivo2" << std::endl;
 
 	try {
-		// Creo el directorio DATA_PATH (si estaba creado no devuelve error)
-		string makeDir("mkdir -p ");
-		makeDir.append(DATA_PATH);
-		system(makeDir.c_str());
-
 		feedHandler fh(CONST_MAX_CAT);
 		f1(fh);
-/*
+//		cout << "baja: " << fh.bajaFeed(0) << endl;
+		cout << "baja: " << fh.bajaFeed(1) << endl;
+//		cout << "baja: " << fh.bajaFeed(2) << endl;
+	//	f1(fh);
 
-		cout << "baja: " << fh.bajaFeed(0) << endl;
-//		cout << "baja: " << fh.bajaFeed(1) << endl;
-		cout << "baja: " << fh.bajaFeed(2) << endl;
-
-		//f1(fh);
-
-
-//cout << "STOP" << endl;
-//string tmp;
-//cin >> tmp;
-
-*/
 		fh.set_MAX_CAT(62); //64, jeje
+		fh.reestructurar(); // No hace falta, es para pinchar nomas
 
-		fh.reestructurar();
+		//// Esta es una prueba de getUltimosArticulosNoLeidos() ////
+		fh.invertirLecturaArticulo(0,0);
+		//fh.invertirLecturaArticulo(0,);
+		fh.invertirLecturaArticulo(1,1);
 
-		t_cola_art c_art = fh.getUltimosArticulos(0, 28);
+		t_cola_art c_art = fh.getUltimosArticulosNoLeidos(1);
 		while (!c_art.empty()) {
-			cout << "Imprimiendo: " << c_art.front().get_title() << " "<<
-			  c_art.front().get_timestamp() << endl;
-			//cout << "MAX_CAT: " << c_art.front().get_MAX_CAT() << endl;
-			//cout << c_art.front() << endl;
+			cout << c_art.front().get_title() << " "<< c_art.front().get_timestamp()
+			<< " idart: " << c_art.front().get_idart() << " idfeed: " <<
+			c_art.front().get_idfeed() << "leido? " << c_art.front().get_leido() << endl;
 			c_art.pop();
 		}
-
+		while (!c_art.empty()) c_art.pop(); // c_art.clear()
+		c_art = fh.getProximosArticulosNoLeidos(999);
+		while (!c_art.empty()) {
+			cout << c_art.front().get_title() << " "<< c_art.front().get_timestamp()
+			<< " idart: " << c_art.front().get_idart() << " idfeed: " <<
+			c_art.front().get_idfeed() << "leido? " << c_art.front().get_leido() << endl;
+			c_art.pop();
+		}
+		//// Fin prueba getUltimosArticulosNoLeidos() ////
 
 /*
+
+		//// Esta es una prueba de getUltimosArticulosBool() ////
 		ContenedorIdCat c_cat(CONST_MAX_CAT);
 		ContenedorIdCat c_si_no(CONST_MAX_CAT);
 		c_si_no.setCat(11,1);
@@ -220,17 +221,30 @@ int damianmain(int argc, char** argv) {
 
 		t_cola_art c_art = fh.getUltimosArticulosBool(c_cat, c_si_no, 1);
 		while (!c_art.empty()) {
-			cout << c_art.front().get_title() << " "<< c_art.front().get_timestamp() << endl;
+			cout << c_art.front().get_title() << " "<< c_art.front().get_timestamp()
+			<< " idart: " << c_art.front().get_idart() << " idfeed: " <<
+			c_art.front().get_idfeed() << endl;
 			c_art.pop();
 		}
 		while (!c_art.empty()) c_art.pop(); // c_art.clear()
 		c_art = fh.getProximosArticulosBool(1);
 		while (!c_art.empty()) {
-			cout << c_art.front().get_title() << " "<< c_art.front().get_timestamp() << endl;
+			cout << c_art.front().get_title() << " "<< c_art.front().get_timestamp()
+			<< " idart: " << c_art.front().get_idart() << " idfeed: " <<
+			c_art.front().get_idfeed() << endl;
 			c_art.pop();
 		}
-*/
-/*
+		while (!c_art.empty()) c_art.pop(); // c_art.clear()
+		c_art = fh.getProximosArticulosBool(999);
+		while (!c_art.empty()) {
+			cout << c_art.front().get_title() << " "<< c_art.front().get_timestamp()
+			<< " idart: " << c_art.front().get_idart() << " idfeed: " <<
+			c_art.front().get_idfeed() << endl;
+			c_art.pop();
+		}
+		//// Fin prueba getUltimosArticulosBool() ////
+
+		//// Esta es una prueba de getUltimosArticulosCat() ////
 		t_cola_art c_art;
 		while (!c_art.empty()) c_art.pop(); // c_art.clear()
 		c_art = fh.getUltimosArticulosCat(11, 99);
@@ -248,6 +262,7 @@ int damianmain(int argc, char** argv) {
 			cout << c_art.front().get_title() << " "<< c_art.front().get_timestamp() << endl;
 			c_art.pop();
 		}
+		//// Fin prueba getUltimosArticulosCat() ////
 */
 
 	}

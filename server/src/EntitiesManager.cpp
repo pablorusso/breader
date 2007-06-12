@@ -4,6 +4,7 @@
 #include <sstream>
 
 #define MAX_CATS 40
+// TODO esto deberia poder cambiarse
 
 EntitiesManager *EntitiesManager::_instance = NULL;
 
@@ -134,22 +135,26 @@ string EntitiesManager::ArticleGetFavouritesNext( t_idart quantity )
 string EntitiesManager::ArticleGetUnclassified( t_idart quantity )
 {
 	// TODO: VER DE DONDE LEER
+	// Agregado por damian: seria como el ArticleGetByTags pero con states todos
+	// en cero (vienen asi por default en ContenedorIdCat)
 	return "<articles/>";
 }
 string EntitiesManager::ArticleGetUnclassifiedNext( t_idart quantity )
 {
 	// TODO: VER DE DONDE LEER
+	// Agregado por damian: seria como el ArticleGetByTagsNext pero con states todos
+	// en cero (vienen asi por default en ContenedorIdCat)
 	return "<articles/>";
 }
 
 string EntitiesManager::ArticleGetUnread( t_idart quantity )
 {
-	// TODO: VER DE DONDE LEER
+	// Agregado por damian: es el metodo getUltimosArticulosNoLeidos()
 	return "<articles/>";
 }
 string EntitiesManager::ArticleGetUnreadNext( t_idart quantity )
 {
-	// TODO: VER DE DONDE LEER
+	// Agregado por damian: es el metodo getProximosArticulosNoLeidos()
 	return "<articles/>";
 }
 
@@ -205,20 +210,24 @@ string EntitiesManager::FeedGetAll()
 
 string EntitiesManager::TagCreate( string name )
 {
+	// Agregado por damian: aca no hace falta llamarme a mi
 	return "<tag/>";
 }
 
 string EntitiesManager::TagDelete( t_idcat id )
 {
+	// Agregado por damian: aca sí hace falta llamarme a mi
 	return "<tag/>";
 }
 
 string EntitiesManager::TagEdit( t_idcat id, string name )
 {
+	// Agregado por damian: aca no hace falta llamarme a mi
 	return "<tag/>";
 }
 
 string EntitiesManager::TagGetAll()
 {
+	// Agregado por damian: ??
 	return "<tags/>";
 }

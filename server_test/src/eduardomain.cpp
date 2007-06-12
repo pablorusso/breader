@@ -26,7 +26,7 @@
 ////////////// * Te puse todo en el dir raiz, porque a pablo le gusta asi =P
 
 using namespace std;
-int main(int argc, char** argv) {
+int eduardomain(int argc, char** argv) {
 	cout << "Bienvenido al breader" << endl;
 
 	try {
