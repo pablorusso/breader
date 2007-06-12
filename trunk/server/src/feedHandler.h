@@ -17,7 +17,8 @@ typedef std::queue<Articulo> t_cola_art; //!< el tipo COLA_ARTICULOS
 typedef std::pair<t_idart, t_timestamp> t_emap_ultCat; 
   //!< el tipo "elemento" del map de getUltimosArticulosCat()
 typedef std::map<t_idfeed, t_emap_ultCat> t_map_ultCat;
-  //!< un mapa para utilizar en getUltimosArticulosCat()
+  //!< un mapa para utilizar en getUltimosArticulosCat() y en
+  //!< getgetUltimosArticulosNoLeidos()
 
 /**
  * Esta clase se encarga de manejar los feeds, con sus articulos y sus
@@ -149,13 +150,39 @@ class feedHandler {
 		t_idart cantidadArticulos(const t_idfeed &idfeed);
 
 		/**
+		 * Devuelve una cola de articulos con cant_art articulos no leidos
+		 * Nota: trabaja en conjunto con getProximosArticulosNoLeidos()
+		 * @param cant_art la cantidad de articulos maxima que contendra la cola
+		 * @return una cola con los cant_art mas recientes. Si no hay articulos,
+		 *         devuelve una cola vacia
+		 * @throw eFeedHandler si el Archivo2 esta corrupto
+		 * @throw eFeedHandler si el idfeed no existia
+		 */
+		t_cola_art getUltimosArticulosNoLeidos(const t_idart &cant_art);
+
+		/**
+		 * Devuelve una cola de articulos con los cant_art articulos no leidos
+		 * despues del ultimo articulo pedido
+		 * Nota: trabaja en conjunto con getUltimosArticulosNoLeidos()
+		 * @param cant_art la cantidad de articulos maxima que contendra la cola
+		 * @return una cola con los cant_art mas recientes, despues del ultimo
+		 *         articulo pedido. Si no hay articulos, devuelve una cola vacia
+		 * @throw eFeedHandler si no se habia llamado antes a
+		 *                     getUltimosArticulosNoLeidos()
+		 * @throw eFeedHandler si el Archivo2 esta corrupto
+		 */
+		t_cola_art getProximosArticulosNoLeidos(const t_idart &cant_art);
+
+		/**
 		 * Devuelve una cola de articulos con los cant_art mas recientes de un
 		 * feed
 		 * Nota: trabaja en conjunto con getProximosArticulos()
 		 * @param idfeed el id del feed cuyos articulos seran devueltos
+		 * @param cant_art la cantidad de articulos maxima que contendra la cola
 		 * @return una cola con los cant_art mas recientes. Si no hay articulos,
 		 *         devuelve una cola vacia
 		 * @throw eFeedHandler si el idfeed no existia
+		 * @throw eFeedHandler si el Archivo2 esta corrupto
 		 */
 		t_cola_art getUltimosArticulos(const t_idfeed &idfeed,
 		  const t_idart &cant_art);
@@ -165,10 +192,12 @@ class feedHandler {
 		 * feed, despues del ultimo articulo pedido, correspondientes al ultimo
 		 * feed pedido.
 		 * Nota: trabaja en conjunto con getUltimosArticulos()
+		 * @param cant_art la cantidad de articulos maxima que contendra la cola
 		 * @return una cola con los cant_art mas recientes, despues del ultimo
 		 *         articulo pedido. Si no hay articulos, devuelve una cola vacia
 		 * @throw eFeedHandler si no se habia llamado antes a
 		 *                     getUltimosArticulos()
+		 * @throw eFeedHandler si el Archivo2 esta corrupto
 		 */
 		t_cola_art getProximosArticulos(const t_idart &cant_art);
 
@@ -177,9 +206,11 @@ class feedHandler {
 		 * categoria
 		 * Nota: trabaja en conjunto con getProximosArticulos()
 		 * @param idcat el id de la categoria cuyos articulos seran devueltos
+		 * @param cant_art la cantidad de articulos maxima que contendra la cola
 		 * @return una cola con los cant_art mas recientes. Si no hay articulos,
 		 *         devuelve una cola vacia
 		 * @throw eFeedHandler si el idcat esta fuera de rango
+		 * @throw eFeedHandler si el Archivo2 esta corrupto
 		 */
 		t_cola_art getUltimosArticulosCat(const t_idcat &idcat,
 		  const t_idart &cant_art);
@@ -189,10 +220,12 @@ class feedHandler {
 		 * feed, despues del ultimo articulo pedido, correspondientes al ultimo
 		 * feed pedido.
 		 * Nota: trabaja en conjunto con getUltimosArticulos()
+		 * @param cant_art la cantidad de articulos maxima que contendra la cola
 		 * @return una cola con los cant_art mas recientes, despues del ultimo
 		 *         articulo pedido. Si no hay articulos, devuelve una cola vacia
 		 * @throw eFeedHandler si no se habia llamado antes a
 		 *                     getUltimosArticulos()
+		 * @throw eFeedHandler si el Archivo2 esta corrupto
 		 */
 		t_cola_art getProximosArticulosCat(const t_idart &cant_art);
 
@@ -207,9 +240,10 @@ class feedHandler {
 		 *              participan en la "consulta booleana"
 		 * @param c_si_no un contenedor con la opcion de "si o no" para cada
 		 *                una de las categorias
+		 * @param cant_art la cantidad de articulos maxima que contendra la cola
 		 * @return una cola con los cant_art que matchean la consulta.
 		 *         Si no hay articulos, devuelve una cola vacia.
-
+		 * @throw eFeedHandler si el Archivo2 esta corrupto
 		 */
 		t_cola_art getUltimosArticulosBool(ContenedorIdCat &c_cat,
 		  ContenedorIdCat &c_si_no, const t_idart &cant_art);
@@ -218,10 +252,12 @@ class feedHandler {
 		 * Devuelve una cola de articulos con los cant_art mas recientes de un
 		 * feed, que matchean la consulta, despues del ultimo articulo pedido.
 		 * Nota: trabaja en conjunto con getUltimosArticulosbool()
+		 * @param cant_art la cantidad de articulos maxima que contendra la cola
 		 * @return una cola con los cant_art que matchean la consulta.
 		 *         Si no hay articulos, devuelve una cola vacia.
 		 * @throw eFeedHandler si no se habia llamado antes a
 		 *                     getUltimosArticulosBool()
+		 * @throw eFeedHandler si el Archivo2 esta corrupto
 		 */
 		t_cola_art getProximosArticulosBool(const t_idart &cant_art);
 
@@ -295,8 +331,11 @@ class feedHandler {
 		                       //!< getUltimosArticulosCat()
 		bool bool_ultArt_pedido; //!< para saber si ya se utilizo el metodo
 		                       //!< getUltimosArticulosBool()
+		bool no_leido_ultArt_pedido; //!< para saber si ya se utilizo el metodo
+		                              //!< getUltimosArticulosNoLeidos()
 
 		t_map_ultCat map_ultCat; //!< utilizado en getUltimosArticulosCat()
+		                         //!< y en getgetUltimosArticulosNoLeidos()
 
 		ContenedorIdCat bool_c_cat; //!< contenedor de los id_cat utilizado en
 		                             //!< getUltimosArticulosBool();
@@ -309,6 +348,19 @@ class feedHandler {
 		 */
 		static void renameFeed(const t_idfeed &idfeed_old,
 		  const t_idfeed &idfeed_new);
+
+		/**
+		 * Itera a traves de los id art de un feed buscando uno que no este
+		 * leido
+		 * @param idfeed el idfeed sobre el cual buscar articulos
+		 * @param idart el id del articulo sobre el que se iterara. Este
+		 *              parametro es modificado por el metodo, dejandolo en
+		 *              un idart que matchee, o en -1 si no hay ningun articulo
+		 *              que matchee
+		 * @return el nuevo timestamp del articulo (ignorar si idart==-1)
+ 		 * @throw eFeedHandler si el Archivo2 esta corrupto
+		 */
+		t_timestamp iterateMapNoLeidos(const t_idfeed &idfeed, t_idart &idart);
 
 		/**
 		 * Itera a traves de los id art de un feed buscando uno que este

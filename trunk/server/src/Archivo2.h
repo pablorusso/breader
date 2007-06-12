@@ -116,6 +116,14 @@ class Archivo2 {
 		void writeLeido(const t_idart &idart, const bool leido);
 
 		/**
+		 * Lee del articulo su condicion de leido
+		 * @param idart el id del articulo a modificar
+		 * @throw eArchivo2 si el archivo esta corrupto
+		 * @throw eArchivo2 si el idart esta fuera de rango
+		 */
+		bool getLeido(const t_idart &idart);
+
+		/**
 		 * Invierte el valor de lectura, es decir, si estaba leido,
 		 * pasa no leido y viceversa.
 		 * @param idart el id del articulo que hay que leer/desleer

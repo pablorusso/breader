@@ -142,7 +142,7 @@ void func(){
 
 }
 /*------------------------------------------------------------*/
-int main(int argc, char** argv){
+int sergiomain(int argc, char** argv){
 	std::cout << "PRUEBA SERGIO" << std::endl;
 	func();
 
