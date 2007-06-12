@@ -43,7 +43,7 @@ class feedHandler {
 		 * Archivo2 y Archivo5 correspondientes
 		 * @param uri la uri del feed
 		 * @param name el nombre del feed
-		 * @return el id del feed asignado.
+		 * @return el id del feed asignado
 		 * @throw eFeedHandler si el Archivo6 esta corrupto
 		 * @throw eFeedHandler si los parametros del feed no son integros
 		 */
@@ -110,23 +110,25 @@ class feedHandler {
 		 * pasa no leido y viceversa.
 		 * @param idfeed el id del feed cuyo articulo hay que leer/desleer
 		 * @param idart el id del articulo que hay que leer/desleer
+		 * @return el articulo con la inversion hecha
 		 * @throw eFeedHandler si el idfeed no existia
 		 * @throw eFeedHandler si el Archivo2 esta corrupto
 		 * @throw eFeedHandler si el idart esta fuera de rango
 		 */
-		void invertirLecturaArticulo(const t_idfeed &idfeed,
-		  const t_idart &idart);
+		Articulo invertirLecturaArticulo(const t_idfeed &idfeed,
+		  const t_idart &idart); // TODO
 
 		/**
 		 * Invierte el valor del bit de favorito, es decir, si estaba como
 		 * favorito deja de estarlo y viceversa.
 		 * @param idfeed el id del feed cuyo articulo hay que invertir
 		 * @param idart el id del articulo que hay que invertir
+		 * @return el articulo con la inversion hecha
 		 * @throw eFeedHandler si el idfeed no existia
 		 * @throw eFeedHandler si el Archivo2 esta corrupto
 		 * @throw eFeedHandler si el idart esta fuera de rango
 		 */
-		void invertirFavorito(const t_idfeed &idfeed, const t_idart &idart);
+		Articulo invertirFavorito(const t_idfeed &idfeed, const t_idart &idart); // TODO
 
 		/**
 		 * Devuelve el timestamp del ultimo articulo del feed indicado
