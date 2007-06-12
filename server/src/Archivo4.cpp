@@ -43,7 +43,7 @@ Archivo4::~Archivo4()
 string Archivo4::genFileName() {
 	// Calculo el nombre del archivo como
 	// "DATA_PATH"+"A4_FILENAME"
-	string fileName(DATA_PATH);
+	string fileName(General::getDataPath());
 	fileName.append(A4_FILENAME);
 	return fileName;
 }
@@ -292,8 +292,8 @@ bool Archivo4::modifyCategoryName(const t_idcat &idCategory,
 	return ret;
 }
 
-bool Archivo4::modifyCategoryBlocks(const t_idcat &idCategory, 
-									const t_offset &firstBlockTag,	
+bool Archivo4::modifyCategoryBlocks(const t_idcat &idCategory,
+									const t_offset &firstBlockTag,
 									const t_offset &firstBlockEmpty)
 {
 	bool ret = false;

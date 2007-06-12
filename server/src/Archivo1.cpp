@@ -22,7 +22,7 @@ Archivo1::~Archivo1() {
 string Archivo1::genFileName(const t_idfeed &idfeed) {
 	// Calculo el nombre del archivo como
 	// "DATA_PATH"+"A1_FILENAME"+"_"+idfeed
-	string fileName(DATA_PATH);
+	string fileName( General::getDataPath() );
 	fileName.append(A1_FILENAME);
 	ostringstream o;
 	o << idfeed;
@@ -33,7 +33,7 @@ string Archivo1::genFileName(const t_idfeed &idfeed) {
 string Archivo1::genFileName(const t_idfeed &idfeed, const bool bis) {
 	// Calculo el nombre del archivo como
 	// "DATA_PATH"+"A1_FILENAME_BIS"+"_"+idfeed
-	string fileName(DATA_PATH);
+	string fileName( General::getDataPath() );
 	fileName.append(A1_FILENAME_BIS);
 	ostringstream o;
 	o << idfeed;
@@ -135,7 +135,7 @@ void Archivo1::readArticulo(const t_offset &offset, Articulo &art) {
 		art.set_title(cptr);
 		delete []cptr;
 
-		// Leo la uri 
+		// Leo la uri
 		this->f.read(reinterpret_cast<char *>(&n), sizeof(t_numRegA1));
 		if (n != 1) THROW(eArchivo1, A1_REG_ERRONEO);
 		this->f.read(reinterpret_cast<char *>(&l), sizeof(t_longRegA1));

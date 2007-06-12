@@ -26,7 +26,7 @@ Archivo2::~Archivo2() {
 string Archivo2::genFileName(const t_idfeed &idfeed) {
 	// Calculo el nombre del archivo como
 	// "DATA_PATH"+"A2_FILENAME"+"_"+idfeed
-	string fileName(DATA_PATH);
+	string fileName(General::getDataPath());
 	fileName.append(A2_FILENAME);
 	ostringstream o;
 	o << idfeed;
@@ -37,7 +37,7 @@ string Archivo2::genFileName(const t_idfeed &idfeed) {
 string Archivo2::genFileName(const t_idfeed &idfeed, const bool bis) {
 	// Calculo el nombre del archivo como
 	// "DATA_PATH"+"A2_FILENAME_BIS"+"_"+idfeed
-	string fileName(DATA_PATH);
+	string fileName(General::getDataPath());
 	fileName.append(A2_FILENAME_BIS);
 	ostringstream o;
 	o << idfeed;
@@ -114,7 +114,7 @@ t_timestamp Archivo2::readTimestamp(const t_idart &idart) {
 void Archivo2::writeLeido(const t_idart &idart, const bool leido) {
 	if (idart < this->numRegs) {
 		try {
-			this->f.seekp(A2_SIZEOF_HEADER + idart*this->sizeofReg() + 
+			this->f.seekp(A2_SIZEOF_HEADER + idart*this->sizeofReg() +
 			  sizeof(t_timestamp) + sizeof(t_offset));
 			this->f.write(reinterpret_cast<const char *>(&leido),
 			  sizeof(bool));
@@ -231,7 +231,7 @@ void Archivo2::bajaCategoria(const t_idcat &idcat) {
 			this->writeCat(--idart, idcat, 0, 0);
 		}
 	} else THROW(eArchivo2, A2_IDCAT_FUERA_DE_RANGO);
-	
+
 }
 
 void Archivo2::open() {

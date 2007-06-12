@@ -27,7 +27,7 @@ t_word_cont ArticleParser::parseArticle(const Articulo &art) {
 				if (des[i] == '>') found = true; // TODO tags anidados??
 				else ++i;
 			}
-			
+
 		}
 		else if (isspace(c) || ispunct(c)) {
 			if (!this->isStopWord(myword))
@@ -93,7 +93,7 @@ bool ArticleParser::isStopWord(const string &word) {
 }
 
 string ArticleParser::genSWFileName() {
-	string fileName(DATA_PATH);
+	string fileName(General::getDataPath());
 	fileName.append(SW_FILENAME);
 	return fileName;
 }

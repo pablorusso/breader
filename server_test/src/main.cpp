@@ -1,7 +1,10 @@
 #include <iostream>
 #include <fstream>
+#include <stdlib.h>
 
-#include "Archivo4.h"
+#include "EntitiesManager.h"
+#include "General.h"
+
 ////////////////////
 // PARA EDUARDO ///
 ///////////////////
@@ -26,92 +29,127 @@
 ////////////// * Te puse todo en el dir raiz, porque a pablo le gusta asi =P
 
 using namespace std;
-int eduardomain(int argc, char** argv) {
-	cout << "Bienvenido al breader" << endl;
 
-	try {
-		Archivo4 a4;
+int main(int argc, char** argv)
+{
+	// crea el directorio para los archivos si no existe
+	string rmFiles("rm -fR ");
+	rmFiles.append( General::getDataPath() );
+	system(rmFiles.c_str());
 
-		t_queue_idcat idSet;
-		
-		idSet = a4.getCategoriesId();
+	string makeDir("mkdir -p ");
+	makeDir.append( General::getDataPath() );
+	system(makeDir.c_str());
 
-/*	AHORA ES UNA QUEUE	
-		t_queue_idcat::iterator iter;
-		
-		iter = idSet.begin();
-		
-		if(!idSet.empty())
-			cout << "Tiene Algo!!" << endl;
-		else
-			cout << "Vacio" << endl;
-		
-		while(iter != idSet.end())
-		{
-		      cout << "id_Category: " << *iter << endl;
-			iter++;	
-		}
-*/
+	cout << "Bienvenido al test del breader server" << endl << endl;
 
-		cout << "id<Category0: " << a4.addCategory("Futbol")  << endl;
-		cout << "id<Category1: " << a4.addCategory("Tenis")  << endl;
-		cout << "id<Category2: " << a4.addCategory("Deportes")  << endl;
+	cout << endl;
+	cout << "[action] FeedCreate - ";
+	cout << EntitiesManager::getInstance()->FeedCreate( "testFeed", "http://feed.url.com" );
+	cout << endl;
 
+	cout << endl;
+	cout << "[action] FeedGetAll - ";
+	cout << EntitiesManager::getInstance()->FeedGetAll();
+	cout << endl;
 
-		if(a4.findCategory(2))
-		{	cout << "Categoria 2 encontrada" << endl;
-			a4.modifyCategoryName(2,"FFFutbol");
-			cout << "Categoria 2 modificada" << endl;
-		}else
-		{
-			cout << "Category 2 NO encontrada" << endl;
-		}
-			
-		a4.incCategoryArt(2,2);
-		
-		a4.decCategoryArt(2, 1);
+	cout << endl;
+	cout << "[action] ArticleCreate1 - ";
+	cout << EntitiesManager::getInstance()->ArticleCreate( 0, "titulo1", "summary1", "link1", "author1", 0 );
+	cout << endl;
+	cout << "[action] ArticleCreate2 - ";
+	cout << EntitiesManager::getInstance()->ArticleCreate( 0, "titulo2", "summary2", "link2", "author2", 0 );
+	cout << endl;
+	cout << "[action] ArticleCreate3 - ";
+	cout << EntitiesManager::getInstance()->ArticleCreate( 0, "titulo3", "summary3", "link3", "author3", 0 );
+	cout << endl;
+	cout << "[action] ArticleCreate4 - ";
+	cout << EntitiesManager::getInstance()->ArticleCreate( 0, "titulo4", "summary4", "link4", "author4", 0 );
+	cout << endl;
+	cout << "[action] ArticleCreate5 - ";
+	cout << EntitiesManager::getInstance()->ArticleCreate( 0, "titulo5", "summary5", "link5", "author5", 0 );
+	cout << endl;
+	cout << "[action] ArticleCreate6 - ";
+	cout << EntitiesManager::getInstance()->ArticleCreate( 0, "titulo6", "summary6", "link6", "author6", 0 );
+	cout << endl;
+	cout << "[action] ArticleCreate7 - ";
+	cout << EntitiesManager::getInstance()->ArticleCreate( 0, "titulo7", "summary7", "link7", "author7", 0 );
+	cout << endl;
+	cout << "[action] ArticleCreate8 - ";
+	cout << EntitiesManager::getInstance()->ArticleCreate( 0, "titulo8", "summary8", "link8", "author8", 0 );
+	cout << endl;
 
-		a4.incCategoryWord(2, 10);
-		
-		a4.decCategoryWord(2,5);
+	cout << endl;
+	cout << "[action] ArticleGetByFeed - ";
+	cout << EntitiesManager::getInstance()->ArticleGetByFeed( 0, 5 );
+	cout << endl;
 
-		//modifyCategoryName(const t_idcat &idCategory, string catName);
+	cout << endl;
+	cout << "[action] ArticleGetByFeedNext - ";
+	cout << EntitiesManager::getInstance()->ArticleGetByFeedNext( 5 );
+	cout << endl;
 
+	cout << endl;
+	cout << "[action] FeedDelete - ";
+	cout << EntitiesManager::getInstance()->FeedDelete( 0 );
+	cout << endl;
 
-		if (a4.findCategory(0))  cout << "Categoria 1 encontrada" << endl;
-		else cout << "Categoria 1 NO encontrada" << endl;
+	/*
+	// Con categorias todavia no puedo probar nada
 
-		if (a4.deleteCategory(1)) cout << "Categoria 1 borrada" << endl;
-		else cout << "Categoria 1 NO borrada" << endl;
+	cout << "[action] ArticleChangeReadState - ";
+	cout << EntitiesManager::getInstance()->ArticleChangeReadState( 1, 1 );
+	cout << endl;
 
-		if (a4.findCategory(1))  cout << "Categoria 1 encontrada" << endl;
-		else cout << "Categoria 1 NO encontrada" << endl;
+	cout << "[action] ArticleChangeFavState - ";
+	cout << EntitiesManager::getInstance()->ArticleChangeFavState( 1, 1 );
+	cout << endl;
 
+	cout << "[action] ArticleApproveTag - ";
+	cout << EntitiesManager::getInstance()->ArticleApproveTag( t_idfeed feedId, t_idart artId, t_idcat tagId );
+	cout << endl;
 
-		if (a4.deleteCategory(3))  cout << "Categoria 3 borrada" << endl;
-		else cout << "Categoria 3 NO borrada" << endl;
+	cout << "[action] ArticleGetByTags - ";
+	cout << EntitiesManager::getInstance()->ArticleGetByTags( vector< t_idcat > tagIds, vector< bool > state, t_idart quantity );
+	cout << endl;
 
+	cout << "[action] ArticleGetByTagsNext - ";
+	cout << EntitiesManager::getInstance()->ArticleGetByTagsNext( t_idart quantity );
+	cout << endl;
 
+	cout << "[action] ArticleGetUnclassified - ";
+	cout << EntitiesManager::getInstance()->ArticleGetUnclassified( t_idart quantity );
+	cout << endl;
 
-        	/*cout << "id<Category3: " << a4.addCategory("2Futbol")  << endl;
-		cout << "id<Category4: " << a4.addCategory("2Tenis")  << endl;
-		cout << "id<Category4: " << a4.addCategory("2Deportes")  << endl;*/
+	cout << "[action] ArticleGetUnclassifiedNext - ";
+	cout << EntitiesManager::getInstance()->ArticleGetUnclassifiedNext( t_idart quantity );
+	cout << endl;
 
+	cout << "[action] ArticleGetUnread - ";
+	cout << EntitiesManager::getInstance()->ArticleGetUnread( t_idart quantity );
+	cout << endl;
 
-		cout << a4 << endl;
+	cout << "[action] ArticleGetUnreadNext - ";
+	cout << EntitiesManager::getInstance()->ArticleGetUnreadNext( t_idart quantity );
+	cout << endl;
 
+	cout << "[action] ArticleGetFavourites - ";
+	cout << EntitiesManager::getInstance()->ArticleGetFavourites( t_idart quantity );
+	cout << endl;
 
-	}
-	catch (eArchivo4 e){
-		cout << e.getErrorMensaje() << endl;
-	}
-	catch (eRegArchivo4 e){
-		cout << e.getErrorMensaje() << endl;
-	}
-	catch (fstream::failure e) {
-		cout << "ERROR: " << e.what() << endl;
+	cout << "[action] ArticleGetFavouritesNext - ";
+	cout << EntitiesManager::getInstance()->ArticleGetFavouritesNext( t_idart quantity );
+	cout << endl;
 
-	}
+	cout << "[action] ArticleLinkTag - ";
+	cout << EntitiesManager::getInstance()->ArticleLinkTag( t_idfeed feedId, t_idart artId, t_idcat tagId );
+	cout << endl;
+
+	cout << "[action] ArticleUnLinkTag - ";
+	cout << EntitiesManager::getInstance()->ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idcat tagId );
+	cout << endl;
+	*/
+
 	cout << "Adios" << endl;
 	return 0;
 }

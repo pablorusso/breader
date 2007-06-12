@@ -10,7 +10,9 @@ EntitiesManager *EntitiesManager::_instance = NULL;
 EntitiesManager *EntitiesManager::getInstance()
 {
 	if ( EntitiesManager::_instance == NULL )
+	{
 		EntitiesManager::_instance = new EntitiesManager();
+	}
 	return EntitiesManager::_instance;
 
 }
