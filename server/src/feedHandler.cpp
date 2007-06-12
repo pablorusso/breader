@@ -98,11 +98,13 @@ void feedHandler::leerArticulo(const t_idfeed &idfeed, const t_idart &idart,
 	}
 }
 
-void feedHandler::invertirLecturaArticulo(const t_idfeed &idfeed,
+Articulo feedHandler::invertirLecturaArticulo(const t_idfeed &idfeed,
   const t_idart &idart) {
 	try {
 		Archivo2 a2(this->a6.get_MAX_CAT(), idfeed);
 		a2.invertirLecturaArticulo(idart);
+		Articulo art = a2.readArticulo(idart);
+		return art;
 	}
 	catch (IException &e) {
 		eFeedHandler mie(e.getErrorMensaje());
@@ -110,7 +112,7 @@ void feedHandler::invertirLecturaArticulo(const t_idfeed &idfeed,
 	}
 }
 
-void feedHandler::invertirFavorito(const t_idfeed &idfeed,
+Articulo feedHandler::invertirFavorito(const t_idfeed &idfeed,
   const t_idart &idart) {
 	try {
 		Archivo2 a2(this->a6.get_MAX_CAT(), idfeed);
@@ -118,6 +120,8 @@ void feedHandler::invertirFavorito(const t_idfeed &idfeed,
 		bool si_no = ~a2.readCat(idart, IDCAT_FAV);
 		a2.writeCat(idart, IDCAT_FAV, si_no, 0);
 		this->a6.catFeed(idfeed, IDCAT_FAV, si_no);
+		Articulo art = a2.readArticulo(idart);
+		return art;
 	}
 	catch (IException &e) {
 		eFeedHandler mie(e.getErrorMensaje());
