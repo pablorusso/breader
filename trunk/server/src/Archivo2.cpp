@@ -16,7 +16,6 @@ Archivo2::Archivo2(const t_idcat &MAX_CAT, const t_idfeed &idfeed,
 
 Archivo2::~Archivo2() {
 	try {
-		this->writeHeader();
 		this->f.close();
 	}
 	catch (fstream::failure){

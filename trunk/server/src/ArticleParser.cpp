@@ -10,17 +10,58 @@ ArticleParser::~ArticleParser() {}
 t_word_cont ArticleParser::parseArticle(const Articulo &art) {
 	t_word_cont cont;
 	// TODO ver si va solo la description o tambien el title y demas
-	istringstream s_des(art.get_description());
+	string des(art.get_description());
+	string myword;
+	string::size_type i=0;
+	char c;
+	bool done;
+
+	if (des.size() > 0) done = false;
+	else done = true;
+
+	while (!done) {
+		c = des[i];
+		if ((c == '<') && (myword.size() == 0)) { // TODO ver si asi esta bien
+			bool found = false;
+			while ((!found) && (i < des.size())) {
+				if (des[i] == '>') found = true; // TODO tags anidados??
+				else ++i;
+			}
+			
+		}
+		else if (isspace(c) || ispunct(c)) {
+			if (!this->isStopWord(myword))
+				cont.push(myword);
+			myword.clear();
+		}
+		else {
+			myword += c;
+		}
+		++i;
+		if (i == des.size()) { // Agrego la ultima palabra
+			if (!this->isStopWord(myword))
+				cont.push(myword);
+			done=true;
+		}
+	}
+
+	return cont;
+
+/*
+	t_word_cont cont;
+	// TODO ver si va solo la description o tambien el title y demas
+	istringstream des(art.get_description());
 	string myword;
 
 	// TODO ver que pasa con cosas raras dentro del description...
-	while (s_des >> myword) {
+	while (des >> myword) {
 		if (!this->isStopWord(myword))
 			cont.push(myword);
 		myword.clear();
 	}
 
 	return cont;
+*/
 }
 
 void ArticleParser::loadSW() {
