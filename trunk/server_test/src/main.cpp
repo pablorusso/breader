@@ -30,7 +30,7 @@
 
 using namespace std;
 
-int main(int argc, char** argv)
+int Damianmain(int argc, char** argv)
 {
 	// crea el directorio para los archivos si no existe
 	string rmFiles("rm -fR ");

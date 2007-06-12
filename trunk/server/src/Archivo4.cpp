@@ -4,7 +4,7 @@ Archivo4::Archivo4()
 {
 	string fileName = Archivo4::genFileName();
 	// Leo/Creo el Archivo4
-	this->f.open(fileName.c_str(), ios::in |ios::out | ios::binary);
+	this->f.open(fileName.c_str(), ios::in | ios::out | ios::binary);
 	if (this->f.good()) {
 		// leo el header
 		this->readHeader();
@@ -74,7 +74,9 @@ t_idcat Archivo4::addCategory(string catName)
 			THROW(eArchivo4, A4_NOMBRE_CAT_ERROR);
 		// agrego en la primer posicion libre
 		ret = this->header.primerLibre;
+		std::cout << "entro a4" << std::endl;
 		this->writeReg(catName, 0,0,0,0,0,0);
+		std::cout << "write a4" << std::endl;
 
 	}
 	catch (fstream::failure) {
@@ -110,7 +112,10 @@ tRegistro3 Archivo4::getRegistro(const t_idcat &idCat)
 	tRegistro3 returnReg;
 	reg = this->getCategoryInfo(idCat);
 	returnReg.firstBlockTag = reg.firstBlockTag;
-	returnReg.firstBlockEmpty = reg.firstBlockEmpty;
+	returnReg.firstBlockRegEmpty = reg.firstBlockEmpty;
+	if(returnReg.firstBlockTag==0){		
+		THROW(eArchivo4, A4_CATEGORY_INFO_NO_CAT);
+	}
 	return returnReg;
 }
 
