@@ -44,6 +44,11 @@ bool ContenedorIdCat::getCat(const t_idcat &idcat) const {
 	return ret;
 }
 
+t_cont_idcat ContenedorIdCat::getCategorias()
+{
+	return this->categorias;
+}
+
 void ContenedorIdCat::writeCat(fstream &f) {
 	f.write(reinterpret_cast<const char *>(&this->categorias[0]),
 	  sizeof(unsigned char)*this->MAX_CAT/8);

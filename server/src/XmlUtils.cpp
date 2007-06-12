@@ -1,4 +1,5 @@
 #include "XmlUtils.h"
+#include <sstream>
 
 static const char  AMP = '&';
 static const char  rawEntity[] = { '<',   '>',   '&',    '\'',    '\"',    0 };
@@ -47,7 +48,7 @@ string XmlUtils::xmlDecode(const string& encoded)
     if (encoded[iAmp] == AMP && iAmp+1 < iSize) {
       int iEntity;
       for (iEntity=0; xmlEntity[iEntity] != 0; ++iEntity)
-	//if (encoded.compare(iAmp+1, xmlEntLen[iEntity], xmlEntity[iEntity]) == 0)
+
 	if (strncmp(ens+iAmp+1, xmlEntity[iEntity], xmlEntLen[iEntity]) == 0)
         {
           decoded += rawEntity[iEntity];
@@ -63,4 +64,55 @@ string XmlUtils::xmlDecode(const string& encoded)
   }
 
   return decoded;
+}
+
+string XmlUtils::xmlEncode(const unsigned int& raw)
+{
+	return xmlEncode( uintToStr( raw ) );
+}
+string XmlUtils::xmlDecode(const unsigned int& encoded)
+{
+	return xmlDecode( uintToStr( encoded ) );
+}
+
+string XmlUtils::xmlEncode(const unsigned short& raw)
+{
+	return xmlEncode( ushortToStr( raw ) );
+}
+string XmlUtils::xmlDecode(const unsigned short& encoded)
+{
+	return xmlDecode( ushortToStr( encoded ) );
+}
+
+
+
+string XmlUtils::uintToStr( const unsigned int &value )
+{
+	std::ostringstream oss; oss << value;
+	return oss.str();
+}
+
+string XmlUtils::ushortToStr( const unsigned short &value )
+{
+	std::ostringstream oss; oss << value;
+	return oss.str();
+}
+
+unsigned int XmlUtils::strTouint( const string &value )
+{
+	unsigned int n;
+	std::istringstream iss( value );
+	if(!(iss >> n))
+		throw string( "The value received can not be converted to number\n" );
+	return n;
+}
+
+unsigned short XmlUtils::strToushort( const string &value )
+{
+	unsigned short n;
+	std::istringstream iss( value );
+	if(!(iss >> n))
+		throw string( "The value received can not be converted to number\n" );
+	return n;
+
 }
