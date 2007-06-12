@@ -1,3 +1,4 @@
+
 #if !defined FILEMANAGER
 #define FILEMANAGER
 
@@ -17,8 +18,7 @@
 #define NO_MOVIBLE ((t_cantReg)(-1))
 
 
-typedef struct
-{
+typedef struct{
 	t_frecuency cantTrue; //!< Es la cantidad de veces que existe esa palabra 
                            //!< en una categoria porque el usuario clasifico un 
 						   //!< artiulo que la contenia, o porque el usuario 
@@ -30,12 +30,13 @@ typedef struct
 } tFrecuencias;
 
 /******************************************************************************/
-class cRegistroBlock
-{
-	public:
+class cRegistroBlock{
+
+public:
 
 	tFrecuencias frec; //!< Contiene la estadistica de la palabra.
-	t_offset ptrAnt; //!< Permite encadenar todas las categorias a las que
+	
+	t_offset ptrAnt; //!< Permite encadenar todas las categorias a las que 
                          //!< pertenece la palabra. Hacen referencia a la 
   						 //!< anterior categoria para la palabra.
 						 //!< Es el numero de bloque + registro.
@@ -83,29 +84,27 @@ public:
 
 	t_cantReg cantRegOcup; //!< Cantidad de registros ocupados en el bloque.
 
-	cHeaderBlock(const t_idcat &idCat)
-	{		
-		this->idCat= idCat;
-		nroBlock = NULL_BL;
-		cantRegOcup=0;
+	cHeaderBlock(const t_idcat &idCat){		
+			this->idCat= idCat;
+			nroBlock = NULL_BL;	
+			cantRegOcup=0;
 	}
 
-	cHeaderBlock()
-	{
-		cantRegOcup=0;
-		idCat= 0;
-		nroBlock = NULL_BL;
+	cHeaderBlock(){		
+			cantRegOcup=0;
+			idCat= 0;
+			nroBlock = NULL_BL;	
 	}
 
-	void inicializar()
-	{
+	void inicializar(){
 		cantRegOcup=0;
-		idCat= 0;
+		idCat= 0;	
 	}
 
 	static unsigned int sizeofHeaderBlock(){
-		return (sizeof(t_idcat) + sizeof(t_offset) + sizeof(t_cantReg));
+		return (sizeof(t_idcat) + sizeof(t_offset) + sizeof(t_cantReg));	
 	}
+
 };
 
 /******************************************************************************/
@@ -113,14 +112,16 @@ class cBloque{
 
 public:
 
-	cHeaderBlock header;
-	cRegistroBlock vector[REG_X_BLOCK];
+	cHeaderBlock header; //!< Header del bloque
+	cRegistroBlock vector[REG_X_BLOCK]; //!< Vector de Registros
+	t_offset nroBlockReg; //!< Numero de bloque registro al que hace referencia.
 
 	cBloque(){
-
+		nroBlockReg=0;
 	};
 
 	cBloque(const t_idcat &idCat):header(idCat){
+		nroBlockReg=0;
 	}
 
 	void inicializar(){
@@ -135,6 +136,19 @@ public:
 		return (cHeaderBlock::sizeofHeaderBlock() + REG_X_BLOCK * cRegistroBlock::sizeofReg());	
 	}
 
+	t_offset getNroReg(){
+	
+		if(nroBlockReg!=NULL_BL)
+			return ( nroBlockReg & (REG_X_BLOCK-1) );
+		else return NULL_BL;	
+	}
+
+	t_offset getNroBlock(){
+		if(nroBlockReg!=NULL_BL)
+			return ( (nroBlockReg - getNroReg()) >> CANT_BIT  );
+		else return NULL_BL;	
+	}
+
 };
 /******************************************************************************/
 class cHeaderFile{
@@ -144,23 +158,20 @@ public:
 	t_offset firstBlockEmpty; //!< Identifica al primer bloque+registro 
                                   //!< vacio dentro del archivo.
 
-	t_uint cantBlockEmpty; //!< Cantidad de bloques vacios, va a permitir 
-                                 //!< identificar el el momento de la 
-                                 //!< restructuracion del archivo.
-
 	t_uint cantBlock;  //!< Cantidad de bloques almacenados en el archivo.
 
-	t_offset nroBlockRegRoot;
+	tRegistro3 regRoot; //!< Datos administrativos de la catgoria inamovible.
+
 
 	cHeaderFile(){
 			firstBlockEmpty=NULL_BL;
-			cantBlockEmpty=0;	
 			cantBlock=0;
-			nroBlockRegRoot=0;
+			regRoot.firstBlockRegEmpty=0;
+			regRoot.firstBlockTag=0;	
 	}
 
 	static unsigned int sizeofHeader(){
-		return ( sizeof(t_offset) + sizeof(t_offset) + sizeof(t_uint) * 2 );
+		return ( 3*sizeof(t_offset) + sizeof(t_uint) );	
 	}
 
 };
@@ -170,11 +181,11 @@ public:
 class cFileManager{
 
 
-public: // TODO private
+private:
 	std::string nameFile; //!< Nombre del archivo que contiene los blosques.
 	bool isCreado; //!< Si se ha creado o cargado un archivo.
 	cHeaderFile header;   //!< Header del archivo.
-	Archivo4 adminBlock; //!< administracionde bloques vacios y categorias.
+	Archivo4 *adminBlock; //!< administracionde bloques vacios y categorias.
 
    /**Obtiene el header del archivo.
      * @throw cFileManager::FM_ERROR_FNF archivo no encontrado. 	
@@ -182,12 +193,12 @@ public: // TODO private
 	void readHeaderFile();
 
 	/** Obtiene un bloque del archivo.
-	  * @param nroBlock numero de bloque que se quiere obtener.	  
-	  * @return devuelve el bloque correspondiente.
+	  * @param nroBlock numero de bloque registro que se quiere obtener.	  
+	  * @return devuelve el bloque correspondiente inicializado con el nroBlockReg.
 	  * @throw cFileManager::FM_ERROR_FNF archivo no encontrado. 
-	  * @throw cFileManager::FM_ERROR_FIND registro no encontrado. 	  
+	  * @throw cFileManager::FM_ERROR_FIND bloque no encontrado. 	  
 	*/
-	cBloque* readBlock(const t_offset &nroBlock);
+	cBloque* readBlock(const t_offset &nroBlockReg);
 
 	/** Obtiene un registro del archivo.
 	  * @param nroBlockReg identificador del registro en el archivo.	  
@@ -201,17 +212,17 @@ public: // TODO private
 	  * @param nroBlock identificador el bloque en el archivo.	  
 	  * @return devuelve el header correspondiente.
 	  * @throw cFileManager::FM_ERROR_FNF archivo no encontrado.	  
-	  * @throw cFileManager::FM_ERROR_FIND registro no encontrado. 	
+	  * @throw cFileManager::FM_ERROR_FIND header del bloque no encontrado. 	
 	*/	
 	cHeaderBlock* readHeaderBlock(const t_offset &nroBlock);
 
 	/** Escribe un bloque en el archivo de salida.
-	  * @param nroBlock numero del bloque que se quiere escribir.
-	  * @param bl bloque que se quiere guardar.
+	  * @param bl Bloque que se quiere guardar, debe contener el nro de 
+                * bloque registro para saber en donde guardarlo.
 	  * @throw cFileManager::FM_ERROR_FNF archivo no encontrado. 
-	  * @throw cFileManager::FM_ERROR_FIND registro no encontrado. 	  
+	  * @throw cFileManager::FM_ERROR_FIND bloque no encontrado. 	  
 	*/
-	void writeBlock(const t_offset &nroBlock, cBloque &bl);
+	void writeBlock(cBloque &bl);
 
    /** Escribe un registro en el archivo de salida.
 	  * @param nroBlockReg numero del registro que se quiere escribir.
@@ -229,19 +240,41 @@ public: // TODO private
 	/** Busca un registro que corresponde a una palabra y que pertenece a una 
 	  * cierta categoria si no lo encuentra retorna el hermano izquierdo y si se
 	  * da el caso que solo existe la raiz devuelve esta.
-	  * @param nroBlock nodo desde donde se empieza a buscar en la lista y va ha 
-	  * termina siendo en numero de bloque del buscado (nro reg + nro bloque).
+	  * @param nroBlockReg nodo desde donde se empieza a buscar en la lista.
 	  * @param idCAt categoria del registro que se busca.
-	  * @return retorna el bloque que contiene al registro.		  
-	  * @throw cFileManager::FM_ERROR_FIND se produjo un error al buscar el reg.
-	  * @throw cFileManager::FM_ERROR_FNF archivo no encontrado. 
+	  * @return retorna el bloque que contiene al registro que contiene el 
+              * correspondiente nroBlockReg.
+	  * @throw cFileManager::FM_ERROR_FIND se produjo un error al buscar el reg.	  
 	*/
-	cBloque* buscar(t_offset &nroBlock, const t_idcat &idCat);
+	cBloque* buscar(const t_offset &nroBlockReg, const t_idcat &idCat);
 
-	cBloque *initBlock( const t_idcat idCat, const t_offset &nroBlockReg, const tFrecuencias &frec );
-   	void updateBlock( const t_offset &nroBlockReg, const tFrecuencias &frec );
-	cBloque *newBlock( cBloque *bl, const t_idcat idCat, t_offset &nroBlockReg, const tFrecuencias &frec );
+	/** Agrega un registro en el bloque correspondiente.
+	  * @param idCat Id de la categoria a la que pertenece la palabra.
+	  * @param frec Frecuencias actualizadas para la palabra.	  
+	  * @throw cFileManager::FM_ERROR_FNF Error no se ha encontrado el archivo.
+	  * @throw cFileManager::FM_ERROR_ADD Error no se ha insertar el registro.	 
+	  * @return el bloque donde se inserto que contiene el nroBlockReg.
+	  */
+	cBloque* addRegistro(const t_idcat &idCat,const tFrecuencias &frec);
+   
+ 	/**Agrega el primer bloque que corresponde a una nueva categoria.
+	  * @param t_idcat Categoria a la que va pertenecer el bloque.
+	  * @param tFrecuencias frecuencia a insertar en el primer registro.
+	  * @param tRegistro3 informacion administrativa de los bloques de esa categoria.
+	  * @throw cFileManager::FM_ERROR_ADD Error no se ha insertar el registro.	
+	  * @return Devuelve el bloque con los datos actualizados.	
+	  */
+	cBloque* firstBlockTag(const t_idcat &idCat, const tFrecuencias &frec, tRegistro3 &reg);	
 
+ 	/** Actualiza un bloque que corresponde a una categoria.
+	  * @param t_idcat Categoria a la que va pertenecer el bloque.
+	  * @param tFrecuencias frecuencia a insertar.
+	  * @param tRegistro3 informacion administrativa de los bloques de esa categoria.
+	  * @throw cFileManager::FM_ERROR_ADD Error no se ha insertar el registro.	
+	  * @return Devuelve el bloque con los datos actualizados.	
+	  */
+	cBloque* updateBlock(const t_idcat &idCat, const tFrecuencias &frec, tRegistro3 &reg);
+	
    /**Actualiza los punteros de los bloques que estan siendo dados de baja.
 	 * @param bloque Bloque que se quiere actualizar.
 	 * @throw cFileManager::FM_ERROR No se pudo actualizar los punteros. 	 
@@ -262,21 +295,21 @@ public: // TODO private
    /**Actualiza los punteros de los bloques hermanos al que cambio de posicion 
       en el archivo.
 	 * @param bloque Bloque al que se le quiere actualizar los hermanos.
-	 * @param nroBloque numero nuevo de bloque en donde se encuentra. 	 
 	 * @throw cFileManager::FM_ERROR No se pudo actualizar los punteros. 	  	
 	 */
-	void actualizarHermanos(const cBloque &bloque, const t_offset &nroBloque);
+	void actualizarHermanos(cBloque &bloque);
 
    /**Retorna un numero de bloque vacio que no se encuentre al final del archivo.
 	 * @param cantBlock Cantidad de bloques en el archivo.
 	 * @throw cFileManager::FM_ERROR_FNF archivo no encontrado. 
-	 * @throw cFileManager::FM_ERROR_FIND registro no encontrado. 	
+	 * @throw cFileManager::FM_ERROR_FIND registro no encontrado.
+	 * @return devuelve el numero de bloque vacio.
 	 */	
 	t_offset getNroBlockEmpty(const t_uint &cantBlock);	
 
 public:
 
-	cFileManager();
+	cFileManager(Archivo4 *aa);
 	~cFileManager();
 
 	/** Crea la estructura en disco.
@@ -306,33 +339,33 @@ public:
 	/** Agrega una palabra en la estructura.
 	  * @throw cFileManager::FM_ERROR_NC no se ha creado ni cargado la estructura.
 	  * @throw cFileManager::FM_ERROR_FNF Error no se ha encontrado el archivo.
-	  * @throw cFileManager::FM_ERROR_ADD Error no se ha insertar el registro.
-	  * @throw cFileManager::FM_ERROR_FR: Error Categoria fuera de rango.;
+	  * @throw cFileManager::FM_ERROR_ADD Error no se pudo insertar el registro.
+	  * @throw cFileManager::FM_ERROR_FR: Error Categoria fuera de rango.
 	  * @return el numero de registro+bloque donde esta almacenada la palabra.
 	  */
-	t_offset addPalabra();
+	t_offset addPalabra();	
 	
-	/** Modifica una palabra en la estructura. Esta modificacion puede ser 
+	/** Agrega una categoria a la palabra. Esta modificacion puede ser 
       * agregar la palabra a una categoria o simplemente sumar a frecuencia 
       * actual de la palabra la frecuencia que se le pasa. La palabra debe 
-      * pertenecer por lo menos a una categoria.
+      * estar ya insertada.
 	  * @param idCat Id de la categoria a la que pertenece la palabra.
-	  * @param nroBlock numero de bloque y reg en el que se encuentra la palabra.
+	  * @param nroBlockReg numero de bloque y reg en el que se encuentra la palabra.
 	  * @param frec Frecuencias actualizadas para la palabra.
 	  * @throw cFileManager::FM_ERROR_NC no se ha creado ni cargado la estructura
 	  * @throw cFileManager::FM_ERROR_ADD Error no se ha insertar el registro.
 	  */	
-	void setPalabra(const t_idcat &idCat, const t_offset &nroBlock, 
+	void setPalabra(const t_idcat &idCat, const t_offset &nroBlockReg, 
                     const tFrecuencias &frec);
 
 	/** Obtiene las frecuencias de la palabra en dicha categoria.
 	  * @param idCat Id de la categoria a la que pertenece la palabra.
-	  * @param nro es el numero compuesto por el numero de bloque y registro.
+	  * @param nroBlockReg es el numero compuesto por el numero de bloque y registro.
 	  * @throw cFileManager::FM_ERROR_FIND no se ha podido encontar el registro.
 	  * @throw cFileManager::FM_ERROR_NC no se ha creado ni cargado la estructura
-	  * @return la estadistica de la palabra.
+	  * @return la frecuencia de la palabra en esa categoria.
 	*/
-	tFrecuencias getPalabra(const t_idcat &idCat,const t_offset &nro);
+	tFrecuencias getPalabra(const t_idcat &idCat,const t_offset &nroBlockReg);
 	
 	/**Elimina una categoria del archivo
 	  *@param idCat El Id de la categoria que se quiere eliminar.

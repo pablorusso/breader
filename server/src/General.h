@@ -11,7 +11,7 @@ sizeof(t_idart) = sizeof(t_offset)
 *****************************************************************************
 Imposiciones de Sergio:
 ----------------------
-El idcat 0 no se usa
+El idcat -1 no se usa
 *****************************************************************************/
 
 
@@ -43,20 +43,6 @@ typedef std::vector<t_idart> t_c_cant_idcat; //!< el tipo contenedor de
                                              //!< cantidades de idcat
 typedef std::queue<std::string> t_word_cont; //!< el tipo contenedor de palabras
 
-
-/* COMENTADO POR DAMIAN
-typedef unsigned int t_timestamp; //!< tipo formato timestamp (unix time)
-typedef unsigned int t_offset; //!< tipo ID para utilizar en los tipos offset
-typedef unsigned short t_idfeed; //!< tipo ID para utilizar en los tipos idfeed
-typedef unsigned int t_idcat; //!< tipo ID para utilizar en los tipos idcat
-typedef unsigned int t_idart; //!< tipo ID para utilizar en los tipos idcat
-typedef unsigned short t_freebytes; //!< para los bytes libres en registros
-typedef unsigned int t_uint; //!< un tipo entero sin signo generico
-typedef unsigned int t_quantity; //!< tipo para utilizar en los tipos cantidad
-typedef std::queue<t_idcat> t_queue_idcat; //!< tipo contenedor de idcat
-typedef unsigned int t_frecuency; //!< un tipo frecuencia
-typedef unsigned int t_cantReg; //!< un tipo csntidad de registros
-*/
 
 class General
 {

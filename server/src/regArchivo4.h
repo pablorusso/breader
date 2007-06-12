@@ -18,7 +18,7 @@
 
 typedef struct{
 	t_offset firstBlockTag;
-	t_offset firstBlockEmpty;
+	t_offset firstBlockRegEmpty;
 } tRegistro3;
 
 
