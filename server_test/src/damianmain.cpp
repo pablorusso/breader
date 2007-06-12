@@ -19,7 +19,7 @@ void f1(feedHandler &fh) {
 		art1.set_pubdate("Pubdate: 17 de Mayo del 1998");
 		art1.set_summary("Summary: el vampiro es un capo, muy groso el tipo");
 		art1.set_timestamp(1);
-
+	
 		Articulo art2(CONST_MAX_CAT);
 		art2.set_title("Titulo: TheShining");
 		art2.set_uri("Uri: www.theshiningthemovie.com");
@@ -27,7 +27,7 @@ void f1(feedHandler &fh) {
 		art2.set_category("Category: suspenso/terror");
 		art2.set_pubdate("Pubdate: 32 de Octubre del 1995 =P");
 		art2.set_summary("Summary: un clasico, donde rompe la puerta con el hacha");
-		art2.set_timestamp(5);
+		art2.set_timestamp(5);	
 
 		Articulo art3(CONST_MAX_CAT);
 		art3.set_title("Titulo: TheGodfather");
@@ -37,7 +37,7 @@ void f1(feedHandler &fh) {
 		art3.set_pubdate("Pubdate: 15 de Abril del 1983");
 		art3.set_summary("Summary: Don Corleone es el mafioso de chicago");
 		art3.set_timestamp(7);
-
+	
 		Articulo art4(CONST_MAX_CAT);
 		art4.set_title("Titulo: El Laberinto del Fauno");
 		art4.set_uri("Uri: www.ellaberinto.com");
@@ -45,7 +45,7 @@ void f1(feedHandler &fh) {
 		art4.set_category("Category: drama/suspenso");
 		art4.set_pubdate("Pubdate: 3 de Noviembre del 2005");
 		art4.set_summary("Summary: no es fantasiosa, es bastante realista");
-		art4.set_timestamp(9);
+		art4.set_timestamp(9);	
 
 		Articulo art5(CONST_MAX_CAT);
 		art5.set_title("Titulo: Duro de Domar");
@@ -54,7 +54,7 @@ void f1(feedHandler &fh) {
 		art5.set_category("Category: entretenimiento");
 		art5.set_pubdate("Pubdate: que se yo... 12 de Mayo del 2002");
 		art5.set_summary("Summary: si no fuera por petti, estan cagados");
-		art5.set_timestamp(15);
+		art5.set_timestamp(15);	
 
 		Articulo art6(CONST_MAX_CAT);
 		art6.set_title("Titulo: Jack el Destripador");
@@ -63,7 +63,7 @@ void f1(feedHandler &fh) {
 		art6.set_category("Category: terror");
 		art6.set_pubdate("Pubdate: 12 de Abril del 1865");
 		art6.set_summary("Summary: los descuartiza a todos, mierda los hace");
-		art6.set_timestamp(35);
+		art6.set_timestamp(35);	
 
 		Articulo art7(CONST_MAX_CAT);
 		art7.set_title("Titulo: DamianHarto");
@@ -72,7 +72,7 @@ void f1(feedHandler &fh) {
 		art7.set_category("Category: infantil");
 		art7.set_pubdate("Pubdate: 27 de Mayo del 2007");
 		art7.set_summary("Summary: me canse de escribir articulos...");
-		art7.set_timestamp(48);
+		art7.set_timestamp(48);	
 
 		art1.add_cat(11, 1); //
 		art1.add_cat(12, 0);
@@ -162,10 +162,15 @@ void f1(feedHandler &fh) {
 }
 
 // **************** MAIN  ****************** //
-int oldmain(int argc, char** argv) {
+int damianmain(int argc, char** argv) {
 	std::cout << "Bienvenido al breader, probando Archivo2" << std::endl;
 
 	try {
+		// Creo el directorio DATA_PATH (si estaba creado no devuelve error)
+		string makeDir("mkdir -p ");
+		makeDir.append(DATA_PATH);
+		system(makeDir.c_str());
+
 		feedHandler fh(CONST_MAX_CAT);
 		f1(fh);
 /*
