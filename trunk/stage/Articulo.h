@@ -43,7 +43,7 @@ class Articulo {
 		  {return this->title;}
 		void set_uri(const string &uri)
 		  {this->uri = uri;}
-		string get_uri() const 
+		string get_uri() const
 		  {return this->uri;}
 		void set_description(const string &description)
 		  {this->description = description;}
@@ -166,6 +166,10 @@ class Articulo {
 		 */
 		friend ostream &operator<<(ostream &stream, const Articulo &articulo);
 
+		/**
+		 * Serializa el articulo a XML para enviar al front
+		 */
+		string getXML();
 	private:
 		//!< Las siguientes estan en ingles porque son del formato RSS
 		string title; //!< titulo (NUMREG = 0)
@@ -179,12 +183,11 @@ class Articulo {
 		t_timestamp timestamp; //!< fecha en formato timestamp (unix time)
 
 		//!< Las siguientes son las que incorporamos nosotros
-		bool leido; //!< indica si el articulo fue leido por el usuario o no 
+		bool leido; //!< indica si el articulo fue leido por el usuario o no
 		t_idart idart; //!< el numero de articulo dentro del feed
 		t_idfeed idfeed; //!< el numero de feed al que pertenece
 		ContenedorIdCat cont_idcat; //!< contenedor con los idcat del articulo
 		ContenedorIdCat cont_usu_pc; //!< por quien fue clasificado
-
 };
 
 #endif

@@ -1,4 +1,5 @@
 #include "Articulo.h"
+#include "XmlUtils.h"
 
 Articulo::Articulo(const t_idcat &MAX_CAT):title(""), uri(""), description(""),
   category(""), pubdate(""), summary(""), timestamp(0), leido(0),
@@ -45,4 +46,40 @@ ostream &operator<<(ostream &stream,  const Articulo &articulo) {
 	stream << "categorias: " << articulo.cont_idcat << endl;;
 	stream << "clasificaciones: " << articulo.cont_usu_pc << endl;;
 	return stream;
+}
+
+string Articulo::getXML()
+{
+	string isClassified = estaClasificado() ? "1" : "0";
+	string isFav = esFavorito() ? "1" : "0";
+	string isRead = leido ? "1" : "0";
+
+	string result = "";
+	result += "<article id=\"" + XmlUtils::xmlEncode( idart ) + "\" isClassified=\"" + XmlUtils::xmlEncode( isClassified ) + "\" isFavourite=\"" + XmlUtils::xmlEncode( isFav ) + "\" read=\"" + XmlUtils::xmlEncode( isRead );
+	result += "\" title=\"" + XmlUtils::xmlEncode( title ) + "\" date=\"" + XmlUtils::xmlEncode( timestamp ) + "\" author=\"" + XmlUtils::xmlEncode( description ) + "\" feed=\"" + XmlUtils::xmlEncode( idfeed ) + "\" link=\"" + XmlUtils::xmlEncode( uri ) + "\">";
+	result += "<summary>" + XmlUtils::xmlEncode( summary ) + "</summary>";
+
+	string tagsStr = "";
+	t_cont_idcat catIdList = cont_idcat.getCategorias();
+	t_cont_idcat::iterator idCatIt = catIdList.begin();
+	while( idCatIt != catIdList.end() )
+	{
+		t_idcat idcat = *idCatIt;
+		if ( cont_idcat.getCat( idcat ) )
+		{
+			string approved = cont_usu_pc.getCat( idcat ) ? "0" : "1";
+			string tagName = ""; //TODO: Leer del archivo de edu
+			tagsStr += "<tag id=\"" + XmlUtils::xmlEncode( idcat ) + "\" isApproved=\"" + XmlUtils::xmlEncode( approved ) + "\" name=\"" + XmlUtils::xmlEncode( tagName ) + "\"/>";
+		}
+		idCatIt++;
+	}
+
+	if ( tagsStr == "" )
+		result += "<tags/>";
+	else
+		result += "<tags>" + tagsStr + "</tags>";
+
+	result += "</article>";
+
+	return result;
 }

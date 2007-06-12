@@ -1,4 +1,5 @@
 #include "Feed.h"
+#include "XmlUtils.h"
 
 Feed::Feed(const t_idcat &MAX_CAT) {
 	this->cont_cant.resize(MAX_CAT, 0);
@@ -26,4 +27,9 @@ ostream &operator<<(ostream &stream,  Feed &feed) {
 		  << feed.cont_cant[i] << " veces" << endl;
 	}
 	return stream;
+}
+
+string Feed::getXML( t_timestamp lastUpdate )
+{
+	return "<feed id=\"" + XmlUtils::xmlEncode( idfeed ) + "\" name=\"" + XmlUtils::xmlEncode( name ) + "\" lastUpdate=\"" + XmlUtils::xmlEncode( lastUpdate ) + "\" url=\"" + XmlUtils::xmlEncode( uri ) + "\"/>";
 }

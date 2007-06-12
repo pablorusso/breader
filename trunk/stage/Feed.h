@@ -16,7 +16,7 @@ class Feed {
 		* Constructor.
 		*/
 		Feed(const t_idcat &MAX_CAT);
-	
+
 		/**
 		* Destructor
 		*/
@@ -45,7 +45,7 @@ class Feed {
 		  {this->cont_cant = cont_cant;}
 
 		/**
-		 * Reestructura el feed para que tenga MAX_CAT cantidad de ids de 
+		 * Reestructura el feed para que tenga MAX_CAT cantidad de ids de
 		 * categorias.
 		 * Nota: si NEW_MAX_CAT es menor que MAX_CAT este metodo no afecta
 		 * nada
@@ -60,11 +60,14 @@ class Feed {
 		 */
 		friend ostream &operator<<(ostream &stream,  Feed &feed);
 
+		/**
+		 * Serializa la clase a XML para enviar al front
+		 */
+		string getXML( t_timestamp lastUpdate );
 	private:
 		t_idfeed idfeed; //!< el id del feed
 		string name; //!< el nombre del feed
 		string uri; //!< la uri del feed
 		t_c_cant_idcat cont_cant; //!< las categorias del feed
-
 };
 #endif

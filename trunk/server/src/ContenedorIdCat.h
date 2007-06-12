@@ -72,6 +72,12 @@ class ContenedorIdCat {
 		bool getCat(const t_idcat &idcat) const;
 
 		/**
+		 * Retorna toda las categorias existentes en el contenedor
+		 * @return lista de ids de categorias
+		 */
+		t_cont_idcat getCategorias();
+
+		/**
 		 * Escribe una lista con las categorias contenidas. Debe estar
 		 * posicionado.
 		 * @param f el archivo a escribir
