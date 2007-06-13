@@ -27,9 +27,7 @@ typedef set<string> t_sw_cont; //!< el tipo contenedor de stopwords
  */
 using namespace std;
 class ArticleParser {
-
 	public:
-
 		/**
 		* Constructor. Inicializa las stopwords
 		*/

@@ -175,6 +175,15 @@ class Archivo2 {
 		 */
 		ContenedorIdCat readCat(const t_idart &idart);
 
+		/**
+		 * Lee todas las clasificaciones usu_pc del archivo, para un articulo en
+		 * particular
+		 * @param idart el id del articulo a leer
+		 * @return un contenedor con las clasificaciones usu_pc del articulo
+		 * @throw eArchivo2 si el archivo esta corrupto
+		 * @throw eArchivo2 si el idart esta fuera de rango
+		 */
+		ContenedorIdCat readCatUsuPc(const t_idart &idart);
 
 		/**
 		 * Lee una clasificacion del archivo, para un articulo en particular

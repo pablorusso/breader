@@ -73,7 +73,7 @@ void f1(feedHandler &fh) {
 		art7.set_pubdate("Pubdate: 27 de Mayo del 2007");
 		art7.set_summary("Summary: me canse de escribir articulos...");
 		art7.set_timestamp(48);	
-
+/*
 		art1.add_cat(11, 1); //
 		art1.add_cat(12, 0);
 		art1.add_cat(28, 1);
@@ -115,7 +115,7 @@ void f1(feedHandler &fh) {
 		art6.add_cat(13, 0);
 		art6.add_cat(12, 1);
 		art6.add_cat(10, 0);
-
+*/
 		t_cola_art c_art;
 		c_art.push(art1);
 		c_art.push(art2);
@@ -178,6 +178,34 @@ int main(int argc, char** argv) {
 		fh.set_MAX_CAT(62); //64, jeje
 		fh.reestructurar(); // No hace falta, es para pinchar nomas
 
+
+		//// Esta es una prueba de getUltimosArticulosNoCat() ////
+		// Parametros en orden: idfeed idcat idart si_no usu_pc
+		fh.clasificarArticulo(0,0,0,1,0); // Este lo tiene que devolver
+		fh.clasificarArticulo(0,1,0,1,1);
+
+		fh.clasificarArticulo(0,15,1,1,0); // Este no
+		fh.clasificarArticulo(0,3,1,1,0); 
+
+		t_cola_art c_art = fh.getUltimosArticulosNoCat(1);
+		while (!c_art.empty()) {
+			cout << c_art.front().get_title() << " "<< c_art.front().get_timestamp()
+			<< " idart: " << c_art.front().get_idart() << " idfeed: " <<
+			c_art.front().get_idfeed() << " leido? " << c_art.front().get_leido() << endl;
+			c_art.pop();
+		}
+		while (!c_art.empty()) c_art.pop(); // c_art.clear()
+		c_art = fh.getProximosArticulosNoCat(999);
+		while (!c_art.empty()) {
+			cout << c_art.front().get_title() << " "<< c_art.front().get_timestamp()
+			<< " idart: " << c_art.front().get_idart() << " idfeed: " <<
+			c_art.front().get_idfeed() << " leido? " << c_art.front().get_leido() << endl;
+			c_art.pop();
+		}
+		//// Fin prueba getUltimosArticulosNoCat() ////
+
+
+/*
 		//// Esta es una prueba de getUltimosArticulosNoLeidos() ////
 		fh.invertirLecturaArticulo(0,0);
 		//fh.invertirLecturaArticulo(0,);
@@ -187,7 +215,7 @@ int main(int argc, char** argv) {
 		while (!c_art.empty()) {
 			cout << c_art.front().get_title() << " "<< c_art.front().get_timestamp()
 			<< " idart: " << c_art.front().get_idart() << " idfeed: " <<
-			c_art.front().get_idfeed() << "leido? " << c_art.front().get_leido() << endl;
+			c_art.front().get_idfeed() << " leido? " << c_art.front().get_leido() << endl;
 			c_art.pop();
 		}
 		while (!c_art.empty()) c_art.pop(); // c_art.clear()
@@ -195,12 +223,12 @@ int main(int argc, char** argv) {
 		while (!c_art.empty()) {
 			cout << c_art.front().get_title() << " "<< c_art.front().get_timestamp()
 			<< " idart: " << c_art.front().get_idart() << " idfeed: " <<
-			c_art.front().get_idfeed() << "leido? " << c_art.front().get_leido() << endl;
+			c_art.front().get_idfeed() << " leido? " << c_art.front().get_leido() << endl;
 			c_art.pop();
 		}
 		//// Fin prueba getUltimosArticulosNoLeidos() ////
 
-/*
+
 
 		//// Esta es una prueba de getUltimosArticulosBool() ////
 		ContenedorIdCat c_cat(CONST_MAX_CAT);
