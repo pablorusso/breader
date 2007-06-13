@@ -177,6 +177,17 @@ void listen( int argc, char* argv[] )
 
 						cout << endl << "[listener] - Respuesta enviada exitosamente" << endl << std::flush;
 					}
+					catch ( std::exception::exception &e )
+					{
+						// responseCode de error
+						string respCode("1");
+						writeToSocket( new_sock, respCode );
+						// mensaje de error
+						string msg( e.what() );
+						writeToSocket( new_sock, msg );
+
+						cout << endl << "[listener] - Error realizando la operacion. Mensaje: " << msg << endl << std::flush;
+					}
 					catch ( string msg )
 					{
 						// responseCode de error
@@ -228,7 +239,7 @@ int main(int argc, char* argv[])
 		string rmFiles("rm -fR ");
 		rmFiles.append( General::getDataPath() );
 		system(rmFiles.c_str());
-		cout << "Archivos eliminados" << endl;
+		cout << "Los archivos de datos fueron eliminados" << endl;
 	}
 	else
 	{

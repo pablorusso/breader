@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+	<xsl:param name="feedId"></xsl:param>
 	<xsl:param name="artId"></xsl:param>
 
 	<xsl:output method="html"/>
@@ -28,7 +29,7 @@
 										</xsl:if>
 										<a class="link">
 											<xsl:attribute name="onclick">
-												linkTag( '<xsl:value-of select="$artId"/>', '<xsl:value-of select="@id"/>' )
+												linkTag( '<xsl:value-of select="$feedId"/>','<xsl:value-of select="$artId"/>', '<xsl:value-of select="@id"/>' )
 											</xsl:attribute>
 											<xsl:value-of select="@name"/>
 										</a>
