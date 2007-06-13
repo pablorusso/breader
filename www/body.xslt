@@ -141,7 +141,7 @@
 									<td align="left">
 										<span class="star link">
 											<xsl:attribute name="onclick">
-												doAction( 'actionCode=' + escape( 'A8' ) + '&amp;params=' + escape( 'artId||#<xsl:value-of select="@id"/>' ), editArticleHandler, '' )
+												doAction( 'actionCode=' + escape( 'A8' ) + '&amp;params=' + escape( 'feedId||#<xsl:value-of select="@feedId"/>|||artId||#<xsl:value-of select="@artId"/>' ), editArticleHandler, '' )
 											</xsl:attribute>
 											<xsl:choose>
 												<xsl:when test="@isFavourite = 0">
@@ -156,7 +156,7 @@
 									<td align="left">
 										<span class="star link">
 											<xsl:attribute name="onclick">
-												doAction( 'actionCode=' + escape( 'A9' ) + '&amp;params=' + escape( 'artId||#<xsl:value-of select="@id"/>' ), editArticleHandler, '')
+												doAction( 'actionCode=' + escape( 'A9' ) + '&amp;params=' + escape( 'feedId||#<xsl:value-of select="@feedId"/>|||artId||#<xsl:value-of select="@artId"/>' ), editArticleHandler, '')
 											</xsl:attribute>
 											<xsl:choose>
 												<xsl:when test="@read = 0">
@@ -171,7 +171,7 @@
 									<td>
 										<a class="link">
 											<xsl:attribute name="onclick">
-												showCatsMenu( '<xsl:value-of select="@id"/>' );
+												showCatsMenu( '<xsl:value-of select="@feedId"/>', '<xsl:value-of select="@artId"/>', '<xsl:value-of select="@id"/>' );
 											</xsl:attribute>
 											<xsl:attribute name="onmouseout">
 												startTimerToSelectCat();
@@ -215,7 +215,7 @@
 						<td>
 						<a class="link">
 							<xsl:attribute name="onclick">
-							doAction( 'actionCode=' + escape('A3') + '&amp;params=' + escape( 'artId||#<xsl:value-of select="../../@id"/>|||tagId||#<xsl:value-of select="@id"/>' ), editArticleHandler, '')
+							doAction( 'actionCode=' + escape('A3') + '&amp;params=' + escape( 'feedId||#<xsl:value-of select="@feedId"/>|||artId||#<xsl:value-of select="../../@artId"/>|||tagId||#<xsl:value-of select="@id"/>' ), editArticleHandler, '')
 							</xsl:attribute>
 							<img style="border:0" src="images/action_tag_check.png" title="Aprobar clasificacion automatica" alt="Aprobar clasificacion automatica"/>
 						</a>
@@ -225,7 +225,7 @@
 					<td>
 					<a class="link">
 						<xsl:attribute name="onclick">
-							doAction( 'actionCode=' + escape( 'A2' ) + '&amp;params=' + escape( 'artId||#<xsl:value-of select="../../@id"/>|||tagId||#<xsl:value-of select="@id"/>' ), editArticleHandler, '')
+							doAction( 'actionCode=' + escape( 'A2' ) + '&amp;params=' + escape( 'feedId||#<xsl:value-of select="@feedId"/>|||artId||#<xsl:value-of select="../../@artId"/>|||tagId||#<xsl:value-of select="@id"/>' ), editArticleHandler, '')
 						</xsl:attribute>
 						<img style="border:0" src="images/action_tag_del.png" title="Desasociar categoría" alt="Desasociar categoría"/>
 					</a>

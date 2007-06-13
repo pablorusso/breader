@@ -85,10 +85,10 @@ function hideCatsMenu()
 	var divWithCats = document.getElementById( 'tagsToLink' )
 	hideDiv( document, 'tagsToLink', null );
 }
-function showCatsMenu( artId )
+function showCatsMenu( feedId, artId, uniqueArtId )
 {
 	var allTagsDoc = tagsDocument.documentElement.childNodes[1]
-	var artDoc = findNodeById( bodyDocument.documentElement.childNodes[1], artId );
+	var artDoc = findNodeById( bodyDocument.documentElement.childNodes[1], uniqueArtId );
 	var tagsDoc = allTagsDoc.childNodes;
 
 	var tagsUnlinkedText = "<tags>";
@@ -104,13 +104,13 @@ function showCatsMenu( artId )
 	var tagsUnlinkedDoc = parseXML( tagsUnlinkedText );
 
 	var divWithCats = document.getElementById( 'tagsToLink' )
-	applyXSLT( 'add_tags.xslt', divWithCats, tagsUnlinkedDoc, 'artId', artId );
+	applyXSLT( 'add_tags.xslt', divWithCats, tagsUnlinkedDoc, 'feedId', feedId, 'artId', artId );
 	assignPosition( divWithCats );
 	showDiv( document, 'tagsToLink', null );
 }
-function linkTag( artId, tagId )
+function linkTag( feedId, artId, tagId )
 {
-	doAction ( "actionCode=" + escape( "A1" ) + "&params=" + escape( "tagId||#" + tagId + "|||artId||#" + artId ), editArticleHandler );
+	doAction ( "actionCode=" + escape( "A1" ) + "&params=" + escape( "feedId||#" + feedId + "|||tagId||#" + tagId + "|||artId||#" + artId ), editArticleHandler );
 	if ( amIInDiv ) amIInDiv = false;
 	hideCatsMenu();
 }

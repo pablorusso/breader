@@ -73,7 +73,7 @@ function getXslProcessor( fileName )
 	return xsltProcessor;
 }
 
-function transformXML( stylesheetName, node, element, paramName, param )
+function transformXML( stylesheetName, node, element, paramName1, param1, paramName2, param2 )
 {
 	var stylesheet = null;
 	var processor = null;
@@ -91,8 +91,10 @@ function transformXML( stylesheetName, node, element, paramName, param )
 
 	if ( processor )
 	{
-		if ( param != null )
-			processor.setParameter( null, paramName, param );
+		if ( param1 != null )
+			processor.setParameter( null, paramName1, param1 );
+		if ( param2 != null )
+			processor.setParameter( null, paramName2, param2 );
 
 		var fragment = processor.transformToFragment( node, document );
 		if ( element != null )
@@ -116,7 +118,12 @@ function transformXML( stylesheetName, node, element, paramName, param )
 		}
 };
 
-function applyXSLT( xsltFileName, divToUpdate, xmlDoc, paramName, param )
+function applyXSLT( xsltFileName, divToUpdate, xmlDoc, paramName1, param1, paramName2, param2 )
 {
-	return transformXML( xsltFileName, xmlDoc, divToUpdate, paramName, param );
+	return transformXML( xsltFileName, xmlDoc, divToUpdate, paramName1, param1, paramName2, param2 );
 }
+
+
+
+
+

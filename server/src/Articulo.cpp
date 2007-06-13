@@ -54,8 +54,11 @@ string Articulo::getXML( string feedName )
 	string isFav = esFavorito() ? "1" : "0";
 	string isRead = leido ? "1" : "0";
 
+	// Para tener un solo id por articulo
+	string id = XmlUtils::ushortToStr( idfeed ) + "_" + XmlUtils::uintToStr( idart );
+
 	string result = "";
-	result += "<article id=\"" + XmlUtils::xmlEncode( idart ) + "\" isClassified=\"" + XmlUtils::xmlEncode( isClassified ) + "\" isFavourite=\"" + XmlUtils::xmlEncode( isFav ) + "\" read=\"" + XmlUtils::xmlEncode( isRead );
+	result += "<article id=\"" + XmlUtils::xmlEncode( id ) + "\" artId=\"" + XmlUtils::xmlEncode( idart ) + "\" isClassified=\"" + XmlUtils::xmlEncode( isClassified ) + "\" isFavourite=\"" + XmlUtils::xmlEncode( isFav ) + "\" read=\"" + XmlUtils::xmlEncode( isRead );
 	result += "\" title=\"" + XmlUtils::xmlEncode( title ) + "\" date=\"" + XmlUtils::xmlEncode( timestamp ) + "\" author=\"" + XmlUtils::xmlEncode( description ) + "\" feedName=\"" + feedName + "\" feedId=\"" + XmlUtils::xmlEncode( idfeed ) + "\" link=\"" + XmlUtils::xmlEncode( uri ) + "\">";
 	result += "<summary>" + XmlUtils::xmlEncode( summary ) + "</summary>";
 

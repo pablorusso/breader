@@ -149,13 +149,13 @@ string EntitiesManager::ArticleGetUnclassifiedNext( t_idart quantity )
 
 string EntitiesManager::ArticleGetUnread( t_idart quantity )
 {
-	// Agregado por damian: es el metodo getUltimosArticulosNoLeidos()
-	return "<articles/>";
+	t_cola_art colaArt = _feedManager->getUltimosArticulosNoLeidos( quantity );
+	return BuildArticlesList( colaArt );
 }
 string EntitiesManager::ArticleGetUnreadNext( t_idart quantity )
 {
-	// Agregado por damian: es el metodo getProximosArticulosNoLeidos()
-	return "<articles/>";
+	t_cola_art colaArt = _feedManager->getProximosArticulosNoLeidos( quantity );
+	return BuildArticlesList( colaArt );
 }
 
 string EntitiesManager::ArticleLinkTag( t_idfeed feedId, t_idart artId, t_idcat tagId )
@@ -181,7 +181,6 @@ string EntitiesManager::FeedCreate( string name, string url )
 
 	return feed.getXML( lastUpdate );
 }
-
 string EntitiesManager::FeedDelete( t_idfeed feedId )
 {
 	Feed feed = _feedManager->getFeed( feedId );
@@ -189,7 +188,6 @@ string EntitiesManager::FeedDelete( t_idfeed feedId )
 	_feedManager->bajaFeed( feedId );
 	return feed.getXML( lastUpdate );
 }
-
 string EntitiesManager::FeedGetAll()
 {
 	t_cola_idfeeds feedIds = _feedManager->getColaIdFeeds();
@@ -208,26 +206,31 @@ string EntitiesManager::FeedGetAll()
 	return response;
 }
 
+
 string EntitiesManager::TagCreate( string name )
 {
+	// Crea una categoria
 	// Agregado por damian: aca no hace falta llamarme a mi
 	return "<tag/>";
 }
 
 string EntitiesManager::TagDelete( t_idcat id )
 {
+	// Borra una categoria
 	// Agregado por damian: aca sí hace falta llamarme a mi
 	return "<tag/>";
 }
 
 string EntitiesManager::TagEdit( t_idcat id, string name )
 {
+	// Cambia el nombre de una categoria
 	// Agregado por damian: aca no hace falta llamarme a mi
 	return "<tag/>";
 }
 
 string EntitiesManager::TagGetAll()
 {
-	// Agregado por damian: ??
+	// Lista de todas las categorias disponibles en el sistema
+	// Agregado por damian: aca no hace falta llamarme a mi
 	return "<tags/>";
 }
