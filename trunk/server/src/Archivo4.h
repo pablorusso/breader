@@ -7,8 +7,7 @@
 
 #include <string>
 #include <fstream>
-/*Si no le ponen el .dat despues no se puede borrar*/
-#define A4_FILENAME "A4.dat"
+#define A4_FILENAME "A4"
 #define LIBRE 0
 #define OCUPADO 1
 

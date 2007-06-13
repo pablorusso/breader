@@ -2,8 +2,7 @@
 
 std::string General::getDataPath()
 {
-	std::string dataPath( "" );
-	dataPath.append( getenv("HOME") );
+	std::string dataPath(getenv("HOME"));
 	dataPath.append( "/.breader/" );
 	return dataPath;
 }

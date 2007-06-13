@@ -20,7 +20,36 @@ int damianSWmain(int argc, char** argv) {
 		art1.set_summary("Summary: el vampiro es un capo, muy groso el tipo");
 		art1.set_timestamp(1);
 
-		t_word_cont cont = ap.parseArticle(art1);
+		Articulo art2(CONST_MAX_CAT);
+		art2.set_title("Ejemplo de prueba");
+		art2.set_uri("www.pablorusso.com.ar");
+		art2.set_description(
+		"Este es una articulo sobre la <a href=\"http://www.fifa.com \"> \
+         fifa</a>, entidad muy <i>imporante</i> <br> del futbol nacional. \
+		 La tabla de posiciones de los equipos es: <br> <table> <tr> \
+		 <td>equipo</td><td>posicion</td> </tr> <tr> <td>argentina</td><td>1 \
+		 </td> </tr> <tr> <td>brasil</td><td>2</td> </tr> </table> \
+		 Si querés ver mas sobre este articulo clickea <a href=\" \
+		 http://www.fifa.com/art/3\">aca</a>"
+		);
+/*		
+Este es una articulo sobre la <a href="http://www.fifa.com ">fifa</a>, entidad muy <i>imporante</i> <br>
+del futbol nacional. La tabla de posiciones de los equipos es: <br>
+<table>
+   <tr>   <td>equipo</td><td>posicion</td> </tr>
+   <tr>   <td>argentina</td><td>1</td> </tr>
+   <tr>   <td>brasil</td><td>2</td> </tr>
+</table>
+
+Si querés ver mas sobre este articulo clickea <a href=" http://www.fifa.com/art/3">aca</a>
+*/
+		art1.set_category("Testing");
+		art1.set_pubdate("Pubdate: 12 de Junio del 2007");
+		art1.set_summary("Como parsear un doc");
+		art1.set_timestamp(5);
+
+
+		t_word_cont cont = ap.parseArticle(art2);
 		while (!cont.empty()){
 			cout << "MAIN - word: " << cont.front() << " size: " << cont.front().size() << endl;
 /*

@@ -20,7 +20,7 @@ t_word_cont ArticleParser::parseArticle(const Articulo &art) {
 	else done = true;
 
 	while (!done) {
-		c = des[i];
+		c = tolower(des[i]); // TODO ojo con ISO;
 		if ((c == '<') && (myword.size() == 0)) { // TODO ver si asi esta bien
 			bool found = false;
 			while ((!found) && (i < des.size())) {
@@ -46,22 +46,6 @@ t_word_cont ArticleParser::parseArticle(const Articulo &art) {
 	}
 
 	return cont;
-
-/*
-	t_word_cont cont;
-	// TODO ver si va solo la description o tambien el title y demas
-	istringstream des(art.get_description());
-	string myword;
-
-	// TODO ver que pasa con cosas raras dentro del description...
-	while (des >> myword) {
-		if (!this->isStopWord(myword))
-			cont.push(myword);
-		myword.clear();
-	}
-
-	return cont;
-*/
 }
 
 void ArticleParser::loadSW() {

@@ -223,6 +223,24 @@ ContenedorIdCat Archivo2::readCat(const t_idart &idart) {
 
 }
 
+ContenedorIdCat Archivo2::readCatUsuPc(const t_idart &idart) {
+	ContenedorIdCat c(this->header.MAX_CAT);
+	if (idart < this->numRegs) {
+		try {
+			t_offset pos = A2_SIZEOF_HEADER + idart*this->sizeofReg() +
+			  sizeof(t_timestamp) + sizeof(t_offset) + sizeof(bool) +
+			  this->header.MAX_CAT/8*sizeof(unsigned char);
+			this->f.seekg(pos);
+			c.readCat(this->f);
+		}
+		catch (fstream::failure) {
+			THROW(eArchivo2, A2_ARCHIVO_CORRUPTO);
+		}
+	} else THROW(eArchivo2, A2_IDART_FUERA_DE_RANGO);
+	return c;
+
+}
+
 bool Archivo2::readUsu_Pc(const t_idart &idart, const t_idcat &idcat) {
 	bool ret;
 	if (idart < this->numRegs) {
