@@ -85,13 +85,15 @@ div.clr
 
 .error
 {
-	color: #FFFFFF;
-	font-size: 150%;
-	background-color: #FF0000;
-	width: 84%;
-	height: 4%;
-	text-align: right;
-	margin-left: 16%
+	position: relative;
+	background-color:#FF0000;
+	color:#FFFFFF;
+	font-size:120%;
+	height:18px;
+	margin-left:245px;
+	padding:1px;
+	text-align:right;
+	width:auto;
 }
 
 .processing

@@ -34,7 +34,7 @@
 				$article = $article."<summary>".htmlspecialchars($atom_content, ENT_QUOTES)."</summary>";
 				$article = $article."</article>";
 
-				$artXML = $artXML.$article;
+				$artXML = $article.$artXML;
 
 				//var_dump( $item );
 			}

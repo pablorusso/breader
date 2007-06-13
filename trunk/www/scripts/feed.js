@@ -51,9 +51,12 @@ function refreshFeedHandlerForReal( result )
 	result = checkError( document, result );
 	if ( result == null ) return;
 
+	var node = result.documentElement.childNodes[1];
+	var feedId = getNodeAttr( node, 'id' );
+
 	countToRefresh--;
 	if ( countToRefresh <= 0 && feedRefreshHandler != null )
-		feedRefreshHandler( 1 );
+		feedRefreshHandler( feedId, 1 );
 }
 function addFeedHandler( result )
 {
@@ -121,29 +124,32 @@ function refreshFeedHandler( result )
 		if ( countToRefresh <= 0 && feedRefreshHandler != null )
 		{
 			hideDiv( document, 'processing_div', null );
-			feedRefreshHandler( 0 );
+			feedRefreshHandler( null, 0 );
 		}
 	}
 }
 
-function updateFeedsDiv( mustUpdate )
+function updateFeedsDiv( feedId, mustUpdate )
 {
 	if ( mustUpdate )
 	{
+		/*if ( feedId != null )
+			setCurrentBody( "actionCode=" + escape( "A5" ) + '&params=' + escape( "feedId||#" + feedId + '|||' ) );*/
+
 		doAction ( getCurrentBody(), bodyHandler, 'A' );
 		doAction ( "actionCode=F3", feedsHandler, 'F' );
 	}
-	else hideDiv( docToUse, 'processing_div', null );
+	else hideDiv( document, 'processing_div', null );
 
 	if ( !timerId )
 		timerId = setTimeout( 'refreshAllFeeds()', autoUpdateTimeout );
 }
-function autoUpdateFeedsDiv( mustUpdate )
+function autoUpdateFeedsDiv( feedId, mustUpdate )
 {
 	if ( mustUpdate )
 		doAction ( "actionCode=F3", feedsHandler, 'F' );
 	else
-		hideDiv( docToUse, 'processing_div', null );
+		hideDiv( document, 'processing_div', null );
 
 	timerId = setTimeout( 'refreshAllFeeds()', autoUpdateTimeout );
 }
@@ -178,8 +184,6 @@ function refreshFeed( feedId )
 
 	countToRefresh = 0;
 	feedRefreshHandler = updateFeedsDiv;
-
-	setCurrentBody( "actionCode=" + escape( "A5" ) + '&params=' + escape( "feedId||#" + feedId + '|||' ) );
 	doRefreshFeed( feedId, 0 );
 }
 function refreshAllFeedsManual()

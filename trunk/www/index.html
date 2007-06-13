@@ -12,6 +12,7 @@
 		<script type="text/javascript" src="scripts/tag.js"></script>
 		<script type="text/javascript" src="scripts/article.js"></script>
 		<script type="text/javascript" src="scripts/ajax_threads.js"></script>
+		<script type="text/javascript" src="scripts/ajax_queue.js"></script>
 
 		<script type="text/javascript">
 			// Cada cuanto busca nuevos articulos en los feeeds
@@ -131,7 +132,9 @@
 				}
 
 				params = '?port=' + portNum + '&host=' + hostIP + '&' + params;
-				MakeNewAJAXCall( pageName + params, SimpleCallback, "GET", null, handler, null );
+
+				SimpleAJAXCall ( pageName + params, handler, 'GET', null )
+				//MakeNewAJAXCall( pageName + params, SimpleCallback, "GET", null, handler, null );
 			}
 			function doAction( params, handler, type )
 			{
