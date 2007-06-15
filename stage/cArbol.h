@@ -9,10 +9,11 @@
 #include <fstream>
 #include <list>
 
+
 /**Header del archivo que contiene a los nodos del arbol en disco.*/
 typedef struct {
-	unsigned int nroRaiz; //!< Numero del nodo Raiz.
-	unsigned int cantNodos;//!< Cantidad de nodos alamcenados.
+	t_uint nroRaiz; //!< Numero del nodo Raiz.
+	t_uint cantNodos;//!< Cantidad de nodos alamcenados.
 } tHeaderArbol;
 
 template < class CONT, class ELEM>
@@ -260,7 +261,7 @@ bool cArbol< CONT, ELEM >::buscarPos(cNodo<CONT,ELEM> * ptr, const CONT &elem, i
  */
 template < class CONT, class ELEM >
 bool cArbol< CONT, ELEM >::buscarLugar(CONT &elem){
-	int pos=0;
+	t_uint pos=0;
 	bool salir;
 	bool isFirst=true;
 
@@ -310,7 +311,7 @@ bool cArbol< CONT, ELEM >::buscarLugar(CONT &elem){
  */
 template < class CONT, class ELEM >
 bool cArbol< CONT, ELEM >::buscar(CONT &elem){
-	int pos=0;
+	t_uint pos=0;
 	bool salir,enDisco=false;
 	cNodo<CONT,ELEM> *aux=NULL;
 
@@ -425,7 +426,7 @@ void cArbol< CONT, ELEM >::salvarNodo(cNodo<CONT,ELEM> *nodo){
 template < class CONT, class ELEM>
 void cArbol< CONT, ELEM>::armarNodo(cNodo<CONT,ELEM> *ptrNodo , CONT &elem,cNodo<CONT,ELEM> *ptrHijo1,
                                                               cNodo<CONT,ELEM> *ptrHijo2){
-    int i = 0;
+    t_uint i = 0;
 
 	/*Si ya hay elementos en el nodo habro la lista para insertar ordenado.*/
 	if(ptrNodo->cantClavesUsadas > 0) {
@@ -434,7 +435,7 @@ void cArbol< CONT, ELEM>::armarNodo(cNodo<CONT,ELEM> *ptrNodo , CONT &elem,cNodo
 		buscarPos(ptrNodo,elem,i);
 
 		/*Corro los punteros y los elementos un lugar a la derecha*/
-        for(int j = ptrNodo->cantClavesUsadas; j > i; j--){
+        for(t_uint j = ptrNodo->cantClavesUsadas; j > i; j--){
             ptrNodo->dato[j] = ptrNodo->dato[j-1];
 			ptrNodo->ptr[j+1] = ptrNodo->ptr[j];
 			ptrNodo->ptrNroHijo[j+1]=ptrNodo->ptrNroHijo[j];
@@ -471,10 +472,10 @@ void cArbol< CONT, ELEM >::insertar(CONT dato){
    cNodo<CONT,ELEM> *padre=NULL,*ptrHijo2=NULL,*ptrHijo1=NULL;
    CONT *listDatos = new CONT[CANT_ELEM_X_NODO+1];
    cNodo<CONT,ELEM> **listPtrs = new cNodo<CONT,ELEM>*[CANT_ELEM_X_NODO+2];
-   int *listPtrsNro = new int[CANT_ELEM_X_NODO+2];
+   t_offset *listPtrsNro = new  t_offset[CANT_ELEM_X_NODO+2];
 
-   unsigned int i=0, j=0;
-   bool salir = false;
+   	t_uint i=0, j=0;
+	bool salir = false;
 
 	if(!isCreado)
 	   throw ExceptionTree(ERROR_NEA);
@@ -608,7 +609,7 @@ void cArbol< CONT, ELEM >::insertar(CONT dato){
 template < class CONT, class ELEM>
 void cArbol< CONT, ELEM >::salvarSubArbol(cNodo<CONT,ELEM> *nodo, int alt){
 
-	for(unsigned int j=0 ; j <= nodo->cantClavesUsadas; j++){
+	for(t_uint j=0 ; j <= nodo->cantClavesUsadas; j++){
 		if(nodo->ptr[j]!=NULL){
 			salvarSubArbol(nodo->ptr[j],alt+1);
 			if(alt > limitLevel){
@@ -629,7 +630,7 @@ template < class CONT, class ELEM>
 void cArbol< CONT, ELEM >::borrarNodo(cNodo<CONT,ELEM> *ptr){
 
 	if(ptr != NULL){
-		for(unsigned int i = 0; i <= ptr->cantClavesUsadas; i++)
+		for(t_uint i = 0; i <= ptr->cantClavesUsadas; i++)
 			borrarNodo(ptr->ptr[i]);
 		delete ptr;
 	}

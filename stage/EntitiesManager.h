@@ -3,8 +3,8 @@
 
 #include "Feed.h"
 #include "Tag.h"
-#include "Article.h"
-#include "TagArticleRelation.h"
+#include "Articulo.h"
+#include "feedHandler.h"
 
 #include <string>
 #include <vector>
@@ -15,60 +15,42 @@ using namespace std;
 class EntitiesManager
 {
 	private:
-		void createFeeds();
-		void createTags();
-		void createArticles();
-		string encodeXML ( const string &original );
-
-		int lastTagId;
-		int lastFeedId;
-		int lastArtId;
-
-		map< string, Article * >::iterator lastPos;
-		int quantity;
+		feedHandler *_feedManager;
+		static EntitiesManager *_instance;
 
 		EntitiesManager();
 		~EntitiesManager();
 
-		string ArticleGetUnread();
-		string ArticleGetUnclassified();
-		string ArticleGetFavourites();
-		string ArticleGetByFeed( string feedId );
-		string ArticleGetByTags( vector< string > tagIds, vector< string > state );
+		string BuildArticlesList( t_cola_art colaArt );
 	public:
-		static EntitiesManager *_instance;
 		static EntitiesManager *getInstance();
 
-		map< string, Tag *> Tags;
-		map< string, Feed *> Feeds;
-		map< string, Article *> Articles;
+		string ArticleCreate( t_idfeed feedId, string title, string summary, string link, string author, t_timestamp date );
+		string ArticleApproveTag( t_idfeed feedId, t_idart artId, t_idcat tagId );
+		string ArticleChangeFavState( t_idfeed feedId, t_idart artId );
+		string ArticleChangeReadState( t_idfeed feedId, t_idart artId );
 
-		string ArticleCreate( string title, string summary, string link, string author, string date, string feedName );
-		string ArticleApproveTag( string artId, string tagId );
-		string ArticleChangeFavState( string artId );
-		string ArticleChangeReadState( string artId );
+		string ArticleGetByFeed( t_idfeed feedId, t_idart quantity );
+		string ArticleGetByFeedNext( t_idart quantity );
+		string ArticleGetByTags( vector< t_idcat > tagIds, vector< bool > state, t_idart quantity );
+		string ArticleGetByTagsNext( t_idart quantity );
+		string ArticleGetUnclassified( t_idart quantity );
+		string ArticleGetUnclassifiedNext( t_idart quantity );
+		string ArticleGetUnread( t_idart quantity );
+		string ArticleGetUnreadNext( t_idart quantity );
+		string ArticleGetFavourites( t_idart quantity );
+		string ArticleGetFavouritesNext( t_idart quantity );
 
-		string ArticleGetByFeed( string feedId, string quantity );
-		string ArticleGetByFeedNext( string feedId, string quantity );
-		string ArticleGetByTags( vector< string > tagIds, vector< string > state, string quantity );
-		string ArticleGetByTagsNext( vector< string > tagIds, vector< string > state, string quantity );
-		string ArticleGetUnclassified( string quantity );
-		string ArticleGetUnclassifiedNext( string quantity );
-		string ArticleGetUnread( string quantity );
-		string ArticleGetUnreadNext( string quantity );
-		string ArticleGetFavourites( string quantity );
-		string ArticleGetFavouritesNext( string quantity );
-
-		string ArticleLinkTag( string artId, string tagId );
-		string ArticleUnLinkTag( string artId, string tagId );
+		string ArticleLinkTag( t_idfeed feedId, t_idart artId, t_idcat tagId );
+		string ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idcat tagId );
 
 		string FeedCreate( string name, string url );
-		string FeedDelete( string id );
+		string FeedDelete( t_idfeed feedId );
 		string FeedGetAll();
 
 		string TagCreate( string name );
-		string TagDelete( string id );
-		string TagEdit( string id, string name );
+		string TagDelete( t_idcat tagId );
+		string TagEdit( t_idcat tagId, string name );
 		string TagGetAll();
 };
 

@@ -18,7 +18,7 @@ cFileManager::~cFileManager(){
 /* Escribe un bloque en el archivo de salida.*/
 void cFileManager::readHeaderFile(){
 
-	std::ifstream inputFile(nameFile.c_str(),std::ios::out | std::ios::binary);
+	std::ifstream inputFile(nameFile.c_str(),std::ios::in | std::ios::binary);
 
 	if(!inputFile.good())
 		throw ExceptionFileManager(FM_ERROR_NC);
