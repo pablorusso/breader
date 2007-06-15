@@ -80,7 +80,7 @@ cPalabra::cPalabra(std::string palabra){
    Parametro:
 			 int nro: numero de bloque
 */
-void cPalabra::setNroBloque(int nro){
+void cPalabra::setNroBloque(t_offset nro){
 	dato.nroBlock=nro;
 }
 /*-------------------------------------------------------------------------------*/

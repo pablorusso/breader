@@ -229,7 +229,6 @@ class feedHandler {
 		 */
 		t_cola_art getProximosArticulosCat(const t_idart &cant_art);
 
-
 		/**
 		 * Devuelve una cola de articulos con los cant_art mas recientes que
 		 * satisfacen la "consulta booleana" (ej: CAT1 AND ~CAT12 AND ~CAT15)
@@ -260,6 +259,31 @@ class feedHandler {
 		 * @throw eFeedHandler si el Archivo2 esta corrupto
 		 */
 		t_cola_art getProximosArticulosBool(const t_idart &cant_art);
+
+		/**
+		 * Devuelve una cola de articulos con los cant_art mas recientes que
+		 * no estan categorizados (es decir, que no tienen ninguna categoria
+		 * manual o que tienen al menos una categoria automatica
+		 * Nota: trabaja en conjunto con getProximosArticulosNoCat()
+		 * @param cant_art la cantidad de articulos maxima que contendra la cola
+		 * @return una cola con los cant_art que no estan categorizados.
+		 *         Si no hay articulos, devuelve una cola vacia.
+		 * @throw eFeedHandler si el Archivo2 esta corrupto
+		 */
+		t_cola_art getUltimosArticulosNoCat(const t_idart &cant_art);
+
+		/**
+		 * Devuelve una cola de articulos con los cant_art mas recientes de un
+		 * feed, que no estan categorizados, despues del ultimo articulo pedido.
+		 * Nota: trabaja en conjunto con getUltimosArticulosNoCat()
+		 * @param cant_art la cantidad de articulos maxima que contendra la cola
+		 * @return una cola con los cant_art que matchean la consulta.
+		 *         Si no hay articulos, devuelve una cola vacia.
+		 * @throw eFeedHandler si no se habia llamado antes a
+		 *                     getUltimosArticulosNoCat()
+		 * @throw eFeedHandler si el Archivo2 esta corrupto
+		 */
+		t_cola_art getProximosArticulosNoCat(const t_idart &cant_art);
 
 		/**
 		 * Devuelve una cola con los idfeed del Archivo6
@@ -330,10 +354,11 @@ class feedHandler {
 		bool ultArtCat_pedido; //!< para saber si ya se utilizo el metodo
 		                       //!< getUltimosArticulosCat()
 		bool bool_ultArt_pedido; //!< para saber si ya se utilizo el metodo
-		                       //!< getUltimosArticulosBool()
+		                         //!< getUltimosArticulosBool()
 		bool no_leido_ultArt_pedido; //!< para saber si ya se utilizo el metodo
-		                              //!< getUltimosArticulosNoLeidos()
-
+		                             //!< getUltimosArticulosNoLeidos()
+		bool no_cat_ultArt_pedido; //!< para saber si ya se utilizo el metodo
+		                           //!< getUltimosArticulosNoLeidos()
 		t_map_ultCat map_ultCat; //!< utilizado en getUltimosArticulosCat()
 		                         //!< y en getgetUltimosArticulosNoLeidos()
 
@@ -389,6 +414,19 @@ class feedHandler {
  		 * @throw eFeedHandler si el Archivo2 esta corrupto
 		 */
 		t_timestamp iterateMapBool(const t_idfeed &idfeed, t_idart &idart);
+
+		/**
+		 * Itera a traves de los id art de un feed buscando uno que no este
+		 * categorizado
+		 * @param idfeed el idfeed sobre el cual buscar articulos
+		 * @param idart el id del articulo sobre el que se iterara. Este
+		 *              parametro es modificado por el metodo, dejandolo en
+		 *              un idart que matchee, o en -1 si no hay ningun articulo
+		 *              que matchee
+		 * @return el nuevo timestamp del articulo (ignorar si idart==-1)
+ 		 * @throw eFeedHandler si el Archivo2 esta corrupto
+		 */
+		t_timestamp iterateMapNoCat(const t_idfeed &idfeed, t_idart &idart);
 
 		/**
 		 * Constructor copia, privado, para prevenir descuidos

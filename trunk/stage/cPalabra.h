@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include "ExceptionPalabra.h"
+#include "General.h"
 
 #define MAX_LONG_PALABRA 3 /**Longitud maxima para que una palabra sea almacenada en cElemento*/
 #define NAME_FILE_PALABRAS "palabras.txt" /**Nombre del archivo que contiene las palabras cuya 
@@ -31,7 +32,7 @@ public:
 				 Tipo=2 palabra esta vacia 
 	           */
 	char palabra[MAX_LONG_PALABRA];	//!< Palabra u offset ha almacenar.
-	unsigned int nroBlock; //!< Numero de bloque.
+	t_offset nroBlock; //!< Numero de bloque.
 };
 /*****************************************************************************/
 
@@ -66,7 +67,7 @@ public:
    /**Modifica el numero de bloque
 	* @param nro Numero de bloque al que referencia
 	*/
-	void setNroBloque(int nro);
+	void setNroBloque(t_offset nro);
 
 	/**Elimina el objeto*/
 	void erase();

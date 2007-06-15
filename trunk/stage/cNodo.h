@@ -4,6 +4,7 @@
 #define NODO_ARBOL
 
 #include <iostream>
+#include "General.h"
 
 /**Valor que corresponde a un bloque vacio*/
 #define NULL_BL 0
@@ -17,14 +18,14 @@ public:
 
 	cNodoDisco(){
 		nroNodo=0;
-		for(int i=0 ; i < CANT_ELEM_X_NODO+1 ; i++){
+		for(t_offset i=0 ; i < CANT_ELEM_X_NODO+1 ; i++){
 			vecHijos[i]=NULL_BL;
 		}
 	}
 
-	unsigned int nroNodo; //!< Numero de nodo, es unico y permite identificar la posicion
+	t_offset nroNodo; //!< Numero de nodo, es unico y permite identificar la posicion
 	                      //!< donde se almacena en disco.
-	unsigned int vecHijos[CANT_ELEM_X_NODO+1]; //!< Vector de nodos que contiene los numeros
+	t_offset vecHijos[CANT_ELEM_X_NODO+1]; //!< Vector de nodos que contiene los numeros
                                                //!< que identifican a los nodos hijos.
 	ELEM elem[CANT_ELEM_X_NODO]; //!< Vector de Elementos del nodo
 };
@@ -37,7 +38,7 @@ class cNodo {
    /*
 	* @param nroNodo Identificador al nodo ante los demas.
 	*/
-   cNodo(int nroNodo);
+   cNodo(t_offset nroNodo);
    /*
 	* @param nodo Nodo almacenado en disco.
 	* @param padre Puntero al padre del nodo.
@@ -48,13 +49,13 @@ class cNodo {
    ~cNodo();
 
 private:
-   unsigned int cantClavesUsadas; //!< Claves usadas en el nodo 
+   t_uint cantClavesUsadas; //!< Claves usadas en el nodo 
    CONT *dato;           //!< Array de claves de elementos del nodo 
    cNodo **ptr;          //!< Array de punteros a cNodo 
-   unsigned int *ptrNroHijo; //!< Array de int que hace referencia al nodo en
+   t_offset *ptrNroHijo; //!< Array de int que hace referencia al nodo en
                              //!< que apunta en disco
    cNodo *padre;         //!< Puntero al nodo padre en memoria
-   unsigned int nroNodo; //!< Identifica al nodo ante los demas
+   t_offset nroNodo; //!< Identifica al nodo ante los demas
 
    cNodoDisco<ELEM> getNodoDisco();/**Devuelve el nodo en su formato para
                                      *ser almacenado*/
@@ -73,12 +74,12 @@ private:
 			int nroNodo: nmero de nodo
 */
 template < class CONT, class ELEM >
-cNodo< CONT, ELEM >::cNodo(int nroNodo){
+cNodo< CONT, ELEM >::cNodo(t_offset nroNodo){
    dato = new CONT[CANT_ELEM_X_NODO];
    ptr = new cNodo*[CANT_ELEM_X_NODO+1];
-   ptrNroHijo = new unsigned int[CANT_ELEM_X_NODO+1];
+   ptrNroHijo = new t_offset[CANT_ELEM_X_NODO+1];
 
-   for(int i=0; i <= CANT_ELEM_X_NODO ; i++){
+   for(t_offset i=0; i <= CANT_ELEM_X_NODO ; i++){
 	  ptrNroHijo[i]=NULL_BL;
 	  ptr[i]=NULL;
    }
@@ -98,13 +99,13 @@ template < class CONT, class ELEM >
 cNodo<CONT,ELEM>::cNodo(cNodoDisco<ELEM> nodoDisk,cNodo* padre){
    dato = new CONT[CANT_ELEM_X_NODO];
    ptr = new cNodo*[CANT_ELEM_X_NODO+1];
-   ptrNroHijo = new unsigned int[CANT_ELEM_X_NODO+1];
+   ptrNroHijo = new t_offset[CANT_ELEM_X_NODO+1];
 
 	this->padre=padre;
 	this->nroNodo=nodoDisk.nroNodo;
 	cantClavesUsadas = 0;
 
-	for(int i=0; i < CANT_ELEM_X_NODO ; i++){
+	for(t_offset i=0; i < CANT_ELEM_X_NODO ; i++){
 			dato[i]= CONT(nodoDisk.elem[i]);
 			ptr[i]=NULL;
 			ptrNroHijo[i] = nodoDisk.vecHijos[i];
@@ -130,7 +131,7 @@ cNodoDisco<ELEM> cNodo< CONT, ELEM >::getNodoDisco(){
 	cNodoDisco<ELEM> nodoDisk;
 
 	nodoDisk.nroNodo=nroNodo;
-	for(unsigned int i=0 ; i < cantClavesUsadas ; i++){
+	for(t_uint i=0 ; i < cantClavesUsadas ; i++){
 		nodoDisk.elem[i]=dato[i].getDato();
 		nodoDisk.vecHijos[i]=ptrNroHijo[i];
 	}

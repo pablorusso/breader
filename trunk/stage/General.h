@@ -24,7 +24,6 @@ El idcat -1 no se usa
 //!< El id de la categoria correspondiente a "favorito" o "starred"
 //!< (ojo que el cero no se puede usar)
 
-/* COMENTADO POR SERGIO */
 typedef unsigned int t_timestamp; //!< tipo formato timestamp (unix time)
 typedef unsigned int t_offset; //!< tipo ID para utilizar en los tipos offset
 typedef unsigned short t_idfeed; //!< tipo ID para utilizar en los tipos idfeed
