@@ -3,6 +3,7 @@
 #define ARBOL
 
 #include "cNodo.h"
+#include "General.h"
 #include "ExceptionArbol.h"
 #include <string>
 #include <cmath>
@@ -24,8 +25,8 @@ public:
   /**
 	* @param maxOcup Cantidad maxima de memoria que se quiere usar en KB.
 	* @throw ExceptioTree  cArbol::ERROR_MMI si la memoria maxima es insuficiente.
-	*/
-	cArbol(double maxOcup);
+    */
+   cArbol(double maxOcup);
 
    /* Destructor */
    ~cArbol();
@@ -59,13 +60,20 @@ public:
 
  /**Salva un arbol en disco
    * @throw ExceptioTree cArbol::ERROR_NEA no se ha creado el arbol aun.
-   * @throw ExceptioTree cArbol::ERROR_SAVE_TREE error al salvar el arbol.*/
+   * @throw ExceptioTree cArbol::ERROR_SAVE_TREE error al salvar el arbol.
+   */
    void saveArbol();
 
- /**Borra el arbol de la memoria*/
-   void vaciar();
+/** Borra el arbol del disco. Debe estar cerrado
+  * @throw ExceptioTree cArbol::ERROR_DT error al destruir el arbol.
+  */
+   void destroy();
+
+ /**Borra el arbol de la memoria y lo salva en disco*/
+   void closeArbol();
 
 /*------------DESPUES SACAR------------------------------*/
+   //TODO: despues sacar
    void mostrar(); /*Muestra el arbol*/
 
 /*------------------------------------------------------*/
@@ -77,7 +85,7 @@ private:
    std::string nameFile; //!< Nombre del archivo donde se almacena el arbol
    tHeaderArbol header; //!< Header del archivo donde se guarda el arbol
    bool isCreado;       //!< Si esta o no creado el arbol
-   char limitLevel;     //!< Nivel hasta donde se carga el arbol en memoria
+   t_uint limitLevel;     //!< Nivel hasta donde se carga el arbol en memoria
    
  /**Agrega un elemento a un nodo que tiene espacio suficiente
    * @param ptr Puntero al nodo que se quiere inicializar.
@@ -98,7 +106,7 @@ private:
    *                donde deberia estar y a centro en la posicion en la que debe
    *                tmb estar dentro del nodo.
    */
-   bool buscarPos(cNodo<CONT,ELEM> *ptr, const CONT &elem, int &centro);
+   bool buscarPos(cNodo<CONT,ELEM> *ptr, const CONT &elem, t_uint &centro);
 
  /**Busca un dato dentro del arbol retornando la posicion dentro del nodo y
    *con el corriente posicionado en el nodo.
@@ -123,7 +131,7 @@ private:
    * @param padre : nodo padre que se le debe asignar al nodo.
    * @return cNodo*: padre del nodo.
    */
-   cNodo<CONT,ELEM>* cargarRec(int nroNodo,cNodo<CONT,ELEM>* padre, char limit);
+   cNodo<CONT,ELEM>* cargarRec(t_uint nroNodo,cNodo<CONT,ELEM>* padre, t_uint limit);
 
  /**Carga un nodo en particular
    * @param nroNodo: nmero de nodo a cargar
@@ -131,7 +139,7 @@ private:
    * @throw ExceptioTree cArbol::ERROR_FILE_NOT_FOUND no se ha encontrado el archivo.
    * @return Nodo que se leyo del disco.
    */
-   cNodo<CONT,ELEM>* cargarNodo(int nroNodo,cNodo<CONT,ELEM>* padre);
+   cNodo<CONT,ELEM>* cargarNodo(t_uint nroNodo,cNodo<CONT,ELEM>* padre);
 
   /**Guarda en disco un nodo que fue modificado.
 	* @param nodo: Nodo que se va a salvar.
@@ -142,9 +150,10 @@ private:
   /**Guarda y libera la memoria de un subarbol.
 	* @param nodo: Nodo que se va a salvar.
 	*/
-   void salvarSubArbol(cNodo<CONT,ELEM> *nodo, int alt=0);
+   void salvarSubArbol(cNodo<CONT,ELEM> *nodo, t_uint alt=0);
 
  /*------------DESPUES SACAR------------------------------*/
+  // TODO: despues sacar
 
    void ver(cNodo<CONT,ELEM> *ptr); /*Muestra el arbol*/
 /*------------------------------------------------------*/
@@ -153,9 +162,9 @@ private:
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*
-   Constructor
-    Parametros:
-	  		   int cantClaves : altura maxima del arbol.
+Constructor
+ Parametros:
+   	    maxOcup : Cantidad de memoria que se quiere usar como maximo.
  */
 
 template < class CONT, class ELEM >
@@ -166,12 +175,14 @@ cArbol< CONT, ELEM >::cArbol(double maxOcup){
 	header.cantNodos=0;
 	header.nroRaiz=0;
 
-	double tamNodo=CANT_ELEM_X_NODO * sizeof(CONT) +
-	        (CANT_ELEM_X_NODO+1)*(sizeof(cNodo<CONT,ELEM>*) + sizeof(int))+ sizeof(cNodo<CONT,ELEM>);
+	double tamNodo = (double) cNodo<CONT,ELEM>::sizeofNodo();
+
+	/*CANT_ELEM_X_NODO * sizeof(CONT) + (CANT_ELEM_X_NODO+1)*(sizeof(cNodo<CONT,ELEM>*) + 
+          sizeof(t_uint))+ sizeof(cNodo<CONT,ELEM>); */
 
 	tamNodo= tamNodo/1024;
-	int cantNodos = (int) (maxOcup / tamNodo);
-	int mult=1,nro=1,suma=1;
+	t_uint cantNodos = (t_uint) (maxOcup / tamNodo);
+	t_uint mult=1,nro=1,suma=1;
 
 	if(cantNodos < 1)
 		throw ExceptionTree(ERROR_MMI);
@@ -179,7 +190,7 @@ cArbol< CONT, ELEM >::cArbol(double maxOcup){
 	this->limitLevel=0;
 	while(suma < cantNodos){
 		mult=1;
-		for(int i=0 ; i<nro ; i++){
+		for(t_uint i=0 ; i<nro ; i++){
 			mult*=(CANT_ELEM_X_NODO+1);
 		}
 		nro++;
@@ -203,22 +214,23 @@ cArbol< CONT, ELEM >::~cArbol(){
 
 /*---------------------------------------------------------------------------*/
 /*
-  Realiza una bsqueda binaria para encontrar al elemento o a donde deberia
-  ir dentro del nodo
+Realiza una bsqueda binaria para encontrar al elemento o a donde deberia
+ir dentro del nodo
 
   Parametros:
-			cNodo *ptr : puntero al raiz del arbol o subarbol desde donde
-                         se quiere empezar a buscar.
-			ELEM &elem : elemento que se esta buscando
-			int &centro : posicion dentro del nodo
+		cNodo *ptr : puntero al raiz del arbol o subarbol desde donde
+                             se quiere empezar a buscar.
+		ELEM &elem : elemento que se esta buscando
+		t_uint &centro : posicion dentro del nodo
   Retorno:
-		  true : si el elemento fue encontrado
-		  false: si no fue encontrado y se posiciona el corriente en la hoja
-		         donde deberia estar y a centro en la posicion en la que debe
-		         tmb estar dentro del nodo.
+		true : si el elemento fue encontrado
+		false: si no fue encontrado y se posiciona el corriente en la hoja
+		       donde deberia estar y a centro en la posicion en la que debe
+		       tmb estar dentro del nodo.
 */
 template < class CONT, class ELEM >
-bool cArbol< CONT, ELEM >::buscarPos(cNodo<CONT,ELEM> * ptr, const CONT &elem, int &centro){
+bool cArbol< CONT, ELEM >::buscarPos(cNodo<CONT,ELEM> * ptr, const CONT &elem, t_uint &centro){
+	//Deben ser int
 	int primero=0,ultimo = ptr->cantClavesUsadas-1;
 	centro=ultimo/2;
 
@@ -253,10 +265,10 @@ bool cArbol< CONT, ELEM >::buscarPos(cNodo<CONT,ELEM> * ptr, const CONT &elem, i
 /*---------------------------------------------------------------------------*/
 
 /*
-   Busca un dato dentro del arbol o el lugar donde debe insertarse el elemento y
-   si es necesario carga en memoria los nodos que estan en disco.
-    Parametros:
-	  		   CONT elem : identificacion del elemento a buscar.
+Busca un dato dentro del arbol o el lugar donde debe insertarse el elemento y
+si es necesario carga en memoria los nodos que estan en disco.
+ Parametros:
+   	    CONT elem : identificacion del elemento a buscar.
 
  */
 template < class CONT, class ELEM >
@@ -303,10 +315,10 @@ bool cArbol< CONT, ELEM >::buscarLugar(CONT &elem){
 }
 /*---------------------------------------------------------------------------*/
 /*
-   Busca un dato dentro del arbol.
+Busca un dato dentro del arbol.
 
-    Parametros:
-	  		   CONT : identificacion del elemento a buscar.
+ Parametros:
+  	    CONT : identificacion del elemento a buscar.
 
  */
 template < class CONT, class ELEM >
@@ -362,14 +374,14 @@ bool cArbol< CONT, ELEM >::buscar(CONT &elem){
 /*
  Carga un nodo en particular
   Parametros:
-			int nroNodo: nmero de nodo a cargar
-			cNodo *padre: padre del nodo a cargar
+		t_uint nroNodo: nmero de nodo a cargar
+		cNodo *padre: padre del nodo a cargar
 
   Retorno:
-			cNodo*: nodo que se leyo del disco.
+		cNodo*: nodo que se leyo del disco.
 */
 template < class CONT, class ELEM>
-cNodo<CONT,ELEM> *cArbol<CONT,ELEM>::cargarNodo(int nroNodo,cNodo<CONT,ELEM> *padre){
+cNodo<CONT,ELEM> *cArbol<CONT,ELEM>::cargarNodo(t_uint nroNodo,cNodo<CONT,ELEM> *padre){
 
 	std::ifstream inputFile;
 
@@ -388,9 +400,9 @@ cNodo<CONT,ELEM> *cArbol<CONT,ELEM>::cargarNodo(int nroNodo,cNodo<CONT,ELEM> *pa
 }
 /*---------------------------------------------------------------------------*/
 /*
-	Guarda en disco un nodo que fue modificado.
-	Parametros:
-				cNodo *nodo: nodo que se va a salvar
+Guarda en disco un nodo que fue modificado.
+ Parametros:
+		cNodo *nodo: nodo que se va a salvar
 
 */
 template < class CONT, class ELEM>
@@ -416,12 +428,12 @@ void cArbol< CONT, ELEM >::salvarNodo(cNodo<CONT,ELEM> *nodo){
 }
 /*----------------------------------------------------------------------------*/
 /*
-   Inserta en un nodo con espacio un nuevo elemento.
-   Parametros:
+Inserta en un nodo con espacio un nuevo elemento.
+ Parametros:
               cNodo * ptrNodo: nodo en donde se debe insertar
-			  ELEM &elem: elemento a insertar
-			  cNodo *ptrHijo1: hijo izq del nodo
-			  cNodo *ptrHijo2: hijo der del nodo
+  	      ELEM &elem: elemento a insertar
+	      cNodo *ptrHijo1: hijo izq del nodo
+	      cNodo *ptrHijo2: hijo der del nodo
 */
 template < class CONT, class ELEM>
 void cArbol< CONT, ELEM>::armarNodo(cNodo<CONT,ELEM> *ptrNodo , CONT &elem,cNodo<CONT,ELEM> *ptrHijo1,
@@ -538,7 +550,7 @@ void cArbol< CONT, ELEM >::insertar(CONT dato){
          /*Divido el gran bloque en dos nodos*/
 
          /* Nodo izquierdo*/
-		 int cte = (int) floor(((float)CANT_ELEM_X_NODO/2) + 0.5);
+	 t_uint cte = (t_uint) floor(((float)CANT_ELEM_X_NODO/2) + 0.5);
          corriente->cantClavesUsadas = cte;
          for(j = 0; j < corriente->cantClavesUsadas; j++) {
             corriente->dato[j] = listDatos[j];
@@ -607,7 +619,7 @@ void cArbol< CONT, ELEM >::insertar(CONT dato){
 
 /*----------------------------------------------------------------------------*/
 template < class CONT, class ELEM>
-void cArbol< CONT, ELEM >::salvarSubArbol(cNodo<CONT,ELEM> *nodo, int alt){
+void cArbol< CONT, ELEM >::salvarSubArbol(cNodo<CONT,ELEM> *nodo, t_uint alt){
 
 	for(t_uint j=0 ; j <= nodo->cantClavesUsadas; j++){
 		if(nodo->ptr[j]!=NULL){
@@ -622,9 +634,9 @@ void cArbol< CONT, ELEM >::salvarSubArbol(cNodo<CONT,ELEM> *nodo, int alt){
 }
 /*---------------------------------------------------------------------------*/
 /*
-  Libera la memoria asignada a los nodos del arbol de forma recursiva.
-  Parametros:
-			  cNodo *ptr : nodo a liberar
+Libera la memoria asignada a los nodos del arbol de forma recursiva.
+ Parametros:
+	     cNodo *ptr : nodo a liberar
 */
 template < class CONT, class ELEM>
 void cArbol< CONT, ELEM >::borrarNodo(cNodo<CONT,ELEM> *ptr){
@@ -638,16 +650,16 @@ void cArbol< CONT, ELEM >::borrarNodo(cNodo<CONT,ELEM> *ptr){
 
 /*---------------------------------------------------------------------------*/
 /*
-   Carga los nodos almacenados en disco en memoria de forma recursiva
-   Parametros:
-			  std::ifstream &inputFile: archivo que contiene los nodos
-			  cNodo *padre : nodo padre que se le debe asignar al nodo
-   Retorno:
-			  cNodo*: padre del nodo.
+Carga los nodos almacenados en disco en memoria de forma recursiva
+ Parametros:
+	     std::ifstream &inputFile: archivo que contiene los nodos
+	     cNodo *padre : nodo padre que se le debe asignar al nodo
+ Retorno:
+ 	     cNodo*: padre del nodo.
 */
 template < class CONT, class ELEM>
-cNodo<CONT,ELEM>* cArbol< CONT, ELEM >::cargarRec(int nroNodo,cNodo<CONT,ELEM> *padre, char limit){
-	unsigned int cont=0;
+cNodo<CONT,ELEM>* cArbol< CONT, ELEM >::cargarRec(t_uint nroNodo,cNodo<CONT,ELEM> *padre, t_uint limit){
+	t_uint cont=0;
 	cNodo<CONT,ELEM> *nodo=cargarNodo(nroNodo,padre);
 
 	while((cont<=nodo->cantClavesUsadas) && (nodo->ptrNroHijo[cont]!=NULL_BL)
@@ -660,9 +672,9 @@ cNodo<CONT,ELEM>* cArbol< CONT, ELEM >::cargarRec(int nroNodo,cNodo<CONT,ELEM> *
 
 /*---------------------------------------------------------------------------*/
 /*
-   Carga los nodos almacenados en disco
-   Parametros:
-			  std::string nameFile: nombre del archivo que contiene los nodos
+Carga los nodos almacenados en disco
+ Parametros:
+	     std::string nameFile: nombre del archivo que contiene los nodos
 */
 template < class CONT, class ELEM>
 void cArbol< CONT, ELEM >::loadArbol(std::string nameFile){
@@ -684,10 +696,10 @@ void cArbol< CONT, ELEM >::loadArbol(std::string nameFile){
 }
 /*---------------------------------------------------------------------------*/
 /*
-   Crea un arbol
+Crea un arbol
    Parametros:
-			  std::string nameFile: nombre del archivo donde se almacenara
-			                        el arbol si existen datos los borra.
+		std::string nameFile: nombre del archivo donde se almacenara
+		                      el arbol si existen datos los borra.
 */
 template < class CONT, class ELEM>
 void cArbol< CONT, ELEM >::crearArbol(std::string nameFile){
@@ -704,11 +716,29 @@ void cArbol< CONT, ELEM >::crearArbol(std::string nameFile){
 
 }
 /*---------------------------------------------------------------------------*/
+/* Borra el arbol del disco.
+*/
+template < class CONT, class ELEM>
+void cArbol< CONT, ELEM >::destroy(){
+	if(isCreado){
+	   if(raiz!=NULL){
+		isCreado=false;
+		borrarNodo(raiz);
+		raiz=NULL;
+		corriente=NULL;
+		remove(nameFile.c_str());
+   		nameFile="";
+   		limitLevel=0; 
+	   }
+	
+	}else throw ExceptionTree(ERROR_DT);
+}
+/*---------------------------------------------------------------------------*/
 /*
-   Guarda en disco los nodos del arbol en forma recursiva
-   Parametros:
-			  std::ofstream &outputFile: archivo donde se guardan los nodos
-			  cNodo *nodo: nodo que se va almacenar
+Guarda en disco los nodos del arbol en forma recursiva
+ Parametros:
+		std::ofstream &outputFile: archivo donde se guardan los nodos
+	        cNodo *nodo: nodo que se va almacenar
 */
 template < class CONT, class ELEM>
 void cArbol< CONT, ELEM >::guardarRec(std::ofstream &outputFile, cNodo<CONT,ELEM> *nodo){
@@ -717,7 +747,7 @@ void cArbol< CONT, ELEM >::guardarRec(std::ofstream &outputFile, cNodo<CONT,ELEM
 
 	nodoDisk=nodo->getNodoDisco();
 
-	for(unsigned int i=0 ; i< nodo->cantClavesUsadas ;i++){
+	for(t_uint i=0 ; i< nodo->cantClavesUsadas ;i++){
 		/*Por si el nodo tiene sus hijos en disco*/
 		if(nodo->ptr[i]!=NULL)
 			guardarRec(outputFile,nodo->ptr[i]);
@@ -735,7 +765,7 @@ void cArbol< CONT, ELEM >::guardarRec(std::ofstream &outputFile, cNodo<CONT,ELEM
 
 /*---------------------------------------------------------------------------*/
 /*
-	Guarda en disco los nodos del arbol en forma recursiva
+ Guarda en disco los nodos del arbol en forma recursiva
 */
 template < class CONT, class ELEM>
 void cArbol< CONT, ELEM >::saveArbol(){
@@ -761,13 +791,16 @@ void cArbol< CONT, ELEM >::saveArbol(){
    Salva y borra el arbol.
 */
 template < class CONT, class ELEM>
-void cArbol< CONT, ELEM >::vaciar(){
+void cArbol< CONT, ELEM >::closeArbol(){
 
 	if(isCreado && raiz!=NULL){
 		saveArbol();
 		isCreado=false;
 		borrarNodo(raiz);
 		raiz=NULL;
+		corriente=NULL;
+   		nameFile="";
+   		limitLevel=0; 
 	}
 }
 
@@ -796,15 +829,15 @@ void cArbol< CONT, ELEM >::mostrar(){
 /*------------------------------------------------------------------------------*/
 template < class CONT, class ELEM>
 void cArbol< CONT, ELEM >::ver(cNodo<CONT,ELEM> *nodo){
-   unsigned int i;
-   unsigned int aux=0;
+   t_uint i;
+   t_uint aux=0;
 
    if(!nodo) return;
 
    std::cout << "[";
 
    if(nodo->padre!=NULL){
-	   unsigned int j=0;
+	   t_uint j=0;
 	   while(j<(nodo->padre)->cantClavesUsadas && (nodo->padre)->dato[j] < nodo->dato[nodo->cantClavesUsadas-1]){
 		   j++;
 	   }

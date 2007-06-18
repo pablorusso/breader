@@ -5,19 +5,19 @@
 #include <exception>
 using std::exception;
 
-enum eError{FM_ERROR_FNF,FM_ERROR_NC,FM_ERROR_RES,FM_ERROR_FIND,FM_ERROR_CNF,
+enum eErrorFM{FM_ERROR_FNF,FM_ERROR_NC,FM_ERROR_RES,FM_ERROR_FIND,FM_ERROR_CNF,
             FM_ERROR_ADD,FM_ERROR_IC,FM_ERROR_FR,FM_ERROR,FM_ERROR_EC};
 
 class ExceptionFileManager : public exception{
 private:
-	  int tipoError;
+	  eErrorFM tipoError;
 
 public:
 	  
-ExceptionFileManager(int e):tipoError(e){}
+ExceptionFileManager(eErrorFM e):tipoError(e){}
 
 
-bool operator==(const eError &error){
+bool operator==(const eErrorFM &error){
 	  if(tipoError==error)
 		  return true;
 	  else return false;	  

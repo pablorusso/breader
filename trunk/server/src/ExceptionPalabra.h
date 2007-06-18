@@ -5,14 +5,14 @@
 #include <exception>
 using std::exception;
 
-enum eError{ERROR_FNF,ERROR_WNF,ERROR_WIS};
+enum eErrorP{ERROR_FNF,ERROR_WNF,ERROR_WIS};
 
 class ExceptionPalabra : public exception{
 private:
-	  int tipoError;
+	  eErrorP tipoError;
 
 public:
-	  ExceptionPalabra(int e):tipoError(e){}
+	  ExceptionPalabra(eErrorP e):tipoError(e){}
 
 	  const char *what() const throw(){
 		 switch(tipoError){

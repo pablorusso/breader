@@ -60,6 +60,8 @@ private:
    cNodoDisco<ELEM> getNodoDisco();/**Devuelve el nodo en su formato para
                                      *ser almacenado*/
 
+   static t_uint sizeofNodo();
+
  /**Declaro a cArbol con los derechos suficientes para acceder
    *libremente a esta clase*/
    friend class cArbol<CONT,ELEM> ;
@@ -140,6 +142,16 @@ cNodoDisco<ELEM> cNodo< CONT, ELEM >::getNodoDisco(){
 	return nodoDisk;
 }
 /*---------------------------------------------------------------------------*/
+template < class CONT, class ELEM >
+t_uint cNodo< CONT, ELEM >::sizeofNodo(){
+	t_uint tamano =  CANT_ELEM_X_NODO * sizeof(CONT) +
+	                 (CANT_ELEM_X_NODO+1)*(sizeof(cNodo<CONT,ELEM>*) + 
+                         sizeof(t_uint)) * (CANT_ELEM_X_NODO+1) +
+                         sizeof(cNodo<CONT,ELEM>);
+
+    return tamano;
+
+}
 /*****************************************************************************/
 
 #endif

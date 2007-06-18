@@ -5,7 +5,7 @@
 #include <exception>
 using std::exception;
 
-enum eErrorArbol{ERROR_FILE_NOT_FOUND,ERROR_SAVE_TREE,ELEM_FOUND,ERROR_NEA,ERROR_MMI};
+enum eErrorArbol{ERROR_FILE_NOT_FOUND,ERROR_SAVE_TREE,ELEM_FOUND,ERROR_NEA,ERROR_MMI,ERROR_DT};
 
 class ExceptionTree : public exception{
 private:
