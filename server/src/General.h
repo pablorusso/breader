@@ -40,7 +40,9 @@ typedef std::queue<t_idart> t_cola_idart; //!< el tipo cola de id de articulos
 typedef std::queue<t_idfeed> t_cola_idfeeds; //!< el tipo colaidfeeds
 typedef std::vector<t_idart> t_c_cant_idcat; //!< el tipo contenedor de
                                              //!< cantidades de idcat
-typedef std::queue<std::string> t_word_cont; //!< el tipo contenedor de palabras
+typedef std::map<std::string, t_quantity> t_word_cont;
+//!< el tipo contenedor de palabras. tiene la palabra y la cantidad de veces que
+//!< aparece en el articulo
 
 
 class General

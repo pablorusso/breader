@@ -40,13 +40,21 @@ class ArticleParser {
 
 		/**
 		 * Parsea el contenido de un articulo, devolviendo un contenedor con
-		 * las palabras. Excluye las palabras que son stopwords, o que son
+		 * las palabras y la cantidad de veces que aparecen en el mismo.
+		 * Excluye las palabras que son stopwords, o que son
 		 * de longitud menor a SW_MIN_WORD_LEN
 		 */
 		t_word_cont parseArticle(const Articulo &art);
 
 	private:
 		t_sw_cont stopwords; //!< un contenedor con las stopwords
+
+		/**
+		 * Agrega una palabra al contenedor, actualizando su frecuencia
+		 * @param cont el contenedor donde se agregara la palabra
+		 * @param myword la palabra a agregar
+		 */
+		void addWord(t_word_cont &cont, const string &myword);
 
 		/**
 		 * Carga las stopwords del archivo de stopwords y las guarda en el set

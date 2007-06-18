@@ -2,10 +2,18 @@
 
 ArticleParser::ArticleParser() {
 	this->loadSW();
-
 }
 
 ArticleParser::~ArticleParser() {}
+
+void ArticleParser::addWord(t_word_cont &cont, const string &myword) {
+	t_quantity count=1;
+	// Me fijo si ya esta
+	if (cont.find(myword) != cont.end()) {
+		count = cont[myword] + 1;
+	}
+	cont[myword] = count;
+}
 
 t_word_cont ArticleParser::parseArticle(const Articulo &art) {
 	t_word_cont cont;
@@ -31,7 +39,7 @@ t_word_cont ArticleParser::parseArticle(const Articulo &art) {
 		}
 		else if (isspace(c) || ispunct(c)) {
 			if (!this->isStopWord(myword))
-				cont.push(myword);
+				this->addWord(cont,myword);
 			myword.clear();
 		}
 		else {
@@ -40,7 +48,7 @@ t_word_cont ArticleParser::parseArticle(const Articulo &art) {
 		++i;
 		if (i == des.size()) { // Agrego la ultima palabra
 			if (!this->isStopWord(myword))
-				cont.push(myword);
+				this->addWord(cont,myword);
 			done=true;
 		}
 	}
