@@ -73,6 +73,7 @@ void cManagerWord::destroyEstructura(){
 /*----------------------------------------------------------------------*/
 
 /* Agrega una palabra a la estructura.*/
+/*
 void cManagerWord::addWord(std::string palabra){
 	
 	if(!isCreada)
@@ -84,7 +85,8 @@ void cManagerWord::addWord(std::string palabra){
 		if(!arbol.buscar(word)){
         		t_offset off = manager.addPalabra();
 			word.setNroBloque(off);
-			word.persistirPalabra();
+			try{ word.persistirPalabra();
+			}catch(ExceptionPalabra){}
 			arbol.insertar(word);		
 		
 		}else return;			
@@ -93,10 +95,10 @@ void cManagerWord::addWord(std::string palabra){
 		throw ExceptionManagerWord(MW_ERROR_ADD);
 	}
 	
-}
+}*/
 /*----------------------------------------------------------------------*/
-
-/* Agrega la frecuencia a la palabra y de ser necesario la asocia a una nueva categoria.*/
+/* Agrega la frecuencia a la palabra y de ser necesario la asocia a una nueva categoria. Si la	
+   palabra no existe en la estructura tambien la agrega.*/
 void cManagerWord::addFrecWord(std::string palabra,const t_idcat &id,const tFrecuencias &frec){
 
 	if(!isCreada)
@@ -110,8 +112,13 @@ void cManagerWord::addFrecWord(std::string palabra,const t_idcat &id,const tFrec
 			cElemento elem = word.getDato();
 			manager.setPalabra(id, elem.nroBlock,frec);	
 			
-		}else{		
-			throw ExceptionManagerWord(MW_ERROR_ADDF);
+		}else{	
+        		t_offset off = manager.addPalabra();
+				word.setNroBloque(off);
+				try{ word.persistirPalabra();
+				}catch(ExceptionPalabra){}
+				arbol.insertar(word);
+				manager.setPalabra(id, off,frec);
 		} 
 
 	}catch(exception){

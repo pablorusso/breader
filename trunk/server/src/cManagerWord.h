@@ -30,13 +30,8 @@ public:
   /** Constructor*/
 	cManagerWord():arbol(TAM_NODO){ isCreada=false;};
 
-  /** Agrega una palabra a la estructura.
-	* @param word Palabra que se quiere insertar. 
-	* @throw ExceptionManagerWord:MW_ERROR_ADD No se pudo insertar la palabra.
-	*/
-	void addWord(std::string word);
-
-  /** Agrega la frecuencia a la palabra y de ser necesario la asocia a una nueva categoria.
+  /** Agrega la frecuencia a la palabra y de ser necesario la asocia a una nueva categoria. Si la 	
+    *palabra no existe en la estructura tambien la agrega.
 	* @param word Palabra a la que se le quieren actualizar los datos.
 	* @param id Categoria de la palabra.
 	* @param frec Frecuencia a insertar a la palabra.
