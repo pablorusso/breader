@@ -58,8 +58,8 @@ cBloque* cFileManager::readBlock(const t_offset &nroBlockReg){
 	/*Escrivo los datos*/
 
 	for(t_cantReg i=0 ; i < REG_X_BLOCK; i++){
-		inputFile.read(reinterpret_cast<char *> (&(bl->vector[i].frec.cantFalse)), sizeof(t_frecuency));
-		inputFile.read(reinterpret_cast<char *> (&(bl->vector[i].frec.cantTrue)), sizeof(t_frecuency));
+		inputFile.read(reinterpret_cast<char *> (&(bl->vector[i].frec.cantFalse)), sizeof(t_frequency));
+		inputFile.read(reinterpret_cast<char *> (&(bl->vector[i].frec.cantTrue)), sizeof(t_frequency));
 		inputFile.read(reinterpret_cast<char *> (&(bl->vector[i].ptrAnt)), sizeof(t_offset));
 		inputFile.read(reinterpret_cast<char *> (&(bl->vector[i].ptrSig)), sizeof(t_offset));	
 	}
@@ -119,8 +119,8 @@ cRegistroBlock* cFileManager::readRegistro(const t_offset &nroBlockReg){
 	inputFile.seekg( cHeaderFile::sizeofHeader() + cBloque::sizeofBlock() * (nroBlock-1) +
 				     cHeaderBlock::sizeofHeaderBlock() + nroReg * cRegistroBlock::sizeofReg());
 
-	inputFile.read(reinterpret_cast<char *> (&(reg->frec.cantFalse)), sizeof(t_frecuency));
-	inputFile.read(reinterpret_cast<char *> (&(reg->frec.cantTrue)), sizeof(t_frecuency));
+	inputFile.read(reinterpret_cast<char *> (&(reg->frec.cantFalse)), sizeof(t_frequency));
+	inputFile.read(reinterpret_cast<char *> (&(reg->frec.cantTrue)), sizeof(t_frequency));
 	inputFile.read(reinterpret_cast<char *> (&(reg->ptrAnt)), sizeof(t_offset));
 	inputFile.read(reinterpret_cast<char *> (&(reg->ptrSig)), sizeof(t_offset));
 
@@ -152,8 +152,8 @@ void cFileManager::writeBlock(cBloque &bl){
 	/*Escrivo los datos*/
 
 	for(t_cantReg i=0 ; i < REG_X_BLOCK; i++){
-		outputFile.write(reinterpret_cast<char *> (&(bl.vector[i].frec.cantFalse)), sizeof(t_frecuency));
-		outputFile.write(reinterpret_cast<char *> (&(bl.vector[i].frec.cantTrue)), sizeof(t_frecuency));
+		outputFile.write(reinterpret_cast<char *> (&(bl.vector[i].frec.cantFalse)), sizeof(t_frequency));
+		outputFile.write(reinterpret_cast<char *> (&(bl.vector[i].frec.cantTrue)), sizeof(t_frequency));
 		outputFile.write(reinterpret_cast<char *> (&(bl.vector[i].ptrAnt)), sizeof(t_offset));
 		outputFile.write(reinterpret_cast<char *> (&(bl.vector[i].ptrSig)), sizeof(t_offset));	
 	}
@@ -184,8 +184,8 @@ void cFileManager::writeRegistro(const t_offset &nroBlockReg,cRegistroBlock &reg
 	outputFile.seekp(cHeaderFile::sizeofHeader() + cBloque::sizeofBlock() * (nroBlock-1) + 
 					 cHeaderBlock::sizeofHeaderBlock() + nroReg * cRegistroBlock::sizeofReg());
 	
-	outputFile.write(reinterpret_cast<char *> (&(reg.frec.cantFalse)), sizeof(t_frecuency));
-	outputFile.write(reinterpret_cast<char *> (&(reg.frec.cantTrue)), sizeof(t_frecuency));
+	outputFile.write(reinterpret_cast<char *> (&(reg.frec.cantFalse)), sizeof(t_frequency));
+	outputFile.write(reinterpret_cast<char *> (&(reg.frec.cantTrue)), sizeof(t_frequency));
 	outputFile.write(reinterpret_cast<char *> (&(reg.ptrAnt)), sizeof(t_offset));
 	outputFile.write(reinterpret_cast<char *> (&(reg.ptrSig)), sizeof(t_offset));
 
@@ -912,8 +912,8 @@ void cFileManager::restructurar(){
 		/*Escrivo los datos*/
 
 		for(t_cantReg i=0 ; i < REG_X_BLOCK; i++){
-			outputFile.write(reinterpret_cast<char *> (&(bloqueMov->vector[i].frec.cantFalse)), sizeof(t_frecuency));
-			outputFile.write(reinterpret_cast<char *> (&(bloqueMov->vector[i].frec.cantTrue)), sizeof(t_frecuency));
+			outputFile.write(reinterpret_cast<char *> (&(bloqueMov->vector[i].frec.cantFalse)), sizeof(t_frequency));
+			outputFile.write(reinterpret_cast<char *> (&(bloqueMov->vector[i].frec.cantTrue)), sizeof(t_frequency));
 			outputFile.write(reinterpret_cast<char *> (&(bloqueMov->vector[i].ptrAnt)), sizeof(t_offset));
 			outputFile.write(reinterpret_cast<char *> (&(bloqueMov->vector[i].ptrSig)), sizeof(t_offset));	
 		}	

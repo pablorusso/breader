@@ -48,10 +48,18 @@ Si querés ver mas sobre este articulo clickea <a href=" http://www.fifa.com/art
 		art1.set_summary("Como parsear un doc");
 		art1.set_timestamp(5);
 
-
+		//NOTA: agregado x sergio
 		t_word_cont cont = ap.parseArticle(art2);
-		while (!cont.empty()){
-			cout << "MAIN - word: " << cont.front() << " size: " << cont.front().size() << endl;
+		t_word_cont::const_iterator it;// = map.begin();
+
+		for(it= cont.begin() ; it!=cont.end() ; ++it){
+		    cout << "MAIN - word: " << (std::string) it->first << " size: " << ((std::string) it->first).size() << endl;
+		}
+
+
+
+//		while (!cont.empty()){
+//			cout << "MAIN - word: " << cont.front() << " size: " << cont.front().size() << endl;
 /*
 			string myword = cont.front();
 			string::size_type i=0;
@@ -60,8 +68,9 @@ Si querés ver mas sobre este articulo clickea <a href=" http://www.fifa.com/art
 				++i;
 			}
 */
-			cont.pop();
-		}
+//			cont.pop();
+//		}
+
 	}
 	catch (eArticleParser e){
 		cout << e.getErrorMensaje() << endl;

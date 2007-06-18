@@ -7,10 +7,10 @@ ArticleParser::ArticleParser() {
 ArticleParser::~ArticleParser() {}
 
 void ArticleParser::addWord(t_word_cont &cont, const string &myword) {
-	t_quantity count=1;
+	tFrecuencias count={1,0};
 	// Me fijo si ya esta
 	if (cont.find(myword) != cont.end()) {
-		count = cont[myword] + 1;
+		count.cantTrue = 1 + cont[myword].cantTrue;
 	}
 	cont[myword] = count;
 }

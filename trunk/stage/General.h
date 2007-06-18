@@ -17,6 +17,7 @@ El idcat -1 no se usa
 
 #include <queue>
 #include <string>
+#include <map>
 
 #define NOM_CAT_MAX_LEN 20
 //!< La longitud maxima de los nombres de categorias
@@ -33,14 +34,29 @@ typedef unsigned short t_freebytes; //!< para los bytes libres en registros
 typedef unsigned int t_uint; //!< un tipo entero sin signo generico
 typedef unsigned int t_quantity; //!< tipo para utilizar en los tipos cantidad
 typedef std::queue<t_idcat> t_queue_idcat; //!< tipo contenedor de idcat
-typedef unsigned int t_frecuency; //!< un tipo frecuencia
+typedef unsigned int t_frequency; //!< un tipo frecuencia
 typedef unsigned short t_cantReg; //!< un tipo csntidad de registros
+
+typedef struct{
+	t_frequency cantTrue; //!< Es la cantidad de veces que existe esa palabra 
+                           //!< en una categoria porque el usuario clasifico un 
+						   //!< artiulo que la contenia, o porque el usuario 
+                           //!< acepto la clasificacion automatica del sistema.
+
+	t_frequency cantFalse;//!< Es la cantidad de veces que el sistema clasifico
+                           //!< mal (corregido por el usuario) al articulo que 
+                           //!< contenia la palabra.
+} tFrecuencias;
+
 /* */
 typedef std::queue<t_idart> t_cola_idart; //!< el tipo cola de id de articulos
 typedef std::queue<t_idfeed> t_cola_idfeeds; //!< el tipo colaidfeeds
 typedef std::vector<t_idart> t_c_cant_idcat; //!< el tipo contenedor de
                                              //!< cantidades de idcat
-typedef std::queue<std::string> t_word_cont; //!< el tipo contenedor de palabras
+typedef std::map< std::string , tFrecuencias > t_word_cont;
+//!< el tipo contenedor de palabras. tiene la palabra y la cantidad de veces que
+//!< aparece en el articulo
+
 
 
 class General

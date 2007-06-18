@@ -127,6 +127,18 @@ void cManagerWord::addFrecWord(std::string palabra,const t_idcat &id,const tFrec
 	
 }
 /*----------------------------------------------------------------------*/
+/* Agrega las frecuencias a las palabras y de ser necesario las asocia a una nueva categoria. Si la 	
+   palabra no existe en la estructura tambien la agrega.*/
+void cManagerWord::addFrecWords(const t_idcat &id,const t_word_cont &map){
+
+	t_word_cont::const_iterator it;// = map.begin();
+
+	for(it= map.begin() ; it!=map.end() ; ++it){
+		addFrecWord((std::string) it->first ,id, (tFrecuencias) it->second);
+	}
+
+}
+/*----------------------------------------------------------------------*/
 
 /* Devuelve la frecuencia asociada a una palabra.*/
 tFrecuencias  cManagerWord::getWord(std::string palabra,const t_idcat &id){
