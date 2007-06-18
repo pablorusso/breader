@@ -74,10 +74,7 @@ t_idcat Archivo4::addCategory(string catName)
 			THROW(eArchivo4, A4_NOMBRE_CAT_ERROR);
 		// agrego en la primer posicion libre
 		ret = this->header.primerLibre;
-		std::cout << "entro a4" << std::endl;
 		this->writeReg(catName, 0,0,0,0,0,0);
-		std::cout << "write a4" << std::endl;
-
 	}
 	catch (fstream::failure) {
 		if (this->f.is_open()) this->f.close();

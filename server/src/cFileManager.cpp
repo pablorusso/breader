@@ -3,16 +3,16 @@
 
 /*----------------------------------------------------------------------------*/
 /*Constructor*/
-cFileManager::cFileManager(Archivo4 *aa){
+cFileManager::cFileManager(){
 	nameFile="";
 	isCreado=false;	
-	adminBlock = aa;
+	adminBlock = new Archivo4();
 }
 
 /*----------------------------------------------------------------------------*/
 /*Destructor*/
 cFileManager::~cFileManager(){
-
+	delete adminBlock;
 }
 /*----------------------------------------------------------------------------*/
 /* Escribe un bloque en el archivo de salida.*/
@@ -243,14 +243,14 @@ void cFileManager::cerrarFileManager(){
 
 /*----------------------------------------------------------------------------*/
 /*Borra una estructura en disco.*/
-bool cFileManager::borrarFileManager(std::string nameFile){
-
-	if(nameFile != this->nameFile){
+bool cFileManager::borrarFileManager(){
+	
+	if(isCreado){
 		remove(nameFile.c_str());
+		this->nameFile = "";
+		isCreado=false;
 		return true;
-	}
-
-	return false;
+	}else return false;
 }
 
 /*----------------------------------------------------------------------------*/

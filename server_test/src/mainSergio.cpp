@@ -3,26 +3,50 @@
 #include <string>
 #include "cFileManager.h"
 
+
+/*
+SALIDA CORRECTA:
+
+PRUEBA SERGIO
+Categoria ID: 50 offset: 4 frecuencia: 0
+Categoria ID: 51 offset: 5 frecuencia: 1
+Categoria ID: 51 offset: 4 frecuencia: 2
+Categoria ID: 51 offset: 4 frecuencia: 4
+Categoria ID: 54 offset: 4 frecuencia: 4
+Categoria ID: 53 offset: 4 frecuencia: 3
+-------------------------------------------
+Categoria ID: 53 offset: 5 frecuencia: 1
+Categoria ID: 53 offset: 6 frecuencia: 2
+Categoria ID: 53 offset: 7 frecuencia: 3
+Categoria ID: 51 offset: 5 frecuencia: 2
+Categoria ID: 53 offset: 8 frecuencia: 4
+Categoria ID: 51 offset: 4 frecuencia: 2
+Borro cat 3
+Categoria ID: 54 offset: 4 frecuencia: 4
+Busco cat 3 -> Deberia producirce un error ->
+Error no se ha podido encontrar el registro.
+
+
+*/
+
 /*------------------------------------------------------------*/
 void func(){
 	Archivo4 aa;
 
 
 	try{	
-		cFileManager pp(&aa);
+	//	cFileManager pp(&aa);
+ 		cFileManager pp;
 		pp.crearFileManager("datosFM.dat");
-		std::cout << "PASO1" << std::endl;
+
 		t_idcat cat0 = aa.addCategory("Cat0");
-		std::cout << "PASO2" << std::endl;
 		t_idcat cat1 = aa.addCategory("Cat1");
 		t_idcat cat2 = aa.addCategory("Cat2");
 		t_idcat cat3 = aa.addCategory("Cat3");
 		t_idcat cat4 = aa.addCategory("Cat4");
-
-		std::cout << "PASO3" << std::endl;
+	
 		/*Agrego Palabras*/
-		t_offset off0 = pp.addPalabra();
-		std::cout << "PASO4" << std::endl;
+		t_offset off0 = pp.addPalabra();	
 		t_offset off1 = pp.addPalabra();
 		t_offset off2 = pp.addPalabra();
 		t_offset off3 = pp.addPalabra();
@@ -133,16 +157,15 @@ void func(){
 	
 	std::cout << "-------------------------------------------" << std::endl;
 
-  	pp.cerrarFileManager();	
-
-	}catch(ExceptionFileManager &e){
+	pp.cerrarFileManager();	
+	}catch(ExceptionFileManager &e){ 			
 			std::cout << e.what() << std::endl;
 	}
 	
 
 }
 /*------------------------------------------------------------*/
-int sergiomain(int argc, char** argv){
+int mainX(int argc, char** argv){
 	std::cout << "PRUEBA SERGIO" << std::endl;
 	func();
 

@@ -309,7 +309,7 @@ private:
 
 public:
 
-	cFileManager(Archivo4 *aa);
+	cFileManager();
 	~cFileManager();
 
 	/** Crea la estructura en disco.
@@ -327,7 +327,7 @@ public:
 	/** Borra la estructura en disco. No debe estar cargada.
 		@return boll true si lo borro  caso contrario false
 	  */
-	bool borrarFileManager(std::string nameFile);
+	bool borrarFileManager();
 
 	/** Carga la estructura del disco.
 	  * @param nameFile nombre del archivo que contiene la estructura.
