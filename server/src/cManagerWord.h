@@ -38,6 +38,14 @@ public:
 	* @throw ExceptionManagerWord:MW_ERROR_ADDf No se pudo actualizar la frecuencia.
 	*/
 	void addFrecWord(std::string word,const t_idcat &id,const tFrecuencias &frec);
+
+  /** Agrega las frecuencias a las palabras y de ser necesario las asocia a una nueva categoria. Si la 	
+    *palabra no existe en la estructura tambien la agrega.
+	* @param map Contiene el palabra-frecuencia que se quiere agregar
+	* @param id Categoria de la palabra.	
+	* @throw ExceptionManagerWord:MW_ERROR_ADDf No se pudo actualizar la frecuencia.
+	*/
+	void addFrecWords(const t_idcat &id,const t_word_cont &map);
 	
   /** Devuelve la frecuencia asociada a una palabra.
 	* @param word Palabra a la que se quiere consultar.

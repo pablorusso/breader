@@ -18,17 +18,6 @@
 #define NO_MOVIBLE ((t_cantReg)(-1))
 
 
-typedef struct{
-	t_frecuency cantTrue; //!< Es la cantidad de veces que existe esa palabra 
-                           //!< en una categoria porque el usuario clasifico un 
-						   //!< artiulo que la contenia, o porque el usuario 
-                           //!< acepto la clasificacion automatica del sistema.
-
-	t_frecuency cantFalse;//!< Es la cantidad de veces que el sistema clasifico
-                           //!< mal (corregido por el usuario) al articulo que 
-                           //!< contenia la palabra.
-} tFrecuencias;
-
 /******************************************************************************/
 class cRegistroBlock{
 
@@ -67,7 +56,7 @@ public:
 	}
 
 	static unsigned int sizeofReg(){
-		return ( 2 * sizeof(t_offset) + 2 * sizeof(t_frecuency));	
+		return ( 2 * sizeof(t_offset) + 2 * sizeof(t_frequency));	
 	}
 
 };
