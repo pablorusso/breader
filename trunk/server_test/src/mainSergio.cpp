@@ -55,7 +55,7 @@ void func(){
 
 
 		/*Agrego a una palabra una caegoria*/
-		tFrecuencias ff = {0,0};
+		t_diferencias ff = {0,0};
 		pp.setPalabra(cat0 , off0 , ff);
 
 	    ff.cantFalse = 1; ff.cantTrue = 1;
@@ -64,23 +64,24 @@ void func(){
 	    ff.cantFalse = 2; ff.cantTrue = 2;
 		pp.setPalabra(cat1 , off0 , ff);
 
+		tFrecuencias frec;
 		/*----------------------------------------------------------*/
-		ff = pp.getPalabra(cat0, off0);
-		std::cout << "Categoria ID: " << cat0 << " offset: " << off0 << " frecuencia: " << ff.cantFalse << std::endl;
+		frec = pp.getPalabra(cat0, off0);
+		std::cout << "Categoria ID: " << cat0 << " offset: " << off0 << " frecuencia: " << frec.cantFalse << std::endl;
 
-		ff = pp.getPalabra(cat1, off1);
-		std::cout << "Categoria ID: " << cat1 << " offset: " << off1 << " frecuencia: " << ff.cantFalse << std::endl;
+		frec = pp.getPalabra(cat1, off1);
+		std::cout << "Categoria ID: " << cat1 << " offset: " << off1 << " frecuencia: " << frec.cantFalse << std::endl;
   
-		ff = pp.getPalabra(cat1, off0);
-		std::cout << "Categoria ID: " << cat1 << " offset: " << off0 << " frecuencia: " << ff.cantFalse << std::endl;
+		frec = pp.getPalabra(cat1, off0);
+		std::cout << "Categoria ID: " << cat1 << " offset: " << off0 << " frecuencia: " << frec.cantFalse << std::endl;
 		/*----------------------------------------------------------*/
 
 		ff.cantFalse = 2; ff.cantTrue = 2;
 		pp.setPalabra(cat1 , off0 , ff);
 
 		/*----------------------------------------------------------*/
-		ff = pp.getPalabra(cat1, off0);
-		std::cout << "Categoria ID: " << cat1 << " offset: " << off0 << " frecuencia: " << ff.cantFalse << std::endl;
+		frec = pp.getPalabra(cat1, off0);
+		std::cout << "Categoria ID: " << cat1 << " offset: " << off0 << " frecuencia: " << frec.cantFalse << std::endl;
 
 		/*----------------------------------------------------------*/
 
@@ -91,11 +92,11 @@ void func(){
 		pp.setPalabra(cat3 , off0 , ff);
 
 /*----------------------------------------------------------*/
-		ff = pp.getPalabra(cat4, off0);
-		std::cout << "Categoria ID: " << cat4 << " offset: " << off0 << " frecuencia: " << ff.cantFalse << std::endl;
+		frec = pp.getPalabra(cat4, off0);
+		std::cout << "Categoria ID: " << cat4 << " offset: " << off0 << " frecuencia: " << frec.cantFalse << std::endl;
 		
-		ff = pp.getPalabra(cat3, off0);
-		std::cout << "Categoria ID: " << cat3 << " offset: " << off0 << " frecuencia: " << ff.cantFalse << std::endl;
+		frec = pp.getPalabra(cat3, off0);
+		std::cout << "Categoria ID: " << cat3 << " offset: " << off0 << " frecuencia: " << frec.cantFalse << std::endl;
 			std::cout << "-------------------------------------------" << std::endl;
 /*----------------------------------------------------------*/
 
@@ -112,17 +113,17 @@ void func(){
 		pp.setPalabra(cat1 , off1 , ff);
 
 /*----------------------------------------------------------*/
-		ff = pp.getPalabra(cat3, off1);
-		std::cout << "Categoria ID: " << cat3 << " offset: " << off1 << " frecuencia: " << ff.cantFalse << std::endl;
+		frec = pp.getPalabra(cat3, off1);
+		std::cout << "Categoria ID: " << cat3 << " offset: " << off1 << " frecuencia: " << frec.cantFalse << std::endl;
 
-		ff = pp.getPalabra(cat3, off2);
-		std::cout << "Categoria ID: " << cat3 << " offset: " << off2 << " frecuencia: " << ff.cantFalse << std::endl;
+		frec = pp.getPalabra(cat3, off2);
+		std::cout << "Categoria ID: " << cat3 << " offset: " << off2 << " frecuencia: " << frec.cantFalse << std::endl;
 
-		ff = pp.getPalabra(cat3, off3);
-		std::cout << "Categoria ID: " << cat3 << " offset: " << off3 << " frecuencia: " << ff.cantFalse << std::endl;
+		frec = pp.getPalabra(cat3, off3);
+		std::cout << "Categoria ID: " << cat3 << " offset: " << off3 << " frecuencia: " << frec.cantFalse << std::endl;
 
-		ff = pp.getPalabra(cat1, off1);
-		std::cout << "Categoria ID: " << cat1 << " offset: " << off1 << " frecuencia: " << ff.cantFalse << std::endl;
+		frec = pp.getPalabra(cat1, off1);
+		std::cout << "Categoria ID: " << cat1 << " offset: " << off1 << " frecuencia: " << frec.cantFalse << std::endl;
 		
 /*----------------------------------------------------------*/
 
@@ -135,11 +136,11 @@ void func(){
 
 /*----------------------------------------------------------*/
 
-		ff = pp.getPalabra(cat3, off4);
-		std::cout << "Categoria ID: " << cat3 << " offset: " << off4 << " frecuencia: " << ff.cantFalse << std::endl;
+		frec = pp.getPalabra(cat3, off4);
+		std::cout << "Categoria ID: " << cat3 << " offset: " << off4 << " frecuencia: " << frec.cantFalse << std::endl;
 
-		ff = pp.getPalabra(cat2, off0);
-		std::cout << "Categoria ID: " << cat1 << " offset: " << off0 << " frecuencia: " << ff.cantFalse << std::endl;
+		frec = pp.getPalabra(cat2, off0);
+		std::cout << "Categoria ID: " << cat1 << " offset: " << off0 << " frecuencia: " << frec.cantFalse << std::endl;
 
 
 /*----------------------------------------------------------*/
@@ -148,12 +149,12 @@ void func(){
 	pp.deleteCategoria(cat3);
 	pp.restructurar();
 
-	ff = pp.getPalabra(cat4, off0);
-	std::cout << "Categoria ID: " << cat4 << " offset: " << off0 << " frecuencia: " << ff.cantFalse << std::endl;
+	frec = pp.getPalabra(cat4, off0);
+	std::cout << "Categoria ID: " << cat4 << " offset: " << off0 << " frecuencia: " << frec.cantFalse << std::endl;
 
 	std::cout << "Busco cat 3 -> Deberia producirce un error ->" << std::endl;
-	ff = pp.getPalabra(cat3, off0);
-	std::cout << "Categoria ID: " << cat3 << " offset: " << off0 << " frecuencia: " << ff.cantFalse << std::endl;
+	frec = pp.getPalabra(cat3, off0);
+	std::cout << "Categoria ID: " << cat3 << " offset: " << off0 << " frecuencia: " << frec.cantFalse << std::endl;
 	
 	std::cout << "-------------------------------------------" << std::endl;
 

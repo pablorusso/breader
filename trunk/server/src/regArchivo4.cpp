@@ -86,3 +86,8 @@ ostream &operator<<(ostream &stream,  t_regArchivo4 &reg) {
 	stream << "Category: " << reg.categoryName << endl;
 	return stream;
 }
+
+//t_Tag
+	
+//t_Tag::t_Tag():idTag(0),tagName(""),artCount(0){}
+

@@ -22,6 +22,7 @@ typedef struct{
 } tRegistro3;
 
 
+
 /**
  * // TODO comentar
  */
@@ -88,4 +89,13 @@ class t_regArchivo4 {
 		tRegistro3 getRegistro(t_idcat idCat);
 
 };
+/*class t_Tag
+{
+	public:
+		t_idcat idTag;
+		string  tagName;
+		t_quantity artCount;
+		
+		t_Tag();
+};*/
 #endif
