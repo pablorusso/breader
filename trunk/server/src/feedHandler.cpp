@@ -916,3 +916,10 @@ void feedHandler::renameFeed(const t_idfeed &idfeed_old,
 		throw(mie);
 	}
 }
+
+//NOTA: AGREGADO X SERGIO
+bool feedHandler::readUsu_Pc(const t_idfeed &idfeed,const t_idart &idart, const t_idcat &idcat){
+	Archivo2 a2(this->a6.get_MAX_CAT(), idfeed);
+	return a2.readUsu_Pc(idart,idcat);
+}
+
