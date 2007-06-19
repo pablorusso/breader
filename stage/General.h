@@ -34,7 +34,7 @@ typedef unsigned short t_freebytes; //!< para los bytes libres en registros
 typedef unsigned int t_uint; //!< un tipo entero sin signo generico
 typedef unsigned int t_quantity; //!< tipo para utilizar en los tipos cantidad
 typedef std::queue<t_idcat> t_queue_idcat; //!< tipo contenedor de idcat
-typedef unsigned int t_frequency; //!< un tipo frecuencia
+typedef int t_frequency; //!< un tipo frecuencia
 typedef unsigned short t_cantReg; //!< un tipo csntidad de registros
 
 typedef struct{
@@ -56,8 +56,6 @@ typedef std::vector<t_idart> t_c_cant_idcat; //!< el tipo contenedor de
 typedef std::map< std::string , tFrecuencias > t_word_cont;
 //!< el tipo contenedor de palabras. tiene la palabra y la cantidad de veces que
 //!< aparece en el articulo
-
-
 
 class General
 {

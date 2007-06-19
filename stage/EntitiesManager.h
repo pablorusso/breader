@@ -5,18 +5,32 @@
 #include "Tag.h"
 #include "Articulo.h"
 #include "feedHandler.h"
+#include "cManagerWord.h"
+#include "Archivo4.h"
+#include "ArticleParser.h"
 
 #include <string>
 #include <vector>
-#include <map>
+#include <list>
 
 using namespace std;
+
+typedef struct{
+	t_idcat id;
+	double probPos;
+	double probNeg;
+}t_probability;
+
+typedef std::list< t_probability > t_Likeli_Hood;
 
 class EntitiesManager
 {
 	private:
 		feedHandler *_feedManager;
 		static EntitiesManager *_instance;
+		cManagerWord managerWord;
+		Archivo4 managerTag;
+		ArticleParser articleParser;
 
 		EntitiesManager();
 		~EntitiesManager();
@@ -52,6 +66,8 @@ class EntitiesManager
 		string TagDelete( t_idcat tagId );
 		string TagEdit( t_idcat tagId, string name );
 		string TagGetAll();
+		void clasificarArticulo(const Articulo &art);
+
 };
 
 #endif
