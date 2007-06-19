@@ -472,11 +472,11 @@ cBloque* cFileManager::addRegistro(const t_idcat &idCat, const tFrecuencias &fre
 		}else{
 
 			   reg = header.regRoot;
-			   if(reg.firstBlockTag != NULL_BL){				   
-				   salida=updateBlock(idCat,frec,reg);				   
+			   if(reg.firstBlockTag != NULL_BL){ 
+				   salida=updateBlock(idCat,frec,reg); 
 			   }else salida=firstBlockTag(idCat,frec, reg);
 
-			   header.regRoot = reg;			   
+			   header.regRoot = reg;
 		} 
 	
 	return salida;
@@ -486,7 +486,7 @@ cBloque* cFileManager::addRegistro(const t_idcat &idCat, const tFrecuencias &fre
 /*Modifica una palabra en la estructura. Suma a la frecuencia actual de la 
   palabra la frecuencia que se le pasa.*/
 void cFileManager::setPalabra(const t_idcat &idCat,const t_offset &nro,
-                              const tFrecuencias &frec){
+                              const t_diferencias &frec){
 
 	cBloque *bl=NULL, *newBlock=NULL;
 
@@ -498,8 +498,10 @@ void cFileManager::setPalabra(const t_idcat &idCat,const t_offset &nro,
 	/*Si no encontro el bloque significa que la palabra no pertenece a esa 
 	  categoria entonces debo agregarla.*/
 	if(bl->header.idCat!=idCat){
-
-		try{ newBlock = addRegistro(idCat,frec);
+		tFrecuencias ff;
+		ff.cantTrue = (t_frequency) frec.cantTrue;
+		ff.cantFalse = (t_frequency) frec.cantFalse;
+		try{ newBlock = addRegistro(idCat,ff);
 		}catch(ExceptionFileManager){
 			delete bl;
 			throw ExceptionFileManager(FM_ERROR_ADD);
@@ -585,8 +587,8 @@ void cFileManager::setPalabra(const t_idcat &idCat,const t_offset &nro,
 
 	}else{ /*Si lo encontro*/
 		
-		bl->vector[bl->getNroReg()].frec.cantFalse += frec.cantFalse;
-		bl->vector[bl->getNroReg()].frec.cantTrue += frec.cantTrue;
+		bl->vector[bl->getNroReg()].frec.cantFalse = (t_frequency) ( bl->vector[bl->getNroReg()].frec.cantFalse +  frec.cantFalse);
+		bl->vector[bl->getNroReg()].frec.cantTrue  = (t_frequency) ( bl->vector[bl->getNroReg()].frec.cantTrue +  frec.cantTrue);
 
 	}
 

@@ -34,7 +34,8 @@ typedef unsigned short t_freebytes; //!< para los bytes libres en registros
 typedef unsigned int t_uint; //!< un tipo entero sin signo generico
 typedef unsigned int t_quantity; //!< tipo para utilizar en los tipos cantidad
 typedef std::queue<t_idcat> t_queue_idcat; //!< tipo contenedor de idcat
-typedef int t_frequency; //!< un tipo frecuencia
+typedef unsigned int t_frequency; //!< un tipo frecuencia
+typedef int t_diferencia; //!< un tipo frecuencia
 typedef unsigned short t_cantReg; //!< un tipo csntidad de registros
 
 typedef struct{
@@ -48,12 +49,17 @@ typedef struct{
                            //!< contenia la palabra.
 } tFrecuencias;
 
+typedef struct{
+	t_diferencia cantTrue;
+	t_diferencia cantFalse;
+} t_diferencias;
+
 /* */
 typedef std::queue<t_idart> t_cola_idart; //!< el tipo cola de id de articulos
 typedef std::queue<t_idfeed> t_cola_idfeeds; //!< el tipo colaidfeeds
 typedef std::vector<t_idart> t_c_cant_idcat; //!< el tipo contenedor de
                                              //!< cantidades de idcat
-typedef std::map< std::string , tFrecuencias > t_word_cont;
+typedef std::map< std::string , t_diferencias > t_word_cont;
 //!< el tipo contenedor de palabras. tiene la palabra y la cantidad de veces que
 //!< aparece en el articulo
 

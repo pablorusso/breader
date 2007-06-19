@@ -25,6 +25,17 @@ private:
 	cFileManager manager; /**Maneja listas doblemente enlazadas asociadas a las palabras y simplemente enlazadas para las categorias*/	
 	bool isCreada;
 
+
+  /** Crea la estructura de archivos que va a manejar las palabras y sus datos estadisticos asociados.
+	* @throw ExceptionManagerWord:MW_ERROR_CR No se pudo crear la estructura.
+	*/
+	void createEstructura();
+
+  /** Carga la estructura de archivos.
+	* @throw ExceptionManagerWord:MW_ERROR_CR No se pudo cargar la estructura.
+	*/
+	void loadEstructura();
+
 public:
 
   /** Constructor*/
@@ -37,7 +48,7 @@ public:
 	* @param frec Frecuencia a insertar a la palabra.
 	* @throw ExceptionManagerWord:MW_ERROR_ADDf No se pudo actualizar la frecuencia.
 	*/
-	void addFrecWord(std::string word,const t_idcat &id,const tFrecuencias &frec);
+	void addFrecWord(std::string word,const t_idcat &id,const t_diferencias &frec);
 
   /** Agrega las frecuencias a las palabras y de ser necesario las asocia a una nueva categoria. Si la 	
     *palabra no existe en la estructura tambien la agrega.
@@ -61,20 +72,15 @@ public:
 	*/	
 	void deleteCategoria(const t_idcat &id);
 
-  /** Crea la estructura de archivos que va a manejar las palabras y sus datos estadisticos asociados.
+  /** Crea o carga la estructura de archivos que va a manejar las palabras y sus datos estadisticos asociados.
 	* @throw ExceptionManagerWord:MW_ERROR_CR No se pudo crear la estructura.
 	*/
-	void createEstructura();
+	void openEstructura();
 
   /** Cierra la estructura salvando los datos.
 	* @throw ExceptionManagerWord:MW_ERROR_CL No se pudo cerrar/salvar la estructura.
     */
 	void closeEstructura();
-
-  /** Carga la estructura de archivos.
-	* @throw ExceptionManagerWord:MW_ERROR_CR No se pudo cargar la estructura.
-	*/
-	void loadEstructura();
 
   /** Borra la estructura de archivos
 	*/

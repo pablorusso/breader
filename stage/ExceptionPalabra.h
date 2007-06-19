@@ -27,7 +27,7 @@ public:
 		  case ERROR_WIS: return "El tamano de la palabra es menor al preestablecido";	
 
 		  default: return "Error Inesperado";
-		}          
+		}
       }
 };
 

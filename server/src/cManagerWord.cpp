@@ -1,5 +1,16 @@
 #include "cManagerWord.h"
 
+
+/*----------------------------------------------------------------------*/
+/* Crea la estructura de archivos que va a manejar las palabras y sus datos estadisticos asociados.*/
+void cManagerWord::openEstructura(){
+	
+	try{
+		loadEstructura();
+	}catch(ExceptionManagerWord){
+		createEstructura();		
+	}
+}
 /*----------------------------------------------------------------------*/
 /* Crea la estructura de archivos que va a manejar las palabras y sus datos estadisticos asociados.*/
 void cManagerWord::createEstructura(){
@@ -99,7 +110,7 @@ void cManagerWord::addWord(std::string palabra){
 /*----------------------------------------------------------------------*/
 /* Agrega la frecuencia a la palabra y de ser necesario la asocia a una nueva categoria. Si la	
    palabra no existe en la estructura tambien la agrega.*/
-void cManagerWord::addFrecWord(std::string palabra,const t_idcat &id,const tFrecuencias &frec){
+void cManagerWord::addFrecWord(std::string palabra,const t_idcat &id,const t_diferencias &frec){
 
 	if(!isCreada)
 		throw ExceptionManagerWord(MW_ERROR_CL);
@@ -134,7 +145,7 @@ void cManagerWord::addFrecWords(const t_idcat &id,const t_word_cont &map){
 	t_word_cont::const_iterator it;// = map.begin();
 
 	for(it= map.begin() ; it!=map.end() ; ++it){
-		addFrecWord((std::string) it->first ,id, (tFrecuencias) it->second);
+		addFrecWord((std::string) it->first ,id, (t_diferencias) it->second);
 	}
 
 }

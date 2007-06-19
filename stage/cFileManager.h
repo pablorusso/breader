@@ -345,7 +345,7 @@ public:
 	  * @throw cFileManager::FM_ERROR_ADD Error no se ha insertar el registro.
 	  */	
 	void setPalabra(const t_idcat &idCat, const t_offset &nroBlockReg, 
-                    const tFrecuencias &frec);
+                    const t_diferencias &frec);
 
 	/** Obtiene las frecuencias de la palabra en dicha categoria.
 	  * @param idCat Id de la categoria a la que pertenece la palabra.

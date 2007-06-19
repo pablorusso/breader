@@ -21,14 +21,21 @@ EntitiesManager *EntitiesManager::getInstance()
 EntitiesManager::EntitiesManager()
 {
 	_feedManager = new feedHandler( MAX_CATS );
-	 managerWord.createEstructura();
+	try{
+	 managerWord.openEstructura();
+	}catch(ExceptionManagerWord &e){
+		std::cout << e.what() << std::endl;
+	}
 	//TODO: ver el tema de las excepciones
 }
 
 EntitiesManager::~EntitiesManager()
 {
 	delete _feedManager;
-	managerWord.closeEstructura();
+	try{ managerWord.closeEstructura();	
+	}catch(ExceptionManagerWord &e){
+		std::cout << e.what() << std::endl;
+	}
 	//TODO: ver el tema de las excepciones
 }
 
@@ -72,12 +79,12 @@ string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 	if(_feedManager->readUsu_Pc(feedId,artId,IDCAT_FAV)){
 		/*Si lo clasifico el usuario*/
 		for(it = cont.begin(); it != cont.end() ; ++it )		
-			((tFrecuencias) it->second).cantTrue*=-1;
+			((t_diferencias) it->second).cantTrue*=-1;
 	}else{
 	/*Si lo clasifico el sistema*/	
 		for(it = cont.begin(); it != cont.end() ; ++it ){
-			((tFrecuencias) it->second).cantFalse=((tFrecuencias) it->second).cantTrue;
-			((tFrecuencias) it->second).cantTrue*=-1;
+			((t_diferencias) it->second).cantFalse=((t_diferencias) it->second).cantTrue;
+			((t_diferencias) it->second).cantTrue*=-1;
 		}
 	}
 	try{managerWord.addFrecWords(IDCAT_FAV,cont);
@@ -210,12 +217,12 @@ string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idca
 	if(_feedManager->readUsu_Pc(feedId,artId,tagId)){
 	/*Si lo clasifico el usuario*/
 		for(it = cont.begin(); it != cont.end() ; ++it )		
-			((tFrecuencias) it->second).cantTrue*=-1;
+			((t_diferencias) it->second).cantTrue*=-1;
 	}else{
 	/*Si lo clasifico el sistema*/	
 		for(it = cont.begin(); it != cont.end() ; ++it ){
-			((tFrecuencias) it->second).cantFalse=((tFrecuencias) it->second).cantTrue;
-			((tFrecuencias) it->second).cantTrue*=-1;
+			((t_diferencias) it->second).cantFalse=((t_diferencias) it->second).cantTrue;
+			((t_diferencias) it->second).cantTrue*=-1;
 		}
 	}
 
@@ -258,13 +265,18 @@ string EntitiesManager::FeedGetAll()
 	return response;
 }
 
-
 string EntitiesManager::TagCreate( string name )
 {
 	// Crea una categoria
 	// Agregado por damian: aca no hace falta llamarme a mi
 	// Agregado por sergio: a mi tmb
-	return "<tag/>";
+	Tag category;
+	
+ 	t_idcat id = _a4.addCategory(name);
+	category.ConvertToTag(_a4.getCategoryInfo(id));
+	
+	return category.getXML();
+	//return "<tag/>";
 }
 
 string EntitiesManager::TagDelete( t_idcat id )
@@ -272,29 +284,51 @@ string EntitiesManager::TagDelete( t_idcat id )
 	// Borra una categoria
 	// Agregado por damian: aca sí hace falta llamarme a mi
 	// Agregado por sergio: a mi tmb: try{ managerWord.deleteCategoria(id);} catch(ExceptionManagerWord){}
+	//Tag category;
+	_a4.deleteCategory(id);//TODO: Damian, no se a que tengo que llamar(Eduardo)
 	return "<tag/>";
 }
 
 string EntitiesManager::TagEdit( t_idcat id, string name )
 {
 	// Cambia el nombre de una categoria
+	Tag category;
+	_a4.modifyCategoryName(id, name);
+	category.ConvertToTag(_a4.getCategoryInfo(id));
 	// Agregado por damian: aca no hace falta llamarme a mi
 	// Agregado por sergio: a mi tmb
-	return "<tag/>";
+	//return "<tag/>";//TODO: hace falta devolver algo???
+	return category.getXML();
 }
 
 string EntitiesManager::TagGetAll()
 {
+	Tag categories;	
+	t_queue_idcat tagIds = _a4.getCategoriesId();
+
+	if ( tagIds.empty() ) return "<tags/>";
+
+	string response = "<tags>";
+	while ( ! tagIds.empty() )
+	{
+		Tag category;
+		category.ConvertToTag( _a4.getCategoryInfo(tagIds.front()) );
+		response += category.getXML();
+		tagIds.pop();
+	}
+	response += "</tags>";
+	return response;
+
 	// Lista de todas las categorias disponibles en el sistema
+	// Agregado por damian: aca no hace falta llamarme a mi*/
 	// Agregado por damian: aca no hace falta llamarme a mi
-	// Agregado por sergio: a mi tmb
-	return "<tags/>";
+	//return "<tags/>";
 }
 
 void EntitiesManager::clasificarArticulo(const Articulo &art){
 	t_Likeli_Hood list;     //typedef std::list< t_probability > t_Likeli_Hood;
 	double prob1=0,prob2=0;
-	t_queue_idcat cola = managerTag.getCategoriesId();	
+	t_queue_idcat cola = _a4.getCategoriesId();	
 	t_regArchivo4 regTag;
 	t_word_cont contWord = articleParser.parseArticle(art);
 	t_word_cont::const_iterator it;
@@ -311,7 +345,7 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 		cola.pop();
 		/*Obtengo la cantidad total de palabras en la categoria y la cantidad 
           de articulos que pertenecen a la categoria*/
-		regTag = managerTag.getCategoryInfo(dato.id);
+		regTag = _a4.getCategoryInfo(dato.id);
 		
 		for(it = contWord.begin(); it!=contWord.end();++it){	
 		  /*Obtengo la cantidad de veces que aparecio la palabra en una categoria.*/

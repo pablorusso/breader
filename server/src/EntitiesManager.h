@@ -29,7 +29,7 @@ class EntitiesManager
 		feedHandler *_feedManager;
 		static EntitiesManager *_instance;
 		cManagerWord managerWord;
-		Archivo4 managerTag;
+		Archivo4 _a4;
 		ArticleParser articleParser;
 
 		EntitiesManager();
