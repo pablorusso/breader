@@ -1,0 +1,39 @@
+Este txt esta para que se agreguen las cosas que tenemos que hacer y para que
+cada uno tilde lo que hizo.
+
+IMPORTANTE
+----------
+
+* exportacion a XMLSchema
+* importacion de txt (una boludez)
+
+NO TAN IMPORTANTE
+-----------------
+
+CD o DVD incluyendo:
+* fuentes de cada uno de los modulos que integran su sistema.
+* scripts o makefiles (automake) para poder construir cada modulo. A
+  su vez una breve descripcion de como construir cada modulo.
+* en el caso de php, incluir una carpeta webroot, donde se encuentre
+  organizada toda la interfaz web (incluyendo las bibliotecas que
+  utilizan en php) de tal forma que pueda configurarla directamente en
+  un vhost apache.
+
+opcionales: (en un directorio separado)
+* binarios linkeados estaticamente.
+* Bases de prueba generadas para el tp y usadas para testearlo.
+* Aplicaciones de test usadas en el desarrollo.
+* Set de datos de prueba usado.
+* Documentacion en formato digital.
+* Todo lo demas que consideren relevante para la entrega.
+
+A su vez se debera entregar una carpeta con la siguiente documentacion:
+
+* Detalle de todas las dependencias necesarias para construir la
+  aplicacion (Vital)
+* Manual de instalacion y configuracion del entorno de ejecucion.
+* Manual de usuario (explicacion del uso de la interfaz web, modulo de
+  persistencia y modulo de salida a xml)
+* Informacion de contacto al grupo por cualquier consulta que pueda
+  surgir.
+* Todo lo demas que consideren relevante para la entrega.
