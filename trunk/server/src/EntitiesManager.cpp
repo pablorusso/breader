@@ -39,7 +39,8 @@ EntitiesManager::~EntitiesManager()
 	//TODO: ver el tema de las excepciones
 }
 
-string EntitiesManager::ArticleCreate( t_idfeed feedId, string title, string summary, string link, string author, t_timestamp date )
+string EntitiesManager::ArticleCreate( t_idfeed feedId, string title,
+  string summary, string link, string author, t_timestamp date )
 {
 	Articulo art( MAX_CATS );
 	art.set_title( title );
@@ -75,16 +76,23 @@ string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 	t_word_cont::iterator it;	
 
 	//TODO: DAMIAN ¿COMO SE SI FUE EL USUARIO O LA MAQUINA QUIEN LO CLASIFICO? ¿TRUE es el usuario o el sistema?
+	//Respuesta (Agregado por damian):
+	// Si usu_pc = 1 -> clasificado por la pc
+	// Si usu_pc = 0 -> clasificado por el usuario
 
 	if(_feedManager->readUsu_Pc(feedId,artId,IDCAT_FAV)){
-		/*Si lo clasifico el usuario*/
-		for(it = cont.begin(); it != cont.end() ; ++it )		
-			((t_diferencias) it->second).cantTrue*=-1;
+		// Si lo clasifico el usuario
+		for(it = cont.begin(); it != cont.end() ; ++it )
+			// NO COMPILABA??? ((t_diferencias) it->second).cantTrue* = -1;
+			((t_diferencias) it->second).cantTrue = -1;
 	}else{
-	/*Si lo clasifico el sistema*/	
+		// Si lo clasifico el sistema
 		for(it = cont.begin(); it != cont.end() ; ++it ){
+			// TODO modificar esto, poner otro tipo que sea t_diferencia o
+			// algo asi, como lo hablamos
 			((t_diferencias) it->second).cantFalse=((t_diferencias) it->second).cantTrue;
-			((t_diferencias) it->second).cantTrue*=-1;
+			// NO COMPILABA??? ((t_diferencias) it->second).cantTrue* = -1;
+			((t_diferencias) it->second).cantTrue = -1;
 		}
 	}
 	try{managerWord.addFrecWords(IDCAT_FAV,cont);
@@ -170,15 +178,13 @@ string EntitiesManager::ArticleGetFavouritesNext( t_idart quantity )
 string EntitiesManager::ArticleGetUnclassified( t_idart quantity )
 {
 	// TODO: VER DE DONDE LEER
-	// Agregado por damian: seria como el ArticleGetByTags pero con states todos
-	// en cero (vienen asi por default en ContenedorIdCat)
+	// Agregado por damian: usar el getUltimosArticulosNoCat 
 	return "<articles/>";
 }
 string EntitiesManager::ArticleGetUnclassifiedNext( t_idart quantity )
 {
 	// TODO: VER DE DONDE LEER
-	// Agregado por damian: seria como el ArticleGetByTagsNext pero con states todos
-	// en cero (vienen asi por default en ContenedorIdCat)
+	// Agregado por damian: usar el getProximosArticulosNoCat
 	return "<articles/>";
 }
 
@@ -198,36 +204,47 @@ string EntitiesManager::ArticleLinkTag( t_idfeed feedId, t_idart artId, t_idcat 
 	Articulo art = _feedManager->clasificarArticulo( feedId, tagId, artId, true, false );
 	t_word_cont cont = articleParser.parseArticle(art);
 
-	try{managerWord.addFrecWords(tagId,cont);
-	}catch(ExceptionManagerWord &e){ std::cout << e.what() << std::endl;}
+	try {
+		managerWord.addFrecWords(tagId,cont);
+	}
+	catch(ExceptionManagerWord &e) {
+		std::cout << e.what() << std::endl;
+	}
 
 	Feed feed = _feedManager->getFeed( art.get_idfeed() );
 	return art.getXML( feed.getName() );
 }
 
 string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idcat tagId )
-{   
+{
 	//Es una desclasificacion de un articulo
 	Articulo art = _feedManager->clasificarArticulo( feedId, tagId, artId, false, false );
 	t_word_cont cont = articleParser.parseArticle(art);
 	t_word_cont::iterator it;	
 
 	//TODO: DAMIAN ¿COMO SE SI FUE EL USUARIO O LA MAQUINA QUIEN LO CLASIFICO? ¿TRUE es el usuario o el sistema?
+	// Respuesta (agregado por damian):
+	// Si usu_pc = 1 -> clasificado por la pc
+	// Si usu_pc = 0 -> clasificado por el usuario
 
 	if(_feedManager->readUsu_Pc(feedId,artId,tagId)){
-	/*Si lo clasifico el usuario*/
-		for(it = cont.begin(); it != cont.end() ; ++it )		
+	// Si lo clasifico el usuario
+		for(it = cont.begin(); it != cont.end() ; ++it )
 			((t_diferencias) it->second).cantTrue*=-1;
 	}else{
-	/*Si lo clasifico el sistema*/	
+	// Si lo clasifico el sistema
 		for(it = cont.begin(); it != cont.end() ; ++it ){
 			((t_diferencias) it->second).cantFalse=((t_diferencias) it->second).cantTrue;
 			((t_diferencias) it->second).cantTrue*=-1;
 		}
 	}
 
-	try{managerWord.addFrecWords(tagId,cont);
-	}catch(ExceptionManagerWord &e){ std::cout << e.what() << std::endl;}
+	try {
+		managerWord.addFrecWords(tagId,cont);
+	}
+	catch(ExceptionManagerWord &e) {
+		std::cout << e.what() << std::endl;
+	}
 	Feed feed = _feedManager->getFeed( art.get_idfeed() );
 	return art.getXML( feed.getName() );
 }
@@ -282,10 +299,11 @@ string EntitiesManager::TagCreate( string name )
 string EntitiesManager::TagDelete( t_idcat id )
 {
 	// Borra una categoria
-	// Agregado por damian: aca sí hace falta llamarme a mi
+	// Agregado por damian: lo mio ya esta hecho
 	// Agregado por sergio: a mi tmb: try{ managerWord.deleteCategoria(id);} catch(ExceptionManagerWord){}
 	//Tag category;
-	_a4.deleteCategory(id);//TODO: Damian, no se a que tengo que llamar(Eduardo)
+	_a4.deleteCategory(id);
+	_feedManager->bajaCategoria(id);
 	return "<tag/>";
 }
 
@@ -320,7 +338,6 @@ string EntitiesManager::TagGetAll()
 	return response;
 
 	// Lista de todas las categorias disponibles en el sistema
-	// Agregado por damian: aca no hace falta llamarme a mi*/
 	// Agregado por damian: aca no hace falta llamarme a mi
 	//return "<tags/>";
 }
@@ -337,33 +354,32 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 	
 	//TODO: VER EXCEPCIONES
 
-	/*Por cada idcat recorro una vez la lista de palabras.*/	
+	// Por cada idcat recorro una vez la lista de palabras
 	while(cola.empty()){
-		dato.probPos = 0;		
+		dato.probPos = 0;
 		dato.probNeg=0;
 		dato.id = cola.front();
 		cola.pop();
-		/*Obtengo la cantidad total de palabras en la categoria y la cantidad 
-          de articulos que pertenecen a la categoria*/
+		// Obtengo la cantidad total de palabras en la categoria y la cantidad
+		// de articulos que pertenecen a la categoria
 		regTag = _a4.getCategoryInfo(dato.id);
 		
 		for(it = contWord.begin(); it!=contWord.end();++it){	
-		  /*Obtengo la cantidad de veces que aparecio la palabra en una categoria.*/
-			frec = managerWord.getWord((std::string)it->first ,dato.id);	
+			// Obtengo la cantidad de veces que aparecio la palabra en
+			// una categoria
+			frec = managerWord.getWord((std::string)it->first ,dato.id);
 			prob1 = (double) (frec.cantTrue / regTag.wordsPositive);
-			prob2 = regTag.artPositive ;//TODO: ver como obtener: /Cant total de art clasificados;
-			dato.probPos += prob1 * prob2;			
+			prob2 = regTag.artPositive;
+			//TODO: ver como obtener: /Cant total de art clasificados;
+			// Respuesta: (agregado por damian) con eduardo decimos que no hace falta
+			dato.probPos += prob1 * prob2;
 			prob1 = (double) (frec.cantFalse / regTag.wordsNegative);
-			prob2 = regTag.artNegative ;//TODO: ver como obtener: /Cant total de art clasificados;
-			dato.probNeg += prob1 * prob2;			
+			prob2 = regTag.artNegative;
+			//TODO: ver como obtener: /Cant total de art clasificados;
+			// Respuesta: (agregado por damian) con eduardo decimos que no hace falta
+			dato.probNeg += prob1 * prob2;
 		}
-		
 		list.push_back(dato);
-		
 	}
-
 	//TODO: aca esta la lista de probabilidades para el articulo ver que hacer con esto
-	
 }
-
-

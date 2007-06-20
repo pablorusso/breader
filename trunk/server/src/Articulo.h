@@ -83,8 +83,12 @@ class Articulo {
 		  {this->cont_idcat = cont_idcat;}
 		ContenedorIdCat get_cont_idcat() const
 		  {return this->cont_idcat;}
+		 // Si usu_pc = 1 -> clasificado por la pc
+		 // Si usu_pc = 0 -> clasificado por el usuario
 		void set_cont_usu_pc(const ContenedorIdCat &cont_usu_pc)
 		  {this->cont_usu_pc = cont_usu_pc;}
+		 // Si usu_pc = 1 -> clasificado por la pc
+		 // Si usu_pc = 0 -> clasificado por el usuario
 		ContenedorIdCat get_cont_usu_pc() const
 		  {return this->cont_usu_pc;}
 
@@ -93,8 +97,9 @@ class Articulo {
 		 * Agrega una categoria al contenedor de categorias
 		 * Si idcat ya existe no agrega nada ni devuelve error.
 		 * @param idcat el id de la categoria a agregar
-		 * @param usu_pc es igual a 0 si fue clasificado el usuario, vale 1 de
-		 *               lo contrario
+		 * @param usu_pc es el tipo de clasificacion
+		 * Si usu_pc = 1 -> clasificado por la pc
+		 * Si usu_pc = 0 -> clasificado por el usuario
 		 * @throw eContenedorIdCat si el idcat esta fuera de rango
 		 */
 		void add_cat(const t_idcat &idcat, const bool usu_pc);
@@ -135,9 +140,11 @@ class Articulo {
 		/**
 		 * Clasifica al articulo como favorito (con IDCAT_FAV)
 		 * Nota: lo hace como si fuera el usuario, siempre.
+		 * Si usu_pc = 1 -> clasificado por la pc
+		 * Si usu_pc = 0 -> clasificado por el usuario
 		 */
 		void catFavorito() {
-			this->cont_idcat.setCat(IDCAT_FAV, 1); // TODO como usuario, siempre??
+			this->cont_idcat.setCat(IDCAT_FAV, 0); // TODO como usuario, siempre??
 		}
 
 		/**
@@ -183,11 +190,14 @@ class Articulo {
 		t_timestamp timestamp; //!< fecha en formato timestamp (unix time)
 
 		//!< Las siguientes son las que incorporamos nosotros
-		bool leido; //!< indica si el articulo fue leido por el usuario o no
+		bool leido; //!< indica si el articulo fue leido o no
 		t_idart idart; //!< el numero de articulo dentro del feed
 		t_idfeed idfeed; //!< el numero de feed al que pertenece
 		ContenedorIdCat cont_idcat; //!< contenedor con los idcat del articulo
 		ContenedorIdCat cont_usu_pc; //!< por quien fue clasificado
+		                        //!< Si usu_pc = 1 -> clasificado por la pc
+		                        //!< Si usu_pc = 0 -> clasificado por el usuario
+
 };
 
 #endif
