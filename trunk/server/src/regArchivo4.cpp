@@ -67,15 +67,10 @@ void t_regArchivo4::readReg(fstream &f,const t_idcat &idCat)
 	f.read(reinterpret_cast<char *>(&this->wordsNegative), sizeof(t_quantity));
 	f.read(reinterpret_cast<char *>(&this->firstBlockTag), sizeof(t_offset));
 	f.read(reinterpret_cast<char *>(&this->firstBlockEmpty), sizeof(t_offset));
-
 	// Leo el nombre
-	
 	char *cptr = new char[NOM_CAT_MAX_LEN+1]; //TODO cambiarlo a NOM_CAT_MAX_LEN
-
 	f.read(reinterpret_cast<char *>(cptr), (NOM_CAT_MAX_LEN+1)*sizeof(char));
-	
 	this->categoryName = cptr;
-	//cout << "this->categoryName: " << this->categoryName << endl;
 	delete []cptr;
 }
 
