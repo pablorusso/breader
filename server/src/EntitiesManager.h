@@ -21,7 +21,7 @@ typedef struct{
 	double probNeg;
 }t_probability;
 
-typedef std::list< t_probability > t_Likeli_Hood;
+typedef std::list< t_probability > t_probList;
 
 class EntitiesManager
 {

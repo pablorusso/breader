@@ -147,6 +147,8 @@ class Archivo2 {
 		 * @param idcat el idcat a clasificar
 		 * @param si_no si es clasificar o desclasificar
 		 * @param usu_pc si fue el usuario o el clasificador
+		 * Si usu_pc = 1 -> clasificado por la pc
+		 * Si usu_pc = 0 -> clasificado por el usuario
 		 * @throw eArchivo2 si el archivo esta corrupto
 		 * @throw eArchivo2 si el idart esta fuera de rango
 		 */
@@ -180,6 +182,8 @@ class Archivo2 {
 		 * particular
 		 * @param idart el id del articulo a leer
 		 * @return un contenedor con las clasificaciones usu_pc del articulo
+		 * Si usu_pc = 1 -> clasificado por la pc
+		 * Si usu_pc = 0 -> clasificado por el usuario
 		 * @throw eArchivo2 si el archivo esta corrupto
 		 * @throw eArchivo2 si el idart esta fuera de rango
 		 */
@@ -200,6 +204,8 @@ class Archivo2 {
 		/**
 		 * Da de baja a una categoria en el Archivo2, es decir, la escribe
 		 * como no clasificada y como clasificada por el usuario
+		 * Si usu_pc = 1 -> clasificado por la pc
+		 * Si usu_pc = 0 -> clasificado por el usuario
 		 * TODO esta bien asi???
 		 * @param idcat el id de la categoria a borrar
 		 * @throw eArchivo2 si el id de la categoria esta fuera de rango
