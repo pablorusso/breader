@@ -28,6 +28,8 @@ void Articulo::rem_cat(const t_idcat &idcat) {
 	if (idcat < this->cont_idcat.get_MAX_CAT()) {
 		this->cont_idcat.setCat(idcat, 0);
 		this->cont_usu_pc.setCat(idcat, 0);
+		 // Si usu_pc = 1 -> clasificado por la pc
+		 // Si usu_pc = 0 -> clasificado por el usuario
 	} else THROW(eContenedorIdCat, CIDCAT_IDCAT_FUERA_DE_RANGO);
 }
 
@@ -55,11 +57,20 @@ string Articulo::getXML( string feedName )
 	string isRead = leido ? "1" : "0";
 
 	// Para tener un solo id por articulo
-	string id = XmlUtils::ushortToStr( idfeed ) + "_" + XmlUtils::uintToStr( idart );
+	string id = XmlUtils::ushortToStr( idfeed ) + "_" +
+	  XmlUtils::uintToStr( idart );
 
 	string result = "";
-	result += "<article id=\"" + XmlUtils::xmlEncode( id ) + "\" artId=\"" + XmlUtils::xmlEncode( idart ) + "\" isClassified=\"" + XmlUtils::xmlEncode( isClassified ) + "\" isFavourite=\"" + XmlUtils::xmlEncode( isFav ) + "\" read=\"" + XmlUtils::xmlEncode( isRead );
-	result += "\" title=\"" + XmlUtils::xmlEncode( title ) + "\" date=\"" + XmlUtils::xmlEncode( timestamp ) + "\" author=\"" + XmlUtils::xmlEncode( description ) + "\" feedName=\"" + feedName + "\" feedId=\"" + XmlUtils::xmlEncode( idfeed ) + "\" link=\"" + XmlUtils::xmlEncode( uri ) + "\">";
+	result += "<article id=\"" + XmlUtils::xmlEncode( id ) + "\" artId=\"" +
+	  XmlUtils::xmlEncode( idart ) + "\" isClassified=\"" +
+	  XmlUtils::xmlEncode( isClassified ) + "\" isFavourite=\"" +
+	  XmlUtils::xmlEncode( isFav ) + "\" read=\"" +
+	  XmlUtils::xmlEncode( isRead );
+	result += "\" title=\"" + XmlUtils::xmlEncode( title ) + "\" date=\"" +
+	  XmlUtils::xmlEncode( timestamp ) + "\" author=\"" +
+	  XmlUtils::xmlEncode( description ) + "\" feedName=\"" + feedName +
+	  "\" feedId=\"" + XmlUtils::xmlEncode( idfeed ) + "\" link=\"" +
+	  XmlUtils::xmlEncode( uri ) + "\">";
 	result += "<summary>" + XmlUtils::xmlEncode( summary ) + "</summary>";
 
 	string tagsStr = "";
@@ -71,8 +82,14 @@ string Articulo::getXML( string feedName )
 		if ( cont_idcat.getCat( idcat ) )
 		{
 			string approved = cont_usu_pc.getCat( idcat ) ? "0" : "1";
+			// Si usu_pc = 1 -> clasificado por la pc
+			// Si usu_pc = 0 -> clasificado por el usuario
 			string tagName = ""; //TODO: Leer del archivo de edu
-			tagsStr += "<tag id=\"" + XmlUtils::xmlEncode( idcat ) + "\" isApproved=\"" + XmlUtils::xmlEncode( approved ) + "\" name=\"" + XmlUtils::xmlEncode( tagName ) + "\"/>";
+			// TODO (agregado por damian) desde aca no se deberia leer el arch
+			// de edu, habria que pasarle el tagName por parametro entonces
+			tagsStr += "<tag id=\"" + XmlUtils::xmlEncode( idcat ) +
+			  "\" isApproved=\"" + XmlUtils::xmlEncode( approved ) +
+			  "\" name=\"" + XmlUtils::xmlEncode( tagName ) + "\"/>";
 		}
 		idCatIt++;
 	}

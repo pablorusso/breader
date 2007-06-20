@@ -20,7 +20,8 @@
  * Es decir, primero se guarda un contenedor con todas las idcat del articulo,
  * y despues se guarda un contenedor con quien fue clasificado, si por el
  * usuario o por el clasificador bayesiano
- * (usuario=0, clasificador=1)
+ * Si usu_pc = 1 -> clasificado por la pc
+ * Si usu_pc = 0 -> clasificado por el usuario
  */
 using namespace std;
 class t_regArchivo2 {
@@ -32,8 +33,11 @@ class t_regArchivo2 {
 		bool leido; //!< si esta leido o no
 		ContenedorIdCat cont_idcat; //!< el contenedor con las categorias del
 		                            //!< articulo
-		ContenedorIdCat cont_usu_pc; //!< el contenedor con por quien fue 
-		                           //!< clasificado
+		ContenedorIdCat cont_usu_pc;//!< el contenedor con por quien fue
+		                            //!< clasificado
+		                        //!< Si usu_pc = 1 -> clasificado por la pc
+		                        //!< Si usu_pc = 0 -> clasificado por el usuario
+
 
 
 		/**
