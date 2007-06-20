@@ -607,9 +607,8 @@ t_cola_art feedHandler::getProximosArticulosBool(const t_idart &cant_art) {
 	return c_art;
 }
 
-/********************************************************************************************/
-t_timestamp feedHandler::iterateMapNoCat(const t_idfeed &idfeed, t_idart &idart){
-	t_timestamp timestamp; // TODO
+t_timestamp feedHandler::iterateMapNoCat(const t_idfeed &idfeed, t_idart &idart) {
+	t_timestamp timestamp;
 	try {
 		Archivo2 a2(this->a6.get_MAX_CAT(), idfeed);
 		bool match = false;
@@ -749,9 +748,6 @@ t_cola_art feedHandler::getProximosArticulosNoCat(const t_idart &cant_art) {
 
 	return c_art;
 }
-/********************************************************************************************/
-
-
 
 t_cola_idfeeds feedHandler::getColaIdFeeds() {
 	try {

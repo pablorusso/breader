@@ -31,5 +31,8 @@ ostream &operator<<(ostream &stream,  Feed &feed) {
 
 string Feed::getXML( t_timestamp lastUpdate )
 {
-	return "<feed id=\"" + XmlUtils::xmlEncode( idfeed ) + "\" name=\"" + XmlUtils::xmlEncode( name ) + "\" lastUpdate=\"" + XmlUtils::xmlEncode( lastUpdate ) + "\" url=\"" + XmlUtils::xmlEncode( uri ) + "\"/>";
+	return "<feed id=\"" + XmlUtils::xmlEncode( idfeed ) + "\" name=\"" +
+	  XmlUtils::xmlEncode( name ) + "\" lastUpdate=\"" +
+	  XmlUtils::xmlEncode( lastUpdate ) + "\" url=\"" +
+	  XmlUtils::xmlEncode( uri ) + "\"/>";
 }

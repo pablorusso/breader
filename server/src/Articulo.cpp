@@ -74,6 +74,23 @@ string Articulo::getXML( string feedName )
 	result += "<summary>" + XmlUtils::xmlEncode( summary ) + "</summary>";
 
 	string tagsStr = "";
+	for (t_idcat i = 0; i < this->cont_idcat.get_MAX_CAT(); ++i) {
+		if ( cont_idcat.getCat( i ) )
+		{
+			string approved = cont_usu_pc.getCat( i ) ? "0" : "1";
+			// Si usu_pc = 1 -> clasificado por la pc
+			// Si usu_pc = 0 -> clasificado por el usuario
+			string tagName = ""; //TODO: Leer del archivo de edu
+			// TODO (agregado por damian) desde aca no se deberia leer el arch
+			// de edu, habria que pasarle el tagName por parametro entonces
+			tagsStr += "<tag id=\"" + XmlUtils::xmlEncode( i ) +
+			  "\" isApproved=\"" + XmlUtils::xmlEncode( approved ) +
+			  "\" name=\"" + XmlUtils::xmlEncode( tagName ) + "\"/>";
+		}
+	}
+
+/*
+	string tagsStr = "";
 	t_cont_idcat catIdList = cont_idcat.getCategorias();
 	t_cont_idcat::iterator idCatIt = catIdList.begin();
 	while( idCatIt != catIdList.end() )
@@ -93,7 +110,7 @@ string Articulo::getXML( string feedName )
 		}
 		idCatIt++;
 	}
-
+*/
 	if ( tagsStr == "" )
 		result += "<tags/>";
 	else

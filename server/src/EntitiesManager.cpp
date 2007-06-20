@@ -23,9 +23,12 @@ EntitiesManager::EntitiesManager()
 	_feedManager = new feedHandler( MAX_CATS );
 	try {
 		managerWord.openEstructura();
+
+		// Agrego la categoria favorito...
+		// TODO _a4.addCategory("__Favorito__");
 	}
 	catch(ExceptionManagerWord &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
 	//TODO: ver el tema de las excepciones
 }
@@ -37,7 +40,7 @@ EntitiesManager::~EntitiesManager()
 		managerWord.closeEstructura();
 	}
 	catch(ExceptionManagerWord &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
 	//TODO: ver el tema de las excepciones
 }
@@ -60,10 +63,8 @@ string EntitiesManager::ArticleCreate( t_idfeed feedId, string title,
 		return art.getXML( feed.getName() );
 	}
 	catch (eFeedHandler &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
-	// Si se arrojo excepcion, devuelvo esto
-	return string("");
 }
 
 string EntitiesManager::ArticleApproveTag( t_idfeed feedId, t_idart artId, t_idcat tagId )
@@ -77,13 +78,11 @@ string EntitiesManager::ArticleApproveTag( t_idfeed feedId, t_idart artId, t_idc
 		return art.getXML( feed.getName() );
 	}
 	catch(ExceptionManagerWord &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
 	catch (eFeedHandler &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
-	// Si se arrojo excepcion, devuelvo esto
-	return string("");
 }
 
 string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
@@ -114,13 +113,11 @@ string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 		return art.getXML( feed.getName() );
 	}
 	catch(ExceptionManagerWord &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
 	catch (eFeedHandler &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
-	// Si se arrojo excepcion, devuelvo esto
-	return string("");
 }
 
 string EntitiesManager::ArticleChangeReadState( t_idfeed feedId, t_idart artId )
@@ -131,10 +128,8 @@ string EntitiesManager::ArticleChangeReadState( t_idfeed feedId, t_idart artId )
 		return art.getXML( feed.getName() );
 	}
 	catch (eFeedHandler &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
-	// Si se arrojo excepcion, devuelvo esto
-	return string("");
 }
 
 string EntitiesManager::BuildArticlesList( t_cola_art colaArt )
@@ -154,10 +149,8 @@ string EntitiesManager::BuildArticlesList( t_cola_art colaArt )
 		return response;
 	}
 	catch (eFeedHandler &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
-	// Si se arrojo excepcion, devuelvo esto
-	return string("");
 }
 
 string EntitiesManager::ArticleGetByFeed( t_idfeed feedId, t_idart quantity )
@@ -167,10 +160,8 @@ string EntitiesManager::ArticleGetByFeed( t_idfeed feedId, t_idart quantity )
 		return BuildArticlesList( colaArt );
 	}
 	catch (eFeedHandler &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
-	// Si se arrojo excepcion, devuelvo esto
-	return string("");
 }
 string EntitiesManager::ArticleGetByFeedNext( t_idart quantity )
 {
@@ -179,10 +170,8 @@ string EntitiesManager::ArticleGetByFeedNext( t_idart quantity )
 		return BuildArticlesList( colaArt );
 	}
 	catch (eFeedHandler &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
-	// Si se arrojo excepcion, devuelvo esto
-	return string("");
 }
 
 string EntitiesManager::ArticleGetByTags( vector< t_idcat > tagIds, vector< bool > state, t_idart quantity )
@@ -205,10 +194,8 @@ string EntitiesManager::ArticleGetByTags( vector< t_idcat > tagIds, vector< bool
 		return BuildArticlesList( colaArt );
 	}
 	catch (eFeedHandler &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
-	// Si se arrojo excepcion, devuelvo esto
-	return string("");
 }
 string EntitiesManager::ArticleGetByTagsNext( t_idart quantity )
 {
@@ -217,10 +204,8 @@ string EntitiesManager::ArticleGetByTagsNext( t_idart quantity )
 		return BuildArticlesList( colaArt );
 	}
 	catch (eFeedHandler &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
-	// Si se arrojo excepcion, devuelvo esto
-	return string("");
 }
 
 string EntitiesManager::ArticleGetFavourites( t_idart quantity )
@@ -258,10 +243,8 @@ string EntitiesManager::ArticleGetUnread( t_idart quantity )
 		return BuildArticlesList( colaArt );
 	}
 	catch (eFeedHandler &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
-	// Si se arrojo excepcion, devuelvo esto
-	return string("");
 }
 string EntitiesManager::ArticleGetUnreadNext( t_idart quantity )
 {
@@ -270,10 +253,8 @@ string EntitiesManager::ArticleGetUnreadNext( t_idart quantity )
 		return BuildArticlesList( colaArt );
 	}
 	catch (eFeedHandler &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
-	// Si se arrojo excepcion, devuelvo esto
-	return string("");
 }
 
 string EntitiesManager::ArticleLinkTag( t_idfeed feedId, t_idart artId, t_idcat tagId )
@@ -286,13 +267,11 @@ string EntitiesManager::ArticleLinkTag( t_idfeed feedId, t_idart artId, t_idcat 
 		return art.getXML( feed.getName() );
 	}
 	catch(ExceptionManagerWord &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
 	catch (eFeedHandler &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
-	// Si se arrojo excepcion, devuelvo esto
-	return string("");
 
 }
 
@@ -324,28 +303,25 @@ string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idca
 
 	}
 	catch(ExceptionManagerWord &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
 	catch (eFeedHandler &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
-	// Si se arrojo excepcion, devuelvo esto
-	return string("");
 }
 
 string EntitiesManager::FeedCreate( string name, string url )
 {
 	try {
+//		t_idfeed feedid = _feedManager->altaFeed( url, url ); // TODO modificarlo
 		t_idfeed feedid = _feedManager->altaFeed( url, name );
 		Feed feed = _feedManager->getFeed( feedid );
 		t_timestamp lastUpdate = _feedManager->getUltimaFecha( feedid );
 		return feed.getXML( lastUpdate );
 	}
 	catch (eFeedHandler &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
-	// Si se arrojo excepcion, devuelvo esto
-	return string("");
 }
 string EntitiesManager::FeedDelete( t_idfeed feedId )
 {
@@ -356,10 +332,8 @@ string EntitiesManager::FeedDelete( t_idfeed feedId )
 		return feed.getXML( lastUpdate );
 	}
 	catch (eFeedHandler &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
-	// Si se arrojo excepcion, devuelvo esto
-	return string("");
 }
 string EntitiesManager::FeedGetAll()
 {
@@ -380,10 +354,8 @@ string EntitiesManager::FeedGetAll()
 		return response;
 	}
 	catch (eFeedHandler &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
-	// Si se arrojo excepcion, devuelvo esto
-	return string("");
 }
 
 string EntitiesManager::TagCreate( string name )
@@ -400,10 +372,8 @@ string EntitiesManager::TagCreate( string name )
 		return category.getXML();
 	}
 	catch (eArchivo4 &e) {
-		cout << e.getErrorMensaje() << endl;
+		throw string(e.what());
 	}
-	// Si se arrojo excepcion, devuelvo esto
-	return string("");
 }
 
 string EntitiesManager::TagDelete( t_idcat id )
@@ -418,13 +388,11 @@ string EntitiesManager::TagDelete( t_idcat id )
 		return "<tag/>";
 	}
 	catch (eArchivo4 &e) {
-		cout << e.getErrorMensaje() << endl;
+		throw string(e.what());
 	}
 	catch (eFeedHandler &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
-	// Si se arrojo excepcion, devuelvo esto
-	return string("");
 }
 
 string EntitiesManager::TagEdit( t_idcat id, string name )
@@ -440,10 +408,8 @@ string EntitiesManager::TagEdit( t_idcat id, string name )
 		return category.getXML();
 	}
 	catch (eArchivo4 &e) {
-		cout << e.getErrorMensaje() << endl;
+		throw string(e.what());
 	}
-	// Si se arrojo excepcion, devuelvo esto
-	return string("");
 }
 
 string EntitiesManager::TagGetAll()
@@ -470,10 +436,8 @@ string EntitiesManager::TagGetAll()
 		//return "<tags/>";
 	}
 	catch (eArchivo4 &e) {
-		cout << e.getErrorMensaje() << endl;
+		throw string(e.what());
 	}
-	// Si se arrojo excepcion, devuelvo esto
-	return string("");
 }
 
 void EntitiesManager::clasificarArticulo(const Articulo &art){
@@ -517,14 +481,12 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 		//TODO: aca esta la lista de probabilidades para el articulo ver que hacer con esto
 	}
 	catch (eArchivo4 &e) {
-		cout << e.getErrorMensaje() << endl;
+		throw string(e.what());
 	}
 	catch(ExceptionManagerWord &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
 	catch (eFeedHandler &e) {
-		cout << e.what() << endl;
+		throw string(e.what());
 	}
-	// Si se arrojo excepcion, devuelvo esto
-//	return string("");
 }

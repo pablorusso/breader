@@ -22,7 +22,7 @@ El idcat -1 (casteado a unsigned) no se usa
 
 #define NOM_CAT_MAX_LEN 20
 //!< La longitud maxima de los nombres de categorias
-#define IDCAT_FAV 0
+#define IDCAT_FAV 15
 //!< El id de la categoria correspondiente a "favorito" o "starred"
 //!< (ojo que el cero no se puede usar)
 
