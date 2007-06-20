@@ -67,7 +67,7 @@ string EntitiesManager::ArticleCreate( t_idfeed feedId, string title,
 }
 
 string EntitiesManager::ArticleApproveTag( t_idfeed feedId, t_idart artId, t_idcat tagId )
-{   //El usuario aprueba una clasificacion hecha anteriormente por el sistema
+{   // El usuario aprueba una clasificacion hecha anteriormente por el sistema
 	Articulo art = _feedManager->clasificarArticulo( feedId, tagId, artId, true, false );
 	t_word_cont cont = articleParser.parseArticle(art);
 
@@ -93,25 +93,20 @@ string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 		t_word_cont cont = articleParser.parseArticle(art);
 		t_word_cont::iterator it;	
 	
-		//TODO: DAMIAN ¿COMO SE SI FUE EL USUARIO O LA MAQUINA QUIEN LO CLASIFICO? ¿TRUE es el usuario o el sistema?
-		//Respuesta (Agregado por damian):
 		// Si usu_pc = 1 -> clasificado por la pc
 		// Si usu_pc = 0 -> clasificado por el usuario
-	
 		if(_feedManager->readUsu_Pc(feedId,artId,IDCAT_FAV)){
-			// Si lo clasifico el usuario
-			for(it = cont.begin(); it != cont.end() ; ++it )
-				// NO COMPILABA??? ((t_diferencias) it->second).cantTrue* = -1;
-				((t_diferencias) it->second).cantTrue = -1;
-		}else{
 			// Si lo clasifico el sistema
 			for(it = cont.begin(); it != cont.end() ; ++it ){
-				// TODO modificar esto, poner otro tipo que sea t_diferencia o
-				// algo asi, como lo hablamos
 				((t_diferencias) it->second).cantFalse=((t_diferencias) it->second).cantTrue;
 				// NO COMPILABA??? ((t_diferencias) it->second).cantTrue* = -1;
 				((t_diferencias) it->second).cantTrue = -1;
 			}
+		}else{
+			// Si lo clasifico el usuario
+			for(it = cont.begin(); it != cont.end() ; ++it )
+				// NO COMPILABA??? ((t_diferencias) it->second).cantTrue* = -1;
+				((t_diferencias) it->second).cantTrue = -1;
 		}
 	
 		managerWord.addFrecWords(IDCAT_FAV,cont);
@@ -305,26 +300,23 @@ string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idca
 {
 	try {
 	
-		//Es una desclasificacion de un articulo
+		// Es una desclasificacion de un articulo
 		Articulo art = _feedManager->clasificarArticulo( feedId, tagId, artId, false, false );
 		t_word_cont cont = articleParser.parseArticle(art);
 		t_word_cont::iterator it;	
 	
-		//TODO: DAMIAN ¿COMO SE SI FUE EL USUARIO O LA MAQUINA QUIEN LO CLASIFICO? ¿TRUE es el usuario o el sistema?
-		// Respuesta (agregado por damian):
 		// Si usu_pc = 1 -> clasificado por la pc
 		// Si usu_pc = 0 -> clasificado por el usuario
-	
 		if(_feedManager->readUsu_Pc(feedId,artId,tagId)){
-		// Si lo clasifico el usuario
-			for(it = cont.begin(); it != cont.end() ; ++it )
-				((t_diferencias) it->second).cantTrue*=-1;
-		}else{
-		// Si lo clasifico el sistema
+			// Si lo clasifico el sistema
 			for(it = cont.begin(); it != cont.end() ; ++it ){
 				((t_diferencias) it->second).cantFalse=((t_diferencias) it->second).cantTrue;
 				((t_diferencias) it->second).cantTrue*=-1;
 			}
+		}else{
+			// Si lo clasifico el usuario
+			for(it = cont.begin(); it != cont.end() ; ++it )
+				((t_diferencias) it->second).cantTrue*=-1;
 		}
 		managerWord.addFrecWords(tagId,cont);
 		Feed feed = _feedManager->getFeed( art.get_idfeed() );

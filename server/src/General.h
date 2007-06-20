@@ -8,10 +8,11 @@ Imposiciones de Damian:
 Nro máximo de categorías: >=1
 Nro máximo de categorías: múltiplo de 8.
 sizeof(t_idart) = sizeof(t_offset)
+El idart -1 (casteado a unsigned) no se usa
 *****************************************************************************
 Imposiciones de Sergio:
 ----------------------
-El idcat -1 no se usa
+El idcat -1 (casteado a unsigned) no se usa
 *****************************************************************************/
 
 
@@ -21,7 +22,7 @@ El idcat -1 no se usa
 
 #define NOM_CAT_MAX_LEN 20
 //!< La longitud maxima de los nombres de categorias
-#define IDCAT_FAV 1
+#define IDCAT_FAV 0
 //!< El id de la categoria correspondiente a "favorito" o "starred"
 //!< (ojo que el cero no se puede usar)
 
@@ -38,7 +39,7 @@ typedef unsigned int t_frequency; //!< un tipo frecuencia
 typedef int t_diferencia; //!< un tipo diferencia
 typedef unsigned short t_cantReg; //!< un tipo csntidad de registros
 
-typedef struct{
+typedef struct {
 	t_frequency cantTrue; //!< Es la cantidad de veces que existe esa palabra 
                            //!< en una categoria porque el usuario clasifico un 
 						   //!< artiulo que la contenia, o porque el usuario 
@@ -49,7 +50,7 @@ typedef struct{
                            //!< contenia la palabra.
 } tFrecuencias;
 
-typedef struct{
+typedef struct {
 	t_diferencia cantTrue;
 	t_diferencia cantFalse;
 } t_diferencias;
