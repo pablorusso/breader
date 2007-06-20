@@ -117,7 +117,7 @@ class feedHandler {
 		 * @throw eFeedHandler si el idart esta fuera de rango
 		 */
 		Articulo invertirLecturaArticulo(const t_idfeed &idfeed,
-		  const t_idart &idart); // TODO
+		  const t_idart &idart);
 
 		/**
 		 * Invierte el valor del bit de favorito, es decir, si estaba como
@@ -129,7 +129,7 @@ class feedHandler {
 		 * @throw eFeedHandler si el Archivo2 esta corrupto
 		 * @throw eFeedHandler si el idart esta fuera de rango
 		 */
-		Articulo invertirFavorito(const t_idfeed &idfeed, const t_idart &idart); // TODO
+		Articulo invertirFavorito(const t_idfeed &idfeed, const t_idart &idart);
 
 		/**
 		 * Devuelve el timestamp del ultimo articulo del feed indicado
@@ -299,6 +299,8 @@ class feedHandler {
 		 * @param idart el id de la articulo a clasificar
 		 * @param si_no si se clasifica o des clasifica
 		 * @param usu_pc si es el usuario o la pc el que clasifica
+		 * Si usu_pc = 1 -> clasificado por la pc
+		 * Si usu_pc = 0 -> clasificado por el usuario
 		 * @return el articulo clasificado
 		 * @throw eFeedHandler si el idfeed es inexistente
 		 * @throw eFeedHandler si el idcat esta fuera de rango
@@ -341,18 +343,21 @@ class feedHandler {
 		 */
 		void set_MAX_CAT(const t_idcat &NEW_MAX_CAT);
 
-//NOTA: AGREGADO X SERGIO
 		/**
-		 * Lee una clasificacion del archivo, para un articulo en particular
+		 * Lee una clasificacion de un articulo para un feed en particular
 		 * Nota: este metodo lee por quien fue clasificado, para saber si esta
 		 *       clasificado o no ir a readCat()
+		 * @param idfeed el id del feed a leer
 		 * @param idart el id del articulo a leer
 		 * @param idcat el idcat a leer
-		 * @return por quien fue clasificado
-		 * @throw eArchivo2 si el archivo esta corrupto
-		 * @throw eArchivo2 si el idart esta fuera de rango
+		 * @return por quien fue clasificado (usu_pc)
+		 * Si usu_pc = 1 -> clasificado por la pc
+		 * Si usu_pc = 0 -> clasificado por el usuario
+		 * @throw eFeedHandler si el archivo esta corrupto
+		 * @throw eFeedHandler si el idfeed esta fuera de rango
 		 */
-		bool readUsu_Pc(const t_idfeed &idfeed,const t_idart &idart, const t_idcat &idcat);
+		bool readUsu_Pc(const t_idfeed &idfeed,const t_idart &idart,
+		  const t_idcat &idcat);
 
 	private:
 		Archivo6 a6; //!< el Archivo6

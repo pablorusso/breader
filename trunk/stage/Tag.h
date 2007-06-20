@@ -1,5 +1,5 @@
 #ifndef Tag_H
-#define	Tag_H
+#define Tag_H
 
 #include "Archivo4.h"
 #include "regArchivo4.h"
@@ -9,9 +9,6 @@
 #include <vector>
 
 using namespace std;
-
-
-
 class Tag
 {
 	public:

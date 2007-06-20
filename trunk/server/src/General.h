@@ -35,7 +35,7 @@ typedef unsigned int t_uint; //!< un tipo entero sin signo generico
 typedef unsigned int t_quantity; //!< tipo para utilizar en los tipos cantidad
 typedef std::queue<t_idcat> t_queue_idcat; //!< tipo contenedor de idcat
 typedef unsigned int t_frequency; //!< un tipo frecuencia
-typedef int t_diferencia; //!< un tipo frecuencia
+typedef int t_diferencia; //!< un tipo diferencia
 typedef unsigned short t_cantReg; //!< un tipo csntidad de registros
 
 typedef struct{
