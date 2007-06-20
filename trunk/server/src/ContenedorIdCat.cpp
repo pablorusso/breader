@@ -52,8 +52,6 @@ t_cont_idcat ContenedorIdCat::getCategorias()
 void ContenedorIdCat::writeCat(fstream &f) {
 	f.write(reinterpret_cast<const char *>(&this->categorias[0]),
 	  sizeof(unsigned char)*this->MAX_CAT/8);
-//	cout << "this->MAX_CAT...: " << sizeof(unsigned char)*this->MAX_CAT/8;
-//	cout << " sizeof[cat]: " << categorias.size();
 }
 
 void ContenedorIdCat::writeCatOR(fstream &f) {
@@ -90,10 +88,6 @@ void ContenedorIdCat::set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
 	for (t_idcat i = 0; i< this->MAX_CAT/8; ++i)
 		this->categorias[i]=c_tmp[i];
 
-	cout << "MAX CAT: " << this->MAX_CAT << endl;
-	cout << "NEW MAX CAT: " << MY_NEW_MAX_CAT << endl;
-	cout << "this->categorias[i].size() " << this->categorias.size() << endl;
-	
 	this->MAX_CAT = MY_NEW_MAX_CAT;
 }
 

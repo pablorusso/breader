@@ -1,14 +1,17 @@
 #include "Tag.h"
 #include "XmlUtils.h"
 
-Tag::Tag(){};
+Tag::Tag() {}
 
 Tag::~Tag() {}
 
 
 string Tag::getXML()
 {
-	return "<tag id=\"" + XmlUtils::xmlEncode( idTag )+ "\" readOnly=\"" + XmlUtils::xmlEncode( isReadOnly ) + "\" name=\"" + XmlUtils::xmlEncode( tagName ) + "\" artCount=\"" + XmlUtils::xmlEncode( artCount ) + "\"/>";
+	return "<tag id=\"" + XmlUtils::xmlEncode( idTag )+ "\" readOnly=\"" +
+	        XmlUtils::xmlEncode( isReadOnly ) + "\" name=\"" +
+	        XmlUtils::xmlEncode( tagName ) + "\" artCount=\"" +
+	        XmlUtils::xmlEncode( artCount ) + "\"/>";
 }
 
 void Tag::ConvertToTag(t_regArchivo4 reg)
@@ -18,9 +21,9 @@ void Tag::ConvertToTag(t_regArchivo4 reg)
 	this->tagName = reg.categoryName;
 	this->artCount = reg.artPositive;
 	if(this->idTag==IDCAT_FAV)	
-			this->isReadOnly = "true";
+			this->isReadOnly = "1";
 		else
-			this->isReadOnly = "false";
+			this->isReadOnly = "0";
 }
 
 /*
