@@ -57,21 +57,25 @@
 				imgTag.alt   = imgTitle;
 			}
 			function updateSearchState()
-			{
-				var advSearchText = '';
-				var tagsDoc = tagsDocument.documentElement.childNodes[1].childNodes;
-				for( i = 0;i < tagsDoc.length;i++)
-				{
-					var node = tagsDoc.item(i);
-					var idTag = getNodeAttr( node, 'id' );
-					var inputTag = document.getElementById( 'searchtype_' + idTag );
+{
+var advSearchText = '';
+var tagsDoc = tagsDocument.documentElement.childNodes[1].childNodes;
+for( i = 0;i < tagsDoc.length;i++)
+{
+var node = tagsDoc.item(i);
+var isReadOnly = getNodeAttr( node, 'isReadOnly' );
+if ( isReadOnly == '0' )
+{
+var idTag = getNodeAttr( node, 'id' );
+var inputTag = document.getElementById( 'searchtype_' + idTag );
 
-					if ( advSearchText != '' )
-						advSearchText += ';';
-					advSearchText += idTag + '=' + inputTag.value;
-				}
-				document.getElementById( 'advSearch' ).value = advSearchText;
-			}
+if ( advSearchText != '' )
+advSearchText += ';';
+advSearchText += idTag + '=' + inputTag.value;
+}
+}
+document.getElementById( 'advSearch' ).value = advSearchText;
+}
 			function swapSearch( tagId )
 			{
 				var oldType = document.getElementById( 'searchtype_' + tagId ).value
