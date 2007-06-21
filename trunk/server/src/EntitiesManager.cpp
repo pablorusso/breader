@@ -505,10 +505,7 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 		// de ocurrencia sin haber cometido tantos errores previos de clasificacion.
 		//ID CATEGORIA = (map.rbegin())->second
 
-		//TODO: DAMIAN: VER cual de estas dos ESTA BIEN, A MI NO DEBEN LLAMARME ESTO SE HACE CUANDO EL USUARIO 
-		// A CONFIRMADO LA CLASIFICACION
-//		art.add_cat((t_idcat) (map.rbegin())->second , true);
-//		_feedManager->clasificarArticulo( art.get_idfeed(), (map.rbegin())->second , art.get_idart(), true, true );
+		_feedManager->clasificarArticulo( art.get_idfeed(), (map.rbegin())->second , art.get_idart(), true, true );
 
 	}
 	catch (eArchivo4 &e) {

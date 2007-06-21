@@ -24,7 +24,7 @@ El idcat -1 (casteado a unsigned) no se usa
 //!< La longitud maxima de los nombres de categorias
 #define IDCAT_FAV 0
 //!< El id de la categoria correspondiente a "favorito" o "starred"
-//!< (ojo que el cero no se puede usar)
+//!< (ojo que si no es la cero no va a funcionar)
 
 typedef unsigned int t_timestamp; //!< tipo formato timestamp (unix time)
 typedef unsigned int t_offset; //!< tipo ID para utilizar en los tipos offset
