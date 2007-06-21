@@ -50,7 +50,7 @@ ostream &operator<<(ostream &stream,  const Articulo &articulo) {
 	return stream;
 }
 
-string Articulo::getXML( string feedName )
+string Articulo::getXML( string feedName, Archivo4 &a4)
 {
 	string isClassified = estaClasificado() ? "1" : "0";
 	string isFav = esFavorito() ? "1" : "0";
@@ -80,37 +80,13 @@ string Articulo::getXML( string feedName )
 			string approved = cont_usu_pc.getCat( i ) ? "0" : "1";
 			// Si usu_pc = 1 -> clasificado por la pc
 			// Si usu_pc = 0 -> clasificado por el usuario
-			string tagName = ""; //TODO: Leer del archivo de edu
-			// TODO (agregado por damian) desde aca no se deberia leer el arch
-			// de edu, habria que pasarle el tagName por parametro entonces
+			string tagName = a4.getCategoryInfo(i).categoryName;
 			tagsStr += "<tag id=\"" + XmlUtils::xmlEncode( i ) +
 			  "\" isApproved=\"" + XmlUtils::xmlEncode( approved ) +
 			  "\" name=\"" + XmlUtils::xmlEncode( tagName ) + "\"/>";
 		}
 	}
 
-/*
-	string tagsStr = "";
-	t_cont_idcat catIdList = cont_idcat.getCategorias();
-	t_cont_idcat::iterator idCatIt = catIdList.begin();
-	while( idCatIt != catIdList.end() )
-	{
-		t_idcat idcat = *idCatIt;
-		if ( cont_idcat.getCat( idcat ) )
-		{
-			string approved = cont_usu_pc.getCat( idcat ) ? "0" : "1";
-			// Si usu_pc = 1 -> clasificado por la pc
-			// Si usu_pc = 0 -> clasificado por el usuario
-			string tagName = ""; //TODO: Leer del archivo de edu
-			// TODO (agregado por damian) desde aca no se deberia leer el arch
-			// de edu, habria que pasarle el tagName por parametro entonces
-			tagsStr += "<tag id=\"" + XmlUtils::xmlEncode( idcat ) +
-			  "\" isApproved=\"" + XmlUtils::xmlEncode( approved ) +
-			  "\" name=\"" + XmlUtils::xmlEncode( tagName ) + "\"/>";
-		}
-		idCatIt++;
-	}
-*/
 	if ( tagsStr == "" )
 		result += "<tags/>";
 	else

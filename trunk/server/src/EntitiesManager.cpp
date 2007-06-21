@@ -24,10 +24,13 @@ EntitiesManager::EntitiesManager()
 	try {
 		managerWord.openEstructura();
 
-		// Agrego la categoria favorito...
-		// TODO _a4.addCategory("__Favorito__");
+		// Agrego la categoria favorito... con idcat=0 de casualidad...
+//		_a4.addCategory("__Favorito__");
 	}
 	catch(ExceptionManagerWord &e) {
+		throw string(e.what());
+	}
+	catch (eArchivo4 &e) {
 		throw string(e.what());
 	}
 	//TODO: ver el tema de las excepciones
@@ -60,7 +63,7 @@ string EntitiesManager::ArticleCreate( t_idfeed feedId, string title,
 		t_idart idArt = _feedManager->altaArticulo( feedId, art );
 		art.set_idart( idArt );
 		Feed feed = _feedManager->getFeed( art.get_idfeed() );
-		return art.getXML( feed.getName() );
+		return art.getXML( feed.getName(), _a4 );
 	}
 	catch (eFeedHandler &e) {
 		throw string(e.what());
@@ -75,7 +78,7 @@ string EntitiesManager::ArticleApproveTag( t_idfeed feedId, t_idart artId, t_idc
 	try {
 		managerWord.addFrecWords(tagId,cont);
 		Feed feed = _feedManager->getFeed( art.get_idfeed() );
-		return art.getXML( feed.getName() );
+		return art.getXML( feed.getName(), _a4 );
 	}
 	catch(ExceptionManagerWord &e) {
 		throw string(e.what());
@@ -88,6 +91,7 @@ string EntitiesManager::ArticleApproveTag( t_idfeed feedId, t_idart artId, t_idc
 string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 {
 	try {
+		// TODO no hay que cambiar nada en el archivo de eduardo??
 		Articulo art = _feedManager->invertirFavorito( feedId, artId );
 		t_word_cont cont = articleParser.parseArticle(art);
 		t_word_cont::iterator it;	
@@ -110,7 +114,7 @@ string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 	
 		managerWord.addFrecWords(IDCAT_FAV,cont);
 		Feed feed = _feedManager->getFeed( art.get_idfeed() );
-		return art.getXML( feed.getName() );
+		return art.getXML( feed.getName(), _a4 );
 	}
 	catch(ExceptionManagerWord &e) {
 		throw string(e.what());
@@ -125,7 +129,7 @@ string EntitiesManager::ArticleChangeReadState( t_idfeed feedId, t_idart artId )
 	try {
 		Articulo art = _feedManager->invertirLecturaArticulo( feedId, artId );
 		Feed feed = _feedManager->getFeed( art.get_idfeed() );
-		return art.getXML( feed.getName() );
+		return art.getXML( feed.getName(), _a4 );
 	}
 	catch (eFeedHandler &e) {
 		throw string(e.what());
@@ -141,7 +145,7 @@ string EntitiesManager::BuildArticlesList( t_cola_art colaArt )
 		while( ! colaArt.empty() )
 		{
 			Feed feed = _feedManager->getFeed( colaArt.front().get_idfeed() );
-			response += colaArt.front().getXML( feed.getName() );
+			response += colaArt.front().getXML( feed.getName(), _a4 );
 	
 			colaArt.pop();
 		}
@@ -264,7 +268,7 @@ string EntitiesManager::ArticleLinkTag( t_idfeed feedId, t_idart artId, t_idcat 
 		t_word_cont cont = articleParser.parseArticle(art);
 		managerWord.addFrecWords(tagId,cont);
 		Feed feed = _feedManager->getFeed( art.get_idfeed() );
-		return art.getXML( feed.getName() );
+		return art.getXML( feed.getName(), _a4 );
 	}
 	catch(ExceptionManagerWord &e) {
 		throw string(e.what());
@@ -299,7 +303,7 @@ string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idca
 		}
 		managerWord.addFrecWords(tagId,cont);
 		Feed feed = _feedManager->getFeed( art.get_idfeed() );
-		return art.getXML( feed.getName() );
+		return art.getXML( feed.getName(), _a4 );
 
 	}
 	catch(ExceptionManagerWord &e) {
