@@ -18,7 +18,7 @@ void ArticleParser::addWord(t_word_cont &cont, const string &myword) {
 t_word_cont ArticleParser::parseArticle(const Articulo &art) {
 	t_word_cont cont;
 	// TODO ver si va solo la description o tambien el title y demas
-	string des(art.get_description());
+	string des(art.get_summary());
 	string myword;
 	string::size_type i=0;
 	char c;

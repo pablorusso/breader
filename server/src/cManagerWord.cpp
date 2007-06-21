@@ -142,10 +142,11 @@ void cManagerWord::addFrecWord(std::string palabra,const t_idcat &id,const t_dif
    palabra no existe en la estructura tambien la agrega.*/
 void cManagerWord::addFrecWords(const t_idcat &id,const t_word_cont &map){
 
-	t_word_cont::const_iterator it;// = map.begin();
+	t_word_cont::const_iterator it;
 
 	for(it= map.begin() ; it!=map.end() ; ++it){
-		addFrecWord((std::string) it->first ,id, (t_diferencias) it->second);
+		if(((std::string) it->first).length()!=0)
+			addFrecWord((std::string) it->first ,id, (t_diferencias) it->second);
 	}
 
 }
