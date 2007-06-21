@@ -73,9 +73,28 @@ t_idcat Archivo4::addCategory(string catName)
 	try {
 		if (catName.size() > NOM_CAT_MAX_LEN)
 			THROW(eArchivo4, A4_NOMBRE_CAT_ERROR);
-		// agrego en la primer posicion libre
-		ret = this->header.primerLibre;
-		this->writeReg(catName, 0,0,0,0,0,0);
+
+		// Tengo que buscar si la categoria ya no existe
+		t_queue_idcat cat_q = this->getCategoriesId();
+		bool found=false;
+		while (!cat_q.empty() && (!found)) {
+			t_idcat idcat = cat_q.front();
+			if (idcat != IDCAT_FAV) { // El favoritos puede estar dos veces
+				t_regArchivo4 reg = this->getCategoryInfo(idcat);
+				if (reg.categoryName == catName)
+					found = true;
+			}
+			cat_q.pop();
+		}
+
+		if (!found) {
+			// agrego en la primer posicion libre
+			ret = this->header.primerLibre;
+			this->writeReg(catName, 0,0,0,0,0,0);
+		}
+		else {
+			THROW(eArchivo4, A4_CATEGORIA_EXISTENTE);
+		}
 	}
 	catch (fstream::failure) {
 		if (this->f.is_open()) this->f.close();
@@ -103,19 +122,6 @@ t_regArchivo4 Archivo4::getCategoryInfo(const t_idcat &idCat)
 	}
 	return ret;
 }
-/*
-Tag Archivo4::getTagInfo(t_idcat &idCategory)
-{
-	Tag ret;
-	t_regArchivo4 auxiliar;			
-	
-	auxiliar = this->getCategoryInfo(idCategory);
-	ret.idTag = idCategory;
-	ret.tagName = auxiliar.categoryName;
-	ret.artCount = auxiliar.artPositive;
-	
-	return ret;
-}*/
 
 tRegistro3 Archivo4::getRegistro(const t_idcat &idCat)
 {
