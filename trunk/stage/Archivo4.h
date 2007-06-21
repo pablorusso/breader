@@ -82,8 +82,6 @@ class Archivo4 {
 		 */
 		t_regArchivo4 getCategoryInfo(const t_idcat &idCategory);
 
-		//t_Tag getTagInfo(t_idcat &idCategory);
-
         /**
 		 * Modifica una categoria del Archivo4
 		 * @param idCat el id de la categoria a obtener

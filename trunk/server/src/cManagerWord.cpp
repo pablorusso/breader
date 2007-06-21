@@ -16,8 +16,8 @@ void cManagerWord::openEstructura(){
 void cManagerWord::createEstructura(){
 	if(!isCreada){
 		try{
-			arbol.crearArbol(NAME_FILE_TREE);
-			manager.crearFileManager(NAME_FILE_FM);
+			arbol.crearArbol(General::getDataPath()+NAME_FILE_TREE);
+			manager.crearFileManager(General::getDataPath()+NAME_FILE_FM);
 		}catch(ExceptionTree){
 			throw ExceptionManagerWord(MW_ERROR_CR);
 		}catch(ExceptionFileManager){		

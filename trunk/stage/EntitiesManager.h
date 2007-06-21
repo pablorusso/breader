@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <map>
 
 using namespace std;
 
@@ -21,7 +22,8 @@ typedef struct{
 	double probNeg;
 }t_probability;
 
-typedef std::list< t_probability > t_probList;
+typedef std::multimap< double , t_idcat , std::less<double> > t_probMap;
+
 
 class EntitiesManager
 {
