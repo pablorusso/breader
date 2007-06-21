@@ -27,6 +27,7 @@ Archivo4::Archivo4()
 	this->f.clear();
 	// Seteo para que arroje excepciones
 	this->f.exceptions(fstream::eofbit | fstream::failbit | fstream::badbit);
+
 }
 
 Archivo4::~Archivo4()
