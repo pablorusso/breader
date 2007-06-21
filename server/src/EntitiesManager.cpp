@@ -228,14 +228,25 @@ string EntitiesManager::ArticleGetFavouritesNext( t_idart quantity )
 
 string EntitiesManager::ArticleGetUnclassified( t_idart quantity )
 {
-	// TODO: VER DE DONDE LEER
-	// Agregado por damian: usar el getUltimosArticulosNoCat 
+	try {
+		t_cola_art colaArt = _feedManager->getUltimosArticulosNoCat( quantity );
+		return BuildArticlesList( colaArt );
+	}
+	catch (eFeedHandler &e) {
+		throw string(e.what());
+	}
+
 	return "<articles/>";
 }
 string EntitiesManager::ArticleGetUnclassifiedNext( t_idart quantity )
 {
-	// TODO: VER DE DONDE LEER
-	// Agregado por damian: usar el getProximosArticulosNoCat
+	try {
+		t_cola_art colaArt = _feedManager->getProximosArticulosNoCat( quantity );
+		return BuildArticlesList( colaArt );
+	}
+	catch (eFeedHandler &e) {
+		throw string(e.what());
+	}
 	return "<articles/>";
 }
 
@@ -315,7 +326,7 @@ string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idca
 string EntitiesManager::FeedCreate( string name, string url )
 {
 	try {
-//		t_idfeed feedid = _feedManager->altaFeed( url, url ); // TODO modificarlo
+		// TODO por que a veces me llega sin nombre? Eso tira excepcion
 		t_idfeed feedid = _feedManager->altaFeed( url, name );
 		Feed feed = _feedManager->getFeed( feedid );
 		t_timestamp lastUpdate = _feedManager->getUltimaFecha( feedid );
