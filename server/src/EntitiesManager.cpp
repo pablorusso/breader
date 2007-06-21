@@ -27,6 +27,10 @@ EntitiesManager::EntitiesManager()
 		// Agrego la categoria favorito...
 		if (_a4.getNumCat() == 0)
 			_a4.addCategory("______Favorito______");
+
+		// borrar esto
+//		this->importFeeds("/home/damian/feedList.txt");
+		// borrar esto
 	}
 	catch(ExceptionManagerWord &e) {
 		throw string(e.what());
@@ -518,58 +522,28 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 	}
 }
 
-/*	VERSION DAMIAN NRO: 94 
-
-typedef std::list< t_probability > t_probList;
-
-void EntitiesManager::clasificarArticulo(const Articulo &art){
+void EntitiesManager::importFeeds(const string &fileName) {
 	try {
-		t_probList list;     //typedef list< t_probability > t_probList;
-		double prob1=0,prob2=0;
-		t_queue_idcat cola = _a4.getCategoriesId();	
-		t_regArchivo4 regTag;
-		t_word_cont contWord = articleParser.parseArticle(art);
-		t_word_cont::const_iterator it;
-		tFrecuencias frec={0,0};
-		t_probability dato;
-		
-		// Por cada idcat recorro una vez la lista de palabras
-		while(cola.empty()) {
-			dato.probPos = 0;
-			dato.probNeg=0;
-			dato.id = cola.front();
-			cola.pop();
-			// Obtengo la cantidad total de palabras en la categoria y la cantidad
-			// de articulos que pertenecen a la categoria
-			regTag = _a4.getCategoryInfo(dato.id);
-			
-			for(it = contWord.begin(); it!=contWord.end();++it){	
-				// Obtengo la cantidad de veces que aparecio la palabra en
-				// una categoria
-				frec = managerWord.getWord((string)it->first ,dato.id);
-				prob1 = (double) (frec.cantTrue / regTag.wordsPositive);
-				prob2 = regTag.artPositive;
-				//TODO: ver como obtener: /Cant total de art clasificados;
-				// Respuesta: (agregado por damian) con eduardo decimos que no hace falta
-				dato.probPos += prob1 * prob2;
-				prob1 = (double) (frec.cantFalse / regTag.wordsNegative);
-				prob2 = regTag.artNegative;
-				//TODO: ver como obtener: /Cant total de art clasificados;
-				// Respuesta: (agregado por damian) con eduardo decimos que no hace falta
-				dato.probNeg += prob1 * prob2;
+		ifstream inputFile(fileName.c_str());
+		inputFile.exceptions(ifstream::eofbit | ifstream::failbit | ifstream::badbit);
+		string feedUrl;
+		string feedName;
+		char c;
+		while (!inputFile.eof()) {
+			feedUrl.clear();
+			inputFile.read(reinterpret_cast<char *>(&c), sizeof(unsigned char));
+			while ((c!='\n') && (!inputFile.eof())) {
+				feedUrl.push_back(c);
+				inputFile.read(reinterpret_cast<char *>(&c), sizeof(unsigned char));
 			}
-			list.push_back(dato);
+			feedName = "PEPITO"; // TODO de donde saco el nombre?
+			FeedCreate( feedName, feedUrl );
 		}
-		//TODO: aca esta la lista de probabilidades para el articulo ver que hacer con esto
+		inputFile.close();
 	}
-	catch (eArchivo4 &e) {
-		throw string(e.what());
+	catch (fstream::failure) {
+		// TODO error
 	}
-	catch(ExceptionManagerWord &e) {
-		throw string(e.what());
-	}
-	catch (eFeedHandler &e) {
-		throw string(e.what());
-	}
+
+	// TODO devuelver algo
 }
-*/
