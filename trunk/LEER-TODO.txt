@@ -5,9 +5,9 @@ IMPORTANTE
 ----------
 
 * exportacion a XMLSchema
-* importacion de txt (una boludez) (Damian: estoy en eso)
+* importacion de txt (una boludez) (Damian: lo deje a medias, falta pablo)
 * Agregar el id_fav (es el cero) en el archivo4 al comienzo estructura,
-  para que este siempre
+  para que este siempre (Damian: medio que parece que está...)
 * Soportar reestructurar y ampliar idcat
 * Sergio: guardar los archivos en el directorio que te dice General (OK, LISTO)
 
@@ -22,8 +22,9 @@ BUGS
 NO TAN IMPORTANTE
 -----------------
 
-* Que no se puedan agregar dos categorias con el mismo nombre
+* Que no se puedan agregar dos categorias con el mismo nombre (Damian: ya esta hecho)
 * Que no se puedan agregar dos feeds con la misma url (url+feed o url sola?)
+  (Damian: estoy en eso elijo url)
 * Configurar los parametros del cArbol y cFileManager a gusto.
 
 
