@@ -20,6 +20,9 @@ El idcat -1 (casteado a unsigned) no se usa
 #include <string>
 #include <map>
 
+#define SW_MIN_LEN 4
+//!< La minima longitud de las palabras de un articulo, para que no sean
+//!< consideradas stopwords
 #define NOM_CAT_MAX_LEN 20
 //!< La longitud maxima de los nombres de categorias
 #define IDCAT_FAV 0

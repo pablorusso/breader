@@ -29,7 +29,7 @@ EntitiesManager::EntitiesManager()
 			_a4.addCategory("______Favorito______");
 
 		// borrar esto
-//		this->importFeeds("/home/damian/feedList.txt");
+		//this->importFeeds("/home/damian/inputFile.txt");
 		// borrar esto
 	}
 	catch(ExceptionManagerWord &e) {
@@ -380,10 +380,7 @@ string EntitiesManager::TagCreate( string name )
 {
 	try {
 		// Crea una categoria
-		// Agregado por damian: aca no hace falta llamarme a mi
-		// Agregado por sergio: a mi tmb
 		Tag category;
-		
 		t_idcat id = _a4.addCategory(name);
 		category.ConvertToTag(_a4.getCategoryInfo(id));
 		
@@ -540,6 +537,7 @@ void EntitiesManager::importFeeds(const string &fileName) {
 	}
 	catch (fstream::failure) {
 		// TODO error
+		//cout << "ERROR EN EL INPUTFILE" << endl;
 	}
 
 	// TODO devuelver algo
