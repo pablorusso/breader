@@ -10,6 +10,7 @@ IMPORTANTE
   para que este siempre
 * Soportar reestructurar y ampliar idcat
 * Sergio: guardar los archivos en el directorio que te dice General (OK, LISTO)
+  (NO OK, es una gran mentira =P )
 
 NO TAN IMPORTANTE
 -----------------
