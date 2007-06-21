@@ -70,6 +70,13 @@ class EntitiesManager
 		string TagGetAll();
 		void clasificarArticulo(const Articulo &art);
 
+		/**
+		 * Importa una lista de feeds al server
+		 * @param fileName el path+name del archivo a importar. El mismo debe
+		 *                 tener una url por linea
+		 */
+		void importFeeds(const string &fileName);
+
 };
 
 #endif

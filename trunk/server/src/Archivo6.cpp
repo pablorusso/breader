@@ -339,7 +339,7 @@ void Archivo6::open(const string &fileName) {
 	}
 	this->f.clear();
 	// Seteo para que arroje excepciones
-  	this->f.exceptions(fstream::eofbit | fstream::failbit | fstream::badbit);
+	this->f.exceptions(fstream::eofbit | fstream::failbit | fstream::badbit);
 }
 
 void Archivo6::writeHeader() {
