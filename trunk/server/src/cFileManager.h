@@ -17,9 +17,7 @@
  
 #define NO_MOVIBLE ((t_cantReg)(-1))
 
-
-/******************************************************************************/
-class cRegistroBlock{
+class cRegistroBlock {
 
 public:
 
@@ -35,12 +33,19 @@ public:
  						 //!< proxima categoria para la palabra.
 						 //!< Es el numero de bloque + registro.
 
+	/**
+	 * Constructor. Inicializa atributos por default.
+	 * @param frec la frecuencia
+	 */
 	cRegistroBlock(const tFrecuencias &frec){	
 			this->frec=frec;			
 			ptrAnt = NULL_BL;
 			ptrSig = NULL_BL;	
 	}
 
+	/**
+	 * Destructor
+	 */
 	cRegistroBlock(){	
 		frec.cantTrue = 0;
 		frec.cantFalse = 0;
@@ -48,6 +53,9 @@ public:
 		ptrSig = NULL_BL;	
 	}
 
+	/**
+	 * Inicializa el cRegistroBlock con valores default
+	 */
 	void inicializar(){
 		frec.cantTrue = 0;
 		frec.cantFalse = 0;
@@ -55,6 +63,10 @@ public:
 		ptrSig = NULL_BL;		
 	}
 
+	/**
+	 * Obtiene el tamanio de un registro de cRegistroBlock
+	 * @return el tamanio de un registro de cRegistroBlock
+	 */
 	static unsigned int sizeofReg(){
 		return ( 2 * sizeof(t_offset) + 2 * sizeof(t_frequency));	
 	}
@@ -73,23 +85,37 @@ public:
 
 	t_cantReg cantRegOcup; //!< Cantidad de registros ocupados en el bloque.
 
-	cHeaderBlock(const t_idcat &idCat){		
+	/**
+	 * Constructor. Inicializa atributos por default.
+	 * @param idCat el id de la categoria del cHeaderBlock
+	 */
+	cHeaderBlock(const t_idcat &idCat){
 			this->idCat= idCat;
 			nroBlock = NULL_BL;	
 			cantRegOcup=0;
 	}
 
-	cHeaderBlock(){		
+	/**
+	 * Destructor
+	 */
+	cHeaderBlock(){
 			cantRegOcup=0;
 			idCat= 0;
 			nroBlock = NULL_BL;	
 	}
 
+	/**
+	 * Inicializa los atributos del cHeaderBlock con valores por default
+	 */ 
 	void inicializar(){
 		cantRegOcup=0;
 		idCat= 0;	
 	}
 
+	/**
+	 * Devuelve el tamanio de un registro del cHeaderBlock
+	 * @return el tamanio de un registro del cHeaderBlock
+	 */
 	static unsigned int sizeofHeaderBlock(){
 		return (sizeof(t_idcat) + sizeof(t_offset) + sizeof(t_cantReg));	
 	}
@@ -105,14 +131,24 @@ public:
 	cRegistroBlock vector[REG_X_BLOCK]; //!< Vector de Registros
 	t_offset nroBlockReg; //!< Numero de bloque registro al que hace referencia.
 
+	/**
+	 * Constructor. Inicializa los atributos con valores por default
+	 */
 	cBloque(){
 		nroBlockReg=0;
 	};
 
+	/**
+	 * Constructor. Inicializa los atributos con valores por default
+	 * @param idCat el idcat del cBloque
+	 */
 	cBloque(const t_idcat &idCat):header(idCat){
 		nroBlockReg=0;
 	}
 
+	/**
+	 * Inicializa los atributos del cBloque con valores por default
+	 */
 	void inicializar(){
 		header.inicializar();
 
@@ -121,17 +157,28 @@ public:
 		}	
 	}
 
+	/**
+	 * Devuelve el tamanio de un registro de cBloque
+	 * @return el tamanio de un registro de cBloque
+	 */
 	static unsigned int sizeofBlock(){
 		return (cHeaderBlock::sizeofHeaderBlock() + REG_X_BLOCK * cRegistroBlock::sizeofReg());	
 	}
 
+	/**
+	 * Devuelve el numero de registro del bloque
+	 * @return el numero de registro del bloque
+	 */
 	t_offset getNroReg(){
-	
 		if(nroBlockReg!=NULL_BL)
 			return ( nroBlockReg & (REG_X_BLOCK-1) );
 		else return NULL_BL;	
 	}
 
+	/**
+	 * Devuelve el numero de bloque del bloque
+	 * @return el numero de bloque del bloque
+	 */
 	t_offset getNroBlock(){
 		if(nroBlockReg!=NULL_BL)
 			return ( (nroBlockReg - getNroReg()) >> CANT_BIT  );
@@ -151,7 +198,9 @@ public:
 
 	tRegistro3 regRoot; //!< Datos administrativos de la catgoria inamovible.
 
-
+	/**
+	 * Constructor. Inicializa atributos con valores por default
+	 */
 	cHeaderFile(){
 			firstBlockEmpty=NULL_BL;
 			cantBlock=0;
@@ -159,6 +208,10 @@ public:
 			regRoot.firstBlockTag=0;	
 	}
 
+	/**
+	 * Devuelve el tamanio de un registro del cHeaderFile
+	 * @return el tamanio de un registro del cHeaderFile
+	 */
 	static unsigned int sizeofHeader(){
 		return ( 3*sizeof(t_offset) + sizeof(t_uint) );	
 	}
@@ -168,7 +221,6 @@ public:
 /******************************************************************************/
 
 class cFileManager{
-
 
 private:
 	std::string nameFile; //!< Nombre del archivo que contiene los blosques.
@@ -298,7 +350,14 @@ private:
 
 public:
 
+	/**
+	 * Constructor
+	 */
 	cFileManager();
+
+	/**
+	 * Destructor
+	 */
 	~cFileManager();
 
 	/** Crea la estructura en disco.
@@ -373,4 +432,3 @@ public:
 };
 
 #endif
-
