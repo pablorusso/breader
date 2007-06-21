@@ -103,7 +103,7 @@ unsigned int XmlUtils::strTouint( const string &value )
 	unsigned int n;
 	std::istringstream iss( value );
 	if(!(iss >> n))
-		throw string( "The value received can not be converted to number\n" );
+		throw string( "The value received can not be converted to number: \n" );
 	return n;
 }
 
