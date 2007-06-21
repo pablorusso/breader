@@ -293,8 +293,10 @@ class Articulo {
 		 * @param feedName el nombre del feed
 		 * @param a4 una referencia al Archivo4 para leer los nombres de las
 		 *           categorias
+		 * @return un XML que describe el contenido de la clase
 		 */
 		string getXML( string feedName, Archivo4 &a4);
+
 	private:
 		//!< Las siguientes estan en ingles porque son del formato RSS
 		string title; //!< titulo (NUMREG = 0)

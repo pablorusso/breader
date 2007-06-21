@@ -65,7 +65,7 @@ class EntitiesManager
 		 * @param link el link (o uri) del articulo
 		 * @param author el autor del articulo
 		 * @param date la fecha del articulo en formato Unix-time
-		 * @return un xml con el articulo actualizado
+		 * @return un XML con el articulo actualizado
 		 */
 		string ArticleCreate( t_idfeed feedId, string title, string summary,
 		  string link, string author, t_timestamp date );
@@ -76,7 +76,7 @@ class EntitiesManager
 		 * @param feedId el id del feed al que pertenece el articulo
 		 * @param artId el id del articulo
 		 * @param tagId el id del tag (o categoria) que se esta aprobando
-		 * @return un xml con el articulo actualizado
+		 * @return un XML con el articulo actualizado
 		 */
 		string ArticleApproveTag( t_idfeed feedId, t_idart artId, t_idcat tagId );
 
@@ -84,7 +84,7 @@ class EntitiesManager
 		 * Invierte el estado de favorito del articulo
 		 * @param feedId el id del feed al que pertenece el articulo
 		 * @param artId el id del articulo
-		 * @return un xml con el articulo actualizado
+		 * @return un XML con el articulo actualizado
 		 */
 		string ArticleChangeFavState( t_idfeed feedId, t_idart artId );
 
@@ -92,7 +92,7 @@ class EntitiesManager
 		 * Invierte el estado de leido del articulo
 		 * @param feedId el id del feed al que pertenece el articulo
 		 * @param artId el id del articulo
-		 * @return un xml con el articulo actualizado
+		 * @return un XML con el articulo actualizado
 		 */
 		string ArticleChangeReadState( t_idfeed feedId, t_idart artId );
 
@@ -102,7 +102,7 @@ class EntitiesManager
 		 * Funciona en conjunto con ArticleGetByFeedNext()
 		 * @param feedId el id del feed
 		 * @param quantity la cantidad de articulos que seran devueltos
-		 * @return un xml con los articulos devueltos
+		 * @return un XML con los articulos devueltos
 		 */
 		string ArticleGetByFeed( t_idfeed feedId, t_idart quantity );
 
@@ -112,7 +112,7 @@ class EntitiesManager
 		 * despues de los devueltos con anterioridad
 		 * Funciona en conjunto con ArticleGetByFeed()
 		 * @param quantity la cantidad de articulos que seran devueltos
-		 * @return un xml con los articulos devueltos
+		 * @return un XML con los articulos devueltos
 		 */
 		string ArticleGetByFeedNext( t_idart quantity );
 
@@ -124,7 +124,7 @@ class EntitiesManager
 		 * @param state el estado de esos tags, si se quiere que esa categoria
 		 *              se incluya o se excluya del resultado
 		 * @param quantity la cantidad de articulos que seran devueltos
-		 * @return un xml con los articulos devueltos
+		 * @return un XML con los articulos devueltos
 		 */
 		string ArticleGetByTags( vector< t_idcat > tagIds, vector< bool > state,
 		  t_idart quantity );
@@ -135,7 +135,7 @@ class EntitiesManager
 		 * despues de los devueltos con anterioridad
 		 * Funciona en conjunto con ArticleGetByTags()
 		 * @param quantity la cantidad de articulos que seran devueltos
-		 * @return un xml con los articulos devueltos
+		 * @return un XML con los articulos devueltos
 		 */
 		string ArticleGetByTagsNext( t_idart quantity );
 
@@ -146,7 +146,7 @@ class EntitiesManager
 		 * mas recientes al principio)
 		 * Funciona en conjunto con ArticleGetUnclassifiedNext()
 		 * @param quantity la cantidad de articulos que seran devueltos
-		 * @return un xml con los articulos devueltos
+		 * @return un XML con los articulos devueltos
 		 */
 		string ArticleGetUnclassified( t_idart quantity );
 
@@ -157,7 +157,7 @@ class EntitiesManager
 		 * mas recientes al principio) despues de los devueltos con anterioridad
 		 * Funciona en conjunto con ArticleGetUnclassified()
 		 * @param quantity la cantidad de articulos que seran devueltos
-		 * @return un xml con los articulos devueltos
+		 * @return un XML con los articulos devueltos
 		 */
 		string ArticleGetUnclassifiedNext( t_idart quantity );
 
@@ -166,7 +166,7 @@ class EntitiesManager
 		 * ordenados por fecha (los articulos mas recientes al principio)
 		 * Funciona en conjunto con ArticleGetUnreadNext()
 		 * @param quantity la cantidad de articulos que seran devueltos
-		 * @return un xml con los articulos devueltos
+		 * @return un XML con los articulos devueltos
 		 */
 		string ArticleGetUnread( t_idart quantity );
 
@@ -176,7 +176,7 @@ class EntitiesManager
 		 * despues de los devueltos con anterioridad.
 		 * Funciona en conjunto con ArticleGetUnread()
 		 * @param quantity la cantidad de articulos que seran devueltos
-		 * @return un xml con los articulos devueltos
+		 * @return un XML con los articulos devueltos
 		 */
 		string ArticleGetUnreadNext( t_idart quantity );
 
@@ -185,7 +185,7 @@ class EntitiesManager
 		 * ordenados por fecha (los articulos mas recientes al principio)
 		 * Funciona en conjunto con ArticleGetFavouritesNext()
 		 * @param quantity la cantidad de articulos que seran devueltos
-		 * @return un xml con los articulos devueltos
+		 * @return un XML con los articulos devueltos
 		 */
 		string ArticleGetFavourites( t_idart quantity );
 
@@ -195,7 +195,7 @@ class EntitiesManager
 		 * despues de los devueltos con anterioridad
 		 * Funciona en conjunto con ArticleGetFavourites()
 		 * @param quantity la cantidad de articulos que seran devueltos
-		 * @return un xml con los articulos devueltos
+		 * @return un XML con los articulos devueltos
 		 */
 		string ArticleGetFavouritesNext( t_idart quantity );
 
@@ -204,7 +204,7 @@ class EntitiesManager
 		 * @param feedId el id del feed al que pertenece el articulo
 		 * @param artId el id del articulo
 		 * @param tagId el id del tag (o categoria) que se esta asignando
-		 * @return un xml con el articulo modificado
+		 * @return un XML con el articulo modificado
 		 */
 		string ArticleLinkTag( t_idfeed feedId, t_idart artId, t_idcat tagId );
 
@@ -213,7 +213,7 @@ class EntitiesManager
 		 * @param feedId el id del feed al que pertenece el articulo
 		 * @param artId el id del articulo
 		 * @param tagId el id del tag (o categoria) que se esta quitando
-		 * @return un xml con el articulo modificado
+		 * @return un XML con el articulo modificado
 		 */
 		string ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idcat tagId );
 
@@ -221,34 +221,34 @@ class EntitiesManager
 		 * Crea un feed a partir de su nombre y url
 		 * @param name el nombre del feed
 		 * @param url (o uri) la uri del feed
-		 * @return un xml con el feed creado
+		 * @return un XML con el feed creado
 		 */
 		string FeedCreate( string name, string url );
 
 		/**
 		 * Borra un feed
 		 * @param feedId el id del feed a borrar
-		 * @return un xml con el feed borrado
+		 * @return un XML con el feed borrado
 		 */
 		string FeedDelete( t_idfeed feedId );
 
 		/**
 		 * Obtiene todos los feeds
-		 * @return un xml con todos los feeds
+		 * @return un XML con todos los feeds
 		 */
 		string FeedGetAll();
 
 		/**
 		 * Crea una categoria
 		 * @param name el nombre de la categoria
-		 * @return un xml con la categoria creada
+		 * @return un XML con la categoria creada
 		 */
 		string TagCreate( string name );
 
 		/**
 		 * Borra una categoria
 		 * @param tagId el id de la categoria a borrar
-		 * @return un xml con la categoria borrada
+		 * @return un XML con la categoria borrada
 		 */
 		string TagDelete( t_idcat tagId );
 
@@ -256,13 +256,13 @@ class EntitiesManager
 		 * Edita el nombre de categoria
 		 * @param tagId el id de la categoria a editar
 		 * @param name el nuevo nombre de la categoria
-		 * @return un xml con la categoria editada
+		 * @return un XML con la categoria editada
 		 */
 		string TagEdit( t_idcat tagId, string name );
 
 		/**
 		 * Obtiene todas las categorias
-		 * @return un xml con todas las categorias
+		 * @return un XML con todas las categorias
 		 */
 		string TagGetAll();
 
