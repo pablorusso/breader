@@ -35,83 +35,178 @@ class Articulo {
 		 * Destructor
 		 */
 		~Articulo();
+
 		/**
-		 * Getters y setters
+		 * Setea el titulo del articulo
+		 * @param title el titulo del articulo
 		 */
 		void set_title(const string &title)
 		  {this->title = title;}
 
+		/**
+		 * Obtiene el titulo del articulo
+		 * @return el titulo del articulo
+		 */
 		string get_title() const
 		  {return this->title;}
 
+		/**
+		 * Setea la uri del articulo
+		 * @param uri la uri del articulo
+		 */
 		void set_uri(const string &uri)
 		  {this->uri = uri;}
 
+		/**
+		 * Obtiene la uri del articulo
+		 * @return la uri del articulo
+		 */
 		string get_uri() const
 		  {return this->uri;}
 
+		/**
+		 * Setea la description del articulo
+		 * @param description la description del articulo
+		 */
 		void set_description(const string &description)
 		  {this->description = description;}
 
+		/**
+		 * Obtiene la description del articulo
+		 * @return la description del articulo
+		 */
 		string get_description() const
 		  {return this->description;}
 
+		/**
+		 * Setea la category del articulo
+		 * @param category la category del articulo
+		 */
 		void set_category(const string &category)
 		  {this->category = category;}
 
+		/**
+		 * Obtiene la category del articulo
+		 * @return la category del articulo
+		 */
 		string get_category() const
 		  {return this->category;}
 
+		/**
+		 * Setea la pubdate del articulo
+		 * @param pubdate la pubdate del articulo
+		 */
 		void set_pubdate(const string &pubdate)
 		  {this->pubdate = pubdate;}
 
+		/**
+		 * Obtiene la pubdate del articulo
+		 * @return la pubdate del articulo
+		 */
 		string get_pubdate() const
 		  {return this->pubdate;}
 
+		/**
+		 * Setea el summary del articulo
+		 * @param summary el summary del articulo
+		 */
 		void set_summary(const string &summary)
 		  {this->summary = summary;}
 
+		/**
+		 * Obtiene el summary del articulo
+		 * @return el summary del articulo
+		 */
 		string get_summary() const
 		  {return this->summary;}
 
+		/**
+		 * Setea el timestamp del articulo
+		 * @param timestamp el timestamp del articulo
+		 */
 		void set_timestamp(const t_timestamp &timestamp)
 		  {this->timestamp = timestamp;}
 
+		/**
+		 * Obtiene el timestamp del articulo
+		 * @return el timestamp del articulo
+		 */
 		t_timestamp get_timestamp() const
 		  {return this->timestamp;}
 
+		/**
+		 * Setea al articulo como leido o no
+		 * @param leido true si fue leido, false de lo contrario
+		 */
 		void set_leido(const bool &leido)
 		  {this->leido = leido;}
 
+		/**
+		 * Averigua si el articulo fue leido o no
+		 * @return true si fue leido, false de lo contrario
+		 */
 		bool get_leido() const
 		  {return this->leido;}
 
+		/**
+		 * Setea el idart del articulo
+		 * @param idart el idart del articulo
+		 */
 		void set_idart(const t_idart &idart)
 		  {this->idart = idart;}
 
+		/**
+		 * Obtiene el idart del articulo
+		 * @return el idart  del articulo
+		 */
 		t_idart get_idart() const
 		  {return this->idart;}
 
+		/**
+		 * Setea el idfeed del feed al que pertenece el articulo
+		 * @param idfeed el idfeed del articulo
+		 */
 		void set_idfeed(const t_idfeed &idfeed)
 		  {this->idfeed = idfeed;}
 
+		/**
+		 * Obtiene el idfeed del feed al que pertenece el articulo
+		 * @return el idfeed del feed al que pertenece el articulo
+		 */
 		t_idfeed get_idfeed() const
 		  {return this->idfeed;}
 
+		/**
+		 * Setea el cont_idcat del articulo
+		 * @param cont_idcat el cont_idcat del articulo
+		 */
 		void set_cont_idcat(const ContenedorIdCat &cont_idcat)
 		  {this->cont_idcat = cont_idcat;}
 
+		/**
+		 * Obtiene el cont_idcat del articulo
+		 * @return el cont_idcat del articulo
+		 */
 		ContenedorIdCat get_cont_idcat() const
 		  {return this->cont_idcat;}
-		 // Si usu_pc = 1 -> clasificado por la pc
-		 // Si usu_pc = 0 -> clasificado por el usuario
+
+		/**
+		 * Setea el cont_usu_pc del articulo
+		 * @param cont_usu_pc el cont_usu_pc del articulo
+		 * Si usu_pc = 1 -> clasificado por la pc
+		 * Si usu_pc = 0 -> clasificado por el usuario
+		 */
 		void set_cont_usu_pc(const ContenedorIdCat &cont_usu_pc)
 		  {this->cont_usu_pc = cont_usu_pc;}
-		 // Si usu_pc = 1 -> clasificado por la pc
-		 // Si usu_pc = 0 -> clasificado por el usuario
+
+		/**
+		 * Obtiene el cont_usu_pc del articulo
+		 * @return el cont_usu_pc del articulo
+		 * Si usu_pc = 1 -> clasificado por la pc
+		 * Si usu_pc = 0 -> clasificado por el usuario
+		 */
 		ContenedorIdCat get_cont_usu_pc() const
 		  {return this->cont_usu_pc;}
-
 
 		/**
 		 * Agrega una categoria al contenedor de categorias
