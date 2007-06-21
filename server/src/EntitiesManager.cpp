@@ -101,15 +101,14 @@ string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 		if(_feedManager->readUsu_Pc(feedId,artId,IDCAT_FAV)){
 			// Si lo clasifico el sistema
 			for(it = cont.begin(); it != cont.end() ; ++it ){
-				((t_diferencias) it->second).cantFalse=((t_diferencias) it->second).cantTrue;
-				// NO COMPILABA??? ((t_diferencias) it->second).cantTrue* = -1;
-				((t_diferencias) it->second).cantTrue = -1;
+				((t_diferencias) it->second).cantFalse=((t_diferencias) it->second).cantTrue;				
+				((t_diferencias) it->second).cantTrue *= -1;		
 			}
 		}else{
 			// Si lo clasifico el usuario
 			for(it = cont.begin(); it != cont.end() ; ++it )
-				// NO COMPILABA??? ((t_diferencias) it->second).cantTrue* = -1;
-				((t_diferencias) it->second).cantTrue = -1;
+				((t_diferencias) it->second).cantTrue *= -1;
+				
 		}
 	
 		managerWord.addFrecWords(IDCAT_FAV,cont);
@@ -281,8 +280,7 @@ string EntitiesManager::ArticleLinkTag( t_idfeed feedId, t_idart artId, t_idcat 
 
 string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idcat tagId )
 {
-	try {
-	
+	try {	
 		// Es una desclasificacion de un articulo
 		Articulo art = _feedManager->clasificarArticulo( feedId, tagId, artId, false, false );
 		t_word_cont cont = articleParser.parseArticle(art);
@@ -385,8 +383,10 @@ string EntitiesManager::TagDelete( t_idcat id )
 	try {
 		// Borra una categoria
 		// Agregado por damian: lo mio ya esta hecho
-		// Agregado por sergio: a mi tmb: try{ managerWord.deleteCategoria(id);} catch(ExceptionManagerWord){}
+		// Agregado por sergio: a mi tmb: 
 		//Tag category;
+		try{ managerWord.deleteCategoria(id);
+		}catch(ExceptionManagerWord &e){string(e.what());}
 		_a4.deleteCategory(id);
 		_feedManager->bajaCategoria(id);
 		return "<tag/>";
@@ -446,6 +446,72 @@ string EntitiesManager::TagGetAll()
 
 void EntitiesManager::clasificarArticulo(const Articulo &art){
 	try {
+		//almaceno las probabilidades ordenadas de menor a mayor.
+		t_probMap map; 
+		double prob1=0,prob2=0;
+		t_queue_idcat cola = _a4.getCategoriesId();	
+		t_regArchivo4 regTag;
+		t_word_cont contWord = articleParser.parseArticle(art);
+		t_word_cont::const_iterator it;
+		tFrecuencias frec={0,0};
+		t_probability dato;
+		
+		// Por cada idcat recorro una vez la lista de palabras
+		while(cola.empty()) {
+			dato.probPos = 0;
+			dato.probNeg=0;
+			dato.id = cola.front();
+			cola.pop();
+			// Obtengo la cantidad total de palabras en la categoria y la cantidad
+			// de articulos que pertenecen a la categoria
+			regTag = _a4.getCategoryInfo(dato.id);
+			
+			for(it = contWord.begin(); it!=contWord.end();++it){	
+				// Obtengo la cantidad de veces que aparecio la palabra en
+				// una categoria
+				frec = managerWord.getWord((string)it->first ,dato.id);
+				prob1 = (double) (frec.cantTrue / regTag.wordsPositive);
+				prob2 = regTag.artPositive;
+				//TODO: ver como obtener: /Cant total de art clasificados;
+				// Respuesta: (agregado por damian) con eduardo decimos que no hace falta
+				dato.probPos += prob1 * prob2;
+				prob1 = (double) (frec.cantFalse / regTag.wordsNegative);
+				prob2 = regTag.artNegative;
+				//TODO: ver como obtener: /Cant total de art clasificados;
+				// Respuesta: (agregado por damian) con eduardo decimos que no hace falta
+				dato.probNeg += prob1 * prob2;
+			}
+			
+			map.insert(t_probMap::value_type(dato.probPos-dato.probNeg,dato.id));
+		}
+
+		// Clasifico al articulo con la categoria en la que se obtubo una mayor probabilidad
+		// de ocurrencia sin haber cometido tantos errores previos de clasificacion.
+		//ID CATEGORIA = (map.rbegin())->second
+
+		//TODO: DAMIAN: VER cual de estas dos ESTA BIEN, A MI NO DEBEN LLAMARME ESTO SE HACE CUANDO EL USUARIO 
+		// A CONFIRMADO LA CLASIFICACION
+//		art.add_cat((t_idcat) (map.rbegin())->second , true);
+//		_feedManager->clasificarArticulo( art.get_idfeed(), (map.rbegin())->second , art.get_idart(), true, true );
+
+	}
+	catch (eArchivo4 &e) {
+		throw string(e.what());
+	}
+	catch(ExceptionManagerWord &e) {
+		throw string(e.what());
+	}
+	catch (eFeedHandler &e) {
+		throw string(e.what());
+	}
+}
+
+/*	VERSION DAMIAN NRO: 94 
+
+typedef std::list< t_probability > t_probList;
+
+void EntitiesManager::clasificarArticulo(const Articulo &art){
+	try {
 		t_probList list;     //typedef list< t_probability > t_probList;
 		double prob1=0,prob2=0;
 		t_queue_idcat cola = _a4.getCategoriesId();	
@@ -494,3 +560,4 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 		throw string(e.what());
 	}
 }
+*/

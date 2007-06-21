@@ -40,48 +40,67 @@ class Articulo {
 		 */
 		void set_title(const string &title)
 		  {this->title = title;}
+
 		string get_title() const
 		  {return this->title;}
+
 		void set_uri(const string &uri)
 		  {this->uri = uri;}
+
 		string get_uri() const
 		  {return this->uri;}
+
 		void set_description(const string &description)
 		  {this->description = description;}
+
 		string get_description() const
 		  {return this->description;}
+
 		void set_category(const string &category)
 		  {this->category = category;}
+
 		string get_category() const
 		  {return this->category;}
+
 		void set_pubdate(const string &pubdate)
 		  {this->pubdate = pubdate;}
+
 		string get_pubdate() const
 		  {return this->pubdate;}
+
 		void set_summary(const string &summary)
 		  {this->summary = summary;}
+
 		string get_summary() const
 		  {return this->summary;}
+
 		void set_timestamp(const t_timestamp &timestamp)
 		  {this->timestamp = timestamp;}
+
 		t_timestamp get_timestamp() const
 		  {return this->timestamp;}
+
 		void set_leido(const bool &leido)
 		  {this->leido = leido;}
+
 		bool get_leido() const
 		  {return this->leido;}
+
 		void set_idart(const t_idart &idart)
 		  {this->idart = idart;}
+
 		t_idart get_idart() const
 		  {return this->idart;}
 
 		void set_idfeed(const t_idfeed &idfeed)
 		  {this->idfeed = idfeed;}
+
 		t_idfeed get_idfeed() const
 		  {return this->idfeed;}
 
 		void set_cont_idcat(const ContenedorIdCat &cont_idcat)
 		  {this->cont_idcat = cont_idcat;}
+
 		ContenedorIdCat get_cont_idcat() const
 		  {return this->cont_idcat;}
 		 // Si usu_pc = 1 -> clasificado por la pc

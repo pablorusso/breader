@@ -9,13 +9,14 @@ IMPORTANTE
 * Agregar el id_fav (es el cero) en el archivo4 al comienzo estructura,
   para que este siempre
 * Soportar reestructurar y ampliar idcat
-* Sergio: guardar los archivos en el directorio que te dice General
+* Sergio: guardar los archivos en el directorio que te dice General (OK, LISTO)
 
 NO TAN IMPORTANTE
 -----------------
 
 * Que no se puedan agregar dos categorias con el mismo nombre
 * Que no se puedan agregar dos feeds con la misma url (url+feed o url sola?)
+* Configurar los parametros del cArbol y cFileManager a gusto.
 
 
 CD o DVD incluyendo:
