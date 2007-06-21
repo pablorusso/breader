@@ -25,7 +25,7 @@ EntitiesManager::EntitiesManager()
 		managerWord.openEstructura();
 
 		// Agrego la categoria favorito... con idcat=0 de casualidad...
-//		_a4.addCategory("__Favorito__");
+		_a4.addCategory("__Favorito__");
 	}
 	catch(ExceptionManagerWord &e) {
 		throw string(e.what());
