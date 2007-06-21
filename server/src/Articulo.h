@@ -6,6 +6,7 @@
 #include <queue>
 #include "ContenedorIdCat.h"
 #include "General.h"
+#include "Archivo4.h"
 
 /**
  * Clase que encapsula un articulo de noticias en formato RSS.
@@ -175,8 +176,11 @@ class Articulo {
 
 		/**
 		 * Serializa el articulo a XML para enviar al front
+		 * @param feedName el nombre del feed
+		 * @param a4 una referencia al Archivo4 para leer los nombres de las
+		 *           categorias
 		 */
-		string getXML( string feedName );
+		string getXML( string feedName, Archivo4 &a4);
 	private:
 		//!< Las siguientes estan en ingles porque son del formato RSS
 		string title; //!< titulo (NUMREG = 0)
