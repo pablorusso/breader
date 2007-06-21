@@ -51,8 +51,8 @@ void cManagerWord::closeEstructura(){
 void cManagerWord::loadEstructura(){
 	if(!isCreada){
 		try{
-			arbol.loadArbol(NAME_FILE_TREE);
-			manager.loadFileManager(NAME_FILE_FM);
+			arbol.loadArbol(General::getDataPath()+NAME_FILE_TREE);
+			manager.loadFileManager(General::getDataPath()+NAME_FILE_FM);
 		}catch(ExceptionTree){
 			throw ExceptionManagerWord(MW_ERROR_CR);
 		}catch(ExceptionFileManager){		
