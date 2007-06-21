@@ -5,12 +5,20 @@ IMPORTANTE
 ----------
 
 * exportacion a XMLSchema
-* importacion de txt (una boludez)
+* importacion de txt (una boludez) (Damian: estoy en eso)
 * Agregar el id_fav (es el cero) en el archivo4 al comienzo estructura,
   para que este siempre
 * Soportar reestructurar y ampliar idcat
 * Sergio: guardar los archivos en el directorio que te dice General (OK, LISTO)
   (NO OK, es una gran mentira =P )
+
+BUGS
+----
+
+* El RSS de clarin no me anda, porque no me pasa el nombre... ese campo queda vacio y al crear
+  el feed tira excepcion por eso
+* No me funciona quitar categorias, porque el idFeed pasa vacio y tira error porque no puede
+  convertir eso a un numero
 
 NO TAN IMPORTANTE
 -----------------
