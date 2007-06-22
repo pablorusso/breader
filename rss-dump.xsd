@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<!-- hay una unica database como elemento raiz -->
+<xs:element name="database" >
+	<xs:complexType>
+		<xs:sequence>
+			<!-- habra un elemento feed por cada feed que se haya agregado al lector de feeds -->
+			<xs:element name="feed" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<!-- cada item dentro del feed sera una noticia, habra uno por cada noticia  que tenga el feed-->
+						<xs:element name="item" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<!-- Titulo de la noticia -->
+									<xs:element name="title" type="xs:string" minOccurs="1" maxOccurs="1"/>
+									<!-- Tags asignados a la notica -->
+									<xs:element name="tags" type="xs:string" minOccurs="1" maxOccurs="1"/>   	
+								</xs:sequence>
+							 </xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<!-- atributo de cada feed el cual debera indicar el url del feed-->
+					<xs:attribute name="url" type="xs:string" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:element>
+</xs:schema>

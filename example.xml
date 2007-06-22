@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+	<feed url="http://www.pitchforkmedia.com/rss/today">
+		<item>
+			<title>News: Arcade Fire and LCD Soundsystem: It's a Tour!</title>
+			<tags>arcade fire lcd soundsystem music news indie</tags>
+		</item>
+		<item>
+			<title>Review: The Polyphonic Spree: The Fragile Army</title>
+			<tags>polyphonic spree music review indie</tags>
+		</item>
+
+	</feed>
+	<feed url="http://particletree.com/archives/features/rss">
+		<item>
+			<title>Rediscovering the Button Element</title>
+			<tags>xhtml html blog coding</tags>
+		</item>
+		<item>
+			<title>Loading Content with JSON</title>
+			<tags>json javascript coding</tags>
+		</item>
+
+	</feed>
+
+</database>
