@@ -20,6 +20,49 @@ Values *Action::getParamValue( string paramName )
 
 int Action::splitString(const string& input, const string& delimiter, Values& results, bool includeEmpties )
 {
+	string::size_type delSize = delimiter.size();
+	string::size_type inputSize = input.size();
+	if ( ( inputSize == 0 ) || ( delSize == 0 ) )
+	{
+		if ( includeEmpties )
+		{
+			results.push_back( input );
+		}
+		return 0;
+	}
+
+	string myInput;
+	// Si lo primero no es un delimiter
+	if (input.find(delimiter,0) != 0)
+	{
+		myInput.append(delimiter);
+	}
+	myInput.append(input);
+
+//	cout << "myInput: " << myInput << endl;
+//	cout << "delimiter: " << delimiter << endl;
+	string::size_type lastPos = 0;
+	string::size_type pos;
+	int numFound = 1;
+
+	while (lastPos != string::npos)
+	{
+		++numFound;
+		pos = myInput.find(delimiter, lastPos+delSize);
+// 		cout << "lastPos: " << lastPos << endl;
+// 		cout << "pos: " << pos << endl;
+		// Found a token, add it to the vector.
+		string tmp( myInput.substr(lastPos+delSize, pos-(lastPos+delSize)) );
+		if (tmp.size() > 0 || includeEmpties)
+		{
+			results.push_back(tmp);
+		}
+		lastPos = pos;
+	}
+	return --numFound;
+}
+
+/* CODIGO DE PABLO 
     size_t iPos = 0;
     size_t newPos = string::npos;
     size_t sizeS2 = delimiter.size();
@@ -82,6 +125,7 @@ int Action::splitString(const string& input, const string& delimiter, Values& re
     }
     return numFound;
 }
+*/
 
 void Action::parseParams( string params )
 {
