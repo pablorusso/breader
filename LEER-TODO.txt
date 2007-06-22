@@ -9,6 +9,24 @@ IMPORTANTE
 * Agregar el id_fav (es el cero) en el archivo4 al comienzo estructura,
   para que este siempre (Damian: medio que parece que está...)
 * Soportar reestructurar y ampliar idcat
+	Damian - reestructurar:
+		* El feedHandler tiene un getUsedFactor que devuelve (reg_usados/reg_totales)
+		  no sé cuándo quieren que lo use, o si quieren llamarlo de afuera. La idea
+		  sería poner un umbral y que abajo de eso se reestructure
+		  Llamada: feedManager->reestructurar();
+	Damian - ampliar idcat:  (nota: este ampliar idcat también reestructura)
+		* No me acuerdo por qué pero esto no lo podía hacer yo desde adentro...
+		  quizás sería bueno que le preguntásemos al Archivo4 cuántas categorías hay
+		  tomadas, para poner un umbral de cuántas categorías nos quedan y ahí ampliarla
+		  automáticamente.
+		  También podríamos pensar en decirle al usuario cuántas categorías va a querer,
+		  pero es más sucio.
+		  Llamada: feedManager->set_MAX_CAT(NEW_MAX_CAT);
+	Damian - ambas anteriores:
+		* Obviamente, después de hacer la llamada esa: rezar. ;-)
+
+	Sergio - reestructurar:
+		* // TODO agrega tus comentarios sergio
 * Sergio: guardar los archivos en el directorio que te dice General (OK, LISTO)
 
 BUGS
@@ -18,12 +36,13 @@ BUGS
   el feed tira excepcion por eso
 * No me funciona quitar categorias, porque el idFeed pasa vacio y tira error porque no puede
   convertir eso a un numero
+* Este feed no trae mensajes? http://rssnewsapps.ziffdavis.com/pcmag.xml
 
 NO TAN IMPORTANTE
 -----------------
 
-* Que no se puedan agregar dos categorias con el mismo nombre (Damian: ya esta hecho)
-* Que no se puedan agregar dos feeds con la misma url (url+feed o url sola?)
+* Que no se puedan agregar dos categorias con el mismo nombre (Damian: ya esta hecho, a lo bestia)
+* Que no se puedan agregar dos feeds con la misma url (elijo url sola) (Damian: ya esta hecho, a lo bestia)
   (Damian: estoy en eso elijo url)
 * Configurar los parametros del cArbol y cFileManager a gusto.
 

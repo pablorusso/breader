@@ -70,16 +70,28 @@ bool Archivo6::findFeed(const t_idfeed &idfeed) {
 t_idfeed Archivo6::addFeed(const string &uri, const string &nombre) {
 	t_idfeed ret;
 	try {
-		// agrego en la primer posicion libre
-		ret = this->header.primerLibre;
-		Feed feed(this->header.MAX_CAT);
-		feed.setName(nombre);
-		feed.setUri(uri);
-		t_offset offset = this->a5.writeReg(feed);
-		t_regArchivo6 regA6;
-		regA6.estado = OCUPADO;
-		regA6.oArchivo5 = offset;
-		this->writeReg(regA6);
+
+		// Me fijo que la uri no exista
+		t_cola_idfeeds c = this->getColaIdFeeds();
+		bool found = false;
+		while ((!c.empty()) && (!found)) {
+			Feed f(this->getFeed(c.front()));
+			if (f.getUri() == uri) found = true;
+			c.pop();
+		}
+		if (!found) {
+			// agrego en la primer posicion libre
+			ret = this->header.primerLibre;
+			Feed feed(this->header.MAX_CAT);
+			feed.setName(nombre);
+			feed.setUri(uri);
+			t_offset offset = this->a5.writeReg(feed);
+			t_regArchivo6 regA6;
+			regA6.estado = OCUPADO;
+			regA6.oArchivo5 = offset;
+			this->writeReg(regA6);
+		}
+		else THROW(eArchivo6, A6_FEED_EXISTENTE);
 	}
 	catch (fstream::failure) {
 		if (this->f.is_open()) this->f.close();

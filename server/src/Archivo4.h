@@ -67,6 +67,7 @@ class Archivo4 {
 		 * @param catName el nombre del categoria
 		 * @return el id de la categoria asignado
 		 * @throw eArchivo4 si el nombre de la categoria es demasiado largo
+		 * @throw eArchivo4 si el nombre de la categoria ya existia
 		 * @throw eArchivo4 si el archivo esta corrupto
 		 */
 
