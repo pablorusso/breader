@@ -233,7 +233,7 @@ int main(int argc, char* argv[])
 {
 	if ( argc < 2 ) usage();
 
-	string type = argv[1];
+	string type(argv[1]);
 	if ( type == "3" )
 	{
 		string rmFiles("rm -fR ");

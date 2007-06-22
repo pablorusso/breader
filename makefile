@@ -1,4 +1,5 @@
 all:
+	-cd server         && $(MAKE) stage
 	-cd socket_manager && $(MAKE) stage
 	-cd listener       && $(MAKE) stage
 	-cd thin_client    && $(MAKE) stage
