@@ -60,8 +60,8 @@ string EntitiesManager::ArticleCreate( t_idfeed feedId, string title,
 		Articulo art( MAX_CATS );
 		art.set_title( title );
 		art.set_uri( link );
-		art.set_description( author ); // author=description??? Ok, si vos lo decis
-		art.set_pubdate( "" );
+		art.set_description( author );
+		//art.set_pubdate( "" ); // No hace falta
 		art.set_summary( summary );
 		art.set_timestamp( date );
 		art.set_idfeed( feedId );
@@ -106,8 +106,8 @@ string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 		if(_feedManager->readUsu_Pc(feedId,artId,IDCAT_FAV)){
 			// Si lo clasifico el sistema
 			for(it = cont.begin(); it != cont.end() ; ++it ){
-				((t_diferencias) it->second).cantFalse=((t_diferencias) it->second).cantTrue;				
-				((t_diferencias) it->second).cantTrue *= -1;		
+				((t_diferencias) it->second).cantFalse=((t_diferencias) it->second).cantTrue;
+				((t_diferencias) it->second).cantTrue *= -1;
 			}
 		}else{
 			// Si lo clasifico el usuario
@@ -182,7 +182,8 @@ string EntitiesManager::ArticleGetByFeedNext( t_idart quantity )
 	}
 }
 
-string EntitiesManager::ArticleGetByTags( vector< t_idcat > tagIds, vector< bool > state, t_idart quantity )
+string EntitiesManager::ArticleGetByTags( vector< t_idcat > tagIds,
+  vector< bool > state, t_idart quantity )
 {
 	try {
 		ContenedorIdCat tags( MAX_CATS );
@@ -198,7 +199,8 @@ string EntitiesManager::ArticleGetByTags( vector< t_idcat > tagIds, vector< bool
 			stateIt++;
 		}
 	
-		t_cola_art colaArt = _feedManager->getUltimosArticulosBool( tags, states, quantity );
+		t_cola_art colaArt = _feedManager->getUltimosArticulosBool( tags,
+		  states, quantity );
 		return BuildArticlesList( colaArt );
 	}
 	catch (eFeedHandler &e) {
@@ -296,7 +298,8 @@ string EntitiesManager::ArticleLinkTag( t_idfeed feedId, t_idart artId, t_idcat 
 
 string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idcat tagId )
 {
-	try {	
+	// TODO aca tampoco hay que llamar a eduardo?
+	try {
 		// Es una desclasificacion de un articulo
 		Articulo art = _feedManager->clasificarArticulo( feedId, tagId, artId, false, false );
 		t_word_cont cont = articleParser.parseArticle(art);
@@ -395,14 +398,13 @@ string EntitiesManager::TagDelete( t_idcat id )
 {
 	try {
 		// Borra una categoria
-		// Agregado por damian: lo mio ya esta hecho
-		// Agregado por sergio: a mi tmb: 
-		//Tag category;
-		try{ managerWord.deleteCategoria(id);
-		}catch(ExceptionManagerWord &e){string(e.what());}
+		managerWord.deleteCategoria(id);
 		_a4.deleteCategory(id);
 		_feedManager->bajaCategoria(id);
 		return "<tag/>";
+	}
+	catch (ExceptionManagerWord &e) {
+		throw string(e.what());
 	}
 	catch (eArchivo4 &e) {
 		throw string(e.what());
@@ -419,9 +421,6 @@ string EntitiesManager::TagEdit( t_idcat id, string name )
 		Tag category;
 		_a4.modifyCategoryName(id, name);
 		category.ConvertToTag(_a4.getCategoryInfo(id));
-		// Agregado por damian: aca no hace falta llamarme a mi
-		// Agregado por sergio: a mi tmb
-		//return "<tag/>";//TODO: hace falta devolver algo???
 		return category.getXML();
 	}
 	catch (eArchivo4 &e) {
@@ -431,6 +430,7 @@ string EntitiesManager::TagEdit( t_idcat id, string name )
 
 string EntitiesManager::TagGetAll()
 {
+	// Lista de todas las categorias disponibles en el sistema
 	try {
 		Tag categories;	
 		t_queue_idcat tagIds = _a4.getCategoriesId();
@@ -448,9 +448,6 @@ string EntitiesManager::TagGetAll()
 		response += "</tags>";
 		return response;
 	
-		// Lista de todas las categorias disponibles en el sistema
-		// Agregado por damian: aca no hace falta llamarme a mi
-		//return "<tags/>";
 	}
 	catch (eArchivo4 &e) {
 		throw string(e.what());
