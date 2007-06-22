@@ -113,9 +113,9 @@ class Archivo6 {
 		 * Nota: se modifica el idfeed del feed al "nuevo" idfeed
 		 * @param feed el feed a agregar
 		 * @return el idfeed asignado a ese feed
-		 * TODO: si se agrega y ya estaba, queda duplicado...?
 		 * @throw eArchivo6 si el archivo esta corrupto
 		 * @throw eArchivo6 si los parametros no son integros
+		 * @throw eArchivo6 si el uri del feed ya existia
 		 */
 		t_idfeed addFeed(Feed &feed);
 
@@ -208,6 +208,16 @@ class Archivo6 {
 		 * @throw eArchivo6 si el idcat esta fuera de rango
 		 */
 		void bajaCategoria(const t_idcat &idcat);
+
+		/**
+		 * Devuelve el factor de registros ocupados sobre registros totales
+		 * (se usara para decidir cuando reestructurar)
+		 * @return el factor de registros ocupados sobre registros totales
+		 */
+		t_usedFactor getUsedFactor() const {
+			return ((t_usedFactor)this->header.numFeeds/
+			        (t_usedFactor)this->numRegs);
+		}
 
 		/**
 		 * Devuelve la cantidad maxima de categorias

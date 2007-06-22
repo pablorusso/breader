@@ -39,7 +39,7 @@ private:
 public:
 
   /** Constructor*/
-	cManagerWord():arbol(TAM_NODO){ isCreada=false;};
+	cManagerWord():arbol(MAX_MEMORY_TREE){ isCreada=false;};
 
   /** Agrega la frecuencia a la palabra y de ser necesario la asocia a una nueva categoria. Si la 	
     *palabra no existe en la estructura tambien la agrega.

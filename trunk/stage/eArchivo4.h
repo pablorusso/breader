@@ -6,7 +6,7 @@
 #define THROW(class, err) throw class(err, __LINE__, __FILE__)
 
 typedef enum {A4_ARCHIVO_CORRUPTO, A4_CATEGORY_INFO_NO_CAT,
-  A4_NOMBRE_CAT_ERROR} A4_error;
+  A4_NOMBRE_CAT_ERROR, A4_CATEGORIA_EXISTENTE} A4_error;
 
 class eArchivo4 : public std::exception::exception, public IException {
 
@@ -45,6 +45,10 @@ public:
 			case A4_NOMBRE_CAT_ERROR: {
 				return "El nombre de la categoria proporcionado es demasiado \
 				        grande.";
+				break;
+			}
+			case A4_CATEGORIA_EXISTENTE: {
+				return "La categoria que se quiso agregar ya existe.";
 				break;
 			}
 			default: {

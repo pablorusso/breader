@@ -26,7 +26,7 @@ typedef struct t_headerArchivo4 {
 };
 
 /**
- * Clase que encapsula el comportamiento del Archivo4
+ * Encapsula el comportamiento del Archivo4
  */
 using namespace std;
 class Archivo4 {
@@ -67,6 +67,7 @@ class Archivo4 {
 		 * @param catName el nombre del categoria
 		 * @return el id de la categoria asignado
 		 * @throw eArchivo4 si el nombre de la categoria es demasiado largo
+		 * @throw eArchivo4 si el nombre de la categoria ya existia
 		 * @throw eArchivo4 si el archivo esta corrupto
 		 */
 
@@ -76,7 +77,7 @@ class Archivo4 {
 		 * Obtiene un categoria del Archivo4
 		 * Nota: no es const porque tengo que leer y cambiar el fpointer
 		 * @param idCategory el id del categoria a obtener
-		 * @return el registro de la categoria....... // TODO ?
+		 * @return el registro de la categoria
 		 * @throw eArchivo4 si el archivo esta corrupto
 		 * @throw eArchivo4 si idCategory esta fuera de rango
 		 */
@@ -94,29 +95,92 @@ class Archivo4 {
 			const t_quantity &wordsPositive, const t_quantity &wordsNegative,
 			const t_offset &firstBlockTag, const t_offset &firstBlockEmpty);
 
-		// TODO comentar con doxygen estos metodos
-		bool incCategoryArt(const t_idcat &idCategory,const t_quantity &artToAdd);
+		/**
+		 * Incrementa la cantidad de articulos que fueron clasificados con
+		 * cierto id de categoria
+		 * @param idCategory el id de la categoria
+		 * @param artToAdd en cuanto incrementar
+		 * @return true si se incremento, false si no se encontro la categoria
+		 */
+		bool incCategoryArt(const t_idcat &idCategory,
+		  const t_quantity &artToAdd);
 		
-		bool decCategoryArt(const t_idcat &idCategory,const t_quantity &artToDec);
+		/**
+		 * Decrementa la cantidad de articulos que fueron clasificados con
+		 * cierto id de categoria
+		 * @param idCategory el id de la categoria
+		 * @param artToDec en cuanto decrementar
+		 * @return true si se decremento, false si no se encontro la categoria
+		 */
+		bool decCategoryArt(const t_idcat &idCategory,
+		  const t_quantity &artToDec);
 
+		/**
+		 * Incrementa la cantidad de palabras que fueron clasificadas con
+		 * cierto id de categoria
+		 * @param idCategory el id de la categoria
+		 * @param wordToAdd en cuanto incrementar
+		 * @return true si se incremento, false si no se encontro la categoria
+		 */
 		bool incCategoryWord(const t_idcat &idCategory,
 			const t_quantity &wordToAdd);
 		
+		/**
+		 * Decrementa la cantidad de palabras que fueron clasificadas con
+		 * cierto id de categoria
+		 * @param idCategory el id de la categoria
+		 * @param wordToAdd en cuanto decrementar
+		 * @return true si se decremento, false si no se encontro la categoria
+		 */
 		bool decCategoryWord(const t_idcat &idCategory,
 			const t_quantity &wordToDec);
 
-		bool modifyCategoryName(const t_idcat &idCategory, const string &catName);
+		/**
+		 * Modifica el nombre de una categoria
+		 * @param idCategory el id de la categoria a modificar
+		 * @param catName el nuevo nombre de la categoria
+		 * @return true si se modifico, false si no se encontro la categoria
+		 */
+		bool modifyCategoryName(const t_idcat &idCategory,
+		  const string &catName);
 
+		/**
+		 * Incrementa la cantidad de palabras y de articulos que fueron 
+		 * clasificados con cierto id de categoria
+		 * @param idCategory el id de la categoria
+		 * @param artToAdd en cuanto incrementar los articulos
+		 * @param wordToAdd en cuanto incrementar las palabras
+		 * @return true si se incremento, false si no se encontro la categoria
+		 */
 		bool incCategoryArtAndWord(const t_idcat &idCategory,
 			const t_quantity &artToAdd,const t_quantity &wordToAdd);
 
+		/**
+		 * Decrementa la cantidad de palabras y de articulos que fueron
+		 * clasificados con cierto id de categoria
+		 * @param idCategory el id de la categoria
+		 * @param artToDec en cuanto decrementar los articulos
+		 * @param wordToDec en cuanto decrementar las palabras
+		 * @return true si se decremento, false si no se encontro la categoria
+		 */
 		bool decCategoryArtAndWord(const t_idcat &idCategory,
 			const t_quantity &artToDec, const t_quantity &wordToDec);
 
+		/**
+		 * Modifica los campos firstBlockTag y firstBlockEmpty de un registro
+		 * @param idCategory el id de la categoria a modificar
+		 * @param firsBlockTag el nuevo firsBlockTag
+		 * @param firstBlockEmpty el nuevo firstBlockEmpty
+		 * @return true si se modifico, false si no se encontro la categoria
+		 */
 		bool modifyCategoryBlocks(const t_idcat &idCategory, 
 									const t_offset &firstBlockTag,	
 									const t_offset &firstBlockEmpty);
 
+		/**
+		 * Devuelve una cola con los ids de las categorias del archivo
+		 * @return una cola con los ids de las categorias del archivo
+		 */
 		t_queue_idcat getCategoriesId();
 
 		/**
@@ -128,7 +192,9 @@ class Archivo4 {
 		bool deleteCategory(const t_idcat &idCat);
 
 		/**
-		 * // TODO comentar
+		 * Obtiene ciertos campos de un registro del archivo
+		 * @param idCat el id de la categoria
+		 * @return un registro que contiene dichos campos
 		 */
 		tRegistro3 getRegistro(const t_idcat &idCat);
 

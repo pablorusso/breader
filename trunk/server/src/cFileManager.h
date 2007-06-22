@@ -10,10 +10,10 @@
 #include "General.h"
 
 #define NULL_BL 0
-#define REG_X_BLOCK 4
+#define REG_X_BLOCK 32
 
 /** Cantidad de bit que hacen falta para representar REG_X_BLOCK-1 */
-#define CANT_BIT 2
+#define CANT_BIT 6
  
 #define NO_MOVIBLE ((t_cantReg)(-1))
 

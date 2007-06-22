@@ -9,13 +9,16 @@
 /**Valor que corresponde a un bloque vacio*/
 #define NULL_BL 0
 /**Cantidad de elementos en los nodos, la cantidad minima de elementos es tres.*/
-#define CANT_ELEM_X_NODO 3
+#define CANT_ELEM_X_NODO 24
 
 /*****************************************************************************/
 template < class ELEM >
 class cNodoDisco{
 public:
 
+	/**
+	 * Constructor. Inicializa atributos con valores por default
+	 */
 	cNodoDisco(){
 		nroNodo=0;
 		for(t_offset i=0 ; i < CANT_ELEM_X_NODO+1 ; i++){
@@ -35,17 +38,20 @@ template < class CONT, class ELEM > class cArbol;
 
 template < class CONT, class ELEM >
 class cNodo {
-   /*
+   /**
+	* Constructor
 	* @param nroNodo Identificador al nodo ante los demas.
 	*/
    cNodo(t_offset nroNodo);
-   /*
+   /**
 	* @param nodo Nodo almacenado en disco.
 	* @param padre Puntero al padre del nodo.
 	*/
    cNodo(cNodoDisco<ELEM> nodo,cNodo* padre);
 
-   /* Destructor */
+   /**
+	* Destructor
+	*/
    ~cNodo();
 
 private:
@@ -67,8 +73,6 @@ private:
    friend class cArbol<CONT,ELEM> ;
 
 };
-
-
 
 /* -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- */
 /* Constructor: Inicializa el nodo en estado vacio

@@ -28,8 +28,10 @@ public:
     */
    cArbol(double maxOcup);
 
-   /* Destructor */
-   ~cArbol();
+	/**
+	 * Destructor
+	 */
+	~cArbol();
 
  /**Busca a un elemento deltro del arbol.
    * @param elem Palabra que se quiere buscar en el arbol

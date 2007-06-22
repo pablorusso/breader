@@ -28,6 +28,8 @@ El idcat -1 (casteado a unsigned) no se usa
 #define IDCAT_FAV 0
 //!< El id de la categoria correspondiente a "favorito" o "starred"
 //!< (ojo que si no es la cero no va a funcionar)
+//Cantidad de memoria maxima que puede hacer uso el arbol 4MB
+#define MAX_MEMORY_TREE 4000.0
 
 typedef unsigned int t_timestamp; //!< tipo formato timestamp (unix time)
 typedef unsigned int t_offset; //!< tipo ID para utilizar en los tipos offset

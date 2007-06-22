@@ -4,7 +4,7 @@
 #include "IException.h"
 
 typedef enum {A6_ARCHIVO_CORRUPTO, A6_PARAMETROS_FEED_INVALIDOS,
-  A6_IDFEED_INVALIDO, A6_IDCAT_FUERA_DE_RANGO} A6_error;
+  A6_IDFEED_INVALIDO, A6_IDCAT_FUERA_DE_RANGO, A6_FEED_EXISTENTE} A6_error;
 
 class eArchivo6 : public std::exception::exception, public IException {
 
@@ -47,6 +47,10 @@ public:
 			}
 			case A6_IDCAT_FUERA_DE_RANGO: {
 				return "El id de la categoria esta fuera de rango";
+				break;
+			}
+			case A6_FEED_EXISTENTE: {
+				return "La uri del feed que se quiso agregar ya existia";
 				break;
 			}
 			default: {
