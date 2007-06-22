@@ -676,7 +676,9 @@ void cFileManager::deleteCategoria(const t_idcat &idCat){
 	
 	try{ 
 		reg = adminBlock->getRegistro(idCat);
-	}catch(eArchivo4){	
+	}catch(eArchivo4 &ee){
+		//TODO: cuando se arregle el archivo 4 descomentar
+		//if(ee.getError()!=A4_CATEGORY_INFO_NO_CAT)	
 		throw ExceptionFileManager(FM_ERROR_EC);
 	}
 	

@@ -9,7 +9,7 @@
 /**Valor que corresponde a un bloque vacio*/
 #define NULL_BL 0
 /**Cantidad de elementos en los nodos, la cantidad minima de elementos es tres.*/
-#define CANT_ELEM_X_NODO 3
+#define CANT_ELEM_X_NODO 24
 
 /*****************************************************************************/
 template < class ELEM >

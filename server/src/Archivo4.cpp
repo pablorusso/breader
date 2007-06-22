@@ -6,9 +6,9 @@ Archivo4::Archivo4()
 	// Leo/Creo el Archivo4
 	this->f.open(fileName.c_str(), ios::in | ios::out | ios::binary);
 	if (this->f.good()) {
-		// leo el header
+		// leo el header 		
 		this->readHeader();
- 	} else {
+ 	} else { 		
 		// El archivo no estaba creado, entonces, lo creo
 		// escribo el header por primera vez (no puedo usar writeHeader)
 		t_headerArchivo4 header;
@@ -107,7 +107,7 @@ t_regArchivo4 Archivo4::getCategoryInfo(const t_idcat &idCat)
 {
 	t_regArchivo4 ret;
 	try
-	{
+	{	
 		if ( idCat < this->header.numCat )
 		{
 			ret.readReg(this->f,idCat);
@@ -117,7 +117,7 @@ t_regArchivo4 Archivo4::getCategoryInfo(const t_idcat &idCat)
 		else THROW(eArchivo4, A4_CATEGORY_INFO_NO_CAT);
 	}
 	catch (fstream::failure)
-	{
+	{	
 		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
 	}
 	return ret;
@@ -130,6 +130,7 @@ tRegistro3 Archivo4::getRegistro(const t_idcat &idCat)
 	reg = this->getCategoryInfo(idCat);
 	returnReg.firstBlockTag = reg.firstBlockTag;
 	returnReg.firstBlockRegEmpty = reg.firstBlockEmpty;
+
 	if(returnReg.firstBlockTag==0){		
 		THROW(eArchivo4, A4_CATEGORY_INFO_NO_CAT);
 	}

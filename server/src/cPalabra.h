@@ -7,7 +7,7 @@
 #include "ExceptionPalabra.h"
 #include "General.h"
 
-#define MAX_LONG_PALABRA 3 /**Longitud maxima para que una palabra sea almacenada en cElemento*/
+#define MAX_LONG_PALABRA 14 /**Longitud maxima para que una palabra sea almacenada en cElemento*/
 #define NAME_FILE_PALABRAS "palabras.txt" /**Nombre del archivo que contiene las palabras cuya 
 											*longitud superan a MAX_LONG_PALABRA*/
 

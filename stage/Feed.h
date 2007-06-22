@@ -54,6 +54,7 @@ class Feed {
 		void set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
 			this->cont_cant.resize(NEW_MAX_CAT, 0);
 		}
+
 		/**
 		 * Sobrecarga del operator<<
 		 * Imprime el contenido del feed
@@ -62,8 +63,11 @@ class Feed {
 
 		/**
 		 * Serializa la clase a XML para enviar al front
+		 * @param lastUpdate la fecha de ultima actualizacion
+		 * @return un XML que describe el contenido de la clase
 		 */
 		string getXML( t_timestamp lastUpdate );
+
 	private:
 		t_idfeed idfeed; //!< el id del feed
 		string name; //!< el nombre del feed

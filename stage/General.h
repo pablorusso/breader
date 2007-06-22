@@ -20,11 +20,16 @@ El idcat -1 (casteado a unsigned) no se usa
 #include <string>
 #include <map>
 
+#define SW_MIN_LEN 4
+//!< La minima longitud de las palabras de un articulo, para que no sean
+//!< consideradas stopwords
 #define NOM_CAT_MAX_LEN 20
 //!< La longitud maxima de los nombres de categorias
 #define IDCAT_FAV 0
 //!< El id de la categoria correspondiente a "favorito" o "starred"
 //!< (ojo que si no es la cero no va a funcionar)
+//Cantidad de memoria maxima que puede hacer uso el arbol 4MB
+#define MAX_MEMORY_TREE 4000.0
 
 typedef unsigned int t_timestamp; //!< tipo formato timestamp (unix time)
 typedef unsigned int t_offset; //!< tipo ID para utilizar en los tipos offset
@@ -37,7 +42,8 @@ typedef unsigned int t_quantity; //!< tipo para utilizar en los tipos cantidad
 typedef std::queue<t_idcat> t_queue_idcat; //!< tipo contenedor de idcat
 typedef unsigned int t_frequency; //!< un tipo frecuencia
 typedef int t_diferencia; //!< un tipo diferencia
-typedef unsigned short t_cantReg; //!< un tipo csntidad de registros
+typedef unsigned short t_cantReg; //!< un tipo cantidad de registros
+typedef float t_usedFactor; //!< un tipo factor de ocupados
 
 typedef struct {
 	t_frequency cantTrue; //!< Es la cantidad de veces que existe esa palabra 

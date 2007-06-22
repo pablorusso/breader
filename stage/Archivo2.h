@@ -27,8 +27,7 @@ typedef struct t_headerArchivo2 {
 };
 
 /**
- * Clase que encapsula el comportamiento de un Archivo2 en particular
- * (es decir, sirve para un solo feed)
+ * Encapsula el comportamiento de un Archivo2 en particular
  * En los registros no se guarda el idart, queda implicito (idart=posicion)
  */
 using namespace std;

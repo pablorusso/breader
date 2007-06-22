@@ -7,7 +7,7 @@
 #include "ExceptionPalabra.h"
 #include "General.h"
 
-#define MAX_LONG_PALABRA 3 /**Longitud maxima para que una palabra sea almacenada en cElemento*/
+#define MAX_LONG_PALABRA 14 /**Longitud maxima para que una palabra sea almacenada en cElemento*/
 #define NAME_FILE_PALABRAS "palabras.txt" /**Nombre del archivo que contiene las palabras cuya 
 											*longitud superan a MAX_LONG_PALABRA*/
 
@@ -19,6 +19,9 @@ class cElemento{
 
 public:
 
+	/**
+	 * Constructor. Inicializa atributos con valores por default
+	 */
 	cElemento(){
 		tipo=IS_EMPTY;
 		nroBlock=0;
@@ -27,10 +30,10 @@ public:
 	}
 
 	char tipo; //!< Estado de un elemento.
-			  /* Tipo=0 palabra es una palabra 
-			     Tipo=1 palabra es un offset
-				 Tipo=2 palabra esta vacia 
-	           */
+			   //!< Tipo=0 palabra es una palabra
+			   //!< Tipo=1 palabra es un offset
+	           //!< Tipo=2 palabra esta vacia
+
 	char palabra[MAX_LONG_PALABRA];	//!< Palabra u offset ha almacenar.
 	t_offset nroBlock; //!< Numero de bloque.
 };
@@ -78,10 +81,29 @@ public:
 	/**Devuelve si el objeto esta vacio o no*/
 	bool isEmpty();
 
+	/**
+	 * Sobrecarga del operator==
+	 */
 	bool operator==(const cPalabra &pal) const;
+
+	/**
+	 * Sobrecarga del operator<
+	 */
 	bool operator<(const cPalabra &pal) const;
-	bool operator>(const cPalabra &pal) const;	
+
+	/**
+	 * Sobrecarga del operator>
+	 */
+	bool operator>(const cPalabra &pal) const;
+
+	/**
+	 * Sobrecarga del operator<=
+	 */
 	bool operator<=(const cPalabra &pal) const;
+
+	/**
+	 * Sobrecarga del operator>=
+	 */
 	bool operator>=(const cPalabra &pal) const;	
 	
 /*------------DESPUES SACAR------------------------------*/

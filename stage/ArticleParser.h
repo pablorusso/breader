@@ -11,9 +11,6 @@
 #include <iostream>
 // BORRAR
 
-#define SW_MIN_LEN 4
-//!< La minima longitud de las palabras de un articulo, para que no sean
-//!< consideradas stopwords
 #define SW_FILENAME "StopWords.txt"
 //!< El nombre del archivo de stopwords, cuyo formato debe ser de palabras
 //!< en iso separadas por espacios.

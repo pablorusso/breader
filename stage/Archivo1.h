@@ -9,7 +9,6 @@
 #define A1_FILENAME "A1"
 #define A1_FILENAME_BIS "A1_bis"
 
-
 // BORRAR
 #include <iostream>
 // BORRAR
@@ -18,8 +17,7 @@ typedef unsigned short t_numRegA1; //!< el numero de registro del Archivo1
 typedef unsigned int t_longRegA1; //!< la longitud de registro del Archivo1
 
 /**
- * Clase que encapsula el comportamiento de un Archivo1 en particular
- * (es decir, sirve para un solo feed)
+ * Encapsula el comportamiento de un Archivo1 en particular
  * Tiene la estructura de (NumReg, Longitud, Dato)
  *    NUMREG: 0    DATO: [title]
  *    NUMREG: 1    DATO: [uri]

@@ -322,6 +322,15 @@ class feedHandler {
 		void bajaCategoria(const t_idcat &idcat);
 
 		/**
+		 * Devuelve el factor de registros ocupados de Archivo_5 y Archivo_6
+		 * sobre registros totales  (se usara para decidir cuando reestructurar)
+		 * @return el factor de registros ocupados sobre registros totales
+		 */
+		t_usedFactor getUsedFactor() const {
+			return this->a6.getUsedFactor();
+		}
+
+		/**
 		 * Reestructura el Archivo5 y el Acrhivo6, para que no tengan espacio
 		 * libre innecesario. Esto cambia los idfeeds y, por lo tanto, los
 		 * nombres del Archivo_2_f y del Archivo_1_f
