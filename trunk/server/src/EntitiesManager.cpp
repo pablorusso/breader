@@ -98,23 +98,25 @@ string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 	try {
 		// TODO no hay que cambiar nada en el archivo de eduardo??
 		//TODO: Sergio->Respuesta: corroborar si esta bien
-		short cond = art.find_cat(IDCAT_FAV);
+		
 		Articulo art = _feedManager->invertirFavorito( feedId, artId );
 		t_word_cont cont = articleParser.parseArticle(art);
 		t_word_cont::iterator it;	
+		short cond = art.find_cat(IDCAT_FAV);
 		
 		// Si usu_pc = 1 -> clasificado por la pc
 		// Si usu_pc = 0 -> clasificado por el usuario
 
-		if(cond == -1){
+		//Ya se le cambio el estado asi q voy por la inversa
+		if(cond =! -1){
 			//El articulo no pertenese a la categoria favoritos y va pasar a estarlo
-			_a4.incCategoryArtAndWord(tagId,1,cont.size());
+			_a4.incCategoryArtAndWord(IDCAT_FAV,1,cont.size());
 
 		}else{
 			//El articulo pertenese a la categoria favoritos y va pasar a no estarlo
 				if(_feedManager->readUsu_Pc(feedId,artId,IDCAT_FAV)){
 					// Si lo habia clasificado el sistema
-					_a4.decCategoryArtAndWord(tagId,1,cont.size());
+					_a4.decCategoryArtAndWord(IDCAT_FAV,1,cont.size());
 
 					for(it = cont.begin(); it != cont.end() ; ++it ){
 						((t_diferencias) it->second).cantFalse=((t_diferencias) it->second).cantTrue;
@@ -124,7 +126,7 @@ string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 
 				}else{
 					// Si lo habia clasificado el usuario entonces el se confundio.
-					_a4.decCategoryArtAndWordUserError(tagId,1,cont.size());
+					_a4.decCategoryArtAndWordUserError(IDCAT_FAV,1,cont.size());
 					for(it = cont.begin(); it != cont.end() ; ++it )
 						((t_diferencias) it->second).cantTrue *= -1;
 				}
@@ -528,13 +530,13 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 		// de ocurrencia sin haber cometido tantos errores previos de clasificacion.
 
 		bool salir=false;
-		t_probMap::reverse_iterator it = map.rbegin();
+		t_probMap::reverse_iterator itt = map.rbegin();
 
-		while(!salir && it!=rend()){
+		while(!salir && itt!=map.rend()){
 			if((map.rbegin())->first > UMBRAL)
-				_feedManager->clasificarArticulo(art.get_idfeed(),it->second,art.get_idart(),true,true);
+				_feedManager->clasificarArticulo(art.get_idfeed(),itt->second,art.get_idart(),true,true);
 			else salir=true;	
-			++it;
+			++itt;
 		}
 
 	}
