@@ -1,6 +1,8 @@
 #include "cManagerWord.h"
 
-
+cManagerWord::cManagerWord(Archivo4 *a4):arbol(MAX_MEMORY_TREE),manager(a4){ 
+	isCreada=false;
+}
 /*----------------------------------------------------------------------*/
 /* Crea la estructura de archivos que va a manejar las palabras y sus datos estadisticos asociados.*/
 void cManagerWord::openEstructura(){
@@ -20,7 +22,7 @@ void cManagerWord::createEstructura(){
 			manager.crearFileManager(General::getDataPath()+NAME_FILE_FM);
 		}catch(ExceptionTree){
 			throw ExceptionManagerWord(MW_ERROR_CR);
-		}catch(ExceptionFileManager){		
+		}catch(ExceptionFileManager){
 			arbol.destroy();
 			throw ExceptionManagerWord(MW_ERROR_CR);
 		}
@@ -192,5 +194,17 @@ void cManagerWord::deleteCategoria(const t_idcat &id){
 	
 }
 
+/*----------------------------------------------------------------------*/
+void cManagerWord::reestructurar(){
+	if(!isCreada)
+		throw ExceptionManagerWord(MW_ERROR_CL);
+
+	try{ manager.reestructurar();
+	}catch(ExceptionFileManager){throw ExceptionManagerWord(MW_ERROR_RES);}
+}
+/*----------------------------------------------------------------------*/
+t_usedFactor cManagerWord::getUsedFactor(){
+	return manager.getUsedFactor();
+}
 /*----------------------------------------------------------------------*/
 

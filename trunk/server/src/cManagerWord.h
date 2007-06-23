@@ -14,8 +14,6 @@
 #define NAME_FILE_FM "managerFile.dat"
 
 
-//TODO: modificar los define de configuracion de cNodo y cFileManager a gusto...
-
 class cManagerWord{
 
 
@@ -39,7 +37,7 @@ private:
 public:
 
   /** Constructor*/
-	cManagerWord():arbol(MAX_MEMORY_TREE){ isCreada=false;};
+	cManagerWord(Archivo4 *a4);
 
   /** Agrega la frecuencia a la palabra y de ser necesario la asocia a una nueva categoria. Si la 	
     *palabra no existe en la estructura tambien la agrega.
@@ -85,6 +83,18 @@ public:
   /** Borra la estructura de archivos
 	*/
 	void destroyEstructura();
+
+	
+  /** Restructura los archivos de forma tal de minimizar la fragmentacion.
+	*/
+	void reestructurar();
+
+  /**
+	* Devuelve el factor de bloques ocupados de cFileManager
+	* sobre bloques totales  (se usara para decidir cuando reestructurar)
+	* @return el factor de registros ocupados sobre registros totales
+	*/
+	t_usedFactor getUsedFactor();
 };
 
 #endif

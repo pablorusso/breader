@@ -10,12 +10,13 @@
 #include "General.h"
 
 #define NULL_BL 0
-#define REG_X_BLOCK 32
+#define REG_X_BLOCK 64
 
 /** Cantidad de bit que hacen falta para representar REG_X_BLOCK-1 */
-#define CANT_BIT 6
+#define CANT_BIT 7
  
 #define NO_MOVIBLE ((t_cantReg)(-1))
+#define MIN_FRAG 1024
 
 class cRegistroBlock {
 
@@ -85,7 +86,7 @@ public:
 
 	t_cantReg cantRegOcup; //!< Cantidad de registros ocupados en el bloque.
 
-	/**
+   /**
 	 * Constructor. Inicializa atributos por default.
 	 * @param idCat el id de la categoria del cHeaderBlock
 	 */
@@ -196,6 +197,8 @@ public:
 
 	t_uint cantBlock;  //!< Cantidad de bloques almacenados en el archivo.
 
+	t_uint cantBlockEmpty; //!< Cantidad de bloques vacios.
+
 	tRegistro3 regRoot; //!< Datos administrativos de la catgoria inamovible.
 
 	/**
@@ -206,6 +209,7 @@ public:
 			cantBlock=0;
 			regRoot.firstBlockRegEmpty=0;
 			regRoot.firstBlockTag=0;	
+			cantBlockEmpty=0;
 	}
 
 	/**
@@ -213,7 +217,7 @@ public:
 	 * @return el tamanio de un registro del cHeaderFile
 	 */
 	static unsigned int sizeofHeader(){
-		return ( 3*sizeof(t_offset) + sizeof(t_uint) );	
+		return ( 3*sizeof(t_offset) + 2*sizeof(t_uint) );	
 	}
 
 };
@@ -353,7 +357,7 @@ public:
 	/**
 	 * Constructor
 	 */
-	cFileManager();
+	cFileManager(Archivo4 *a4);
 
 	/**
 	 * Destructor
@@ -427,7 +431,15 @@ public:
 	  *@throw cFileManager::FM_ERROR_NC no se ha creado ni cargado la estructura.
 	  *@throw cFileManager::FM_ERROR_RES No se ha podido restructurar el archivo
       */
-	void restructurar();
+	void reestructurar();
+	
+  	/**Devuelve el factor de bloques ocupados de cFileManager
+	  * sobre bloques totales  (se usara para decidir cuando reestructurar)
+	  *@throw cFileManager::FM_ERROR_NC no se ha creado ni cargado la estructura.
+	  * @return el factor de registros ocupados sobre registros totales
+	  */	 
+	t_usedFactor getUsedFactor();
+
 
 };
 

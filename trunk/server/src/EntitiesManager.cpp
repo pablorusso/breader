@@ -18,7 +18,7 @@ EntitiesManager *EntitiesManager::getInstance()
 
 }
 
-EntitiesManager::EntitiesManager()
+EntitiesManager::EntitiesManager():managerWord(&_a4)
 {
 	_feedManager = new feedHandler( MAX_CATS );
 	try {
