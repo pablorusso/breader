@@ -156,6 +156,17 @@ class Archivo4 {
 			const t_quantity &artToAdd,const t_quantity &wordToAdd);
 
 		/**
+		 * Decrementa la cantidad de palabras y de articulos que fueron 
+		 * clasificados con cierto id de categoria, decrementa el ArtPositive y el wordPositive
+		 * @param idCategory el id de la categoria
+		 * @param artToAdd en cuanto decrementar los articulos
+		 * @param wordToAdd en cuanto decrementar las palabras
+		 * @return true si se decrementar, false si no se encontro la categoria
+		 */
+		bool decCategoryArtAndWordUserError(const t_idcat &idCategory,
+			const t_quantity &artToSubstract,const t_quantity &wordToSubstract);
+
+		/**
 		 * Decrementa la cantidad de palabras y de articulos que fueron
 		 * clasificados con cierto id de categoria
 		 * @param idCategory el id de la categoria

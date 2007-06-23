@@ -6,6 +6,7 @@
 #define MAX_CATS 40
 // TODO esto deberia poder cambiarse
 
+/*-------------------------------------------------------------------------------------------*/
 EntitiesManager *EntitiesManager::_instance = NULL;
 
 EntitiesManager *EntitiesManager::getInstance()
@@ -17,7 +18,7 @@ EntitiesManager *EntitiesManager::getInstance()
 	return EntitiesManager::_instance;
 
 }
-
+/*-------------------------------------------------------------------------------------------*/
 EntitiesManager::EntitiesManager():managerWord(&_a4)
 {
 	_feedManager = new feedHandler( MAX_CATS );
@@ -40,7 +41,7 @@ EntitiesManager::EntitiesManager():managerWord(&_a4)
 	}
 	//TODO: ver el tema de las excepciones
 }
-
+/*-------------------------------------------------------------------------------------------*/
 EntitiesManager::~EntitiesManager()
 {
 	delete _feedManager;
@@ -71,13 +72,14 @@ string EntitiesManager::ArticleCreate( t_idfeed feedId, string title,
 		throw string(e.what());
 	}
 }
-
+/*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::ArticleApproveTag( t_idfeed feedId, t_idart artId, t_idcat tagId )
 {   // El usuario aprueba una clasificacion hecha anteriormente por el sistema
 	Articulo art = _feedManager->clasificarArticulo( feedId, tagId, artId, true, false );
 	t_word_cont cont = articleParser.parseArticle(art);
 
 	try {
+		_a4.incCategoryArtAndWord(tagId,1,cont.size());
 		managerWord.addFrecWords(tagId,cont);
 		Feed feed = _feedManager->getFeed( art.get_idfeed() );
 		return art.getXML( feed.getName(), _a4 );
@@ -89,32 +91,45 @@ string EntitiesManager::ArticleApproveTag( t_idfeed feedId, t_idart artId, t_idc
 		throw string(e.what());
 	}
 }
-
+/*-------------------------------------------------------------------------------------------*/
 //NOTA: este metodo solo puede ser llamado desde el front es decir se estima que quien lo llama es el usuario.
 string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 {
 	try {
 		// TODO no hay que cambiar nada en el archivo de eduardo??
+		//TODO: Sergio->Respuesta: corroborar si esta bien
+		short cond = art.find_cat(IDCAT_FAV);
 		Articulo art = _feedManager->invertirFavorito( feedId, artId );
 		t_word_cont cont = articleParser.parseArticle(art);
 		t_word_cont::iterator it;	
-		short cond = art.find_cat(IDCAT_FAV);
-
+		
 		// Si usu_pc = 1 -> clasificado por la pc
 		// Si usu_pc = 0 -> clasificado por el usuario
-		if(_feedManager->readUsu_Pc(feedId,artId,IDCAT_FAV)){
-			// Si lo clasifico el sistema
-			for(it = cont.begin(); it != cont.end() ; ++it ){
-				((t_diferencias) it->second).cantFalse=((t_diferencias) it->second).cantTrue;
-				//Cero xq no se habia incorporado a la base de conocimiento.
-				((t_diferencias) it->second).cantTrue = 0;
-			}
+
+		if(cond == -1){
+			//El articulo no pertenese a la categoria favoritos y va pasar a estarlo
+			_a4.incCategoryArtAndWord(tagId,1,cont.size());
+
 		}else{
-			// Si lo clasifico el usuario entonces el se confundio.
-			for(it = cont.begin(); it != cont.end() ; ++it )
-				((t_diferencias) it->second).cantTrue *= -1;
+			//El articulo pertenese a la categoria favoritos y va pasar a no estarlo
+				if(_feedManager->readUsu_Pc(feedId,artId,IDCAT_FAV)){
+					// Si lo habia clasificado el sistema
+					_a4.decCategoryArtAndWord(tagId,1,cont.size());
+
+					for(it = cont.begin(); it != cont.end() ; ++it ){
+						((t_diferencias) it->second).cantFalse=((t_diferencias) it->second).cantTrue;
+						//Cero xq no se habia incorporado a la base de conocimiento.
+						((t_diferencias) it->second).cantTrue = 0;
+					}
+
+				}else{
+					// Si lo habia clasificado el usuario entonces el se confundio.
+					_a4.decCategoryArtAndWordUserError(tagId,1,cont.size());
+					for(it = cont.begin(); it != cont.end() ; ++it )
+						((t_diferencias) it->second).cantTrue *= -1;
+				}
 		}	
-		
+
 		managerWord.addFrecWords(IDCAT_FAV,cont);
 		Feed feed = _feedManager->getFeed( art.get_idfeed() );
 		return art.getXML( feed.getName(), _a4 );
@@ -126,7 +141,7 @@ string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 		throw string(e.what());
 	}
 }
-
+/*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::ArticleChangeReadState( t_idfeed feedId, t_idart artId )
 {
 	try {
@@ -138,7 +153,7 @@ string EntitiesManager::ArticleChangeReadState( t_idfeed feedId, t_idart artId )
 		throw string(e.what());
 	}
 }
-
+/*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::BuildArticlesList( t_cola_art colaArt )
 {
 	try {
@@ -159,7 +174,7 @@ string EntitiesManager::BuildArticlesList( t_cola_art colaArt )
 		throw string(e.what());
 	}
 }
-
+/*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::ArticleGetByFeed( t_idfeed feedId, t_idart quantity )
 {
 	try {
@@ -170,6 +185,7 @@ string EntitiesManager::ArticleGetByFeed( t_idfeed feedId, t_idart quantity )
 		throw string(e.what());
 	}
 }
+/*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::ArticleGetByFeedNext( t_idart quantity )
 {
 	try {
@@ -180,7 +196,7 @@ string EntitiesManager::ArticleGetByFeedNext( t_idart quantity )
 		throw string(e.what());
 	}
 }
-
+/*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::ArticleGetByTags( vector< t_idcat > tagIds,
   vector< bool > state, t_idart quantity )
 {
@@ -206,6 +222,7 @@ string EntitiesManager::ArticleGetByTags( vector< t_idcat > tagIds,
 		throw string(e.what());
 	}
 }
+/*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::ArticleGetByTagsNext( t_idart quantity )
 {
 	try {
@@ -216,7 +233,7 @@ string EntitiesManager::ArticleGetByTagsNext( t_idart quantity )
 		throw string(e.what());
 	}
 }
-
+/*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::ArticleGetFavourites( t_idart quantity )
 {
 	vector< t_idcat > tagIds;
@@ -227,11 +244,12 @@ string EntitiesManager::ArticleGetFavourites( t_idart quantity )
 
 	return ArticleGetByTags( tagIds, state, quantity );
 }
+/*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::ArticleGetFavouritesNext( t_idart quantity )
 {
 	return ArticleGetByTagsNext( quantity );
 }
-
+/*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::ArticleGetUnclassified( t_idart quantity )
 {
 	try {
@@ -244,6 +262,7 @@ string EntitiesManager::ArticleGetUnclassified( t_idart quantity )
 
 	return "<articles/>";
 }
+/*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::ArticleGetUnclassifiedNext( t_idart quantity )
 {
 	try {
@@ -255,7 +274,7 @@ string EntitiesManager::ArticleGetUnclassifiedNext( t_idart quantity )
 	}
 	return "<articles/>";
 }
-
+/*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::ArticleGetUnread( t_idart quantity )
 {
 	try {
@@ -266,6 +285,7 @@ string EntitiesManager::ArticleGetUnread( t_idart quantity )
 		throw string(e.what());
 	}
 }
+/*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::ArticleGetUnreadNext( t_idart quantity )
 {
 	try {
@@ -276,12 +296,13 @@ string EntitiesManager::ArticleGetUnreadNext( t_idart quantity )
 		throw string(e.what());
 	}
 }
-
+/*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::ArticleLinkTag( t_idfeed feedId, t_idart artId, t_idcat tagId )
 {	//Es una clasificación de un articulo x parte de un usuario
 	try {
 		Articulo art = _feedManager->clasificarArticulo( feedId, tagId, artId, true, false );
 		t_word_cont cont = articleParser.parseArticle(art);
+		_a4. incCategoryArtAndWord(tagId,1,cont.size());
 		managerWord.addFrecWords(tagId,cont);
 		Feed feed = _feedManager->getFeed( art.get_idfeed() );
 		return art.getXML( feed.getName(), _a4 );
@@ -294,10 +315,11 @@ string EntitiesManager::ArticleLinkTag( t_idfeed feedId, t_idart artId, t_idcat 
 	}
 
 }
-
+/*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idcat tagId )
 {
 	// TODO aca tampoco hay que llamar a eduardo?
+	//TODO: Sergio->Respuesta: corroborar si esta bien
 	try {
 		// Es una desclasificacion de un articulo
 		Articulo art = _feedManager->clasificarArticulo( feedId, tagId, artId, false, false );
@@ -308,13 +330,16 @@ string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idca
 		// Si usu_pc = 0 -> clasificado por el usuario
 		if(_feedManager->readUsu_Pc(feedId,artId,tagId)){
 			// Si lo clasifico el sistema
+			_a4.decCategoryArtAndWord(tagId,1,cont.size());
 			for(it = cont.begin(); it != cont.end() ; ++it ){
 				((t_diferencias) it->second).cantFalse=((t_diferencias) it->second).cantTrue;
 				//Cero xq no se habia incorporado a la base de conocimiento.
 				((t_diferencias) it->second).cantTrue=0;
 			}
+
 		}else{
 			// Si lo clasifico el usuario
+			_a4.decCategoryArtAndWordUserError(tagId,1,cont.size());
 			for(it = cont.begin(); it != cont.end() ; ++it )
 				((t_diferencias) it->second).cantTrue*=-1;
 		}
@@ -330,7 +355,7 @@ string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idca
 		throw string(e.what());
 	}
 }
-
+/*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::FeedCreate( string name, string url )
 {
 	try {
@@ -344,6 +369,7 @@ string EntitiesManager::FeedCreate( string name, string url )
 		throw string(e.what());
 	}
 }
+/*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::FeedDelete( t_idfeed feedId )
 {
 	try {
@@ -356,6 +382,7 @@ string EntitiesManager::FeedDelete( t_idfeed feedId )
 		throw string(e.what());
 	}
 }
+/*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::FeedGetAll()
 {
 	try {
@@ -378,7 +405,7 @@ string EntitiesManager::FeedGetAll()
 		throw string(e.what());
 	}
 }
-
+/*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::TagCreate( string name )
 {
 	try {
@@ -393,7 +420,7 @@ string EntitiesManager::TagCreate( string name )
 		throw string(e.what());
 	}
 }
-
+/*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::TagDelete( t_idcat id )
 {
 	try {
@@ -414,7 +441,7 @@ string EntitiesManager::TagDelete( t_idcat id )
 		throw string(e.what());
 	}
 }
-
+/*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::TagEdit( t_idcat id, string name )
 {
 	try {
@@ -428,7 +455,7 @@ string EntitiesManager::TagEdit( t_idcat id, string name )
 		throw string(e.what());
 	}
 }
-
+/*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::TagGetAll()
 {
 	// Lista de todas las categorias disponibles en el sistema
@@ -454,8 +481,9 @@ string EntitiesManager::TagGetAll()
 		throw string(e.what());
 	}
 }
-
+/*-------------------------------------------------------------------------------------------*/
 void EntitiesManager::clasificarArticulo(const Articulo &art){
+	//TODO: Corroborar
 	try {
 		//almaceno las probabilidades ordenadas de menor a mayor.
 		t_probMap map; 
@@ -498,9 +526,16 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 
 		// Clasifico al articulo con la categoria en la que se obtubo una mayor probabilidad
 		// de ocurrencia sin haber cometido tantos errores previos de clasificacion.
-		//ID CATEGORIA = (map.rbegin())->second
 
-		_feedManager->clasificarArticulo( art.get_idfeed(), (map.rbegin())->second , art.get_idart(), true, true );
+		bool salir=false;
+		t_probMap::reverse_iterator it = map.rbegin();
+
+		while(!salir && it!=rend()){
+			if((map.rbegin())->first > UMBRAL)
+				_feedManager->clasificarArticulo(art.get_idfeed(),it->second,art.get_idart(),true,true);
+			else salir=true;	
+			++it;
+		}
 
 	}
 	catch (eArchivo4 &e) {
@@ -513,7 +548,7 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 		throw string(e.what());
 	}
 }
-
+/*-------------------------------------------------------------------------------------------*/
 void EntitiesManager::importFeeds(const string &fileName) {
 	try {
 		ifstream inputFile(fileName.c_str());
@@ -540,3 +575,4 @@ void EntitiesManager::importFeeds(const string &fileName) {
 
 	// TODO devuelver algo
 }
+/*-------------------------------------------------------------------------------------------*/
