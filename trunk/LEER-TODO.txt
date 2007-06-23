@@ -36,6 +36,7 @@ IMPORTANTE
 		  siempre se va reestructura.
 
 * Sergio: guardar los archivos en el directorio que te dice General (OK, LISTO)
+* Damian, Eduardo: que al modificar el nombre de una categoria no pueda tener uno ya existente
 
 PRESENTACION LUNES
 ------------------
