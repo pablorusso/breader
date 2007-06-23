@@ -404,12 +404,13 @@ string EntitiesManager::TagDelete( t_idcat id )
 		return "<tag/>";
 	}
 	catch (ExceptionManagerWord &e) {
+		std::cout << std::endl << "ENTRO 1" << std::endl;
 		throw string(e.what());
 	}
-	catch (eArchivo4 &e) {
+	catch (eArchivo4 &e) { std::cout << std::endl << "ENTRO 2" << std::endl;
 		throw string(e.what());
 	}
-	catch (eFeedHandler &e) {
+	catch (eFeedHandler &e) { std::cout << std::endl << "ENTRO 3" << std::endl;
 		throw string(e.what());
 	}
 }
