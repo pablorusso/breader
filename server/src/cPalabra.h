@@ -45,6 +45,7 @@ private:
 
 	cElemento dato;  //!< Elemento que se va a guardar en el arbol
 	std::string palabra; //!< Palbra del elemento
+	static std::string nameFile;
 
 public:
 	/**Constructor.	  

@@ -3,16 +3,17 @@
 
 /*----------------------------------------------------------------------------*/
 /*Constructor*/
-cFileManager::cFileManager(){
+cFileManager::cFileManager(Archivo4 *a4){
 	nameFile="";
 	isCreado=false;	
-	adminBlock = new Archivo4();
+	adminBlock = a4;
 }
 
 /*----------------------------------------------------------------------------*/
 /*Destructor*/
 cFileManager::~cFileManager(){
-	delete adminBlock;
+//Se libera afuera
+//	delete adminBlock;
 }
 /*----------------------------------------------------------------------------*/
 /* Escribe un bloque en el archivo de salida.*/
@@ -24,10 +25,11 @@ void cFileManager::readHeaderFile(){
 		throw ExceptionFileManager(FM_ERROR_NC);
 
 	inputFile.read(reinterpret_cast<char *> (&(header.cantBlock)), sizeof(t_uint));	
+	inputFile.read(reinterpret_cast<char *> (&(header.cantBlockEmpty)), sizeof(t_uint));	
 	inputFile.read(reinterpret_cast<char *> (&(header.firstBlockEmpty)), sizeof(t_offset));
 	inputFile.read(reinterpret_cast<char *> (&(header.regRoot.firstBlockRegEmpty)), sizeof(t_offset));
 	inputFile.read(reinterpret_cast<char *> (&(header.regRoot.firstBlockTag)), sizeof(t_offset));
-	
+		
 	inputFile.close();
 }
 /*----------------------------------------------------------------------------*/
@@ -204,7 +206,8 @@ void cFileManager::writeHeaderFile(){
 		throw ExceptionFileManager(FM_ERROR_NC);
 
 	outputFile.write(reinterpret_cast<char *> (&(header.cantBlock)), sizeof(t_uint));
-	outputFile.write(reinterpret_cast<char *> (&(header.firstBlockEmpty)), sizeof(t_offset));
+	outputFile.write(reinterpret_cast<char *> (&(header.cantBlockEmpty)), sizeof(t_uint));	
+	outputFile.write(reinterpret_cast<char *> (&(header.firstBlockEmpty)), sizeof(t_offset));	
 	outputFile.write(reinterpret_cast<char *> (&(header.regRoot.firstBlockRegEmpty)), sizeof(t_offset));
 	outputFile.write(reinterpret_cast<char *> (&(header.regRoot.firstBlockTag)), sizeof(t_offset));
 	
@@ -222,6 +225,7 @@ void cFileManager::crearFileManager(std::string nameFile){
 		throw ExceptionFileManager(FM_ERROR_NC);
 
 	outputFile.write(reinterpret_cast<char *> (&(header.cantBlock)), sizeof(t_uint));
+	outputFile.write(reinterpret_cast<char *> (&(header.cantBlockEmpty)), sizeof(t_uint));	
 	outputFile.write(reinterpret_cast<char *> (&(header.firstBlockEmpty)), sizeof(t_offset));
 	outputFile.write(reinterpret_cast<char *> (&(header.regRoot.firstBlockRegEmpty)), sizeof(t_offset));
 	outputFile.write(reinterpret_cast<char *> (&(header.regRoot.firstBlockTag)), sizeof(t_offset));
@@ -676,10 +680,9 @@ void cFileManager::deleteCategoria(const t_idcat &idCat){
 	
 	try{ 
 		reg = adminBlock->getRegistro(idCat);
-	}catch(eArchivo4 &ee){
-		//TODO: cuando se arregle el archivo 4 descomentar
-		//if(ee.getError()!=A4_CATEGORY_INFO_NO_CAT)	
-		throw ExceptionFileManager(FM_ERROR_EC);
+	}catch(eArchivo4){
+		return;
+		//throw ExceptionFileManager(FM_ERROR_EC);
 	}
 	
   /*Calcula la posicion del primer bloque para la categoria.*/
@@ -696,7 +699,8 @@ void cFileManager::deleteCategoria(const t_idcat &idCat){
 
 		while(posAct!=NULL_BL){
 
-			bloque = readBlock((posAct << CANT_BIT));			
+			bloque = readBlock((posAct << CANT_BIT));
+			this->header.cantBlockEmpty++;
 
 			actualizarPtr(*bloque);
 			posSig=bloque->header.nroBlock;
@@ -841,7 +845,7 @@ t_offset cFileManager::getNroBlockEmpty(const t_offset &cantBlock){
 }
 /*----------------------------------------------------------------------------*/
 /*Reorganiza el archivo para disminuir la fragmentacion externa.*/
-void cFileManager::restructurar(){
+void cFileManager::reestructurar(){
 
 	if(header.firstBlockEmpty==NULL_BL)
 		return;
@@ -879,6 +883,7 @@ void cFileManager::restructurar(){
 					writeBlock(*bloqueMov);
 					
 					--auxCantBlock;
+					this->header.cantBlockEmpty--;
 				}else salir = true;
 
 			}else salir = true;
@@ -897,6 +902,7 @@ void cFileManager::restructurar(){
 
 	/*Escribo el header*/
 	outputFile.write(reinterpret_cast<char *> (&(header.cantBlock)), sizeof(t_uint));
+	outputFile.write(reinterpret_cast<char *> (&(header.cantBlockEmpty)), sizeof(t_uint));
 	outputFile.write(reinterpret_cast<char *> (&(header.firstBlockEmpty)), sizeof(t_offset));
 	outputFile.write(reinterpret_cast<char *> (&(header.regRoot.firstBlockRegEmpty)), sizeof(t_offset));
 	outputFile.write(reinterpret_cast<char *> (&(header.regRoot.firstBlockTag)), sizeof(t_offset));
@@ -933,3 +939,13 @@ void cFileManager::restructurar(){
 
 }
 /*----------------------------------------------------------------------------*/
+t_usedFactor cFileManager::getUsedFactor(){
+
+	if(!isCreado)
+		throw ExceptionFileManager(FM_ERROR_NC);
+
+	t_usedFactor sal = ((t_usedFactor) (header.cantBlock-header.cantBlockEmpty));
+	sal = sal / ((t_usedFactor) header.cantBlock);
+	return sal;
+}
+/*----------------------------------------------------------------------*/

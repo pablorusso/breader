@@ -16,10 +16,10 @@ public:
 
 	  const char *what() const throw(){
 		 switch(tipoError){
-		  case ERROR_FILE_NOT_FOUND: return "No se encuentra el archivo";		  
-		  case ERROR_SAVE_TREE: return "Error al salvar el arbol";	
-		  case ELEM_FOUND: return "El elemento ya se encuentra en el arbol.";		  
-		  case ERROR_NEA: return "Error no se ha creado o cargado el arbol aun .";		  
+		  case ERROR_FILE_NOT_FOUND: return "No se encuentra el archivo";
+		  case ERROR_SAVE_TREE: return "Error al salvar el arbol";
+		  case ELEM_FOUND: return "El elemento ya se encuentra en el arbol."; 
+		  case ERROR_NEA: return "Error no se ha creado o cargado el arbol aun .";
 		  case ERROR_MMI: return "Error memoria maxima insuficiente .";	
 
 		  default: return "Error Inesperado";

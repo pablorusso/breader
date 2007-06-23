@@ -5,7 +5,7 @@
 #include <exception>
 using std::exception;
 
-enum eErrorMW{MW_ERROR_ADD,MW_ERROR_ADDF,MW_ERROR_FNF,MW_ERROR_FIND,MW_ERROR_DC,MW_ERROR_CR,MW_ERROR_CL};
+enum eErrorMW{MW_ERROR_ADD,MW_ERROR_ADDF,MW_ERROR_FNF,MW_ERROR_FIND,MW_ERROR_DC,MW_ERROR_CR,MW_ERROR_CL,MW_ERROR_RES};
 
 class ExceptionManagerWord : public exception{
 private:
@@ -36,6 +36,8 @@ const char *what() const throw(){
 	case MW_ERROR_CR: return "Error al crear/Cargar la estructura.";
 
 	case MW_ERROR_CL: return "Error al cerrar la estructura.";
+	
+	case MW_ERROR_RES: return "Error al restructurar.";
 			 
 	default: return "Error Inesperado";
 	}

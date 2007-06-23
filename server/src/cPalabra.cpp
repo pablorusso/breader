@@ -3,11 +3,12 @@
 #include <iostream>
 #include <fstream>
 
+std::string cPalabra::nameFile=General::getDataPath()+NAME_FILE_PALABRAS;;
 /*-------------------------------------------------------------------------------*/
 /* Constructor: Inicializa cPalabra en estado vacio.*/
 
 cPalabra::cPalabra(){	  
-	palabra="";		
+	palabra="";	
 }
 /*-------------------------------------------------------------------------------*/
 /* Constructor: Cargo en cPalabra el elemento proporcionado.
@@ -26,7 +27,7 @@ cPalabra::cPalabra(cElemento elem){
 		char tamano=0;
 
 		long offset= atol(dato.palabra); 
-		std::ifstream inputFile(NAME_FILE_PALABRAS,std::ios::binary);
+		std::ifstream inputFile(nameFile.c_str(),std::ios::binary);
 		
 		if(!inputFile.good())
 			throw ExceptionPalabra(ERROR_FNF);	
@@ -176,7 +177,7 @@ void cPalabra::persistirPalabra(){
 		}
 
 	if(palabra!= ""){
-		std::ofstream outputFile(NAME_FILE_PALABRAS, std::ios::binary | std::ios::app);
+		std::ofstream outputFile(nameFile.c_str(), std::ios::binary | std::ios::app);
 
 		if(!outputFile.good())
 			throw ExceptionPalabra(ERROR_FNF);	

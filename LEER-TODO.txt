@@ -26,7 +26,15 @@ IMPORTANTE
 		* Obviamente, después de hacer la llamada esa: rezar. ;-)
 
 	Sergio - reestructurar:
-		* // TODO agrega tus comentarios sergio
+		  El cManagerWord tiene un getUsedFactor que devuelve (reg_usados/reg_totales)
+		  no sé cuándo quieren que lo use, o si quieren llamarlo de afuera. La idea
+		  sería poner un umbral y que abajo de eso se reestructure
+		  Llamada: managerWord.reestructurar();
+
+		  Yo opino que se haga desde una opcion en consola xej ./listener -R asi se ejecuta 
+		  cuando el programa no esta corriendo y aparte el umbral asi x mas q se lo llame no 
+		  siempre se va reestructura.
+
 * Sergio: guardar los archivos en el directorio que te dice General (OK, LISTO)
 
 PRESENTACION LUNES
