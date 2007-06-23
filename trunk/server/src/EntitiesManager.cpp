@@ -47,10 +47,7 @@ EntitiesManager::~EntitiesManager()
 	try{
 		managerWord.closeEstructura();
 	}
-	catch(ExceptionManagerWord &e) {
-		throw string(e.what());
-	}
-	//TODO: ver el tema de las excepciones
+	catch(ExceptionManagerWord &e) {}
 }
 
 string EntitiesManager::ArticleCreate( t_idfeed feedId, string title,
@@ -93,6 +90,7 @@ string EntitiesManager::ArticleApproveTag( t_idfeed feedId, t_idart artId, t_idc
 	}
 }
 
+//NOTA: este metodo solo puede ser llamado desde el front es decir se estima que quien lo llama es el usuario.
 string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 {
 	try {
@@ -100,22 +98,23 @@ string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 		Articulo art = _feedManager->invertirFavorito( feedId, artId );
 		t_word_cont cont = articleParser.parseArticle(art);
 		t_word_cont::iterator it;	
-	
+		short cond = art.find_cat(IDCAT_FAV);
+
 		// Si usu_pc = 1 -> clasificado por la pc
 		// Si usu_pc = 0 -> clasificado por el usuario
 		if(_feedManager->readUsu_Pc(feedId,artId,IDCAT_FAV)){
 			// Si lo clasifico el sistema
 			for(it = cont.begin(); it != cont.end() ; ++it ){
 				((t_diferencias) it->second).cantFalse=((t_diferencias) it->second).cantTrue;
-				((t_diferencias) it->second).cantTrue *= -1;
+				//Cero xq no se habia incorporado a la base de conocimiento.
+				((t_diferencias) it->second).cantTrue = 0;
 			}
 		}else{
-			// Si lo clasifico el usuario
+			// Si lo clasifico el usuario entonces el se confundio.
 			for(it = cont.begin(); it != cont.end() ; ++it )
 				((t_diferencias) it->second).cantTrue *= -1;
-				
-		}
-	
+		}	
+		
 		managerWord.addFrecWords(IDCAT_FAV,cont);
 		Feed feed = _feedManager->getFeed( art.get_idfeed() );
 		return art.getXML( feed.getName(), _a4 );
@@ -279,7 +278,7 @@ string EntitiesManager::ArticleGetUnreadNext( t_idart quantity )
 }
 
 string EntitiesManager::ArticleLinkTag( t_idfeed feedId, t_idart artId, t_idcat tagId )
-{
+{	//Es una clasificación de un articulo x parte de un usuario
 	try {
 		Articulo art = _feedManager->clasificarArticulo( feedId, tagId, artId, true, false );
 		t_word_cont cont = articleParser.parseArticle(art);
@@ -311,7 +310,8 @@ string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idca
 			// Si lo clasifico el sistema
 			for(it = cont.begin(); it != cont.end() ; ++it ){
 				((t_diferencias) it->second).cantFalse=((t_diferencias) it->second).cantTrue;
-				((t_diferencias) it->second).cantTrue*=-1;
+				//Cero xq no se habia incorporado a la base de conocimiento.
+				((t_diferencias) it->second).cantTrue=0;
 			}
 		}else{
 			// Si lo clasifico el usuario
