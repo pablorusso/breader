@@ -20,6 +20,7 @@ El idcat -1 (casteado a unsigned) no se usa
 #include <string>
 #include <map>
 
+#define UMBRAL 0.6
 #define SW_MIN_LEN 4
 //!< La minima longitud de las palabras de un articulo, para que no sean
 //!< consideradas stopwords

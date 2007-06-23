@@ -210,6 +210,28 @@ bool Archivo4::incCategoryArtAndWord(const t_idcat &idCategory,
 	return ret;
 }
 
+bool Archivo4::decCategoryArtAndWordUserError(const t_idcat &idCategory,
+			const t_quantity &artToSubstract,const t_quantity &wordToSubstract)
+{
+	bool ret = false;
+	try
+	{
+		if (this->findCategory(idCategory))
+		{
+			ret = true;
+			t_regArchivo4 reg;
+			reg.readReg(this->f,idCategory);
+			reg.artPositive -= artToSubstract;
+			reg.wordsPositive -= wordToSubstract;
+			reg.writeReg(this->f,idCategory);
+		}
+	}catch (fstream::failure) {
+		if (this->f.is_open()) this->f.close();
+		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
+	}
+	return ret;
+}
+
 bool Archivo4::decCategoryArtAndWord(const t_idcat &idCategory,
 	const t_quantity &artToDec,const t_quantity &wordToDec)
 {
