@@ -35,8 +35,8 @@ IMPORTANTE
 		  cuando el programa no esta corriendo y aparte el umbral asi x mas q se lo llame no 
 		  siempre se va reestructura.
 
-* Sergio: guardar los archivos en el directorio que te dice General (OK, LISTO)
-* Damian, Eduardo: que al modificar el nombre de una categoria no pueda tener uno ya existente
+* Sergio: guardar los archivos en el directorio que te dice General!! (falta el palabras.txt...!)
+
 
 PRESENTACION LUNES
 ------------------
@@ -55,9 +55,11 @@ BUGS
 NO TAN IMPORTANTE
 -----------------
 
-* Que no se puedan agregar dos categorias con el mismo nombre (Damian: ya esta hecho, a lo bestia)
-* Que no se puedan agregar dos feeds con la misma url (elijo url sola) (Damian: ya esta hecho, a lo bestia)
+- Que no se puedan agregar dos categorias con el mismo nombre (Damian: ya esta hecho, a lo bestia)
+- Que al modificar el nombre de una categoria no pueda tener uno ya existente (Damian, ya esta hecho, a lo bestia)
+- Que no se puedan agregar dos feeds con la misma url (elijo url sola) (Damian: ya esta hecho, a lo bestia)
 * Configurar los parametros del cArbol y cFileManager a gusto.
+* Pablo: restringistes el límite de los nombres de las categorías en el Agregar pero no en el Modificar.
 
 
 CD o DVD incluyendo:

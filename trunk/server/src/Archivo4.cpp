@@ -146,19 +146,41 @@ bool Archivo4::modifyCategoryInfo(const t_idcat &idCategory, string catName,
 	bool ret = false;
 	try
 	{
+		if (catName.size() > NOM_CAT_MAX_LEN)
+			THROW(eArchivo4, A4_NOMBRE_CAT_ERROR);
+
 		if (this->findCategory(idCategory))
 		{
-			ret = true;
-			t_regArchivo4 reg;
-			reg.estado = OCUPADO;
-			reg.artPositive = artPositive;
-			reg.artNegative = artNegative;
-			reg.wordsPositive = wordsPositive;
-			reg.wordsNegative = wordsNegative;
-			reg.categoryName = catName;
-			reg.firstBlockTag = firstBlockTag;
-			reg.firstBlockEmpty = firstBlockEmpty;
-			reg.writeReg(this->f,idCategory);
+
+			// Tengo que buscar si la categoria ya no existe
+			t_queue_idcat cat_q = this->getCategoriesId();
+			bool found=false;
+			while (!cat_q.empty() && (!found)) {
+				t_idcat idcat = cat_q.front();
+				if (idcat != IDCAT_FAV) { // El favoritos puede estar dos veces
+					t_regArchivo4 reg = this->getCategoryInfo(idcat);
+					if (reg.categoryName == catName)
+						found = true;
+				}
+				cat_q.pop();
+			}
+	
+			if (!found) {
+				ret = true;
+				t_regArchivo4 reg;
+				reg.estado = OCUPADO;
+				reg.artPositive = artPositive;
+				reg.artNegative = artNegative;
+				reg.wordsPositive = wordsPositive;
+				reg.wordsNegative = wordsNegative;
+				reg.categoryName = catName;
+				reg.firstBlockTag = firstBlockTag;
+				reg.firstBlockEmpty = firstBlockEmpty;
+				reg.writeReg(this->f,idCategory);
+			}
+			else {
+				THROW(eArchivo4, A4_CATEGORIA_MOD_EXISTENTE);
+			}
 		}
 	}catch (fstream::failure) {
 		if (this->f.is_open()) this->f.close();
@@ -322,13 +344,35 @@ bool Archivo4::modifyCategoryName(const t_idcat &idCategory,
 	bool ret = false;
 	try
 	{
+		if (catName.size() > NOM_CAT_MAX_LEN)
+			THROW(eArchivo4, A4_NOMBRE_CAT_ERROR);
+
 		if (this->findCategory(idCategory))
 		{
-			ret = true;
-			t_regArchivo4 reg;
-			reg.readReg(this->f,idCategory);
-			reg.categoryName = catName;
-			reg.writeReg(this->f,idCategory);
+	
+			// Tengo que buscar si la categoria ya no existe
+			t_queue_idcat cat_q = this->getCategoriesId();
+			bool found=false;
+			while (!cat_q.empty() && (!found)) {
+				t_idcat idcat = cat_q.front();
+				if (idcat != IDCAT_FAV) { // El favoritos puede estar dos veces
+					t_regArchivo4 reg = this->getCategoryInfo(idcat);
+					if (reg.categoryName == catName)
+						found = true;
+				}
+				cat_q.pop();
+			}
+	
+			if (!found) {
+				ret = true;
+				t_regArchivo4 reg;
+				reg.readReg(this->f,idCategory);
+				reg.categoryName = catName;
+				reg.writeReg(this->f,idCategory);
+			}
+			else {
+				THROW(eArchivo4, A4_CATEGORIA_MOD_EXISTENTE);
+			}
 		}
     }catch (fstream::failure) {
 		if (this->f.is_open()) this->f.close();
