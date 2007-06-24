@@ -13,7 +13,13 @@ El idart -1 (casteado a unsigned) no se usa
 Imposiciones de Sergio:
 ----------------------
 El idcat -1 (casteado a unsigned) no se usa
-*****************************************************************************/
+*****************************************************************************
+Imposiciones generales
+----------------------
+El IDCAT_FAV tiene que ser el cero, para que esté al principio y no haya que
+agregar basura en el medio...
+******************************************************************************/
+
 
 
 #include <queue>
