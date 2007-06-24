@@ -26,7 +26,8 @@ agregar basura en el medio...
 #include <string>
 #include <map>
 
-#define UMBRAL 0.6
+#define UMBRAL_FILE_MANAGER 0.6
+//!< Umbral del FileManager
 #define SW_MIN_LEN 4
 //!< La minima longitud de las palabras de un articulo, para que no sean
 //!< consideradas stopwords
@@ -35,8 +36,8 @@ agregar basura en el medio...
 #define IDCAT_FAV 0
 //!< El id de la categoria correspondiente a "favorito" o "starred"
 //!< (ojo que si no es la cero no va a funcionar)
-//Cantidad de memoria maxima que puede hacer uso el arbol 4MB
 #define MAX_MEMORY_TREE 4000.0
+//!<Cantidad de memoria maxima que puede hacer uso el arbol 4MB
 
 typedef unsigned int t_timestamp; //!< tipo formato timestamp (unix time)
 typedef unsigned int t_offset; //!< tipo ID para utilizar en los tipos offset
@@ -68,7 +69,6 @@ typedef struct {
 	t_diferencia cantFalse;
 } t_diferencias;
 
-/* */
 typedef std::queue<t_idart> t_cola_idart; //!< el tipo cola de id de articulos
 typedef std::queue<t_idfeed> t_cola_idfeeds; //!< el tipo colaidfeeds
 typedef std::vector<t_idart> t_c_cant_idcat; //!< el tipo contenedor de

@@ -28,10 +28,6 @@ EntitiesManager::EntitiesManager():managerWord(&_a4)
 		// Agrego la categoria favorito...
 		if (_a4.getNumCat() == 0)
 			_a4.addCategory("______Favorito______");
-
-		// borrar esto
-		//this->importFeeds("/home/damian/inputFile.txt");
-		// borrar esto
 	}
 	catch(ExceptionManagerWord &e) {
 		throw string(e.what());
@@ -97,7 +93,7 @@ string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 {
 	try {
 		// TODO no hay que cambiar nada en el archivo de eduardo??
-		//TODO: Sergio->Respuesta: corroborar si esta bien
+		// TODO: Sergio->Respuesta: corroborar si esta bien
 		
 		Articulo art = _feedManager->invertirFavorito( feedId, artId );
 		t_word_cont cont = articleParser.parseArticle(art);
@@ -108,7 +104,7 @@ string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 		// Si usu_pc = 0 -> clasificado por el usuario
 
 		//Ya se le cambio el estado asi q voy por la inversa
-		if(cond =! -1){
+		if(cond != -1){
 			//El articulo no pertenese a la categoria favoritos y va pasar a estarlo
 			_a4.incCategoryArtAndWord(IDCAT_FAV,1,cont.size());
 
@@ -321,7 +317,7 @@ string EntitiesManager::ArticleLinkTag( t_idfeed feedId, t_idart artId, t_idcat 
 string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idcat tagId )
 {
 	// TODO aca tampoco hay que llamar a eduardo?
-	//TODO: Sergio->Respuesta: corroborar si esta bien
+	// TODO: Sergio->Respuesta: corroborar si esta bien
 	try {
 		// Es una desclasificacion de un articulo
 		Articulo art = _feedManager->clasificarArticulo( feedId, tagId, artId, false, false );
@@ -361,7 +357,6 @@ string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idca
 string EntitiesManager::FeedCreate( string name, string url )
 {
 	try {
-		// TODO por que a veces me llega sin nombre? Eso tira excepcion
 		t_idfeed feedid = _feedManager->altaFeed( url, name );
 		Feed feed = _feedManager->getFeed( feedid );
 		t_timestamp lastUpdate = _feedManager->getUltimaFecha( feedid );
@@ -533,7 +528,7 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 		t_probMap::reverse_iterator itt = map.rbegin();
 
 		while(!salir && itt!=map.rend()){
-			if((map.rbegin())->first > UMBRAL)
+			if((map.rbegin())->first > UMBRAL_FILE_MANAGER)
 				_feedManager->clasificarArticulo(art.get_idfeed(),itt->second,art.get_idart(),true,true);
 			else salir=true;	
 			++itt;
