@@ -1,6 +1,6 @@
+#include <pthread.h>
 #include <iostream>
 #include <string>
-#include <pthread.h>
 #include <fstream>
 
 #include "General.h"
