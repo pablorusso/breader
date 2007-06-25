@@ -62,7 +62,7 @@ NO TAN IMPORTANTE
 - Que no se puedan agregar dos feeds con la misma url (elijo url sola) (Damian: ya esta hecho, a lo bestia)
 * Configurar los parametros del cArbol y cFileManager a gusto.
 * Pablo: restringistes el límite de los nombres de las categorías en el Agregar pero no en el Modificar.
-
+* Faltan unos cuantos "refrescar" (al bajar categorias, al modificar categorias, al agregar feeds, al quitar feeds...)
 
 CD o DVD incluyendo:
 * fuentes de cada uno de los modulos que integran su sistema.
