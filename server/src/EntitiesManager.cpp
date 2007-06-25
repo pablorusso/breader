@@ -444,6 +444,7 @@ string EntitiesManager::TagDelete( t_idcat id )
 /*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::TagEdit( t_idcat id, string name )
 {
+	// TODO esto no refresca lo que se esta viendo
 	try {
 		// Cambia el nombre de una categoria
 		Tag category;
@@ -531,7 +532,7 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 		t_probMap::reverse_iterator itt = map.rbegin();
 
 		while(!salir && itt!=map.rend()){
-			if((map.rbegin())->first > UMBRAL)
+			if((map.rbegin())->first > UMBRAL_BCLAS )
 				_feedManager->clasificarArticulo(art.get_idfeed(),itt->second,art.get_idart(),true,true);
 			else salir=true;
 			++itt;
