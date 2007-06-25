@@ -944,8 +944,10 @@ t_usedFactor cFileManager::getUsedFactor(){
 	if(!isCreado)
 		throw ExceptionFileManager(FM_ERROR_NC);
 
-	t_usedFactor sal = ((t_usedFactor) (header.cantBlock-header.cantBlockEmpty));
-	sal = sal / ((t_usedFactor) header.cantBlock);
-	return sal;
+	if (header.cantBlock != 0)
+		return ((t_usedFactor) (header.cantBlock-header.cantBlockEmpty)) /
+		        (t_usedFactor) header.cantBlock;
+	else
+		return 1.0;
 }
 /*----------------------------------------------------------------------*/
