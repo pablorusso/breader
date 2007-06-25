@@ -32,7 +32,7 @@ class EntitiesManager
 		feedHandler *_feedManager;
 		//!< Una referencia al feedHandler que maneja Archivo_1_f, Archivo_2_f,
 		//!< Archivo_5 y Archivo_6
-		static EntitiesManager *_instance;
+		static EntitiesManager _instance;
 		 //!< Una referencia al EntitiesManager, para proveer singleton
 		cManagerWord managerWord;
 		//!< El handler de palabras, que maneja Archivo_3, Archivo_8 y Archivo_9

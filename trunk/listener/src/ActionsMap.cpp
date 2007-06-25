@@ -18,6 +18,7 @@
 #include "ActionArticleGetFavourites.h"
 #include "ActionArticleCreate.h"
 #include <sstream>
+#include <iostream>
 
 ActionsMap::ActionsMap()
 {

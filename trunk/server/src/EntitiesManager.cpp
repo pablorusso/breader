@@ -7,16 +7,11 @@
 // TODO esto deberia poder cambiarse
 
 /*-------------------------------------------------------------------------------------------*/
-EntitiesManager *EntitiesManager::_instance = NULL;
+EntitiesManager EntitiesManager::_instance;
 
 EntitiesManager *EntitiesManager::getInstance()
 {
-	if ( EntitiesManager::_instance == NULL )
-	{
-		EntitiesManager::_instance = new EntitiesManager();
-	}
-	return EntitiesManager::_instance;
-
+	return &(EntitiesManager::_instance);
 }
 /*-------------------------------------------------------------------------------------------*/
 EntitiesManager::EntitiesManager():managerWord(&_a4)

@@ -8,6 +8,8 @@ Action::Action()
 Action::~Action()
 {
 	this->emptyParams();
+
+	EntitiesManager::getInstance();
 }
 
 Values *Action::getParamValue( string paramName )
@@ -164,9 +166,9 @@ void Action::parseParams( string params )
 string Action::ProcessAction( string params )
 {
 	emptyParams();
-	cout << endl << "[listener] - Parametros anteriores eliminados." << std::flush;
+	//cout << endl << "[listener] - Parametros anteriores eliminados." << std::flush;
 	parseParams( params );
-	cout << endl << "[listener] - Parametros actuales parseados correctamente." << std::flush;
+	//cout << endl << "[listener] - Parametros actuales parseados correctamente." << std::flush;
 	return this->processAction();
 }
 
