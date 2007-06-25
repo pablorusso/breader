@@ -28,7 +28,9 @@ cPalabra::cPalabra(cElemento elem){
 
 		char tamano=0;
 
-		long offset= atol(dato.palabra); 
+		long offset= atol(dato.palabra);
+		// TODO por que no entra aca?
+		//std::cout << "nameFile: " << nameFile << std::endl;
 		std::ifstream inputFile(nameFile.c_str(),std::ios::binary);
 		
 		if(!inputFile.good())

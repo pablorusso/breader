@@ -78,9 +78,16 @@ void usage()
 
 string Now()
 {
-	system( "date +\"%m/%d/%Y %k:%M:%S.%N\" > now.out" );
+	string fileName(General::getDataPath());
+	fileName.append("now.out");
+	
+	string s("date +\"%m/%d/%Y %k:%M:%S.%N\" > ");
+	s.append(fileName);
+	system( s.c_str() );
+	//system( "date +\"%m/%d/%Y %k:%M:%S.%N\" > now.out" );
+
 	string now;
-	ifstream ifs("now.out"); std::getline(ifs, now); ifs.close();
+	ifstream ifs(fileName.c_str()); std::getline(ifs, now); ifs.close();
 	return now;
 }
 
@@ -249,7 +256,9 @@ void listen( int argc, char* argv[] )
 
 
 	ThreadData tData;
-	tData.logFile.open ("logfile.txt");
+	string fileName(General::getDataPath());
+	fileName.append("logfile.txt");
+	tData.logFile.open (fileName.c_str());
 	try
 	{
 		cout << endl << "[listener] - Escuchando, presione enter para salir." ;
