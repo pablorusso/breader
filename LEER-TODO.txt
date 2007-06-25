@@ -4,7 +4,8 @@ cada uno tilde lo que hizo.
 IMPORTANTE
 ----------
 
-* exportacion a XMLSchema
+* el bayesianoooooooo (Para todos, supongo)
+* exportacion a XMLSchema (Para eduardo, probablemente)
 * importacion de txt (una boludez) (Damian: lo deje a medias, falta pablo)
 * Agregar el id_fav (es el cero) en el archivo4 al comienzo estructura,
   para que este siempre (Damian: medio que parece que está...)
@@ -35,34 +36,34 @@ IMPORTANTE
 		  cuando el programa no esta corriendo y aparte el umbral asi x mas q se lo llame no 
 		  siempre se va reestructura.
 
-* Sergio: guardar los archivos en el directorio que te dice General!! (falta el palabras.txt...!)
+- Sergio: guardar los archivos en el directorio que te dice General (LISTO)
 
 
 PRESENTACION LUNES
 ------------------
 
-* Mirar, modificar o borrar y hacer de nuevo el ppt de la presentación.
+- Mirar, modificar o borrar y hacer de nuevo el ppt de la presentación. (LISTO)
 
 BUGS
 ----
 
-* El RSS de clarin no me anda, porque no me pasa el nombre... ese campo queda vacio y al crear
-  el feed tira excepcion por eso
-* No me funciona quitar categorias, porque el idFeed pasa vacio y tira error porque no puede
-  convertir eso a un numero
-* Este feed no trae mensajes? http://rssnewsapps.ziffdavis.com/pcmag.xml
-* Si clickeás rápido, podés mandar dos veces el borrarCategoría para la misma categoría... eso lo hace tildar.
+- El RSS de clarin no me anda, porque no me pasa el nombre... ese campo queda vacio y al crear
+  el feed tira excepcion por eso (Es el puto de clarin - LISTO)
+- No me funciona quitar categorias, porque el idFeed pasa vacio y tira error porque no puede
+  convertir eso a un numero (Pablo - LISTO)
+* Este feed no trae mensajes? http://rssnewsapps.ziffdavis.com/pcmag.xml (Atom... fuck)
+- Si clickeás rápido, podés mandar dos veces el borrarCategoría para la misma categoría... eso lo hace tildar. (Pablo - es obvio, no jodás - LISTO)
 
 
 NO TAN IMPORTANTE
 -----------------
 
-- Que no se puedan agregar dos categorias con el mismo nombre (Damian: ya esta hecho, a lo bestia)
-- Que al modificar el nombre de una categoria no pueda tener uno ya existente (Damian, ya esta hecho, a lo bestia)
-- Que no se puedan agregar dos feeds con la misma url (elijo url sola) (Damian: ya esta hecho, a lo bestia)
+- Que no se puedan agregar dos categorias con el mismo nombre (Damian - a lo bestia - LISTO)
+- Que al modificar el nombre de una categoria no pueda tener uno ya existente (Damian - a lo bestia - LISTO)
+- Que no se puedan agregar dos feeds con la misma url (elijo url sola) (Damian - a lo bestia - LISTO)
 * Configurar los parametros del cArbol y cFileManager a gusto.
 * Pablo: restringistes el límite de los nombres de las categorías en el Agregar pero no en el Modificar.
-* Faltan unos cuantos "refrescar" (al bajar categorias, al modificar categorias, al agregar feeds, al quitar feeds...)
+- Faltan unos cuantos "refrescar" (al bajar categorias, al modificar categorias, al agregar feeds, al quitar feeds...) (Pablo - LISTO)
 
 CD o DVD incluyendo:
 * fuentes de cada uno de los modulos que integran su sistema.
@@ -87,7 +88,7 @@ A su vez se debera entregar una carpeta con la siguiente documentacion:
   aplicacion (Vital)
 * Manual de instalacion y configuracion del entorno de ejecucion.
 * Manual de usuario (explicacion del uso de la interfaz web, modulo de
-  persistencia y modulo de salida a xml) (Damian: empecé un bosquejo)
+  persistencia y modulo de salida a xml) (Damian: está medio cocinado)
 * Informacion de contacto al grupo por cualquier consulta que pueda
   surgir.
 * Todo lo demas que consideren relevante para la entrega.
