@@ -4,6 +4,7 @@
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>
+#include "SocketTimeoutException.h"
 
 Socket::Socket() : m_sock ( -1 )
 {
@@ -67,20 +68,8 @@ sockaddr_in Socket::getAddress()
 	return m_addr;
 }
 
-bool Socket::accept ( Socket& new_socket, bool &isTimeout ) const
+bool Socket::accept ( Socket& new_socket ) const
 {
-	/*
-  	int addr_length = sizeof ( m_addr );
-  	new_socket.m_sock = ::accept ( m_sock, ( sockaddr * ) &m_addr, ( socklen_t * ) &addr_length );
-	new_socket.m_addr = m_addr;
-
-	if ( new_socket.m_sock <= 0 )
-		return false;
-  	else
-    	return true;
-	*/
-
-
 	fd_set descriptores;
    	struct timeval time;
 
@@ -90,12 +79,10 @@ bool Socket::accept ( Socket& new_socket, bool &isTimeout ) const
    	FD_ZERO ( &descriptores );
    	FD_SET  ( m_sock, &descriptores );
 
-	isTimeout = true;
    	int result = select( m_sock+1, &descriptores, NULL, NULL, &time );
-   	if(	result > 0	)
+	// recibo algo
+	if(	result > 0	)
 	{
-		isTimeout = false;
-
 		// hay datos listos
 		int addr_length = sizeof ( m_addr );
 	  	new_socket.m_sock = ::accept ( m_sock, ( sockaddr * ) &m_addr, ( socklen_t * ) &addr_length );
@@ -105,15 +92,12 @@ bool Socket::accept ( Socket& new_socket, bool &isTimeout ) const
 		return true;
    	}
 
-	// error
+	// error al recibir
 	if( result < 0 )
-	{
-		isTimeout = false;
 		return false;
-	}
 
-	// termino el tiempo, no retorno socket pero tampoco error
-	return true;
+	// termino el tiempo
+	throw SocketTimeoutException();
 }
 
 
@@ -133,6 +117,7 @@ bool Socket::send ( const std::string s ) const
 
 int Socket::recv ( std::string& s ) const
 {
+	/*
 	char buf [ MAXRECV + 1 ];
 
   	s = "";
@@ -155,6 +140,56 @@ int Socket::recv ( std::string& s ) const
 	    	s = buf;
       		return status;
     	}
+	*/
+
+	fd_set descriptores;
+	struct timeval time;
+
+	int seg = 15;
+	time.tv_sec = seg;  // segundos
+	time.tv_usec = seg * 1000000; //microsegundos
+	FD_ZERO ( &descriptores );
+	FD_SET  ( m_sock, &descriptores );
+	int result = select ( m_sock+1, &descriptores, NULL, NULL, &time );
+
+	if ( result == 0 )
+		throw SocketTimeoutException();
+	else
+	{
+		if(result > 0 )
+		{
+			/*Recivo los datos*/
+			char buf [ MAXRECV + 1 ];
+  			s = "";
+  			memset ( buf, 0, MAXRECV + 1 );
+  			int status = ::recv ( m_sock, buf, MAXRECV, 0 );
+
+			/*El cliente cerro la conexion*/
+			if( status == 0 )
+			{
+				return 0;
+
+			}
+			else
+			{
+				if( status > 0 )
+				{
+					buf[ status ] = '\0';
+	 				s.assign( buf );
+					return status;
+				}
+				else if ( status < 0 )
+				{
+     				/*Se produjo un error*/
+					return 0;
+				}
+			}
+		}
+		else
+		{
+			return 0;
+		}
+	}
 }
 
 

@@ -2,6 +2,7 @@
 #include "CGIClass.h"
 #include "ClientSocket.h"
 #include "SocketException.h"
+#include "SocketTimeoutException.h"
 
 void showError( string msg )
 {
@@ -137,7 +138,14 @@ int main(int argc, char* argv[])
 			}
 			else showError( response );
 		}
-      	catch ( SocketException& ) { }
+      	catch ( SocketException& e )
+		{
+			showError( "[thin_client] - Error de comunicacion. Mensaje: " + e.description() );
+		}
+		catch ( SocketTimeoutException& )
+		{
+			showError( "[thin_client] - Se agoto el tiempo maximo disponible para la comuicacion. Por favor, reintente." );
+		}
 		catch ( string msg )
 		{
 			showError( "[thin_client] - Error procesando la accion. Mensaje: " + msg );

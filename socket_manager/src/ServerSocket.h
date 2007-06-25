@@ -20,7 +20,7 @@ class ServerSocket : public Socket
   const ServerSocket& operator << ( const uint& ) const;
   const ServerSocket& operator >> ( uint& ) const;
 
-  void accept ( ServerSocket&, bool &isTimeout );
+  void accept ( ServerSocket& );
 
 };
 
