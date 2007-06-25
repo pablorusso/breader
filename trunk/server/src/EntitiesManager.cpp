@@ -428,13 +428,15 @@ string EntitiesManager::TagDelete( t_idcat id )
 		return "<tag id=\"" + XmlUtils::xmlEncode( id ) +  "\"/>";
 	}
 	catch (ExceptionManagerWord &e) {
-		std::cout << std::endl << "ENTRO 1" << std::endl;
+// 		std::cout << std::endl << "ENTRO 1" << std::endl;
 		throw string(e.what());
 	}
-	catch (eArchivo4 &e) { std::cout << std::endl << "ENTRO 2" << std::endl;
+	catch (eArchivo4 &e) {
+//  std::cout << std::endl << "ENTRO 2" << std::endl;
 		throw string(e.what());
 	}
-	catch (eFeedHandler &e) { std::cout << std::endl << "ENTRO 3" << std::endl;
+	catch (eFeedHandler &e) {
+//  std::cout << std::endl << "ENTRO 3" << std::endl;
 		throw string(e.what());
 	}
 }

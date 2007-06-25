@@ -116,7 +116,7 @@ Articulo feedHandler::invertirFavorito(const t_idfeed &idfeed,
 	try {
 		Archivo2 a2(this->a6.get_MAX_CAT(), idfeed);
 		// Invierto la categoria, y lo pongo como si fue el usuario
-		bool si_no = ~a2.readCat(idart, IDCAT_FAV);
+		bool si_no = !(a2.readCat(idart, IDCAT_FAV));
 		a2.writeCat(idart, IDCAT_FAV, si_no, 0);
 		this->a6.catFeed(idfeed, IDCAT_FAV, si_no);
 		return a2.readArticulo(idart);
