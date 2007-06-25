@@ -18,6 +18,7 @@ Values *Action::getParamValue( string paramName )
 	return value;
 }
 
+
 int Action::splitString(const string& input, const string& delimiter, Values& results, bool includeEmpties )
 {
 	string::size_type delSize = delimiter.size();
@@ -61,8 +62,8 @@ int Action::splitString(const string& input, const string& delimiter, Values& re
 	}
 	return --numFound;
 }
-
-/* CODIGO DE PABLO 
+/*
+	// CODIGO DE PABLO
     size_t iPos = 0;
     size_t newPos = string::npos;
     size_t sizeS2 = delimiter.size();
@@ -124,8 +125,8 @@ int Action::splitString(const string& input, const string& delimiter, Values& re
         }
     }
     return numFound;
-}
-*/
+}*/
+
 
 void Action::parseParams( string params )
 {
@@ -163,7 +164,9 @@ void Action::parseParams( string params )
 string Action::ProcessAction( string params )
 {
 	emptyParams();
+	cout << endl << "[listener] - Parametros anteriores eliminados." << std::flush;
 	parseParams( params );
+	cout << endl << "[listener] - Parametros actuales parseados correctamente." << std::flush;
 	return this->processAction();
 }
 

@@ -94,12 +94,12 @@ string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 	try {
 		// TODO no hay que cambiar nada en el archivo de eduardo??
 		// TODO: Sergio->Respuesta: corroborar si esta bien
-		
+
 		Articulo art = _feedManager->invertirFavorito( feedId, artId );
 		t_word_cont cont = articleParser.parseArticle(art);
-		t_word_cont::iterator it;	
+		t_word_cont::iterator it;
 		short cond = art.find_cat(IDCAT_FAV);
-		
+
 		// Si usu_pc = 1 -> clasificado por la pc
 		// Si usu_pc = 0 -> clasificado por el usuario
 
@@ -126,7 +126,7 @@ string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 					for(it = cont.begin(); it != cont.end() ; ++it )
 						((t_diferencias) it->second).cantTrue *= -1;
 				}
-		}	
+		}
 
 		managerWord.addFrecWords(IDCAT_FAV,cont);
 		Feed feed = _feedManager->getFeed( art.get_idfeed() );
@@ -156,13 +156,13 @@ string EntitiesManager::BuildArticlesList( t_cola_art colaArt )
 {
 	try {
 		if ( colaArt.empty() ) return "<articles/>";
-	
+
 		string response = "<articles>";
 		while( ! colaArt.empty() )
 		{
 			Feed feed = _feedManager->getFeed( colaArt.front().get_idfeed() );
 			response += colaArt.front().getXML( feed.getName(), _a4 );
-	
+
 			colaArt.pop();
 		}
 		response += "</articles>";
@@ -201,7 +201,7 @@ string EntitiesManager::ArticleGetByTags( vector< t_idcat > tagIds,
 	try {
 		ContenedorIdCat tags( MAX_CATS );
 		ContenedorIdCat states( MAX_CATS );
-	
+
 		vector< t_idcat >::iterator tagsIt = tagIds.begin();
 		vector< bool >::iterator stateIt = state.begin();
 		while ( tagsIt != tagIds.end() )
@@ -211,7 +211,7 @@ string EntitiesManager::ArticleGetByTags( vector< t_idcat > tagIds,
 			tagsIt++;
 			stateIt++;
 		}
-	
+
 		t_cola_art colaArt = _feedManager->getUltimosArticulosBool( tags,
 		  states, quantity );
 		return BuildArticlesList( colaArt );
@@ -322,8 +322,8 @@ string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idca
 		// Es una desclasificacion de un articulo
 		Articulo art = _feedManager->clasificarArticulo( feedId, tagId, artId, false, false );
 		t_word_cont cont = articleParser.parseArticle(art);
-		t_word_cont::iterator it;	
-	
+		t_word_cont::iterator it;
+
 		// Si usu_pc = 1 -> clasificado por la pc
 		// Si usu_pc = 0 -> clasificado por el usuario
 		if(_feedManager->readUsu_Pc(feedId,artId,tagId)){
@@ -384,9 +384,9 @@ string EntitiesManager::FeedGetAll()
 {
 	try {
 		t_cola_idfeeds feedIds = _feedManager->getColaIdFeeds();
-	
+
 		if ( feedIds.empty() ) return "<feeds/>";
-	
+
 		string response = "<feeds>";
 		while ( ! feedIds.empty() )
 		{
@@ -410,7 +410,7 @@ string EntitiesManager::TagCreate( string name )
 		Tag category;
 		t_idcat id = _a4.addCategory(name);
 		category.ConvertToTag(_a4.getCategoryInfo(id));
-		
+
 		return category.getXML();
 	}
 	catch (eArchivo4 &e) {
@@ -425,7 +425,7 @@ string EntitiesManager::TagDelete( t_idcat id )
 		managerWord.deleteCategoria(id);
 		_a4.deleteCategory(id);
 		_feedManager->bajaCategoria(id);
-		return "<tag/>";
+		return "<tag id=\"" + XmlUtils::xmlEncode( id ) +  "\"/>";
 	}
 	catch (ExceptionManagerWord &e) {
 		std::cout << std::endl << "ENTRO 1" << std::endl;
@@ -457,11 +457,11 @@ string EntitiesManager::TagGetAll()
 {
 	// Lista de todas las categorias disponibles en el sistema
 	try {
-		Tag categories;	
+		Tag categories;
 		t_queue_idcat tagIds = _a4.getCategoriesId();
-	
+
 		if ( tagIds.empty() ) return "<tags/>";
-	
+
 		string response = "<tags>";
 		while ( ! tagIds.empty() )
 		{
@@ -472,7 +472,7 @@ string EntitiesManager::TagGetAll()
 		}
 		response += "</tags>";
 		return response;
-	
+
 	}
 	catch (eArchivo4 &e) {
 		throw string(e.what());
@@ -483,15 +483,15 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 	//TODO: Corroborar
 	try {
 		//almaceno las probabilidades ordenadas de menor a mayor.
-		t_probMap map; 
+		t_probMap map;
 		double prob1=0,prob2=0;
-		t_queue_idcat cola = _a4.getCategoriesId();	
+		t_queue_idcat cola = _a4.getCategoriesId();
 		t_regArchivo4 regTag;
 		t_word_cont contWord = articleParser.parseArticle(art);
 		t_word_cont::const_iterator it;
 		tFrecuencias frec={0,0};
 		t_probability dato;
-		
+
 		// Por cada idcat recorro una vez la lista de palabras
 		while(cola.empty()) {
 			dato.probPos = 0;
@@ -501,8 +501,8 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 			// Obtengo la cantidad total de palabras en la categoria y la cantidad
 			// de articulos que pertenecen a la categoria
 			regTag = _a4.getCategoryInfo(dato.id);
-			
-			for(it = contWord.begin(); it!=contWord.end();++it){	
+
+			for(it = contWord.begin(); it!=contWord.end();++it){
 				// Obtengo la cantidad de veces que aparecio la palabra en
 				// una categoria
 				frec = managerWord.getWord((string)it->first ,dato.id);
@@ -517,7 +517,7 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 				// Respuesta: (agregado por damian) con eduardo decimos que no hace falta
 				dato.probNeg += prob1 * prob2;
 			}
-			
+
 			map.insert(t_probMap::value_type(dato.probPos-dato.probNeg,dato.id));
 		}
 
@@ -530,7 +530,7 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 		while(!salir && itt!=map.rend()){
 			if((map.rbegin())->first > UMBRAL_FILE_MANAGER)
 				_feedManager->clasificarArticulo(art.get_idfeed(),itt->second,art.get_idart(),true,true);
-			else salir=true;	
+			else salir=true;
 			++itt;
 		}
 
