@@ -531,7 +531,7 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 		t_probMap::reverse_iterator itt = map.rbegin();
 
 		while(!salir && itt!=map.rend()){
-			if((map.rbegin())->first > UMBRAL_MANAGER_WORD)
+			if((map.rbegin())->first > UMBRAL)
 				_feedManager->clasificarArticulo(art.get_idfeed(),itt->second,art.get_idart(),true,true);
 			else salir=true;
 			++itt;
