@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<rdf:RDF
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns="http://purl.org/rss/1.0/"
+ xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+ xmlns:taxo="http://purl.org/rss/1.0/modules/taxonomy/"
+ xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:syn="http://purl.org/rss/1.0/modules/syndication/"
+ xmlns:admin="http://webns.net/mvcb/"
+>
+
+<channel rdf:about="http://barrapunto.com/">
+<title>Barrapunto</title>
+<link>http://barrapunto.com/</link>
+<description>La informaci&#243;n que te interesa</description>
+<dc:language>EN</dc:language>
+<dc:rights>Copyleft 1999-2006, Barrapunto</dc:rights>
+<dc:date>2007-06-25T09:50:10+00:00</dc:date>
+<dc:publisher>Barrapunto S.L.</dc:publisher>
+<dc:creator>webmaster@barrapunto.com</dc:creator>
+<dc:subject>Tecnolog&#237;a, Software libre</dc:subject>
+<syn:updatePeriod>hourly</syn:updatePeriod>
+<syn:updateFrequency>1</syn:updateFrequency>
+<syn:updateBase>1970-01-01T00:00+00:00</syn:updateBase>
+<items>
+ <rdf:Seq>
+  <rdf:li rdf:resource="http://ciberderechos.barrapunto.com/article.pl?sid=07/06/25/0934229&amp;from=rss" />
+  <rdf:li rdf:resource="http://barrapunto.com/article.pl?sid=07/06/25/0851241&amp;from=rss" />
+  <rdf:li rdf:resource="http://barrapunto.com/article.pl?sid=07/06/25/0751214&amp;from=rss" />
+  <rdf:li rdf:resource="http://preguntas.barrapunto.com/article.pl?sid=07/06/24/1746255&amp;from=rss" />
+  <rdf:li rdf:resource="http://barrapunto.com/article.pl?sid=07/06/24/1422215&amp;from=rss" />
+  <rdf:li rdf:resource="http://espana.barrapunto.com/article.pl?sid=07/06/24/1325208&amp;from=rss" />
+  <rdf:li rdf:resource="http://barrapunto.com/article.pl?sid=07/06/24/1355217&amp;from=rss" />
+  <rdf:li rdf:resource="http://barrapunto.com/article.pl?sid=07/06/24/1251214&amp;from=rss" />
+  <rdf:li rdf:resource="http://barrapunto.com/article.pl?sid=07/06/24/1120200&amp;from=rss" />
+  <rdf:li rdf:resource="http://softlibre.barrapunto.com/article.pl?sid=07/06/24/104219&amp;from=rss" />
+ </rdf:Seq>
+</items>
+<image rdf:resource="http://barrapunto.com/images/topics/topicbarrapunto.png" />
+<textinput rdf:resource="http://barrapunto.com/search.pl" />
+</channel>
+
+<image rdf:about="http://barrapunto.com/images/topics/topicbarrapunto.png">
+<title>Barrapunto</title>
+<url>http://barrapunto.com/images/topics/topicbarrapunto.png</url>
+<link>http://barrapunto.com/</link>
+</image>
+
+<item rdf:about="http://ciberderechos.barrapunto.com/article.pl?sid=07/06/25/0934229&amp;from=rss">
+<title>Gmail peligra en Alemania</title>
+<link>http://ciberderechos.barrapunto.com/article.pl?sid=07/06/25/0934229&amp;from=rss</link>
+<description>Manu nos cuenta: &amp;#171;Google puede cerrar Gmail en Alemania, pero lo importante es el porqu&amp;#233;. El gobierno alem&amp;#225;n est&amp;#225; imponiendo nuevas leyes de privacidad en Internet que exigir&amp;#237;an a Google a informar a las autoridades de la identidad exacta de los usuarios. La postura es clara por parte de Google, preferir&amp;#237;an abandonar Alemania antes que defraudar a sus usuarios y no darles suficiente privacidad elemental en la sociedad de Internet de hoy en d&amp;#237;a. El problema de Google y Alemania no es nuevo puesto que ya comentamos los problemas de la marca "Gmail" en Alemania, a pesar de ello este hecho no afectaba demasiado a Gmail porque en Alemania ofrece el servicio bajo el nombre de googlemail.com. V&amp;#237;a Techcrunch&amp;#187;</description>
+<dc:creator>Yonderboy</dc:creator>
+<dc:date>2007-06-25T09:35:00+00:00</dc:date>
+<dc:subject>privacidad</dc:subject>
+<slash:department>ansias-de-control-pol&amp;#237;tico</slash:department>
+<slash:section>ciberderechos</slash:section>
+<slash:comments>7</slash:comments>
+<slash:hit_parade>7,7,2,2,0,0,0</slash:hit_parade>
+</item>
+
+<item rdf:about="http://barrapunto.com/article.pl?sid=07/06/25/0851241&amp;from=rss">
+<title>Lo que vendr&#225; en Ubuntu 7.10</title>
+<link>http://barrapunto.com/article.pl?sid=07/06/25/0851241&amp;from=rss</link>
+<description>john_b nos cuenta: &amp;#171;Se han publicado los planes de desarrollo de Ubuntu 7.10 (llamado Gutsy Gibbon), programado para finales de octubre, destac&amp;#225;ndose lo siguiente: incluir&amp;#225; la versi&amp;#243;n 2.6.22 del kernel Linux, GNOME 2.20 y Xorg 7.3. Kubuntu 7.10 traer&amp;#225; KDE 3.5.7 y ofrecer&amp;#225; paquetes opcionales para KDE 4.0 RC2. Ubuntu 7.10 Server Edition tambi&amp;#233;n tendr&amp;#225; atractivas novedades, incluyendo el soporte para el framework de seguridad AppArmor de Novell. Esta versi&amp;#243;n tambi&amp;#233;n esta preparada para equipos port&amp;#225;tiles que est&amp;#225; fabricando Intel. Se soportar&amp;#225; por defecto Compiz Fusion. Xorg 7.3, que incluye RandR 1.2 simplificar&amp;#225; bastante la configuraci&amp;#243;n de Xorg en Ubuntu 7.10 reduciendo la necesidad de manipular manualmente el archivo xorg.conf. Ubuntu 7.10 adem&amp;#225;s incluir&amp;#225; un nuevo utilitario de configuraci&amp;#243;n de pantalla para reducir la complejidad de configurar el soporte para dos pantallas. (Traducci&amp;#243;n de la noticia original).&amp;#187;</description>
+<dc:creator>inniyah</dc:creator>
+<dc:date>2007-06-25T08:39:00+00:00</dc:date>
+<dc:subject>Ubuntu</dc:subject>
+<slash:department>el-futuro-de-ubuntu</slash:department>
+<slash:section>mainpage</slash:section>
+<slash:comments>4</slash:comments>
+<slash:hit_parade>4,2,1,0,0,0,0</slash:hit_parade>
+</item>
+
+<item rdf:about="http://barrapunto.com/article.pl?sid=07/06/25/0751214&amp;from=rss">
+<title>Motorola discrimina a Espa&#241;a en el Game Developer Challenge</title>
+<link>http://barrapunto.com/article.pl?sid=07/06/25/0751214&amp;from=rss</link>
+<description>josergc nos cuenta: &amp;#171;El Game Developer Challenge es un concurso de desarrollo de juegos para m&amp;#243;viles tanto para Java o para Windows Mobile, organizado por Motorola. En las reglas del concurso se indica expl&amp;#237;citamente que la inscripci&amp;#243;n ser&amp;#225; nula all&amp;#225; donde est&amp;#233; prohibida, donde sea gravable o restringida por la ley y en Espa&amp;#241;a. Las reglas se pueden encontrar aqu&amp;#237;. Seg&amp;#250;n NoticiasJuegos , esto se debe a las leyes sobre concursos multi-jurisdicionales que hay en Espa&amp;#241;a.&amp;#187;</description>
+<dc:creator>inniyah</dc:creator>
+<dc:date>2007-06-25T08:08:00+00:00</dc:date>
+<dc:subject>noticias</dc:subject>
+<slash:department>desarrollo-de-juegos</slash:department>
+<slash:section>mainpage</slash:section>
+<slash:comments>12</slash:comments>
+<slash:hit_parade>12,11,9,7,2,0,0</slash:hit_parade>
+</item>
+
+<item rdf:about="http://preguntas.barrapunto.com/article.pl?sid=07/06/24/1746255&amp;from=rss">
+<title>C&#243;mo compartir wifi con prioridades o ancho de banda reservado</title>
+<link>http://preguntas.barrapunto.com/article.pl?sid=07/06/24/1746255&amp;from=rss</link>
+<description>CapiCorsario nos cuenta: &amp;#171;A prop&amp;#243;sito de la noticia recientemente publicada aqu&amp;#237; mismo sobre las redes p&amp;#250;blicas wifi, hago una pregunta a todos los barrapunteros a ver si me pueden ayudar. Resulta que yo quiero compartir mi conexi&amp;#243;n WiFi, pero sin que me afecte mucho directamente, es decir, he pensado en sistemas de prioridades de conexi&amp;#243;n o reservas de ancho de banda, para que, pudiendo el p&amp;#250;blico conectarse con mi conexi&amp;#243;n, asegur&amp;#225;ndome una navegaci&amp;#243;n fluida para mi (&amp;#191;por MAC o IP reservada?). Entonces tambi&amp;#233;n he pensado en la fonera, pero no es una soluci&amp;#243;n que ni mucho menos satisfaga mis necesidades. &amp;#191;Routers con estas opciones? &amp;#191;Soluciones alternativas? O incluso, Routers con dos SSID (al estilo fonera, pero sin estar atado a la red FON), aunque no me aseguren ancho de banda, tambi&amp;#233;n me interesar&amp;#237;a conocer. Muchas gracias.&amp;#187;</description>
+<dc:creator>Yonderboy</dc:creator>
+<dc:date>2007-06-24T18:00:00+00:00</dc:date>
+<dc:subject>wireless</dc:subject>
+<slash:department>pregunta-a-barrapunto</slash:department>
+<slash:section>preguntas</slash:section>
+<slash:comments>42</slash:comments>
+<slash:hit_parade>42,40,24,17,9,4,1</slash:hit_parade>
+</item>
+
+<item rdf:about="http://barrapunto.com/article.pl?sid=07/06/24/1422215&amp;from=rss">
+<title>Bruce Willis se siente inseguro por culpa de Youtube</title>
+<link>http://barrapunto.com/article.pl?sid=07/06/24/1422215&amp;from=rss</link>
+<description>elteto nos cuenta: &amp;#171;Seg&amp;#250;n EFE, Bruce Willis asegur&amp;#243; que desde que existe Youtube est&amp;#225; todos los d&amp;#237;as en internet en calzoncillos. Seg&amp;#250;n afirma el actor estadounidense, "tan pronto como me ba&amp;#241;o en el mar, hago la compra, me como una hamburguesa o monto en bicicleta aparecen im&amp;#225;genes m&amp;#237;as en Internet que alguien ha grabado con su tel&amp;#233;fono m&amp;#243;vil". Teme que le graben en el set de rodaje de sus pel&amp;#237;culas, incluso cuando est&amp;#225; sentado en el inodoro.&amp;#187;</description>
+<dc:creator>Yonderboy</dc:creator>
+<dc:date>2007-06-24T15:40:00+00:00</dc:date>
+<dc:subject>cine</dc:subject>
+<slash:department>el-precio-de-la-fama</slash:department>
+<slash:section>mainpage</slash:section>
+<slash:comments>49</slash:comments>
+<slash:hit_parade>49,47,18,11,5,3,0</slash:hit_parade>
+</item>
+
+<item rdf:about="http://espana.barrapunto.com/article.pl?sid=07/06/24/1325208&amp;from=rss">
+<title>IU propone que los ayuntamientos puedan ofrecer wifi gratis</title>
+<link>http://espana.barrapunto.com/article.pl?sid=07/06/24/1325208&amp;from=rss</link>
+<description>ElPa&amp;#237;s.com informa de que el grupo de Izquierda Unida en el Congreso ha presentado una enmienda a la Ley de Servicios de la Sociedad de la Informaci&amp;#243;n (LISI), actualmente en tramitaci&amp;#243;n, para que se permita ofrecer gratis el acceso inal&amp;#225;mbrico a Internet a todos los ayuntamientos y entidades p&amp;#250;blicas que lo deseen. El tema es considerado importante y lleva tiempo dando mucho que hablar. Recordemos que la CMT considera que este servicio al ciudadano distorsiona la libre competencia y ha obligado a cerrar redes p&amp;#250;blicas wifi ([1], [2], [3]).</description>
+<dc:creator>Yonderboy</dc:creator>
+<dc:date>2007-06-24T14:10:00+00:00</dc:date>
+<dc:subject>wireless</dc:subject>
+<slash:department>cambiando-la-ley</slash:department>
+<slash:section>es</slash:section>
+<slash:comments>58</slash:comments>
+<slash:hit_parade>58,58,39,32,6,3,1</slash:hit_parade>
+</item>
+
+<item rdf:about="http://barrapunto.com/article.pl?sid=07/06/24/1355217&amp;from=rss">
+<title>EduKT: Herramienta educativa de presentaciones</title>
+<link>http://barrapunto.com/article.pl?sid=07/06/24/1355217&amp;from=rss</link>
+<description>Alfonso de la Guarda escribe en la lista python-es: &amp;#171;Lanzamos EduKT, primera actividad multi-plataforma para la XO, programada en Python+Gtk+Glade. EduKT es un creador simple de contenidos/presentaciones multimedia y se constituye como la primera actividad latinoamericana en calidad de beta&amp;#187;. En la p&amp;#225;gina del proyecto se muestra un v&amp;#237;deo de presentaci&amp;#243;n de la herramienta.</description>
+<dc:creator>rvr</dc:creator>
+<dc:date>2007-06-24T13:49:00+00:00</dc:date>
+<dc:subject>gnome</dc:subject>
+<slash:section>mainpage</slash:section>
+<slash:comments>4</slash:comments>
+<slash:hit_parade>4,3,1,0,0,0,0</slash:hit_parade>
+</item>
+
+<item rdf:about="http://barrapunto.com/article.pl?sid=07/06/24/1251214&amp;from=rss">
+<title>'Downgrade' universal para las PSP</title>
+<link>http://barrapunto.com/article.pl?sid=07/06/24/1251214&amp;from=rss</link>
+<description>Un pobrecito hablador nos cuenta: &amp;#171;Ya se ha descubierto un hack universal para la consola PSP de Sony que permitir&amp;#225; realizar el proceso de 'downgrading' en cualquier modelo de este dispositivo, incluso en el caso de los firmwares m&amp;#225;s recientes que a&amp;#250;n se les resist&amp;#237;an a los hackers. Estas noticias le hacen a uno reflexionar: &amp;#191;Qu&amp;#233; papel tiene la pirater&amp;#237;a en el &amp;#233;xito de una soluci&amp;#243;n hardware o software? &amp;#191;Realmente combaten las empresas la pirater&amp;#237;a, o hacen menos de lo que podr&amp;#237;an para combatirla y as&amp;#237; nutrirse de esa expectaci&amp;#243;n adicional que genera una plataforma que puede salir gratis?&amp;#187;</description>
+<dc:creator>Yonderboy</dc:creator>
+<dc:date>2007-06-24T12:47:00+00:00</dc:date>
+<dc:subject>juegos</dc:subject>
+<slash:department>la-clave-del-&amp;#233;xito</slash:department>
+<slash:section>mainpage</slash:section>
+<slash:comments>27</slash:comments>
+<slash:hit_parade>27,26,14,13,5,0,0</slash:hit_parade>
+</item>
+
+<item rdf:about="http://barrapunto.com/article.pl?sid=07/06/24/1120200&amp;from=rss">
+<title>El tama&#241;o de la Wikipedia inglesa</title>
+<link>http://barrapunto.com/article.pl?sid=07/06/24/1120200&amp;from=rss</link>
+<description>De todos es sabido que Wikipedia en ingl&amp;#233;s es la mayor de todas las Wikipedias, y que la cantidad de informaci&amp;#243;n de la que dispone es abrumadora. Pero seguramente no te habr&amp;#225;s parado a pensar en cu&amp;#225;ntos megabytes ocupa, o cu&amp;#225;nto papel se necesitar&amp;#237;a para imprimir un ejemplar de Wikipedia en ingl&amp;#233;s. Pues bien, un usuario (Nikola Smolenski) se tom&amp;#243; la molestia de hacer los c&amp;#225;lculos y de hacer un dibujo m&amp;#225;s que representativo. Su descripci&amp;#243;n dice as&amp;#237;: Usando vol&amp;#250;menes de 25 cm de alto y 5 cm de ancho (en torno a 400 hojas), cada p&amp;#225;gina a dos columnas y 80 l&amp;#237;neas, cada l&amp;#237;nea con 50 caracteres, hacen 6 megabytes por tomo. Como la inglesa ocupa unos 4,4 gigabytes, esto hace 750 vol&amp;#250;menes. Tener en cuenta que son c&amp;#225;lculos aproximados y que esto no incluye im&amp;#225;genes, ni tablas ni otros elementos que a buen seguro ocupan mucho m&amp;#225;s que el texto." Aunque estos datos sean orientativos, y sabiendo que Wikipedia en ingl&amp;#233;s crece a unos 2000 art&amp;#237;culos nuevos al d&amp;#237;a, est&amp;#225; bien claro que habr&amp;#237;a que talar bastantes &amp;#225;rboles para imprimir un solo ejemplar de la enciclopedia, y que tendr&amp;#237;amos que comprarnos una buena casa, con un buen sal&amp;#243;n para poder alojar la estanter&amp;#237;a. Menos mal que existen los DVDs.</description>
+<dc:creator>emijrp (posted by Yonderboy)</dc:creator>
+<dc:date>2007-06-24T11:15:00+00:00</dc:date>
+<dc:subject>Wikipedia</dc:subject>
+<slash:department>el-saber-ocupa-lugar</slash:department>
+<slash:section>mainpage</slash:section>
+<slash:comments>24</slash:comments>
+<slash:hit_parade>24,24,17,9,2,0,0</slash:hit_parade>
+</item>
+
+<item rdf:about="http://softlibre.barrapunto.com/article.pl?sid=07/06/24/104219&amp;from=rss">
+<title>Disponible el n&#250;mero 5 de 'Software Libre Para TI'</title>
+<link>http://softlibre.barrapunto.com/article.pl?sid=07/06/24/104219&amp;from=rss</link>
+<description>ALMSX nos cuenta: &amp;#171;Tras unos meses de ausencia, la revista mexicana Software Libre Para TI lanza su n&amp;#250;mero 5. En este numero encontrar&amp;#225;s: instalaci&amp;#243;n de Ubuntu Feisty; oportunidades de Negocios con SL; escritorio con Beryl; entrevista con Joel Barrios, director de Alcance Libre; proyecto del mes: AL Desktop, y Mucho m&amp;#225;s. Tiene una licencia libre CC-by as&amp;#237; que puedes descargarla sin restricci&amp;#243;n alguna.&amp;#187;</description>
+<dc:creator>Yonderboy</dc:creator>
+<dc:date>2007-06-24T10:00:00+00:00</dc:date>
+<dc:subject>gnulinux</dc:subject>
+<slash:department>revistas-libres</slash:department>
+<slash:section>softlibre</slash:section>
+<slash:comments>8</slash:comments>
+<slash:hit_parade>8,5,2,1,0,0,0</slash:hit_parade>
+</item>
+
+<textinput rdf:about="http://barrapunto.com/search.pl">
+<title>Search Barrapunto</title>
+<description>Search Barrapunto stories</description>
+<name>query</name>
+<link>http://barrapunto.com/search.pl</link>
+</textinput>
+
+</rdf:RDF>
