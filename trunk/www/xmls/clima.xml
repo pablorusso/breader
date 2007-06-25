@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<rss version="2.0" xmlns:yweather="http://xml.weather.yahoo.com/ns/rss/1.0" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+ <channel>
+ <title>Yahoo! Weather - Lima, PE</title>
+ <link>http://us.rd.yahoo.com/dailynews/rss/weather/Lima__PE/*http://weather.yahoo.com/forecast/PEXX0011_c.html</link>
+ <description>Yahoo! Weather for Lima, PE</description>
+ <language>en-us</language>
+ <lastBuildDate>Sun, 24 Jun 2007 12:00 am PET</lastBuildDate>
+ <ttl>60</ttl>
+ <yweather:location city="Lima" region="" country="PE" />
+ <yweather:units temperature="C" distance="km" pressure="mb" speed="kph" />
+ <yweather:wind chill="15" direction="180" speed="8" />
+ <yweather:atmosphere humidity="88" visibility="700" pressure="0" rising="0" />
+  <yweather:astronomy sunrise="6:28 am" sunset="5:53 pm" />
+  <image>
+ <title>Yahoo! Weather</title>
+ <width>142</width>
+ <height>18</height>
+ <link>http://weather.yahoo.com/</link>
+ <url>http://localhost/breader/images/web/clima/main_142b.gif</url>
+ </image>
+ <item>
+ <title>Conditions for Lima, PE at 12:00 am PET</title>
+  <geo:lat>-12</geo:lat>
+ <geo:long>-77.12</geo:long>
+  <link>http://us.rd.yahoo.com/dailynews/rss/weather/Lima__PE/*http://weather.yahoo.com/forecast/PEXX0011_c.html</link>
+ <pubDate>Sun, 24 Jun 2007 12:00 am PET</pubDate>
+ <yweather:condition text="Cloudy" code="26" temp="15" date="Sun, 24 Jun 2007 12:00 am PET" />
+ <description><![CDATA[
+<img src="http://localhost/breader/images/web/clima/26.gif" /><br />
+ <b>Current Conditions:</b><br />
+ Cloudy, 15 C<BR /><BR />
+ <b>Forecast:</b><BR />
+  Sun - Partly Cloudy. High: 16 Low: 13<br />
+  Mon - Partly Cloudy. High: 17 Low: 13<br />
+ <br />
+<a href="http://us.rd.yahoo.com/dailynews/rss/weather/Lima__PE/*http://weather.yahoo.com/forecast/PEXX0011_c.html">Full Forecast at Yahoo! Weather</a><BR/>
+ (provided by The Weather Channel)<br/>
+ ]]></description>
+ <yweather:forecast day="Sun" date="24 Jun 2007" low="13" high="16" text="Partly Cloudy" code="29" />
+<yweather:forecast day="Mon" date="25 Jun 2007" low="13" high="17" text="Partly Cloudy" code="30" />
+  <guid isPermaLink="false">PEXX0011_2007_06_24_0_0_PET</guid>
+ </item>
+</channel>
+</rss><!-- p4.weather.dcn.yahoo.com compressed/chunked Sun Jun 24 22:18:29 PDT 2007 -->
