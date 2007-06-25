@@ -783,9 +783,9 @@ void cArbol< CONT, ELEM >::saveArbol(){
 		throw ExceptionTree(ERROR_SAVE_TREE);
 
 	header.nroRaiz=raiz->nroNodo;
-	outputFile.write(reinterpret_cast<char *> (&header), sizeof(tHeaderArbol));
-	outputFile.close();	
+	outputFile.write(reinterpret_cast<char *> (&header), sizeof(tHeaderArbol));	
 	guardarRec(outputFile,raiz);
+	outputFile.close();	
 	
 }
 
