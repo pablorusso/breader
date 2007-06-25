@@ -10,10 +10,17 @@ function replaceEncoding ( divBody )
 		{
 			if ( childs.item(i).childNodes.length > 0 )
 			{
-				var node = childs.item(i).childNodes.item(0).childNodes.item(0).childNodes.item(1).childNodes.item(1).childNodes.item(0).childNodes.item(3);
+				var artsNode = childs.item(i).childNodes.item(0).childNodes.item(0).childNodes.item(1).childNodes.item(1).childNodes.item(0);
+
+				var node = artsNode.childNodes.item(3);
 				var oriText = node.innerHTML;
-				var output  = oriText.replace( /&amp;/gi, '&' ).replace( /&lt;/gi, '<' ).replace( /&gt;/gi, '>' ).replace( /&quot;/gi, '\"' );
+				var output   = oriText.replace( /&amp;/gi, '&' ).replace( /&lt;/gi, '<' ).replace( /&gt;/gi, '>' ).replace( /&quot;/gi, '\"' );
 				node.innerHTML = output;
+
+				var titleNode = artsNode.childNodes.item(1).childNodes.item(0).childNodes.item(0).childNodes.item(3).childNodes.item(0).childNodes.item(0);
+				var attText = titleNode.innerHTML;
+				var output   = attText.replace( /&amp;/gi, '&' ).replace( /&lt;/gi, '<' ).replace( /&gt;/gi, '>' ).replace( /&quot;/gi, '\"' );
+				titleNode.innerHTML = output;
 			}
 		}
 	}

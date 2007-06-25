@@ -74,6 +74,10 @@
 							<div class="entry-date">
 								<xsl:value-of select="document( $timestamp )/formatted" />
 							</div>
+							<!--timesptamp-->
+							<!--div class="entry-date">
+								<xsl:value-of select="@date" />
+							</div-->
 
 							<!--titulo y link-->
 							<table>

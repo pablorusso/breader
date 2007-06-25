@@ -9,6 +9,16 @@ function getNodeAttr ( node, attName )
 	return null;
 }
 
+function setNodeAttr ( node, attName, value )
+{
+	if ( node.attributes != null )
+	{
+		var attr = node.attributes.getNamedItem( attName );
+		if ( attr != null )
+			attr.value = value;
+	}
+}
+
 function findNodeById ( rootNode, idToSearch )
 {
 	var i;
