@@ -32,10 +32,19 @@ ActionsMap::~ActionsMap()
 	actionsIter = _actionMap.begin( );
 	while( actionsIter != _actionMap.end() )
 	{
+		delete(actionsIter->second);
+	}
+/* Codigo de Pablo
+	// Destruyo todos los objetos del map
+	MAP_CODE_ACTION :: iterator actionsIter;
+	actionsIter = _actionMap.begin( );
+	while( actionsIter != _actionMap.end() )
+	{
 		free(actionsIter->second);
 		_actionMap.erase( actionsIter );
 		actionsIter = _actionMap.begin();
 	}
+*/
 }
 
 vector<string> ActionsMap::GetAvailableCodes()
