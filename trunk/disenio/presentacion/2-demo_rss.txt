@@ -1,0 +1,4 @@
+http://localhost/breader/xmls/yahoo.xml
+http://localhost/breader/xmls/ufc.xml
+http://localhost/breader/xmls/sumariorss.xml
+http://localhost/breader/xmls/barrapunto.rss
