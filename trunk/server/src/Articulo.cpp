@@ -77,13 +77,17 @@ string Articulo::getXML( string feedName, Archivo4 &a4)
 	for (t_idcat i = 0; i < this->cont_idcat.get_MAX_CAT(); ++i) {
 		if ( cont_idcat.getCat( i ) )
 		{
-			string approved = cont_usu_pc.getCat( i ) ? "0" : "1";
-			// Si usu_pc = 1 -> clasificado por la pc
-			// Si usu_pc = 0 -> clasificado por el usuario
-			string tagName = a4.getCategoryInfo(i).categoryName;
-			tagsStr += "<tag id=\"" + XmlUtils::xmlEncode( i ) +
-			  "\" isApproved=\"" + XmlUtils::xmlEncode( approved ) +
-			  "\" name=\"" + XmlUtils::xmlEncode( tagName ) + "\"/>";
+			t_regArchivo4 reg = a4.getCategoryInfo( i );
+			if( reg.idCategory != IDCAT_FAV )
+			{
+				string approved = cont_usu_pc.getCat( i ) ? "0" : "1";
+				// Si usu_pc = 1 -> clasificado por la pc
+				// Si usu_pc = 0 -> clasificado por el usuario
+				string tagName = reg.categoryName;
+				tagsStr += "<tag id=\"" + XmlUtils::xmlEncode( i ) +
+				"\" isApproved=\"" + XmlUtils::xmlEncode( approved ) +
+				"\" name=\"" + XmlUtils::xmlEncode( tagName ) + "\"/>";
+			}
 		}
 	}
 

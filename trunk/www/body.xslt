@@ -207,35 +207,33 @@
 		<table>
 			<tr>
 				<xsl:for-each select="tag">
-					<xsl:if test="@readOnly = 0">
-						<xsl:if test="position() &gt; 1">
-							<xsl:text>, </xsl:text>
-						</xsl:if>
+					<xsl:if test="position() &gt; 0">
+						<xsl:text>, </xsl:text>
+					</xsl:if>
 
-						<xsl:if test="@isApproved = 0">
-							<td>
-							<a class="link">
-								<xsl:attribute name="onclick">
-								doAction( 'actionCode=' + escape('A3') + '&amp;params=' + escape( 'feedId||#<xsl:value-of select="@feedId"/>|||artId||#<xsl:value-of select="../../@artId"/>|||tagId||#<xsl:value-of select="@id"/>' ), editArticleHandler, '')
-								</xsl:attribute>
-								<img style="border:0" src="images/action_tag_check.png" title="Aprobar clasificacion automatica" alt="Aprobar clasificacion automatica"/>
-							</a>
-							</td>
-						</xsl:if>
-
+					<xsl:if test="@isApproved = 0">
 						<td>
 						<a class="link">
 							<xsl:attribute name="onclick">
-								doAction( 'actionCode=' + escape( 'A2' ) + '&amp;params=' + escape( 'feedId||#<xsl:value-of select="@feedId"/>|||artId||#<xsl:value-of select="../../@artId"/>|||tagId||#<xsl:value-of select="@id"/>' ), editArticleHandler, '')
+							doAction( 'actionCode=' + escape('A3') + '&amp;params=' + escape( 'feedId||#<xsl:value-of select="@feedId"/>|||artId||#<xsl:value-of select="../../@artId"/>|||tagId||#<xsl:value-of select="@id"/>' ), editArticleHandler, '')
 							</xsl:attribute>
-							<img style="border:0" src="images/action_tag_del.png" title="Desasociar categoría" alt="Desasociar categoría"/>
+							<img style="border:0" src="images/action_tag_check.png" title="Aprobar clasificacion automatica" alt="Aprobar clasificacion automatica"/>
 						</a>
 						</td>
-						<td class="star">
-							<xsl:text> </xsl:text>
-							<xsl:value-of select="@name"/>
-						</td>
 					</xsl:if>
+
+					<td>
+					<a class="link">
+						<xsl:attribute name="onclick">
+							doAction( 'actionCode=' + escape( 'A2' ) + '&amp;params=' + escape( 'feedId||#<xsl:value-of select="@feedId"/>|||artId||#<xsl:value-of select="../../@artId"/>|||tagId||#<xsl:value-of select="@id"/>' ), editArticleHandler, '')
+						</xsl:attribute>
+						<img style="border:0" src="images/action_tag_del.png" title="Desasociar categoría" alt="Desasociar categoría"/>
+					</a>
+					</td>
+					<td class="star">
+						<xsl:text> </xsl:text>
+						<xsl:value-of select="@name"/>
+					</td>
 				</xsl:for-each>
 			</tr>
 		</table>

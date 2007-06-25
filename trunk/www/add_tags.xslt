@@ -24,7 +24,7 @@
 
 								<xsl:for-each select="tag">
 									<xsl:if test="@readOnly = 0">
-										<xsl:if test="position() &gt; 1">
+										<xsl:if test="position() &gt; 2">
 											<xsl:text>, </xsl:text>
 										</xsl:if>
 										<a class="link">
