@@ -27,7 +27,7 @@ agregar basura en el medio...
 #include <map>
 
 #define UMBRAL 0.6
-//!< Umbral del FileManager
+
 #define SW_MIN_LEN 4
 //!< La minima longitud de las palabras de un articulo, para que no sean
 //!< consideradas stopwords
