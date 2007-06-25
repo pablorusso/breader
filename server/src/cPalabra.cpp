@@ -7,7 +7,9 @@ std::string cPalabra::nameFile=General::getDataPath()+NAME_FILE_PALABRAS;;
 /*-------------------------------------------------------------------------------*/
 /* Constructor: Inicializa cPalabra en estado vacio.*/
 
-cPalabra::cPalabra(){	  
+cPalabra::cPalabra(){
+	nameFile=General::getDataPath();
+	nameFile.append(NAME_FILE_PALABRAS);
 	palabra="";	
 }
 /*-------------------------------------------------------------------------------*/
