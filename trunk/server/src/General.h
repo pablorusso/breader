@@ -26,8 +26,9 @@ agregar basura en el medio...
 #include <string>
 #include <map>
 
-#define UMBRAL 0.6
-
+#define UMBRAL_BCLAS 0.6
+//!< Vos calculas las prob para cada categoria, bueno si superan ese umbral el
+//!< articulo va a ser categorizado con ese ID
 #define SW_MIN_LEN 4
 //!< La minima longitud de las palabras de un articulo, para que no sean
 //!< consideradas stopwords
