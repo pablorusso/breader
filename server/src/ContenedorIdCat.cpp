@@ -6,7 +6,11 @@ ContenedorIdCat::ContenedorIdCat(const t_idcat &MAX_CAT): MAX_CAT(MAX_CAT) {
 	if (m!=0) MY_NEW_MAX_CAT += (8-m);
 	this->MAX_CAT = MY_NEW_MAX_CAT;
 	// reservo el espacio para la cant max_cat
-	this->categorias.resize(this->MAX_CAT/8,static_cast<unsigned char> (0));
+	this->categorias.resize(this->MAX_CAT/8, static_cast<unsigned char> (0));
+	// TODO hace falta?
+	for (t_idcat i = 0; i< this->MAX_CAT/8; ++i) {
+		this->categorias[i] = 0;
+	}
 }
 
 ContenedorIdCat::~ContenedorIdCat() {}

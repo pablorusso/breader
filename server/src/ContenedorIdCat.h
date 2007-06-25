@@ -141,5 +141,9 @@ class ContenedorIdCat {
 		t_cont_idcat categorias; //!< tipo contenedor para idcat
 		t_idcat MAX_CAT; //!< la cantidad maxima de categorias
 
+		/**
+		 * Constructor privado y oculto, sin implementar
+		 */
+		ContenedorIdCat();
 };
 #endif
