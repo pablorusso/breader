@@ -421,6 +421,7 @@ string EntitiesManager::TagCreate( string name )
 string EntitiesManager::TagDelete( t_idcat id )
 {
 	try {
+		// TODO esto no refresca lo que se esta viendo
 		// Borra una categoria
 		managerWord.deleteCategoria(id);
 		_a4.deleteCategory(id);
