@@ -22,9 +22,9 @@ void cManagerWord::createEstructura(){
 		
 		try{
 			arbol.crearArbol(fileName);
-			fileName = General::getDataPath();
-			fileName.append(NAME_FILE_FM);
-			manager.crearFileManager(fileName);
+			string fileName2 = General::getDataPath();
+			fileName2.append(fileName2);
+			manager.crearFileManager(NAME_FILE_FM);
 		}catch(ExceptionTree){
 			throw ExceptionManagerWord(MW_ERROR_CR);
 		}catch(ExceptionFileManager){
