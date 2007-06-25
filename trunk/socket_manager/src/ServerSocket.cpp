@@ -43,9 +43,9 @@ const ServerSocket& ServerSocket::operator >> ( std::string& s ) const
   	return *this;
 }
 
-void ServerSocket::accept ( ServerSocket& sock, bool &isTimeout )
+void ServerSocket::accept ( ServerSocket& sock )
 {
-	if ( ! Socket::accept ( sock, isTimeout ) )
+	if ( ! Socket::accept ( sock ) )
 		throw SocketException ( "Could not accept socket." );
 }
 

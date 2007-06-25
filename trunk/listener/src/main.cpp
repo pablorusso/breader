@@ -8,6 +8,7 @@
 #include "Action.h"
 #include "ServerSocket.h"
 #include "SocketException.h"
+#include "SocketTimeoutException.h"
 
 using namespace std;
 
@@ -154,72 +155,82 @@ void *server_listen( void *ptr )
 	ActionsMap actionsMap;
 	ServerSocket *server = tData->socket;
 	ServerSocket new_sock;
-	bool isTimeout;
 
 	Log( tData->logFile, "Escuchando..." );
 	while ( !mustExit )
 	{
-		server->accept ( new_sock, isTimeout );
-		if ( !isTimeout )
+		try
 		{
-			char *ip = inet_ntoa( new_sock.getAddress().sin_addr );
-			string ipStr( ip );
-			int  aceptedPort = ntohs( new_sock.getAddress().sin_port );
-			string acPortStr = intToStr( aceptedPort );
-			Log( tData->logFile, "Conexion aceptada de " + ipStr + ":" + acPortStr );
-
-			std::string ack = "OK";
-			// acccion
-			string action;
-			readFromSocket( new_sock, action );
-
-			// parametros
-			string params;
-			readFromSocket( new_sock, params );
-
+			server->accept ( new_sock );
 			try
 			{
-				string msg = "Mensaje recibido: ";
-				msg = msg + action;
-				if ( params.size() > 0 ) msg = msg + " " + params;
-				Log( tData->logFile, msg );
+				char *ip = inet_ntoa( new_sock.getAddress().sin_addr );
+				string ipStr( ip );
+				int  aceptedPort = ntohs( new_sock.getAddress().sin_port );
+				string acPortStr = intToStr( aceptedPort );
+				Log( tData->logFile, "Conexion aceptada de " + ipStr + ":" + acPortStr );
 
-				string result = processAction( action, params, actionsMap, tData->logFile );
+				std::string ack = "OK";
+				// acccion
+				string action;
+				readFromSocket( new_sock, action );
 
-				Log( tData->logFile, "Enviando respuesta: " + result );
+				// parametros
+				string params;
+				readFromSocket( new_sock, params );
 
-				// responseCode
-				string respCode("0");
-				writeToSocket( new_sock, respCode );
+				try
+				{
+					string msg = "Mensaje recibido: ";
+					msg = msg + action;
+					if ( params.size() > 0 ) msg = msg + " " + params;
+					Log( tData->logFile, msg );
 
-				// response
-				writeToSocket( new_sock, result );
-				Log( tData->logFile, "Respuesta enviada exitosamente" );
+					string result = processAction( action, params, actionsMap, tData->logFile );
+
+					Log( tData->logFile, "Enviando respuesta: " + result );
+
+					// responseCode
+					string respCode("0");
+					writeToSocket( new_sock, respCode );
+
+					// response
+					writeToSocket( new_sock, result );
+					Log( tData->logFile, "Respuesta enviada exitosamente" );
+				}
+				catch ( std::exception::exception &e )
+				{
+					// responseCode de error
+					string respCode("1");
+					writeToSocket( new_sock, respCode );
+					// mensaje de error
+					string msg( e.what() );
+					writeToSocket( new_sock, msg );
+
+					Log( tData->logFile, "Error realizando la operacion. Mensaje: " + msg );
+				}
+				catch ( string msg )
+				{
+					// responseCode de error
+					string respCode("1");
+					writeToSocket( new_sock, respCode );
+					// mensaje de error
+					writeToSocket( new_sock, msg );
+
+					Log( tData->logFile, "Error realizando la operacion. Mensaje: " + msg );
+				}
+
+				tData->logFile << endl;
 			}
-			catch ( std::exception::exception &e )
+			catch( SocketTimeoutException st )
 			{
-				// responseCode de error
-				string respCode("1");
-				writeToSocket( new_sock, respCode );
-				// mensaje de error
-				string msg( e.what() );
-				writeToSocket( new_sock, msg );
-
-				Log( tData->logFile, "Error realizando la operacion. Mensaje: " + msg );
+				// Si dio timeout pruebo otra vez
 			}
-			catch ( string msg )
-			{
-				// responseCode de error
-				string respCode("1");
-				writeToSocket( new_sock, respCode );
-				// mensaje de error
-				writeToSocket( new_sock, msg );
-
-				Log( tData->logFile, "Error realizando la operacion. Mensaje: " + msg );
-			}
-
-			tData->logFile << endl;
 			Log( tData->logFile, "Escuchando..." );
+		}
+		catch( SocketTimeoutException st )
+		{
+			// Si dio timeout pruebo otra vez
 		}
 	}
 
