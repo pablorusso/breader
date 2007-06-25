@@ -67,8 +67,9 @@ sockaddr_in Socket::getAddress()
 	return m_addr;
 }
 
-bool Socket::accept ( Socket& new_socket ) const
+bool Socket::accept ( Socket& new_socket, bool &isTimeout ) const
 {
+	/*
   	int addr_length = sizeof ( m_addr );
   	new_socket.m_sock = ::accept ( m_sock, ( sockaddr * ) &m_addr, ( socklen_t * ) &addr_length );
 	new_socket.m_addr = m_addr;
@@ -77,6 +78,42 @@ bool Socket::accept ( Socket& new_socket ) const
 		return false;
   	else
     	return true;
+	*/
+
+
+	fd_set descriptores;
+   	struct timeval time;
+
+	int seg = 1;
+	time.tv_sec = seg;  // segundos
+   	time.tv_usec = seg*1000000; //microsegundos
+   	FD_ZERO ( &descriptores );
+   	FD_SET  ( m_sock, &descriptores );
+
+	isTimeout = true;
+   	int result = select( m_sock+1, &descriptores, NULL, NULL, &time );
+   	if(	result > 0	)
+	{
+		isTimeout = false;
+
+		// hay datos listos
+		int addr_length = sizeof ( m_addr );
+	  	new_socket.m_sock = ::accept ( m_sock, ( sockaddr * ) &m_addr, ( socklen_t * ) &addr_length );
+		if ( new_socket.m_sock <= 0 )
+			return false;
+	  	new_socket.m_addr = m_addr;
+		return true;
+   	}
+
+	// error
+	if( result < 0 )
+	{
+		isTimeout = false;
+		return false;
+	}
+
+	// termino el tiempo, no retorno socket pero tampoco error
+	return true;
 }
 
 

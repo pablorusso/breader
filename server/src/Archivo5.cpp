@@ -3,7 +3,6 @@
 Archivo5::Archivo5(const t_idcat &MAX_CAT) {
 	this->header.MAX_CAT = MAX_CAT;
 	string fileName = Archivo5::genFileName();
-	cout << fileName << endl;
 	this->open(fileName);
 }
 

@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <pthread.h>
+#include <fstream>
 
 #include "General.h"
 #include "ActionsMap.h"
@@ -7,6 +9,15 @@
 #include "ServerSocket.h"
 #include "SocketException.h"
 
+using namespace std;
+
+typedef struct
+{
+	ofstream 	  logFile;
+	ServerSocket  *socket;
+} ThreadData;
+
+bool mustExit;
 
 void usage()
 {
@@ -64,18 +75,38 @@ void usage()
 	::exit( 1 );
 }
 
-string processAction( string actionCode, string params, ActionsMap &actionsMap )
+string Now()
+{
+	system( "date +\"%m/%d/%Y %k:%M:%S.%N\" > now.out" );
+	string now;
+	ifstream ifs("now.out"); std::getline(ifs, now); ifs.close();
+	return now;
+}
+
+void Log( ostream &logFile, const string &message )
+{
+	logFile << endl << "[" << Now() << "] " << message << std::flush;
+}
+
+string intToStr( const int &value )
+{
+	std::ostringstream oss; oss << value;
+	return oss.str();
+}
+
+string processAction( string actionCode, string params, ActionsMap &actionsMap, ostream &logFile )
 {
 	Action *action = actionsMap.GetAction( actionCode );
 	if ( action == NULL )
 		throw string ( "[listener][ERROR] - No se encontro una accion asociada al codigo " + actionCode );
 
-	cout << endl << "[listener] - Ejecutando accion " << action->GetName() << std::flush;
-	if ( params.size() > 0 ) cout << " con parametros " << params << std::flush;
+	string msg = "Ejecutando accion " + action->GetName();
+	if ( params.size() > 0 ) msg = msg + " con parametros " + params;
+	Log( logFile, msg );
 
 	string result = action->ProcessAction( params );
 
-	cout << endl << "[listener] - Accion procesada exitosamente" << std::flush;
+	Log( logFile, "Accion procesada exitosamente" );
 	return result;
 }
 
@@ -116,11 +147,88 @@ void writeToSocket( ServerSocket &socket, string &data )
 	}
 }
 
+void *server_listen( void *ptr )
+{
+	ThreadData *tData = static_cast< ThreadData *>( ptr );
+
+	ActionsMap actionsMap;
+	ServerSocket *server = tData->socket;
+	ServerSocket new_sock;
+	bool isTimeout;
+
+	Log( tData->logFile, "Escuchando..." );
+	while ( !mustExit )
+	{
+		server->accept ( new_sock, isTimeout );
+		if ( !isTimeout )
+		{
+			char *ip = inet_ntoa( new_sock.getAddress().sin_addr );
+			string ipStr( ip );
+			int  aceptedPort = ntohs( new_sock.getAddress().sin_port );
+			string acPortStr = intToStr( aceptedPort );
+			Log( tData->logFile, "Conexion aceptada de " + ipStr + ":" + acPortStr );
+
+			std::string ack = "OK";
+			// acccion
+			string action;
+			readFromSocket( new_sock, action );
+
+			// parametros
+			string params;
+			readFromSocket( new_sock, params );
+
+			try
+			{
+				string msg = "Mensaje recibido: ";
+				msg = msg + action;
+				if ( params.size() > 0 ) msg = msg + " " + params;
+				Log( tData->logFile, msg );
+
+				string result = processAction( action, params, actionsMap, tData->logFile );
+
+				Log( tData->logFile, "Enviando respuesta: " + result );
+
+				// responseCode
+				string respCode("0");
+				writeToSocket( new_sock, respCode );
+
+				// response
+				writeToSocket( new_sock, result );
+				Log( tData->logFile, "Respuesta enviada exitosamente" );
+			}
+			catch ( std::exception::exception &e )
+			{
+				// responseCode de error
+				string respCode("1");
+				writeToSocket( new_sock, respCode );
+				// mensaje de error
+				string msg( e.what() );
+				writeToSocket( new_sock, msg );
+
+				Log( tData->logFile, "Error realizando la operacion. Mensaje: " + msg );
+			}
+			catch ( string msg )
+			{
+				// responseCode de error
+				string respCode("1");
+				writeToSocket( new_sock, respCode );
+				// mensaje de error
+				writeToSocket( new_sock, msg );
+
+				Log( tData->logFile, "Error realizando la operacion. Mensaje: " + msg );
+			}
+
+			tData->logFile << endl;
+			Log( tData->logFile, "Escuchando..." );
+		}
+	}
+
+	return NULL;
+}
+
 void listen( int argc, char* argv[] )
 {
 	int port;
-	ActionsMap actionsMap;
-
 	if ( argc != 3 )
 	{
 		usage();
@@ -129,79 +237,30 @@ void listen( int argc, char* argv[] )
 	port = atoi( argv[2] );
 
 
+	ThreadData tData;
+	tData.logFile.open ("logfile.txt");
 	try
 	{
-		cout << endl << "[listener] - Abriendo el socket" ;
+		cout << endl << "[listener] - Escuchando, presione enter para salir." ;
 		ServerSocket server ( port );
-		cout << endl << "[listener] - Escuchando..." << endl << std::flush;
 
-		while ( true )
-		{
+		pthread_t serverListenThread;
+		int iret1;
 
-	  		ServerSocket new_sock;
-	  		server.accept ( new_sock );
+		// creo el thread que escucha
+		mustExit = false;
+		tData.socket = &server;
+     	iret1 = pthread_create( &serverListenThread, NULL, server_listen, (void*) &tData);
 
-			char *ip =inet_ntoa( new_sock.getAddress().sin_addr );
-			int  aceptedPort = ntohs( new_sock.getAddress().sin_port );
-			cout << endl << "[listener] - Conexion aceptada de " << ip << ":" << aceptedPort << std::flush;
-	  		try
-	    	{
-	      		while ( true )
-				{
-					std::string ack = "OK";
+		// Espero el ENTER
+		std::string dummy; std::getline(std::cin, dummy);
 
-					// acccion
-					string action;
-					readFromSocket( new_sock, action );
-
-					// parametros
-					string params;
-					readFromSocket( new_sock, params );
-
-					try
-					{
-						cout << endl << "[listener] - Mensaje recibido: " << std::flush;
-						cout << action << std::flush;
-						if ( params.size() > 0 ) cout << " " << params << std::flush;
-
-						string result = processAction( action, params, actionsMap );
-
-						cout << endl << "[listener] - Enviando respuesta: " << result << std::flush;
-
-						// responseCode
-						string respCode("0");
-						writeToSocket( new_sock, respCode );
-
-						// response
-						writeToSocket( new_sock, result );
-
-						cout << endl << "[listener] - Respuesta enviada exitosamente" << endl << std::flush;
-					}
-					catch ( std::exception::exception &e )
-					{
-						// responseCode de error
-						string respCode("1");
-						writeToSocket( new_sock, respCode );
-						// mensaje de error
-						string msg( e.what() );
-						writeToSocket( new_sock, msg );
-
-						cout << endl << "[listener] - Error realizando la operacion. Mensaje: " << msg << endl << std::flush;
-					}
-					catch ( string msg )
-					{
-						// responseCode de error
-						string respCode("1");
-						writeToSocket( new_sock, respCode );
-						// mensaje de error
-						writeToSocket( new_sock, msg );
-
-						cout << endl << "[listener] - Error realizando la operacion. Mensaje: " << msg << endl << std::flush;
-					}
-				}
-	    	}
-	  		catch ( SocketException& ) {}
-		}
+		cout << endl << "[listener] - Matando el socket.";
+		// matar el socket
+		mustExit = true;
+		// espero que termine
+		pthread_join( serverListenThread, NULL);
+		cout << endl << "[listener] - Adios." << endl;
 	}
 	catch ( SocketException& e )
 	{
@@ -209,8 +268,9 @@ void listen( int argc, char* argv[] )
 	}
 	catch ( string msg )
 	{
-		cout << endl << "[listener] - Error inicializando la cola. Mensaje: " << msg << endl << std::flush;
+		cout << endl << "[listener] - Error indeterminado. Mensaje: " << msg << endl << std::flush;
 	}
+	tData.logFile.close();
 }
 
 void readActionFromConsole( int argc, char* argv[] )
@@ -221,7 +281,7 @@ void readActionFromConsole( int argc, char* argv[] )
 	if ( argc == 4 ) params = argv[3];
 
 	ActionsMap actionsMap;
-	string result = processAction( action, params, actionsMap );
+	string result = processAction( action, params, actionsMap, cout );
 
 	cout << endl << "Imprimiendo la respuesta: " << endl;
 	cout << "------------------------------" << endl;

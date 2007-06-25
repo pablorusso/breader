@@ -2,7 +2,7 @@
 OUTPUT_FILE   := listener.exe
 IS_LIB	      := 0
 DEP_LIB_STAGE := socket_manager server
-DEP_LIB_NAME  := socket_manager server
+DEP_LIB_NAME  := socket_manager server pthread
 DEP_INC	      := Socket.h ServerSocket.h SocketException.h \
 feedHandler.h regArchivo5.h regArchivo2.h General.h Feed.h \
 ContenedorIdCat.h bitOperator.h Articulo.h Archivo6.h Archivo5.h Archivo2.h \
