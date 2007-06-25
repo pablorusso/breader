@@ -109,7 +109,7 @@ string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 			_a4.incCategoryArtAndWord(IDCAT_FAV,1,cont.size());
 
 		}else{
-			//El articulo pertenese a la categoria favoritos y va pasar a no estarlo
+				//El articulo pertenese a la categoria favoritos y va pasar a no estarlo
 				if(_feedManager->readUsu_Pc(feedId,artId,IDCAT_FAV)){
 					// Si lo habia clasificado el sistema
 					_a4.decCategoryArtAndWord(IDCAT_FAV,1,cont.size());
@@ -530,7 +530,7 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 		t_probMap::reverse_iterator itt = map.rbegin();
 
 		while(!salir && itt!=map.rend()){
-			if((map.rbegin())->first > UMBRAL_FILE_MANAGER)
+			if((map.rbegin())->first > UMBRAL_MANAGER_WORD)
 				_feedManager->clasificarArticulo(art.get_idfeed(),itt->second,art.get_idart(),true,true);
 			else salir=true;
 			++itt;

@@ -26,7 +26,7 @@ agregar basura en el medio...
 #include <string>
 #include <map>
 
-#define UMBRAL_FILE_MANAGER 0.6
+#define UMBRAL_MANAGER_WORD 0.6
 //!< Umbral del FileManager
 #define SW_MIN_LEN 4
 //!< La minima longitud de las palabras de un articulo, para que no sean
