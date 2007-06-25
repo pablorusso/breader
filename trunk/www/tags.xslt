@@ -20,7 +20,7 @@
 										<td style="width: 100%">
 											<div class="sub-tree-header">Categorías</div>
 										</td>
-										<xsl:if test="count(tag) &gt; 0">
+										<xsl:if test="count(tag) &gt; 1">
 											<td class="menuIcon">
 												<a class="link">
 													<xsl:attribute name="onclick">
