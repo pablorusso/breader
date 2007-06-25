@@ -16,10 +16,15 @@ void cManagerWord::openEstructura(){
 /*----------------------------------------------------------------------*/
 /* Crea la estructura de archivos que va a manejar las palabras y sus datos estadisticos asociados.*/
 void cManagerWord::createEstructura(){
-	if(!isCreada){
+	if(!isCreada){		
+		string fileName(General::getDataPath());
+		fileName.append(NAME_FILE_TREE);
+		
 		try{
-			arbol.crearArbol(General::getDataPath()+NAME_FILE_TREE);
-			manager.crearFileManager(General::getDataPath()+NAME_FILE_FM);
+			arbol.crearArbol(fileName);
+			fileName = General::getDataPath();
+			fileName.append(NAME_FILE_FM);
+			manager.crearFileManager(fileName);
 		}catch(ExceptionTree){
 			throw ExceptionManagerWord(MW_ERROR_CR);
 		}catch(ExceptionFileManager){
@@ -52,9 +57,13 @@ void cManagerWord::closeEstructura(){
 /* Carga la estructura de archivos.*/
 void cManagerWord::loadEstructura(){
 	if(!isCreada){
+		string fileName(General::getDataPath());
+		fileName.append(NAME_FILE_TREE);
 		try{
-			arbol.loadArbol(General::getDataPath()+NAME_FILE_TREE);
-			manager.loadFileManager(General::getDataPath()+NAME_FILE_FM);
+			arbol.loadArbol(fileName);
+			fileName = General::getDataPath();
+			fileName.append(NAME_FILE_FM);
+			manager.loadFileManager(fileName);
 		}catch(ExceptionTree){
 			throw ExceptionManagerWord(MW_ERROR_CR);
 		}catch(ExceptionFileManager){		
