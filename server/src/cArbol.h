@@ -76,7 +76,7 @@ public:
 
 /*------------DESPUES SACAR------------------------------*/
    //TODO: despues sacar
-   void mostrar(); /*Muestra el arbol*/
+  // void mostrar(); /*Muestra el arbol*/
 
 /*------------------------------------------------------*/
 
@@ -157,7 +157,7 @@ private:
  /*------------DESPUES SACAR------------------------------*/
   // TODO: despues sacar
 
-   void ver(cNodo<CONT,ELEM> *ptr); /*Muestra el arbol*/
+ //  void ver(cNodo<CONT,ELEM> *ptr); /*Muestra el arbol*/
 /*------------------------------------------------------*/
 
 };
@@ -777,15 +777,16 @@ void cArbol< CONT, ELEM >::saveArbol(){
 
 	std::ofstream outputFile;
 
-	outputFile.open(nameFile.c_str(), std::ios::in|std::ios::out | std::ios::binary);
+	outputFile.open(nameFile.c_str(), std::ios::in | std::ios::out | std::ios::binary);
 
 	if(!outputFile.good())
 		throw ExceptionTree(ERROR_SAVE_TREE);
 
 	header.nroRaiz=raiz->nroNodo;
 	outputFile.write(reinterpret_cast<char *> (&header), sizeof(tHeaderArbol));
+	outputFile.close();	
 	guardarRec(outputFile,raiz);
-	outputFile.close();
+	
 }
 
 /*---------------------------------------------------------------------------*/
@@ -807,6 +808,7 @@ void cArbol< CONT, ELEM >::closeArbol(){
 }
 
 /*---------------------------------------------------------------------------*/
+/*
 template < class CONT, class ELEM>
 void cArbol< CONT, ELEM >::mostrar(){
 
@@ -827,8 +829,9 @@ void cArbol< CONT, ELEM >::mostrar(){
 	std::cout << "------------------------------------------------------------------------" << std::endl;
 
 }
-
+*/
 /*------------------------------------------------------------------------------*/
+/*
 template < class CONT, class ELEM>
 void cArbol< CONT, ELEM >::ver(cNodo<CONT,ELEM> *nodo){
    t_uint i;
@@ -886,14 +889,16 @@ void cArbol< CONT, ELEM >::ver(cNodo<CONT,ELEM> *nodo){
 
    if(nodo->cantClavesUsadas)
 	   std::cout << nodo->dato[i] << ")" << std::endl;
-
+*/
    /*El = es xq hay un ptr mas que datos*/
+/*
    for(i = 0; i <= nodo->cantClavesUsadas; i++){
 	   if(nodo->ptr[i]!=NULL)
 			ver(nodo->ptr[i]);
    }
 
 }
+*/
 /*------------------------------------------------------------------------------*/
 
 #endif
