@@ -32,6 +32,26 @@ function delFeedHandler( result )
 	}
 	var nodeFound = findNodeById( feedsDocument.documentElement.childNodes[1], idToFind );
 	feedsDocument.documentElement.childNodes[1].removeChild( nodeFound )
+
+	var entre = 0;
+	var articles = bodyDocument.documentElement.childNodes[1];
+	var i = 0;
+	while( i < articles.childNodes.length )
+	{
+		var article = articles.childNodes[i];
+		var assignedFeedId = getNodeAttr( article, 'feedId' );
+		if ( assignedFeedId == idToFind )
+		{
+			entre = 1;
+			articles.removeChild( article );
+		}
+		else
+			i++;
+	}
+
+	if ( entre )
+		showBody( document, bodyDocument )
+
 	showFeeds( document, feedsDocument );
 }
 function addFeedHandlerForReal( result )
