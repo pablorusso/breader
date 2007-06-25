@@ -320,6 +320,13 @@ void Archivo6::bajaCategoria(const t_idcat &idcat) {
 	} else THROW(eArchivo6, A6_IDCAT_FUERA_DE_RANGO);
 }
 
+t_usedFactor Archivo6::getUsedFactor() const {
+	if (this->numRegs != 0)
+		return ((t_usedFactor)this->header.numFeeds/
+				(t_usedFactor)this->numRegs);
+	else
+		return 1.0;
+}
 
 void Archivo6::open(const string &fileName) {
 	// Leo/Creo el Archivo6

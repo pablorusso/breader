@@ -214,10 +214,7 @@ class Archivo6 {
 		 * (se usara para decidir cuando reestructurar)
 		 * @return el factor de registros ocupados sobre registros totales
 		 */
-		t_usedFactor getUsedFactor() const {
-			return ((t_usedFactor)this->header.numFeeds/
-			        (t_usedFactor)this->numRegs);
-		}
+		t_usedFactor getUsedFactor() const;
 
 		/**
 		 * Devuelve la cantidad maxima de categorias
