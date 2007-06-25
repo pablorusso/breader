@@ -51,6 +51,8 @@ BUGS
 * No me funciona quitar categorias, porque el idFeed pasa vacio y tira error porque no puede
   convertir eso a un numero
 * Este feed no trae mensajes? http://rssnewsapps.ziffdavis.com/pcmag.xml
+* Si clickeás rápido, podés mandar dos veces el borrarCategoría para la misma categoría... eso lo hace tildar.
+
 
 NO TAN IMPORTANTE
 -----------------
