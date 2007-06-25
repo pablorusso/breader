@@ -11,35 +11,54 @@ EntitiesManager EntitiesManager::_instance;
 
 EntitiesManager *EntitiesManager::getInstance()
 {
+	if ( !EntitiesManager::_instance.isInit ) EntitiesManager::_instance.initialize();
 	return &(EntitiesManager::_instance);
 }
 /*-------------------------------------------------------------------------------------------*/
-EntitiesManager::EntitiesManager():managerWord(&_a4)
+void EntitiesManager::initialize()
 {
+	_a4 = new Archivo4();
+	managerWord  = new cManagerWord( _a4 );
 	_feedManager = new feedHandler( MAX_CATS );
-	try {
-		managerWord.openEstructura();
-
+	isInit = true;
+	try
+	{
+		managerWord->openEstructura();
 		// Agrego la categoria favorito...
-		if (_a4.getNumCat() == 0)
-			_a4.addCategory("______Favorito______");
+		if ( _a4->getNumCat() == 0 )
+			_a4->addCategory( "______Favorito______" );
 	}
-	catch(ExceptionManagerWord &e) {
+	catch(ExceptionManagerWord &e)
+	{
 		throw string(e.what());
 	}
-	catch (eArchivo4 &e) {
+	catch (eArchivo4 &e)
+	{
 		throw string(e.what());
 	}
 	//TODO: ver el tema de las excepciones
 }
 /*-------------------------------------------------------------------------------------------*/
+EntitiesManager::EntitiesManager()
+{
+	isInit = false;
+}
+/*-------------------------------------------------------------------------------------------*/
 EntitiesManager::~EntitiesManager()
 {
-	delete _feedManager;
-	try{
-		managerWord.closeEstructura();
+	if ( isInit )
+	{
+		delete _feedManager;
+		try
+		{
+			managerWord->closeEstructura();
+			delete _a4;
+		}
+		catch(ExceptionManagerWord &e)
+		{
+		}
+		isInit = false;
 	}
-	catch(ExceptionManagerWord &e) {}
 }
 
 string EntitiesManager::ArticleCreate( t_idfeed feedId, string title,
@@ -57,7 +76,7 @@ string EntitiesManager::ArticleCreate( t_idfeed feedId, string title,
 		t_idart idArt = _feedManager->altaArticulo( feedId, art );
 		art.set_idart( idArt );
 		Feed feed = _feedManager->getFeed( art.get_idfeed() );
-		return art.getXML( feed.getName(), _a4 );
+		return art.getXML( feed.getName(), *_a4 );
 	}
 	catch (eFeedHandler &e) {
 		throw string(e.what());
@@ -70,10 +89,10 @@ string EntitiesManager::ArticleApproveTag( t_idfeed feedId, t_idart artId, t_idc
 	t_word_cont cont = articleParser.parseArticle(art);
 
 	try {
-		_a4.incCategoryArtAndWord(tagId,1,cont.size());
-		managerWord.addFrecWords(tagId,cont);
+		_a4->incCategoryArtAndWord(tagId,1,cont.size());
+		managerWord->addFrecWords(tagId,cont);
 		Feed feed = _feedManager->getFeed( art.get_idfeed() );
-		return art.getXML( feed.getName(), _a4 );
+		return art.getXML( feed.getName(), *_a4 );
 	}
 	catch(ExceptionManagerWord &e) {
 		throw string(e.what());
@@ -101,13 +120,13 @@ string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 		//Ya se le cambio el estado asi q voy por la inversa
 		if(cond != -1){
 			//El articulo no pertenese a la categoria favoritos y va pasar a estarlo
-			_a4.incCategoryArtAndWord(IDCAT_FAV,1,cont.size());
+			_a4->incCategoryArtAndWord(IDCAT_FAV,1,cont.size());
 
 		}else{
 				//El articulo pertenese a la categoria favoritos y va pasar a no estarlo
 				if(_feedManager->readUsu_Pc(feedId,artId,IDCAT_FAV)){
 					// Si lo habia clasificado el sistema
-					_a4.decCategoryArtAndWord(IDCAT_FAV,1,cont.size());
+					_a4->decCategoryArtAndWord(IDCAT_FAV,1,cont.size());
 
 					for(it = cont.begin(); it != cont.end() ; ++it ){
 						((t_diferencias) it->second).cantFalse=((t_diferencias) it->second).cantTrue;
@@ -117,15 +136,15 @@ string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 
 				}else{
 					// Si lo habia clasificado el usuario entonces el se confundio.
-					_a4.decCategoryArtAndWordUserError(IDCAT_FAV,1,cont.size());
+					_a4->decCategoryArtAndWordUserError(IDCAT_FAV,1,cont.size());
 					for(it = cont.begin(); it != cont.end() ; ++it )
 						((t_diferencias) it->second).cantTrue *= -1;
 				}
 		}
 
-		managerWord.addFrecWords(IDCAT_FAV,cont);
+		managerWord->addFrecWords(IDCAT_FAV,cont);
 		Feed feed = _feedManager->getFeed( art.get_idfeed() );
-		return art.getXML( feed.getName(), _a4 );
+		return art.getXML( feed.getName(), *_a4 );
 	}
 	catch(ExceptionManagerWord &e) {
 		throw string(e.what());
@@ -140,7 +159,7 @@ string EntitiesManager::ArticleChangeReadState( t_idfeed feedId, t_idart artId )
 	try {
 		Articulo art = _feedManager->invertirLecturaArticulo( feedId, artId );
 		Feed feed = _feedManager->getFeed( art.get_idfeed() );
-		return art.getXML( feed.getName(), _a4 );
+		return art.getXML( feed.getName(), *_a4 );
 	}
 	catch (eFeedHandler &e) {
 		throw string(e.what());
@@ -156,7 +175,7 @@ string EntitiesManager::BuildArticlesList( t_cola_art colaArt )
 		while( ! colaArt.empty() )
 		{
 			Feed feed = _feedManager->getFeed( colaArt.front().get_idfeed() );
-			response += colaArt.front().getXML( feed.getName(), _a4 );
+			response += colaArt.front().getXML( feed.getName(), *_a4 );
 
 			colaArt.pop();
 		}
@@ -295,10 +314,10 @@ string EntitiesManager::ArticleLinkTag( t_idfeed feedId, t_idart artId, t_idcat 
 	try {
 		Articulo art = _feedManager->clasificarArticulo( feedId, tagId, artId, true, false );
 		t_word_cont cont = articleParser.parseArticle(art);
-		_a4. incCategoryArtAndWord(tagId,1,cont.size());
-		managerWord.addFrecWords(tagId,cont);
+		_a4->incCategoryArtAndWord(tagId,1,cont.size());
+		managerWord->addFrecWords(tagId,cont);
 		Feed feed = _feedManager->getFeed( art.get_idfeed() );
-		return art.getXML( feed.getName(), _a4 );
+		return art.getXML( feed.getName(), *_a4 );
 	}
 	catch(ExceptionManagerWord &e) {
 		throw string(e.what());
@@ -323,7 +342,7 @@ string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idca
 		// Si usu_pc = 0 -> clasificado por el usuario
 		if(_feedManager->readUsu_Pc(feedId,artId,tagId)){
 			// Si lo clasifico el sistema
-			_a4.decCategoryArtAndWord(tagId,1,cont.size());
+			_a4->decCategoryArtAndWord(tagId,1,cont.size());
 			for(it = cont.begin(); it != cont.end() ; ++it ){
 				((t_diferencias) it->second).cantFalse=((t_diferencias) it->second).cantTrue;
 				//Cero xq no se habia incorporado a la base de conocimiento.
@@ -332,13 +351,13 @@ string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idca
 
 		}else{
 			// Si lo clasifico el usuario
-			_a4.decCategoryArtAndWordUserError(tagId,1,cont.size());
+			_a4->decCategoryArtAndWordUserError(tagId,1,cont.size());
 			for(it = cont.begin(); it != cont.end() ; ++it )
 				((t_diferencias) it->second).cantTrue*=-1;
 		}
-		managerWord.addFrecWords(tagId,cont);
+		managerWord->addFrecWords(tagId,cont);
 		Feed feed = _feedManager->getFeed( art.get_idfeed() );
-		return art.getXML( feed.getName(), _a4 );
+		return art.getXML( feed.getName(), *_a4 );
 
 	}
 	catch(ExceptionManagerWord &e) {
@@ -403,8 +422,8 @@ string EntitiesManager::TagCreate( string name )
 	try {
 		// Crea una categoria
 		Tag category;
-		t_idcat id = _a4.addCategory(name);
-		category.ConvertToTag(_a4.getCategoryInfo(id));
+		t_idcat id = _a4->addCategory(name);
+		category.ConvertToTag(_a4->getCategoryInfo(id));
 
 		return category.getXML();
 	}
@@ -418,8 +437,8 @@ string EntitiesManager::TagDelete( t_idcat id )
 	try {
 		// TODO esto no refresca lo que se esta viendo
 		// Borra una categoria
-		managerWord.deleteCategoria(id);
-		_a4.deleteCategory(id);
+		managerWord->deleteCategoria(id);
+		_a4->deleteCategory(id);
 		_feedManager->bajaCategoria(id);
 		return "<tag id=\"" + XmlUtils::xmlEncode( id ) +  "\"/>";
 	}
@@ -443,8 +462,8 @@ string EntitiesManager::TagEdit( t_idcat id, string name )
 	try {
 		// Cambia el nombre de una categoria
 		Tag category;
-		_a4.modifyCategoryName(id, name);
-		category.ConvertToTag(_a4.getCategoryInfo(id));
+		_a4->modifyCategoryName(id, name);
+		category.ConvertToTag(_a4->getCategoryInfo(id));
 		return category.getXML();
 	}
 	catch (eArchivo4 &e) {
@@ -457,7 +476,7 @@ string EntitiesManager::TagGetAll()
 	// Lista de todas las categorias disponibles en el sistema
 	try {
 		Tag categories;
-		t_queue_idcat tagIds = _a4.getCategoriesId();
+		t_queue_idcat tagIds = _a4->getCategoriesId();
 
 		if ( tagIds.empty() ) return "<tags/>";
 
@@ -465,7 +484,7 @@ string EntitiesManager::TagGetAll()
 		while ( ! tagIds.empty() )
 		{
 			Tag category;
-			category.ConvertToTag( _a4.getCategoryInfo(tagIds.front()) );
+			category.ConvertToTag( _a4->getCategoryInfo(tagIds.front()) );
 			response += category.getXML();
 			tagIds.pop();
 		}
@@ -484,7 +503,7 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 		//almaceno las probabilidades ordenadas de menor a mayor.
 		t_probMap map;
 		double prob1=0,prob2=0;
-		t_queue_idcat cola = _a4.getCategoriesId();
+		t_queue_idcat cola = _a4->getCategoriesId();
 		t_regArchivo4 regTag;
 		t_word_cont contWord = articleParser.parseArticle(art);
 		t_word_cont::const_iterator it;
@@ -499,12 +518,12 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 			cola.pop();
 			// Obtengo la cantidad total de palabras en la categoria y la cantidad
 			// de articulos que pertenecen a la categoria
-			regTag = _a4.getCategoryInfo(dato.id);
+			regTag = _a4->getCategoryInfo(dato.id);
 
 			for(it = contWord.begin(); it!=contWord.end();++it){
 				// Obtengo la cantidad de veces que aparecio la palabra en
 				// una categoria
-				frec = managerWord.getWord((string)it->first ,dato.id);
+				frec = managerWord->getWord((string)it->first ,dato.id);
 				prob1 = (double) (frec.cantTrue / regTag.wordsPositive);
 				prob2 = regTag.artPositive;
 				//TODO: ver como obtener: /Cant total de art clasificados;

@@ -29,15 +29,19 @@ using namespace std;
 class EntitiesManager
 {
 	private:
-		feedHandler *_feedManager;
+		bool isInit;
+
 		//!< Una referencia al feedHandler que maneja Archivo_1_f, Archivo_2_f,
-		//!< Archivo_5 y Archivo_6
-		static EntitiesManager _instance;
-		 //!< Una referencia al EntitiesManager, para proveer singleton
-		cManagerWord managerWord;
+		feedHandler *_feedManager;
 		//!< El handler de palabras, que maneja Archivo_3, Archivo_8 y Archivo_9
-		Archivo4 _a4; //!< El handler del Archivo_4
+		cManagerWord *managerWord;
+		//!< Archivo_5 y Archivo_6
+		Archivo4 *_a4; //!< El handler del Archivo_4
+
 		ArticleParser articleParser; //!< El parseador de articulos
+
+		//!< Una referencia al EntitiesManager, para proveer singleton
+		static EntitiesManager _instance;
 
 		/**
 		 * Constructor privado
@@ -50,6 +54,8 @@ class EntitiesManager
 		~EntitiesManager();
 
 		string BuildArticlesList( t_cola_art colaArt );
+
+		void initialize();
 	public:
 
 		/**
