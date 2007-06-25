@@ -33,6 +33,7 @@ ActionsMap::~ActionsMap()
 	while( actionsIter != _actionMap.end() )
 	{
 		delete(actionsIter->second);
+		++actionsIter;
 	}
 /* Codigo de Pablo
 	// Destruyo todos los objetos del map
