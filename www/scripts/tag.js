@@ -29,8 +29,34 @@ function editTagHandler( result )
 		showDiv( document, 'error_tag', "Editar Categoría - El nodo no tiene id" );
 		return;
 	}
+	var newName = getNodeAttr( result.documentElement.childNodes[1], 'name' );
+
 	var nodeFound = findNodeById( tagsDocument.documentElement.childNodes[1], idToFind );
 	tagsDocument.documentElement.childNodes[1].replaceChild( result.documentElement.childNodes[1], nodeFound );
+
+	var entre = 0;
+	var articles = bodyDocument.documentElement.childNodes[1].childNodes;
+	for( i = 0; i < articles.length; i++ )
+	{
+		var article = articles[i];
+		var tags = article.lastChild;
+
+		var j = 0;
+		while( j < tags.childNodes.length )
+		{
+			var assignedTagId = getNodeAttr( tags.childNodes[j], 'id' );
+			if ( assignedTagId == idToFind )
+			{
+				entre = 1;
+				setNodeAttr( tags.childNodes[j], 'name', newName );
+			}
+			j++;
+		}
+	}
+
+	if ( entre )
+		showBody( document, bodyDocument )
+
 	showTags( document, tagsDocument );
 	reloadSearchState();
 }
@@ -47,6 +73,30 @@ function delTagHandler( result )
 	}
 	var nodeFound = findNodeById( tagsDocument.documentElement.childNodes[1], idToFind );
 	tagsDocument.documentElement.childNodes[1].removeChild( nodeFound )
+
+	var entre = 0;
+	var articles = bodyDocument.documentElement.childNodes[1].childNodes;
+	for( i = 0; i < articles.length; i++ )
+	{
+		var article = articles[i];
+		var tags = article.lastChild;
+
+		var j = 0;
+		while( j < tags.childNodes.length )
+		{
+			var assignedTagId = getNodeAttr( tags.childNodes[j], 'id' );
+			if ( assignedTagId == idToFind )
+			{
+				entre = 1;
+				tags.removeChild( tags.childNodes[j] );
+			}
+			else
+				j++;
+		}
+	}
+
+	if ( entre )
+		showBody( document, bodyDocument )
 
 	// reinicio la busqueda avanzada
 	document.getElementById( 'advSearch' ).value = '';
