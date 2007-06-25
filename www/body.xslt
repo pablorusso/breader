@@ -207,7 +207,7 @@
 		<table>
 			<tr>
 				<xsl:for-each select="tag">
-					<xsl:if test="position() &gt; 0">
+					<xsl:if test="position() &gt; 1">
 						<xsl:text>, </xsl:text>
 					</xsl:if>
 
