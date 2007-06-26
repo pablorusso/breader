@@ -3,6 +3,7 @@
 #define PALABRA_H
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include "ExceptionPalabra.h"
 #include "General.h"
@@ -19,6 +20,15 @@ class cElemento{
 
 public:
 
+	char tipo; //!< Estado de un elemento.
+			   //!< Tipo=0 palabra es una palabra
+			   //!< Tipo=1 palabra es un offset
+	           //!< Tipo=2 palabra esta vacia
+
+	char palabra[MAX_LONG_PALABRA];	//!< Palabra u offset ha almacenar.
+	t_offset nroBlock; //!< Numero de bloque.
+
+
 	/**
 	 * Constructor. Inicializa atributos con valores por default
 	 */
@@ -29,13 +39,34 @@ public:
 			palabra[i]='\0';	
 	}
 
-	char tipo; //!< Estado de un elemento.
-			   //!< Tipo=0 palabra es una palabra
-			   //!< Tipo=1 palabra es un offset
-	           //!< Tipo=2 palabra esta vacia
+  /**Escribe los datos sobre el buffer de salida.
+	* @param salida Buffer sobre el que se escribe.
+	* @param dato Elemento que se quiere guardar
+	*/
+	friend std::ostream &operator<<(std::ostream & salida, cElemento & dato){
 
-	char palabra[MAX_LONG_PALABRA];	//!< Palabra u offset ha almacenar.
-	t_offset nroBlock; //!< Numero de bloque.
+		salida.write(reinterpret_cast<char *>(&(dato.tipo)),sizeof(char));
+		salida.write(reinterpret_cast<char *>(&(dato.nroBlock)),sizeof(unsigned int));
+		salida.write(reinterpret_cast<char *>(&(dato.palabra)),MAX_LONG_PALABRA);
+
+		return salida;
+
+	}
+
+  /**Obtiene los datos del buffer de entrada.
+	* @param entrada Buffer sobre el que se leen los datos.
+	* @param dato Elemento que se recupera.
+	*/
+
+	friend std::ifstream &operator>>(std::ifstream & entrada, cElemento & dato){
+
+		entrada.read(reinterpret_cast<char *>(&(dato.tipo)),sizeof(char));
+		entrada.read(reinterpret_cast<char *>(&(dato.nroBlock)),sizeof(unsigned int));
+		entrada.read(reinterpret_cast<char *>(&(dato.palabra)),MAX_LONG_PALABRA);
+
+		return entrada;
+
+	}
 };
 /*****************************************************************************/
 

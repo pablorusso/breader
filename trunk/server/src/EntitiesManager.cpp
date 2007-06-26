@@ -46,12 +46,14 @@ EntitiesManager::EntitiesManager()
 /*-------------------------------------------------------------------------------------------*/
 EntitiesManager::~EntitiesManager()
 {
+//TODO: liverar managerWord
 	if ( isInit )
 	{
 		delete _feedManager;
 		try
 		{
 			managerWord->closeEstructura();
+			delete managerWord;
 			delete _a4;
 		}
 		catch(ExceptionManagerWord &e)
@@ -60,7 +62,7 @@ EntitiesManager::~EntitiesManager()
 		isInit = false;
 	}
 }
-
+/*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::ArticleCreate( t_idfeed feedId, string title,
   string summary, string link, string author, t_timestamp date )
 {

@@ -11,11 +11,45 @@
 #include <list>
 
 
-/**Header del archivo que contiene a los nodos del arbol en disco.*/
-typedef struct {
-	t_uint nroRaiz; //!< Numero del nodo Raiz.
-	t_uint cantNodos;//!< Cantidad de nodos alamcenados.
-} tHeaderArbol;
+/**Header del archivo que contiene a los nodos del arbol en disco.*/
+class cHeaderArbol{
+public:
+	t_uint nroRaiz; //!< Numero del nodo Raiz.
+	t_uint cantNodos;//!< Cantidad de nodos alamcenados.
+
+  /** Constructor.
+	*/
+	cHeaderArbol(){
+		nroRaiz=0; 
+		cantNodos=0;
+	}
+
+  /**Escribe los datos sobre el buffer de salida.
+	* @param salida Buffer sobre el que se escribe.
+	* @param dato Elemento que se quiere guardar
+	*/
+	friend std::ofstream &operator<<(std::ofstream &salida, cHeaderArbol &header){
+		salida.write(reinterpret_cast<char *> (&(header.nroRaiz)) , sizeof(t_uint));
+    	salida.write(reinterpret_cast<char *> (&(header.cantNodos)), sizeof(t_uint));
+		return salida;
+	}
+
+  /**Obtiene los datos del buffer de entrada.
+	* @param entrada Buffer sobre el que se leen los datos.
+	* @param dato Elemento que se recupera.
+	*/
+	friend std::ifstream &operator>>(std::ifstream &entrada, cHeaderArbol &header){	
+		entrada.read(reinterpret_cast<char *> (&(header.nroRaiz)), sizeof(t_uint));
+		entrada.read(reinterpret_cast<char *> (&(header.cantNodos)), sizeof(t_uint));
+		return entrada;
+	}
+
+  /** Retorna el tamaño del header en disco.
+	*/
+	static unsigned int sizeofHeader(){
+		return (sizeof(t_uint)*2);
+	}
+};
 
 template < class CONT, class ELEM>
 class cArbol{
@@ -85,7 +119,7 @@ private:
    cNodo<CONT,ELEM> *raiz;     //!< Punteo a la raiz del arbol
    cNodo<CONT,ELEM> *corriente;//!< Puntero al nodo actual del arbol
    std::string nameFile; //!< Nombre del archivo donde se almacena el arbol
-   tHeaderArbol header; //!< Header del archivo donde se guarda el arbol
+   cHeaderArbol header; //!< Header del archivo donde se guarda el arbol
    bool isCreado;       //!< Si esta o no creado el arbol
    t_uint limitLevel;     //!< Nivel hasta donde se carga el arbol en memoria
    
@@ -393,9 +427,8 @@ cNodo<CONT,ELEM> *cArbol<CONT,ELEM>::cargarNodo(t_uint nroNodo,cNodo<CONT,ELEM> 
 		throw ExceptionTree(ERROR_FILE_NOT_FOUND);
 
 	cNodoDisco<ELEM> nodoDisk;
-	inputFile.seekg((nroNodo-1) * sizeof(cNodoDisco<ELEM>) + sizeof(tHeaderArbol));
-	inputFile.read(reinterpret_cast<char *>(&nodoDisk),
-	                                sizeof(cNodoDisco<ELEM>));
+	inputFile.seekg((nroNodo-1) * cNodoDisco<ELEM>::sizeofNodoDisco() + cHeaderArbol::sizeofHeader());
+	inputFile >> nodoDisk;
 	inputFile.close();
 	return new cNodo<CONT,ELEM>(nodoDisk,padre);
 
@@ -422,9 +455,8 @@ void cArbol< CONT, ELEM >::salvarNodo(cNodo<CONT,ELEM> *nodo){
 
 	cNodoDisco<ELEM> nodoDisk = nodo->getNodoDisco();
 
-	outputFile.seekp((nodo->nroNodo-1) * sizeof(cNodoDisco<ELEM>) + sizeof(tHeaderArbol));
-	outputFile.write(reinterpret_cast<char *>(&nodoDisk),
-                                    sizeof(cNodoDisco<ELEM>));
+	outputFile.seekp((nodo->nroNodo-1) * cNodoDisco<ELEM>::sizeofNodoDisco() + cHeaderArbol::sizeofHeader());
+	outputFile << nodoDisk;
 	outputFile.close();
 
 }
@@ -689,7 +721,7 @@ void cArbol< CONT, ELEM >::loadArbol(std::string nameFile){
 		throw ExceptionTree(ERROR_FILE_NOT_FOUND);
 
 	this->nameFile=nameFile;
-	inputFile.read(reinterpret_cast<char *>(&header),sizeof(tHeaderArbol));
+	inputFile >> header;
 	inputFile.close();
 
 	raiz=cargarRec(header.nroRaiz,NULL,0);
@@ -711,7 +743,7 @@ void cArbol< CONT, ELEM >::crearArbol(std::string nameFile){
 	if(!outputFile.good())
 		throw ExceptionTree(ERROR_NEA);
 
-	outputFile.write(reinterpret_cast<char *> (&header), sizeof(tHeaderArbol));
+	outputFile << header;
 	outputFile.close();
 	isCreado=true;
 	this->nameFile=nameFile;
@@ -759,9 +791,8 @@ void cArbol< CONT, ELEM >::guardarRec(std::ofstream &outputFile, cNodo<CONT,ELEM
 		guardarRec(outputFile,nodo->ptr[nodo->cantClavesUsadas]);
 	}
 
-	outputFile.seekp((nodo->nroNodo-1) * sizeof(cNodoDisco<ELEM>) + sizeof(tHeaderArbol));
-	outputFile.write(reinterpret_cast<char *>(&nodoDisk),
-                                  sizeof(cNodoDisco< ELEM >));
+	outputFile.seekp((nodo->nroNodo-1) *cNodoDisco<ELEM>::sizeofNodoDisco() + cHeaderArbol::sizeofHeader());
+	outputFile << nodoDisk;
 
 }
 
@@ -783,7 +814,7 @@ void cArbol< CONT, ELEM >::saveArbol(){
 		throw ExceptionTree(ERROR_SAVE_TREE);
 
 	header.nroRaiz=raiz->nroNodo;
-	outputFile.write(reinterpret_cast<char *> (&header), sizeof(tHeaderArbol));	
+	outputFile << header;	
 	guardarRec(outputFile,raiz);
 	outputFile.close();	
 	

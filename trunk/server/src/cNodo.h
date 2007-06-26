@@ -16,6 +16,12 @@ template < class ELEM >
 class cNodoDisco{
 public:
 
+	t_offset nroNodo; //!< Numero de nodo, es unico y permite identificar la posicion
+	                      //!< donde se almacena en disco.
+	t_offset vecHijos[CANT_ELEM_X_NODO+1]; //!< Vector de nodos que contiene los numeros
+                                               //!< que identifican a los nodos hijos.
+	ELEM elem[CANT_ELEM_X_NODO]; //!< Vector de Elementos del nodo
+/*---------------------------------------------------------------------------*/
 	/**
 	 * Constructor. Inicializa atributos con valores por default
 	 */
@@ -25,12 +31,45 @@ public:
 			vecHijos[i]=NULL_BL;
 		}
 	}
-
-	t_offset nroNodo; //!< Numero de nodo, es unico y permite identificar la posicion
-	                      //!< donde se almacena en disco.
-	t_offset vecHijos[CANT_ELEM_X_NODO+1]; //!< Vector de nodos que contiene los numeros
-                                               //!< que identifican a los nodos hijos.
-	ELEM elem[CANT_ELEM_X_NODO]; //!< Vector de Elementos del nodo
+/*---------------------------------------------------------------------------*/	
+  /**Escribe los datos sobre el buffer de salida.
+	* @param salida Buffer sobre el que se escribe.
+	* @param dato Elemento que se quiere guardar
+	*/
+	friend std::ofstream &operator<<(std::ofstream &salida, cNodoDisco<ELEM> &dat){
+		salida.write(reinterpret_cast<char *>(&(dat.nroNodo)),sizeof(t_offset));
+
+		for(t_uint i=0 ; i < CANT_ELEM_X_NODO;i++){
+		   salida.write(reinterpret_cast<char *>(&(dat.vecHijos[i])),sizeof(t_offset));
+		   salida << dat.elem[i];
+
+		}
+		salida.write(reinterpret_cast<char *>(&(dat.vecHijos[CANT_ELEM_X_NODO])),sizeof(t_offset));
+
+		return salida;
+	}
+/*---------------------------------------------------------------------------*/
+  /**Obtiene los datos del buffer de entrada.
+	* @param entrada Buffer sobre el que se leen los datos.
+	* @param dato Elemento que se recupera.
+	*/
+	friend std::ifstream &operator>>(std::ifstream &entrada, cNodoDisco<ELEM> &dat){
+		entrada.read(reinterpret_cast<char *>(&(dat.nroNodo)),sizeof(t_offset));
+
+		for(t_uint i=0 ; i < CANT_ELEM_X_NODO;i++){
+		   entrada.read(reinterpret_cast<char *>(&(dat.vecHijos[i])),sizeof(t_offset));
+		   entrada >> dat.elem[i];
+		}
+
+		entrada.read(reinterpret_cast<char *>(&(dat.vecHijos[CANT_ELEM_X_NODO])),sizeof(t_offset));
+		return entrada;
+	}
+/*---------------------------------------------------------------------------*/
+  /** Retorna el tamaño del dato en disco.
+	*/
+	static unsigned int sizeofNodoDisco(){
+		return (sizeof(t_offset) + sizeof(t_offset) * (CANT_ELEM_X_NODO+1) + sizeof(ELEM)*CANT_ELEM_X_NODO);
+	}
 };
 /*****************************************************************************/
 

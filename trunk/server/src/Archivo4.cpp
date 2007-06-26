@@ -1,5 +1,5 @@
 #include "Archivo4.h"
-#include "Tag.h"
+
 Archivo4::Archivo4()
 {
 	string fileName(Archivo4::genFileName());

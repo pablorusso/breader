@@ -1,7 +1,12 @@
 #include "cManagerWord.h"
 
+/*----------------------------------------------------------------------*/
 cManagerWord::cManagerWord(Archivo4 *a4):arbol(MAX_MEMORY_TREE),manager(a4){ 
 	isCreada=false;
+}
+/*----------------------------------------------------------------------*/
+cManagerWord::~cManagerWord(){
+
 }
 /*----------------------------------------------------------------------*/
 /* Crea la estructura de archivos que va a manejar las palabras y sus datos estadisticos asociados.*/
@@ -17,7 +22,7 @@ void cManagerWord::openEstructura(){
 /* Crea la estructura de archivos que va a manejar las palabras y sus datos estadisticos asociados.*/
 void cManagerWord::createEstructura(){
 	if(!isCreada){
-		string fileName(General::getDataPath());
+		string fileName(General::getDataPath());	
 		fileName.append(NAME_FILE_TREE);
 
 		try{
@@ -42,8 +47,8 @@ void cManagerWord::closeEstructura(){
 
 	if(isCreada){
 		try{
-			arbol.closeArbol();
 			manager.cerrarFileManager();
+			arbol.closeArbol();			
 		}catch(ExceptionTree){			
 		}catch(ExceptionFileManager){}
 
