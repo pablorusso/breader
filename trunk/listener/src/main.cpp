@@ -252,8 +252,9 @@ void listen( int argc, char* argv[] )
 		usage();
 		return;
 	}
-	port = atoi( argv[2] );
-
+	istringstream s(argv[2]);
+	s >> port;
+	//port = atoi( argv[2] );
 
 	ThreadData tData;
 	string fileName(General::getDataPath());
@@ -291,6 +292,8 @@ void listen( int argc, char* argv[] )
 		cout << endl << "[listener] - Error indeterminado. Mensaje: " << msg << endl << std::flush;
 	}
 	tData.logFile.close();
+	// Agregado por damian
+	tData.socket = NULL; 
 }
 
 void readActionFromConsole( int argc, char* argv[] )
