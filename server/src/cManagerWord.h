@@ -10,7 +10,7 @@
 #include "cArbol.h"
 
 #define TAM_NODO 1.0
-#define NAME_FILE_TREE "arbolPalabras.dat"
+#define NAME_FILE_TREE "arbol.dat"
 #define NAME_FILE_FM "managerFile.dat"
 
 
@@ -38,6 +38,9 @@ public:
 
   /** Constructor*/
 	cManagerWord(Archivo4 *a4);
+
+  /**Destructor*/
+	~cManagerWord();
 
   /** Agrega la frecuencia a la palabra y de ser necesario la asocia a una nueva categoria. Si la 	
     *palabra no existe en la estructura tambien la agrega.
