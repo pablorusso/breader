@@ -71,6 +71,10 @@ string EntitiesManager::ArticleCreate( t_idfeed feedId, string title,
 		t_idart idArt = _feedManager->altaArticulo( feedId, art );
 		art.set_idart( idArt );
 		Feed feed = _feedManager->getFeed( art.get_idfeed() );
+		
+		//Agrego la llamada al clasificador
+		clasificarArticulo(art);
+		
 		return art.getXML( feed.getName(), *_a4 );
 	}
 	catch (eFeedHandler &e) {
@@ -518,16 +522,18 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 				// Obtengo la cantidad de veces que aparecio la palabra en
 				// una categoria
 				frec = managerWord->getWord((string)it->first ,dato.id);
-				prob1 = (double) (frec.cantTrue / regTag.wordsPositive);
-				prob2 = regTag.artPositive;
-				//TODO: ver como obtener: /Cant total de art clasificados;
-				// Respuesta: (agregado por damian) con eduardo decimos que no hace falta
-				dato.probPos += prob1 * prob2;
-				prob1 = (double) (frec.cantFalse / regTag.wordsNegative);
-				prob2 = regTag.artNegative;
-				//TODO: ver como obtener: /Cant total de art clasificados;
-				// Respuesta: (agregado por damian) con eduardo decimos que no hace falta
-				dato.probNeg += prob1 * prob2;
+
+				if(regTag.wordsPositive != 0 ){
+					prob1 = (double) (frec.cantTrue / regTag.wordsPositive);
+					prob2 = regTag.artPositive;
+					dato.probPos += prob1 * prob2;
+				}
+
+				if(regTag.wordsNegative != 0 ){
+					prob1 = (double) (frec.cantFalse / regTag.wordsNegative);
+					prob2 = regTag.artNegative;
+					dato.probNeg += prob1 * prob2;
+				}
 			}
 
 			map.insert(t_probMap::value_type(dato.probPos-dato.probNeg,dato.id));
