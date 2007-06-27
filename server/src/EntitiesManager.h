@@ -59,6 +59,15 @@ class EntitiesManager
 	public:
 
 		/**
+		*/
+
+		string exportFeedsToXml();
+
+	string getArticlesByFeedXml( t_idfeed feedId);
+
+string getArticleTags(Articulo article);
+
+		/**
 		 *
 		 */
 		static EntitiesManager *getInstance();

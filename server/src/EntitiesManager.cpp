@@ -108,9 +108,6 @@ string EntitiesManager::ArticleApproveTag( t_idfeed feedId, t_idart artId, t_idc
 string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 {
 	try {
-		// TODO no hay que cambiar nada en el archivo de eduardo??
-		// TODO: Sergio->Respuesta: corroborar si esta bien
-
 		Articulo art = _feedManager->invertirFavorito( feedId, artId );
 		t_word_cont cont = articleParser.parseArticle(art);
 		t_word_cont::iterator it;
@@ -329,8 +326,6 @@ string EntitiesManager::ArticleLinkTag( t_idfeed feedId, t_idart artId, t_idcat 
 /*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idcat tagId )
 {
-	// TODO aca tampoco hay que llamar a eduardo?
-	// TODO: Sergio->Respuesta: corroborar si esta bien
 	try {
 		// Es una desclasificacion de un articulo
 		Articulo art = _feedManager->clasificarArticulo( feedId, tagId, artId, false, false );
@@ -434,7 +429,6 @@ string EntitiesManager::TagCreate( string name )
 string EntitiesManager::TagDelete( t_idcat id )
 {
 	try {
-		// TODO esto no refresca lo que se esta viendo
 		// Borra una categoria
 		managerWord->deleteCategoria(id);
 		_a4->deleteCategory(id);
@@ -442,22 +436,18 @@ string EntitiesManager::TagDelete( t_idcat id )
 		return "<tag id=\"" + XmlUtils::xmlEncode( id ) +  "\"/>";
 	}
 	catch (ExceptionManagerWord &e) {
-// 		std::cout << std::endl << "ENTRO 1" << std::endl;
 		throw string(e.what());
 	}
 	catch (eArchivo4 &e) {
-//  std::cout << std::endl << "ENTRO 2" << std::endl;
 		throw string(e.what());
 	}
 	catch (eFeedHandler &e) {
-//  std::cout << std::endl << "ENTRO 3" << std::endl;
 		throw string(e.what());
 	}
 }
 /*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::TagEdit( t_idcat id, string name )
 {
-	// TODO esto no refresca lo que se esta viendo
 	try {
 		// Cambia el nombre de una categoria
 		Tag category;
@@ -561,6 +551,7 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 	catch (eFeedHandler &e) {
 		throw string(e.what());
 	}
+	// TODO devolver algo
 }
 /*-------------------------------------------------------------------------------------------*/
 void EntitiesManager::importFeeds(const string &fileName) {
@@ -587,6 +578,73 @@ void EntitiesManager::importFeeds(const string &fileName) {
 		//cout << "ERROR EN EL INPUTFILE" << endl;
 	}
 
-	// TODO devuelver algo
+	// TODO devolver algo
 }
-/*-------------------------------------------------------------------------------------------*/
+
+string EntitiesManager::getArticleTags(Articulo article)
+{
+	string tagsStr = "";
+	
+	for (t_idcat i = 0; i < article.get_MAX_CAT(); ++i) {
+		if ( article.get_cont_idcat().getCat( i ) )
+		{
+			t_regArchivo4 reg;
+			reg = _a4->getCategoryInfo( i );
+			tagsStr += reg.categoryName;
+			tagsStr += " ";
+		}
+	}
+	return tagsStr;
+}
+
+
+string EntitiesManager::getArticlesByFeedXml( t_idfeed feedId)
+{
+	
+	t_idart artCount = (t_idart)0;
+	artCount = _feedManager->cantidadArticulos(feedId);
+	string xml = "";
+	t_cola_art artQueue;
+	if(artCount>0)
+	{
+		artQueue = _feedManager->getProximosArticulos(artCount);
+		while(!artQueue.empty())	
+		{
+			xml += "\t\t<item>\n";
+			xml += "\t\t\t<title>";
+			xml += artQueue.front().get_title();
+			xml += "</title>\n";
+			
+			xml += "\t\t\t<tags>";
+			xml += getArticleTags(artQueue.front());
+			xml += "</tags>\n";
+			xml += "\t\t</item>\n";
+			
+			artQueue.pop();
+		}
+	}
+	return xml;
+	
+}
+string EntitiesManager::exportFeedsToXml()
+{
+		t_cola_idfeeds feedsIdQueue;
+		feedsIdQueue = _feedManager->getColaIdFeeds();
+		string xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+		xml += "<database>\n";
+		
+		while(!feedsIdQueue.empty())
+		{
+		    xml += "\t<feed url=\"";
+		    Feed currentFeed=_feedManager->getFeed(feedsIdQueue.front());
+		    xml += currentFeed.getUri();
+		    xml += "\" >\n";
+		    
+		    xml += getArticlesByFeedXml(feedsIdQueue.front());
+		    xml += "\t</feed>\n";
+		    feedsIdQueue.pop();
+		}
+		xml += "</database>";
+		return xml;
+	
+}
