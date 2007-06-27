@@ -29,11 +29,6 @@ private:
 	*/
 	void createEstructura();
 
-  /** Carga la estructura de archivos.
-	* @throw ExceptionManagerWord:MW_ERROR_CR No se pudo cargar la estructura.
-	*/
-	void loadEstructura();
-
 public:
 
   /** Constructor*/
@@ -41,6 +36,11 @@ public:
 
   /**Destructor*/
 	~cManagerWord();
+
+  /** Carga la estructura de archivos.
+	* @throw ExceptionManagerWord:MW_ERROR_CR No se pudo cargar la estructura.
+	*/
+	void loadEstructura();
 
   /** Agrega la frecuencia a la palabra y de ser necesario la asocia a una nueva categoria. Si la 	
     *palabra no existe en la estructura tambien la agrega.
