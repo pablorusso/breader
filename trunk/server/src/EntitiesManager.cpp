@@ -1,6 +1,7 @@
 #include "EntitiesManager.h"
 #include "XmlUtils.h"
 #include <iostream>
+#include <fstream>
 #include <sstream>
 
 #define MAX_CATS 40
@@ -46,7 +47,7 @@ EntitiesManager::EntitiesManager()
 /*-------------------------------------------------------------------------------------------*/
 EntitiesManager::~EntitiesManager()
 {
-//TODO: liberar managerWord
+//TODO: liverar managerWord
 	if ( isInit )
 	{
 		delete _feedManager;
@@ -108,25 +109,31 @@ string EntitiesManager::ArticleApproveTag( t_idfeed feedId, t_idart artId, t_idc
 string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 {
 	try {
+		// TODO no hay que cambiar nada en el archivo de eduardo??
+		// TODO: Sergio->Respuesta: corroborar si esta bien
+
 		Articulo art = _feedManager->invertirFavorito( feedId, artId );
 		t_word_cont cont = articleParser.parseArticle(art);
 		t_word_cont::iterator it;
 		short cond = art.find_cat(IDCAT_FAV);
 
-		// Ya se le cambio el estado asi q voy por la inversa
+		// Si usu_pc = 1 -> clasificado por la pc
+		// Si usu_pc = 0 -> clasificado por el usuario
+
+		//Ya se le cambio el estado asi q voy por la inversa
 		if(cond != -1){
-			// Clasificacion NO FAVORITO -> FAVORITO
+			//El articulo no pertenese a la categoria favoritos y va pasar a estarlo
 			_a4->incCategoryArtAndWord(IDCAT_FAV,1,cont.size());
 
 		}else{
-				// Clasificacion FAVORITO -> NO FAVORITO
+				//El articulo pertenese a la categoria favoritos y va pasar a no estarlo
 				if(_feedManager->readUsu_Pc(feedId,artId,IDCAT_FAV)){
 					// Si lo habia clasificado el sistema
 					_a4->decCategoryArtAndWord(IDCAT_FAV,1,cont.size());
 
 					for(it = cont.begin(); it != cont.end() ; ++it ){
 						((t_diferencias) it->second).cantFalse=((t_diferencias) it->second).cantTrue;
-						// Cero xq no se habia incorporado a la base de conocimiento.
+						//Cero xq no se habia incorporado a la base de conocimiento.
 						((t_diferencias) it->second).cantTrue = 0;
 					}
 
@@ -326,6 +333,8 @@ string EntitiesManager::ArticleLinkTag( t_idfeed feedId, t_idart artId, t_idcat 
 /*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idcat tagId )
 {
+	// TODO aca tampoco hay que llamar a eduardo?
+	// TODO: Sergio->Respuesta: corroborar si esta bien
 	try {
 		// Es una desclasificacion de un articulo
 		Articulo art = _feedManager->clasificarArticulo( feedId, tagId, artId, false, false );
@@ -429,6 +438,7 @@ string EntitiesManager::TagCreate( string name )
 string EntitiesManager::TagDelete( t_idcat id )
 {
 	try {
+		// TODO esto no refresca lo que se esta viendo
 		// Borra una categoria
 		managerWord->deleteCategoria(id);
 		_a4->deleteCategory(id);
@@ -436,18 +446,22 @@ string EntitiesManager::TagDelete( t_idcat id )
 		return "<tag id=\"" + XmlUtils::xmlEncode( id ) +  "\"/>";
 	}
 	catch (ExceptionManagerWord &e) {
+// 		std::cout << std::endl << "ENTRO 1" << std::endl;
 		throw string(e.what());
 	}
 	catch (eArchivo4 &e) {
+//  std::cout << std::endl << "ENTRO 2" << std::endl;
 		throw string(e.what());
 	}
 	catch (eFeedHandler &e) {
+//  std::cout << std::endl << "ENTRO 3" << std::endl;
 		throw string(e.what());
 	}
 }
 /*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::TagEdit( t_idcat id, string name )
 {
+	// TODO esto no refresca lo que se esta viendo
 	try {
 		// Cambia el nombre de una categoria
 		Tag category;
@@ -551,7 +565,6 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 	catch (eFeedHandler &e) {
 		throw string(e.what());
 	}
-	// TODO devolver algo
 }
 /*-------------------------------------------------------------------------------------------*/
 void EntitiesManager::importFeeds(const string &fileName) {
@@ -578,7 +591,7 @@ void EntitiesManager::importFeeds(const string &fileName) {
 		//cout << "ERROR EN EL INPUTFILE" << endl;
 	}
 
-	// TODO devolver algo
+	// TODO devuelver algo
 }
 
 string EntitiesManager::getArticleTags(Articulo article)
@@ -597,8 +610,8 @@ string EntitiesManager::getArticleTags(Articulo article)
 	return tagsStr;
 }
 
-
-string EntitiesManager::getArticlesByFeedXml( t_idfeed feedId)
+/*
+void EntitiesManager::getArticlesByFeedXml( t_idfeed feedId, fstream file)
 {
 	
 	t_idart artCount = (t_idart)0;
@@ -607,44 +620,83 @@ string EntitiesManager::getArticlesByFeedXml( t_idfeed feedId)
 	t_cola_art artQueue;
 	if(artCount>0)
 	{
-		artQueue = _feedManager->getProximosArticulos(artCount);
+		artQueue = _feedManager->getUltimosArticulos(feedId,artCount);
 		while(!artQueue.empty())	
 		{
+			
 			xml += "\t\t<item>\n";
 			xml += "\t\t\t<title>";
-			xml += artQueue.front().get_title();
+			xml += XmlUtils::xmlEncode(artQueue.front().get_title());
 			xml += "</title>\n";
 			
 			xml += "\t\t\t<tags>";
-			xml += getArticleTags(artQueue.front());
+			xml += XmlUtils::xmlEncode(getArticleTags(artQueue.front()));
 			xml += "</tags>\n";
 			xml += "\t\t</item>\n";
-			
+			file.write(reinterpret_cast<const char *>(xml.c_str()),
+				   xml.length()*(sizeof(char)));
 			artQueue.pop();
+			xml="";
 		}
 	}
-	return xml;
 	
-}
-string EntitiesManager::exportFeedsToXml()
+	
+}*/
+void EntitiesManager::exportFeedsToXml()
 {
 		t_cola_idfeeds feedsIdQueue;
 		feedsIdQueue = _feedManager->getColaIdFeeds();
 		string xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 		xml += "<database>\n";
+		fstream file;
+		t_idart artCount = (t_idart)0;
 		
+		file.open("DBXML.xml", fstream::in | fstream::out |fstream::trunc);
 		while(!feedsIdQueue.empty())
 		{
 		    xml += "\t<feed url=\"";
 		    Feed currentFeed=_feedManager->getFeed(feedsIdQueue.front());
 		    xml += currentFeed.getUri();
 		    xml += "\" >\n";
+		    file.write(reinterpret_cast<const char *>(xml.c_str()),
+			       xml.length()*(sizeof(char)));
 		    
-		    xml += getArticlesByFeedXml(feedsIdQueue.front());
-		    xml += "\t</feed>\n";
+		    
+		    artCount = _feedManager->cantidadArticulos(feedsIdQueue.front());
+		    xml = "";
+		    t_cola_art artQueue;
+		    if(artCount>0)
+		    {
+			    artQueue = _feedManager->getUltimosArticulos(feedsIdQueue.front(),artCount);
+			    while(!artQueue.empty())	
+			    {
+			
+				    xml += "\t\t<item>\n";
+				    xml += "\t\t\t<title>";
+				    xml += XmlUtils::xmlEncode(artQueue.front().get_title());
+				    xml += "</title>\n";
+			
+				    xml += "\t\t\t<tags>";
+				    xml += XmlUtils::xmlEncode(getArticleTags(artQueue.front()));
+				    xml += "</tags>\n";
+				    xml += "\t\t</item>\n";
+				    file.write(reinterpret_cast<const char *>(xml.c_str()),
+					       xml.length()*(sizeof(char)));
+				    artQueue.pop();
+				    xml="";
+			    }
+		    }
+		    
+		    xml = "\t</feed>\n";
+		    
+		    file.write(reinterpret_cast<const char *>(xml.c_str()),
+			       xml.length()*(sizeof(char)));
 		    feedsIdQueue.pop();
+		    xml="";
 		}
 		xml += "</database>";
-		return xml;
+		file.write(reinterpret_cast<const char *>(xml.c_str()),
+			   xml.length()*(sizeof(char)));
+		
 	
 }
