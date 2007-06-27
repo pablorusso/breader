@@ -79,7 +79,12 @@ void usage()
 	::exit( 1 );
 }
 
-string getArticleTags(Articulo article)
+/**
+ * Obtiene los tags de un articulo. Se usa con exportFeedsToXml)=
+ * @param article el articulo
+ * @return la parte del xml correspondiente a los tags (separados por espacios)
+ */
+string getArticleTags(Articulo &article)
 {
 	string tagsStr = "";
 	Archivo4 a4;
@@ -94,17 +99,27 @@ string getArticleTags(Articulo article)
 	return tagsStr;
 }
 
-void exportFeedsToXml()
+/**
+ * Exporta el contenido de la base de datos a un archivo XML
+ * @return true si tuvo exito, false de lo contrario
+ */
+bool exportFeedsToXml()
 {
+	bool ret = true;
+
 		// Nota: el 16 no es importante, ya que si la estructura de archivos
 		// no existe no tendra feeds y no sera exportada. Si existe, el valor
 		// verdadero de MAX_CAT sera leido de la misma.
 		feedHandler fh(16);
 		t_cola_idfeeds feedsIdQueue(fh.getColaIdFeeds());
 
+	try
+	{
 		string fileName(General::getDataPath());
 		fileName.append(DBXML_FILE_NAME);
 		ofstream file(fileName.c_str(), ios_base::trunc);
+		// Seteo para que arroje excepciones
+		file.exceptions(fstream::eofbit | fstream::failbit | fstream::badbit);
 
 		string xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 		xml += "<database>\n";
@@ -160,6 +175,22 @@ void exportFeedsToXml()
 		xml += "</database>";
 		file.write(reinterpret_cast<const char *>(xml.c_str()),
 		  xml.length()*(sizeof(char)));
+		file.close();
+	}
+	catch (eFeedHandler &e) {
+		ret = false;
+		cout << "Error en la exportacion (feedHandler): " << e.what() << endl;
+	}
+	catch (eArchivo4 &e) {
+		ret = false;
+		cout << "Error en la exportacion (Archivo4): " << e.what() << endl;
+	}	
+	catch (fstream::failure)
+	{
+		cout << "Error en la exportacion (Archivo de salida): Archivo corrupto" << endl;
+		ret = false;
+	}
+	return ret;
 }
 
 string Now()
@@ -413,10 +444,16 @@ int main(int argc, char* argv[])
 	else if (type == "4")
 	{
 		cout << "Exportando base de datos a archivo XML..." << endl;
-		exportFeedsToXml();
-		cout << "Archivo XML generado" << endl;
-	}
 
+		string makeDir("mkdir -p ");
+		makeDir.append( General::getDataPath() );
+		system(makeDir.c_str());
+
+		if (exportFeedsToXml())
+			cout << "Archivo XML generado" << endl;
+		else
+			cout << "Fallo la exportacion" << endl;
+	}
 	else
 	{
 		if ( argc < 3 ) usage();
