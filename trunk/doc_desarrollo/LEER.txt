@@ -1,0 +1,15 @@
+
+Obtención de la documentación de desarrollo:
+
+1) Se deben tener instaladas las librerias:
+	1) doxygen  (genera la documentación)
+	2) graphviz (permite la incorporación de graficos en la documentación)
+
+2) Copiar el archivo Doxyfile (archivo de configuración) sobre el directorio breader.
+
+3) Parados sobre breader ejecutar el comando doxygen
+	ej: sergio@deluxe:~/tp_datos/breader$ doxygen
+
+Listo, se generar la documentación en formato html en el directorio "breader/doc_desarrollo" y los fuentes seran tomados de "breader/server/src" . Si consideran que hay que agregar otro directorio de fuentes esto debe agregarse en la linea 462 del archivo Doxyfile en el tag INPUT.
+
+La información de desarrollo no es subida al repositorio dado su tamaño.
