@@ -14,6 +14,12 @@
 #include <list>
 #include <map>
 
+#define MAX_GET_ART 20
+//!< La cantidad maxima de archivos que se piden por vez
+//!< para hacer la exportacion
+#define DBXML_FILE_NAME "DBXML.xml"
+//!< El nombre del archivo de salida a donde hara la exportacion
+
 typedef std::multimap< double , t_idcat , std::less<double> > t_probMap;
 //!< TODO comentar
 
@@ -24,24 +30,25 @@ typedef struct{
 }t_probability;
 //!< TODO comentar
 
-
 using namespace std;
 class EntitiesManager
 {
 	private:
 		bool isInit;
 
-		//!< Una referencia al feedHandler que maneja Archivo_1_f, Archivo_2_f,
+		
 		feedHandler *_feedManager;
-		//!< El handler de palabras, que maneja Archivo_3, Archivo_8 y Archivo_9
+		//!< El feedHandler que maneja Archivo_1_f, Archivo_2_f,
 		cManagerWord *managerWord;
+		//!< El handler de palabras, que maneja Archivo_3, Archivo_8 y Archivo_9
 		//!< Archivo_5 y Archivo_6
+		
 		Archivo4 *_a4; //!< El handler del Archivo_4
 
 		ArticleParser articleParser; //!< El parseador de articulos
 
-		//!< Una referencia al EntitiesManager, para proveer singleton
 		static EntitiesManager _instance;
+		//!< Una referencia al EntitiesManager, para proveer singleton
 
 		/**
 		 * Constructor privado
@@ -290,10 +297,10 @@ class EntitiesManager
 		 */
 		void importFeeds(const string &fileName);
 		
-		/*
-		* Exporta los feeds a un XML
-		*
-		*/
+		/**
+		 * Exporta los feeds a un XML
+		 *
+		 */
 		void exportFeedsToXml();
 
 };

@@ -353,6 +353,12 @@ class feedHandler {
 		void set_MAX_CAT(const t_idcat &NEW_MAX_CAT);
 
 		/**
+		 * Devuelve la cantidad maxima de categorias
+		 * @return la cantidad maxima de categorias
+		 */
+		t_idcat get_MAX_CAT() const
+		{return this->a6.get_MAX_CAT();}
+		/**
 		 * Lee una clasificacion de un articulo para un feed en particular
 		 * Nota: este metodo lee por quien fue clasificado, para saber si esta
 		 *       clasificado o no ir a readCat()
