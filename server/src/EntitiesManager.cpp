@@ -521,13 +521,15 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 		tFrecuencias frec={0,0};
 		t_probability dato;
 
+		std::ofstream file("aux.txt",  std::ios::app);
+
 		// Por cada idcat recorro una vez la lista de palabras
 		while(!cola.empty()) {
 			dato.probPos = 0;
 			dato.probNeg=0;
 			dato.id = cola.front();
 			cola.pop();
-			std::cout << "id= " << dato.id << std::endl;
+	
 			// Obtengo la cantidad total de palabras en la categoria y la cantidad
 			// de articulos que pertenecen a la categoria
 			regTag = _a4->getCategoryInfo(dato.id);
@@ -535,21 +537,23 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 			for(it = contWord.begin(); it!=contWord.end();++it){
 				// Obtengo la cantidad de veces que aparecio la palabra en
 				// una categoria
-				frec = managerWord->getWord((string)it->first ,dato.id);
-
-				if(regTag.wordsPositive != 0 ){
-					prob1 = (double) (frec.cantTrue / regTag.wordsPositive);
-					prob2 = regTag.artPositive;
-					dato.probPos += prob1 * prob2;
-				}
-
-				if(regTag.wordsNegative != 0 ){
-					prob1 = (double) (frec.cantFalse / regTag.wordsNegative);
-					prob2 = regTag.artNegative;
-					dato.probNeg += prob1 * prob2;
-				}
+				try{
+					frec = managerWord->getWord((string)it->first ,dato.id);
+	
+					if(regTag.wordsPositive != 0 ){
+						prob1 = (double) (frec.cantTrue / regTag.wordsPositive);
+						prob2 = regTag.artPositive;
+						dato.probPos += prob1 * prob2;
+					}
+	
+					if(regTag.wordsNegative != 0 ){
+						prob1 = (double) (frec.cantFalse / regTag.wordsNegative);
+						prob2 = regTag.artNegative;
+						dato.probNeg += prob1 * prob2;
+					}
+				}catch(ExceptionManagerWord){}
 			}
-
+			file << "frec+: " << frec.cantTrue << " frec-: " << frec.cantFalse << " P+: " << dato.probPos << " P-: " << dato.probNeg << " id: " << dato.id << std::endl;
 			map.insert(t_probMap::value_type(dato.probPos-dato.probNeg,dato.id));
 		}
 
@@ -558,7 +562,7 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 
 		bool salir=false;
 		t_probMap::reverse_iterator itt = map.rbegin();
-		std::ofstream file("aux.txt",  std::ios::app);
+
 		file << "------------------------------------" << std::endl;
 		
 
