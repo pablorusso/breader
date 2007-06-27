@@ -35,11 +35,13 @@ void usage()
 	cerr << "type = 2 se debe especificar solamente un puerto donde se reciben acciones" << endl;
 	cerr << "type = 3 se borraran los archivos y no se necesitan parametros extra" << endl;
 	cerr << "type = 4 se realizara la exportacion a XML a partir de la base de datos existente" << endl;
+	cerr << "type = 5 se realizara una reestructuracion de los archivos para ocupar el menor espacio en disco posible" << endl;
 	cerr << "Ejemplos: " << endl;
 	cerr << "  listener 1 T2 tagId||#1" << endl;
 	cerr << "  listener 2 12000" << endl;
 	cerr << "  listener 3" << endl;
 	cerr << "  listener 4" << endl;
+	cerr << "  listener 5" << endl;
 
 	cerr << endl << "Las acciones disponibles son:";
 	vector<string> codeList = actionsMap.GetAvailableCodes();
@@ -107,14 +109,14 @@ bool exportFeedsToXml()
 {
 	bool ret = true;
 
+	try
+	{
 		// Nota: el 16 no es importante, ya que si la estructura de archivos
 		// no existe no tendra feeds y no sera exportada. Si existe, el valor
 		// verdadero de MAX_CAT sera leido de la misma.
 		feedHandler fh(16);
 		t_cola_idfeeds feedsIdQueue(fh.getColaIdFeeds());
 
-	try
-	{
 		string fileName(General::getDataPath());
 		fileName.append(DBXML_FILE_NAME);
 		ofstream file(fileName.c_str(), ios_base::trunc);
@@ -190,6 +192,86 @@ bool exportFeedsToXml()
 		cout << "Error en la exportacion (Archivo de salida): Archivo corrupto" << endl;
 		ret = false;
 	}
+	return ret;
+}
+
+/**
+ * Reestructura, de ser admisible, los archivos del FeedHandler y del
+ * ManagerWord
+ * @return true si la reestructuracion fue exitosa, false de lo contrario
+ */
+bool reestructurar() {
+	bool ret = true;
+	try {
+		// Nota: el 16 no es importante, ya que si la estructura de archivos
+		// no existe no tendra feeds y no sera exportada. Si existe, el valor
+		// verdadero de MAX_CAT sera leido de la misma.
+		feedHandler fh(16);
+//		cout << "Umbral minimo para reestructurar feedHandler: " << UMBRAL_FH << endl;
+		t_usedFactor fh_usedFactor = fh.getUsedFactor();
+//		cout << "Valor actual: " << fh_usedFactor << endl;
+		if (fh_usedFactor < UMBRAL_FH)
+		{
+			cout << "Reestructurando feedHandler..." << endl;
+			fh.reestructurar();
+			cout << "Reestructuracion feedHandler terminada" << endl;
+		}
+		else
+		{
+			cout << "No se cumplen las minimas condiciones para reestructurar feedHandler" << endl;
+			cout << "Reestructuracion feedHandler no realizada" << endl;
+		}
+
+		Archivo4 a4;
+		cManagerWord mw(&a4);
+		mw.loadEstructura();
+// 		cout << "Umbral minimo para reestructurar managerWord: " << UMBRAL_MW << endl;
+		t_usedFactor mw_usedFactor = mw.getUsedFactor();
+// 		cout << "Valor actual: " << mw_usedFactor << endl;
+		if (mw_usedFactor < UMBRAL_MW)
+		{
+			cout << "Reestructurando ManagerWord..." << endl;
+			mw.reestructurar();
+			cout << "Reestructuracion ManagerWord terminada" << endl;
+		}
+		else
+		{
+			cout << "No se cumplen las minimas condiciones para reestructurar ManagerWord " << endl;
+			cout << "Reestructuracion ManagerWord no realizada" << endl;
+		}		
+
+	}
+	catch (eFeedHandler &e)
+	{
+		ret = false;
+		cout << e.what() << endl;
+	}
+	catch (ExceptionManagerWord &e)
+	{
+		if (e == MW_ERROR_CR)
+		{
+			// Es una excepcion porque los archivos no existen
+			// entonces el usedFactor seria 1
+			cout << "Valor actual: 1" << endl;
+			cout << "No se cumplen las minimas condiciones para reestructurar ManagerWord " << endl;
+			cout << "Reestructuracion ManagerWord no realizada" << endl;
+		}
+		else
+		{
+			ret = false;
+			cout << e.what() << endl;
+		}
+	}
+	catch (eArchivo4 &e)
+	{
+		ret = false;
+		cout << e.what() << endl;
+	}
+	
+
+	
+	// TODO mas excepciones
+
 	return ret;
 }
 
@@ -454,6 +536,20 @@ int main(int argc, char* argv[])
 		else
 			cout << "Fallo la exportacion" << endl;
 	}
+	else if (type == "5")
+	{
+		cout << "Reestructurando archivos ..." << endl;
+
+		string makeDir("mkdir -p ");
+		makeDir.append( General::getDataPath() );
+		system(makeDir.c_str());
+
+		if (reestructurar())
+			cout << "Reestructuracion exitosa" << endl;
+		else
+			cout << "Reestructuracion fallida" << endl;
+	}
+
 	else
 	{
 		if ( argc < 3 ) usage();

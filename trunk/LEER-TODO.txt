@@ -6,9 +6,9 @@ IMPORTANTE
 
 * el bayesianoooooooo (Para todos, supongo)
 - exportacion a XMLSchema (Eduardo: LISTO - EJECUTANDO "./listener 4")
-* importacion de txt (una boludez) (Damian: lo deje a medias, falta pablo)
-* Agregar el id_fav (es el cero) en el archivo4 al comienzo estructura,
-  para que este siempre (Damian: medio que parece que está...)
+* importacion de txt (Damian: lo deje a medias, falta pablo)
+- Agregar el id_fav (es el cero) en el archivo4 al comienzo estructura,
+  para que este siempre (Damian - LISTO)
 * Soportar reestructurar y ampliar idcat
 	Damian - reestructurar:
 		* El feedHandler tiene un getUsedFactor que devuelve (reg_usados/reg_totales)
@@ -51,7 +51,7 @@ BUGS
   el feed tira excepcion por eso (Es el puto de clarin - LISTO)
 - No me funciona quitar categorias, porque el idFeed pasa vacio y tira error porque no puede
   convertir eso a un numero (Pablo - LISTO)
-* Este feed no trae mensajes? http://rssnewsapps.ziffdavis.com/pcmag.xml (Atom... fuck)
+- Este feed no trae mensajes? http://rssnewsapps.ziffdavis.com/pcmag.xml (Atom... fuck)
 - Si clickeás rápido, podés mandar dos veces el borrarCategoría para la misma categoría... eso lo hace tildar. (Pablo - es obvio, no jodás - LISTO)
 
 

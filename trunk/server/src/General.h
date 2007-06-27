@@ -1,7 +1,6 @@
 #ifndef GENERAL
 #define GENERAL
 
-
 /*****************************************************************************
 Imposiciones de Damian:
 ----------------------
@@ -20,8 +19,6 @@ El IDCAT_FAV tiene que ser el cero, para que esté al principio y no haya que
 agregar basura en el medio...
 ******************************************************************************/
 
-
-
 #include <queue>
 #include <string>
 #include <map>
@@ -29,6 +26,12 @@ agregar basura en el medio...
 #define UMBRAL_BCLAS 0.6
 //!< Vos calculas las prob para cada categoria, bueno si superan ese umbral el
 //!< articulo va a ser categorizado con ese ID
+#define UMBRAL_FH 0.8
+//!< Es el umbral debajo del cual el feedHandler se reestructurara al pedir
+//!< una reestructuracion
+#define UMBRAL_MW 0.8
+//!< Es el umbral debajo del cual el ManagerWord se reestructurara al pedir
+//!< una reestructuracion
 #define SW_MIN_LEN 4
 //!< La minima longitud de las palabras de un articulo, para que no sean
 //!< consideradas stopwords
@@ -81,6 +84,11 @@ typedef std::map< std::string , t_diferencias > t_word_cont;
 class General
 {
 	public:
+		/**
+		 * Devuelve el directorio donde se guardaran todos los archivos
+		 * correspondientes al breader
+		 * @return el directorio donde se guardaran todos los archivos
+		 */
 		static std::string getDataPath();
 };
 
