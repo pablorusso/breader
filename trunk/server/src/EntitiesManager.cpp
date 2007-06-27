@@ -76,7 +76,6 @@ string EntitiesManager::ArticleCreate( t_idfeed feedId, string title,
 		
 		//Agrego la llamada al clasificador
 		clasificarArticulo(art);
-		
 		return art.getXML( feed.getName(), *_a4 );
 	}
 	catch (eFeedHandler &e) {
@@ -523,11 +522,12 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 		t_probability dato;
 
 		// Por cada idcat recorro una vez la lista de palabras
-		while(cola.empty()) {
+		while(!cola.empty()) {
 			dato.probPos = 0;
 			dato.probNeg=0;
 			dato.id = cola.front();
 			cola.pop();
+			std::cout << "id= " << dato.id << std::endl;
 			// Obtengo la cantidad total de palabras en la categoria y la cantidad
 			// de articulos que pertenecen a la categoria
 			regTag = _a4->getCategoryInfo(dato.id);
@@ -558,13 +558,18 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 
 		bool salir=false;
 		t_probMap::reverse_iterator itt = map.rbegin();
+		std::ofstream file("aux.txt",  std::ios::app);
+		file << "------------------------------------" << std::endl;
+		
 
 		while(!salir && itt!=map.rend()){
-			if((map.rbegin())->first > UMBRAL_BCLAS )
+			file << "Prob: " << itt->first << std::endl;
+			if(itt->first > UMBRAL_BCLAS )
 				_feedManager->clasificarArticulo(art.get_idfeed(),itt->second,art.get_idart(),true,true);
 			else salir=true;
 			++itt;
 		}
+		file.close();
 
 	}
 	catch (eArchivo4 &e) {
