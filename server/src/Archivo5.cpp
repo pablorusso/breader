@@ -1,13 +1,21 @@
 #include "Archivo5.h"
 
 Archivo5::Archivo5(const t_idcat &MAX_CAT) {
-	this->header.MAX_CAT = MAX_CAT;
+	t_idcat NEW_MAX_CAT = MAX_CAT;
+	t_idcat m = MAX_CAT % 8;
+	if (m!=0) NEW_MAX_CAT += (8-m);
+
+	this->header.MAX_CAT = NEW_MAX_CAT;
 	string fileName = Archivo5::genFileName();
 	this->open(fileName);
 }
 
 Archivo5::Archivo5(const t_idcat &MAX_CAT, const bool bis) {
-	this->header.MAX_CAT = MAX_CAT;
+	t_idcat NEW_MAX_CAT = MAX_CAT;
+	t_idcat m = MAX_CAT % 8;
+	if (m!=0) NEW_MAX_CAT += (8-m);
+
+	this->header.MAX_CAT = NEW_MAX_CAT;
 	string fileName = Archivo5::genFileName(1);
 	this->open(fileName);
 }
