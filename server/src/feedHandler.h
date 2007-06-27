@@ -358,6 +358,7 @@ class feedHandler {
 		 */
 		t_idcat get_MAX_CAT() const
 		{return this->a6.get_MAX_CAT();}
+
 		/**
 		 * Lee una clasificacion de un articulo para un feed en particular
 		 * Nota: este metodo lee por quien fue clasificado, para saber si esta

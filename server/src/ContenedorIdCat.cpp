@@ -8,9 +8,10 @@ ContenedorIdCat::ContenedorIdCat(const t_idcat &MAX_CAT): MAX_CAT(MAX_CAT) {
 	// reservo el espacio para la cant max_cat
 	this->categorias.resize(this->MAX_CAT/8, static_cast<unsigned char> (0));
 	// TODO hace falta?
-	for (t_idcat i = 0; i< this->MAX_CAT/8; ++i) {
-		this->categorias[i] = 0;
-	}
+// 	for (t_idcat i = 0; i< this->MAX_CAT/8; ++i) {
+// 		this->categorias[i] = static_cast<unsigned char>(0);
+// // 	}
+// 	this->categorias = t_cont_idcat(static_cast<unsigned char>(0), MAX_CAT);
 }
 
 ContenedorIdCat::~ContenedorIdCat() {}
@@ -86,11 +87,13 @@ void ContenedorIdCat::set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
 	t_idcat m = NEW_MAX_CAT % 8;
 	if (m!=0) MY_NEW_MAX_CAT += (8-m);
 
-	t_cont_idcat c_tmp = this->categorias;
+// 	cout << "Contenedor, newmax: " << MY_NEW_MAX_CAT << endl << flush;
+//	t_cont_idcat c_tmp(this->categorias);
 	// reservo el espacio para la cant max_cat
 	this->categorias.resize(MY_NEW_MAX_CAT/8, static_cast<unsigned char> (0));
-	for (t_idcat i = 0; i< this->MAX_CAT/8; ++i)
-		this->categorias[i]=c_tmp[i];
+// 	for (t_idcat i = this->MAX_CAT/8; i < MY_NEW_MAX_CAT/8; ++i)
+// 		this->categorias[i] = static_cast<unsigned char>(0);
+
 
 	this->MAX_CAT = MY_NEW_MAX_CAT;
 }

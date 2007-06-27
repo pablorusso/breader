@@ -499,9 +499,6 @@ t_cola_art feedHandler::getUltimosArticulosBool(ContenedorIdCat &c_cat,
 		this->bool_ultArt_pedido = true;
 		this->bool_c_cat = c_cat;
 		this->bool_c_si_no = c_si_no;
-		this->bool_c_cat.set_MAX_CAT(this->a6.get_MAX_CAT());
-		this->bool_c_si_no.set_MAX_CAT(this->a6.get_MAX_CAT());
-
 
 		// Obtengo los idfeeds y creo un map con (idfeed, idart, timestamp)
 		// donde idart es el id del ultimo articulo del feed correspondiente, y
@@ -831,8 +828,6 @@ void feedHandler::set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
 			t_idcat MY_NEW_MAX_CAT = NEW_MAX_CAT;
 			t_idcat m = NEW_MAX_CAT % 8;
 			if (m!=0) MY_NEW_MAX_CAT += (8-m);
-			this->bool_c_cat.set_MAX_CAT(MY_NEW_MAX_CAT);
-			this->bool_c_si_no.set_MAX_CAT(MY_NEW_MAX_CAT);
 			{ // Este scope es para que se cierre el a6_bis
 				// Creo un Archivo6 y un Archivo5 nuevos, con capacidad para
 				// NEW_MAX_CAT
@@ -887,6 +882,10 @@ void feedHandler::set_MAX_CAT(const t_idcat &NEW_MAX_CAT) {
 			::rename(fileNameBis.c_str(), fileName.c_str());
 			//Reabro el archivo6 (y el archivo5)
 			this->a6.reopen();
+
+			// Redimensiono los maps de busquedas
+			this->bool_c_cat.set_MAX_CAT(this->a6.get_MAX_CAT());
+			this->bool_c_si_no.set_MAX_CAT(this->a6.get_MAX_CAT());
 		}
 	}
 	catch (IException &e) {

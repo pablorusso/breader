@@ -348,10 +348,10 @@ void Archivo6::open(const string &fileName) {
 		header.MAX_CAT = this->header.MAX_CAT;
 		this->f.write(reinterpret_cast<const char *>(&header.numFeeds),
 		  sizeof(t_idfeed));
-		this->f.write(reinterpret_cast<const char *>(&header.primerLibre),
-		  sizeof(t_idfeed));
 		this->f.write(reinterpret_cast<const char *>(&header.MAX_CAT),
 		  sizeof(t_idcat));
+		this->f.write(reinterpret_cast<const char *>(&header.primerLibre),
+		  sizeof(t_idfeed));
 		// Lo reabro para que sirva para entrada/salida
 		this->f.close();
 		this->f.open(fileName.c_str(), ios::in|ios::out|ios::binary);
