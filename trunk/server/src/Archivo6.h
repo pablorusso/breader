@@ -102,7 +102,6 @@ class Archivo6 {
 		 * @param uri la uri del feed (del archivo rss del feed)
 		 * @param nombre el nombre del feed
 		 * @return el id del feed asignado
-		 * TODO: si se agrega y ya estaba, queda duplicado...?
 		 * @throw eArchivo6 si el archivo esta corrupto
 		 * @throw eFeed si los parametros no son integros (size()>0)
 		 */

@@ -49,8 +49,8 @@ class Archivo4 {
 		static string genFileName();
 
 		/**
-		 * Devuelve la cantidad de categorias en el archivo
-		 * @return el numero de categorias del archivo
+		 * Devuelve la cantidad de categorias en el archivo (libres u ocupadas)
+		 * @return el numero de categorias del archivo 
 		 */
 		t_idcat getNumCat() const {return this->header.numCat;}
 

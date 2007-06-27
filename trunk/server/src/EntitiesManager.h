@@ -20,9 +20,8 @@
 #include <sstream>
 
 
-#define MAX_CATS 40
-// TODO esto deberia poder cambiarse
-//!< El maximo numero de categorias (expansible...)
+#define MAX_CATS_INI 8
+//!< El maximo numero de categorias inicial (despues se ira expandiendo)
 #define MAX_GET_ART 20
 //!< La cantidad maxima de archivos que se piden por vez
 //!< para hacer la exportacion

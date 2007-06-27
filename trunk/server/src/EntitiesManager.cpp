@@ -12,7 +12,9 @@ void EntitiesManager::initialize()
 {
 	_a4 = new Archivo4();
 	managerWord  = new cManagerWord( _a4 );
-	_feedManager = new feedHandler( MAX_CATS );
+	// Solo es necesario un MAX_CATS_INI si la estructura de feedHandler todavia
+	// no esta creada
+	_feedManager = new feedHandler( MAX_CATS_INI  );
 	isInit = true;
 	try
 	{
@@ -60,7 +62,7 @@ string EntitiesManager::ArticleCreate( t_idfeed feedId, string title,
   string summary, string link, string author, t_timestamp date )
 {
 	try {
-		Articulo art( MAX_CATS );
+		Articulo art( _feedManager->get_MAX_CAT() );
 		art.set_title( title );
 		art.set_uri( link );
 		art.set_description( author );
@@ -171,7 +173,7 @@ string EntitiesManager::BuildArticlesList( t_cola_art colaArt )
 		string response = "<articles>";
 		while( ! colaArt.empty() )
 		{
-			Feed feed = _feedManager->getFeed( colaArt.front().get_idfeed() );
+			Feed feed(_feedManager->getFeed( colaArt.front().get_idfeed() ));
 			response += colaArt.front().getXML( feed.getName(), *_a4 );
 
 			colaArt.pop();
@@ -187,7 +189,7 @@ string EntitiesManager::BuildArticlesList( t_cola_art colaArt )
 string EntitiesManager::ArticleGetByFeed( t_idfeed feedId, t_idart quantity )
 {
 	try {
-		t_cola_art colaArt = _feedManager->getUltimosArticulos( feedId, quantity );
+		t_cola_art colaArt( _feedManager->getUltimosArticulos( feedId, quantity ));
 		return BuildArticlesList( colaArt );
 	}
 	catch (eFeedHandler &e) {
@@ -198,7 +200,7 @@ string EntitiesManager::ArticleGetByFeed( t_idfeed feedId, t_idart quantity )
 string EntitiesManager::ArticleGetByFeedNext( t_idart quantity )
 {
 	try {
-		t_cola_art colaArt = _feedManager->getProximosArticulos( quantity );
+		t_cola_art colaArt(_feedManager->getProximosArticulos( quantity ));
 		return BuildArticlesList( colaArt );
 	}
 	catch (eFeedHandler &e) {
@@ -210,8 +212,8 @@ string EntitiesManager::ArticleGetByTags( vector< t_idcat > tagIds,
   vector< bool > state, t_idart quantity )
 {
 	try {
-		ContenedorIdCat tags( MAX_CATS );
-		ContenedorIdCat states( MAX_CATS );
+		ContenedorIdCat tags( _feedManager->get_MAX_CAT() );
+		ContenedorIdCat states( _feedManager->get_MAX_CAT() );
 
 		vector< t_idcat >::iterator tagsIt = tagIds.begin();
 		vector< bool >::iterator stateIt = state.begin();
@@ -372,7 +374,7 @@ string EntitiesManager::FeedCreate( string name, string url )
 {
 	try {
 		t_idfeed feedid = _feedManager->altaFeed( url, name );
-		Feed feed = _feedManager->getFeed( feedid );
+		Feed feed(_feedManager->getFeed( feedid ));
 		t_timestamp lastUpdate = _feedManager->getUltimaFecha( feedid );
 		return feed.getXML( lastUpdate );
 	}
@@ -425,6 +427,21 @@ string EntitiesManager::TagCreate( string name )
 		t_idcat id = _a4->addCategory(name);
 		category.ConvertToTag(_a4->getCategoryInfo(id));
 
+		// Tengo que ver si amplio MAX_CAT
+		t_idcat numCat = _a4->getNumCat();
+		t_idcat maxCat = _feedManager->get_MAX_CAT();
+// cout << "viejoMaxCat: " << maxCat << endl;
+		// Si estoy "cerca" del maximo, reestructuro agregando el 50%
+		if ((numCat+8) >= maxCat)
+		{
+			maxCat = static_cast<t_idcat>(static_cast<float>(maxCat) * 1.5);
+// 			cout << "Ampliado max cat!!!, nuevoMaxCat: " << maxCat << endl;
+			_feedManager->set_MAX_CAT(maxCat);
+			
+			
+		}
+			
+
 		return category.getXML();
 	}
 	catch (eArchivo4 &e) {
@@ -442,15 +459,12 @@ string EntitiesManager::TagDelete( t_idcat id )
 		return "<tag id=\"" + XmlUtils::xmlEncode( id ) +  "\"/>";
 	}
 	catch (ExceptionManagerWord &e) {
-// 		std::cout << std::endl << "ENTRO 1" << std::endl;
 		throw string(e.what());
 	}
 	catch (eArchivo4 &e) {
-//  std::cout << std::endl << "ENTRO 2" << std::endl;
 		throw string(e.what());
 	}
 	catch (eFeedHandler &e) {
-//  std::cout << std::endl << "ENTRO 3" << std::endl;
 		throw string(e.what());
 	}
 }
