@@ -2,7 +2,11 @@
 #include "XmlUtils.h"
 
 Feed::Feed(const t_idcat &MAX_CAT) {
-	this->cont_cant.resize(MAX_CAT, 0);
+	t_idcat NEW_MAX_CAT = MAX_CAT;
+	t_idcat m = MAX_CAT % 8;
+	if (m!=0) NEW_MAX_CAT += (8-m);
+
+	this->cont_cant.resize(NEW_MAX_CAT, 0);
 }
 
 Feed::~Feed() {}
