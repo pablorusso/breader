@@ -1,6 +1,8 @@
 #ifndef EntitiesManager_H
 #define	EntitiesManager_H
 
+
+#include "XmlUtils.h"
 #include "Feed.h"
 #include "Tag.h"
 #include "Articulo.h"
@@ -13,7 +15,14 @@
 #include <vector>
 #include <list>
 #include <map>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
+
+#define MAX_CATS 40
+// TODO esto deberia poder cambiarse
+//!< El maximo numero de categorias (expansible...)
 #define MAX_GET_ART 20
 //!< La cantidad maxima de archivos que se piden por vez
 //!< para hacer la exportacion
@@ -296,12 +305,6 @@ class EntitiesManager
 		 * @return TODO
 		 */
 		void importFeeds(const string &fileName);
-		
-		/**
-		 * Exporta los feeds a un XML
-		 *
-		 */
-		void exportFeedsToXml();
 
 };
 
