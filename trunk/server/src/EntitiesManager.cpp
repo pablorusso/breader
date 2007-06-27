@@ -1,12 +1,4 @@
 #include "EntitiesManager.h"
-#include "XmlUtils.h"
-#include <iostream>
-#include <fstream>
-#include <sstream>
-
-#define MAX_CATS 40
-// TODO esto deberia poder cambiarse
-
 /*-------------------------------------------------------------------------------------------*/
 EntitiesManager EntitiesManager::_instance;
 
@@ -593,80 +585,4 @@ void EntitiesManager::importFeeds(const string &fileName) {
 	// TODO devuelver algo
 }
 
-string EntitiesManager::getArticleTags(Articulo article)
-{
-	string tagsStr = "";
-	
-	for (t_idcat i = 0; i < article.get_MAX_CAT(); ++i) {
-		if ( article.get_cont_idcat().getCat( i ) )
-		{
-			t_regArchivo4 reg;
-			reg = _a4->getCategoryInfo( i );
-			tagsStr += reg.categoryName;
-			tagsStr += " ";
-		}
-	}
-	return tagsStr;
-}
 
-void EntitiesManager::exportFeedsToXml()
-{
-		t_cola_idfeeds feedsIdQueue(_feedManager->getColaIdFeeds());
-		string xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-		xml += "<database>\n";
-		string fileName(General::getDataPath());
-		fileName.append(DBXML_FILE_NAME);
-		ofstream file(fileName.c_str(), ios_base::trunc);
-		t_idart artCount = 0;
-		
-		while(!feedsIdQueue.empty())
-		{
-			xml += "\t<feed url=\"";
-			Feed currentFeed(_feedManager->getFeed(feedsIdQueue.front()));
-			xml += currentFeed.getUri();
-			xml += "\" >\n";
-			file.write(reinterpret_cast<const char *>(xml.c_str()),
-			  xml.length()*(sizeof(char)));
-
-			artCount = _feedManager->cantidadArticulos(feedsIdQueue.front());
-			t_cola_art artQueue(_feedManager->getUltimosArticulos
-			  (feedsIdQueue.front(), MAX_GET_ART));
-			xml = "";
-			while (artCount != 0)
-			{
-				// Para no usar los negativos
-				if (MAX_GET_ART <= artCount)
-					artCount -= MAX_GET_ART;
-				else
-					artCount = 0;
-
-				while(!artQueue.empty())
-				{
-					xml += "\t\t<item>\n";
-					xml += "\t\t\t<url>";
-					xml += XmlUtils::xmlEncode(artQueue.front().get_uri());
-					xml += "</url>\n";
-					xml += "\t\t\t<title>";
-					xml += XmlUtils::xmlEncode(artQueue.front().get_title());
-					xml += "</title>\n";
-					xml += "\t\t\t<tags>";
-					xml += XmlUtils::xmlEncode(getArticleTags(artQueue.front()));
-					xml += "</tags>\n";
-					xml += "\t\t</item>\n";
-					file.write(reinterpret_cast<const char *>(xml.c_str()),
-					  xml.length()*(sizeof(char)));
-					artQueue.pop();
-					xml="";
-				}
-				artQueue = _feedManager->getProximosArticulos(MAX_GET_ART);
-			}
-			xml = "\t</feed>\n";
-			file.write(reinterpret_cast<const char *>(xml.c_str()),
-			  xml.length()*(sizeof(char)));
-			feedsIdQueue.pop();
-			xml="";
-		}
-		xml += "</database>";
-		file.write(reinterpret_cast<const char *>(xml.c_str()),
-		  xml.length()*(sizeof(char)));
-}

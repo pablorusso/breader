@@ -4,6 +4,7 @@
 #include <fstream>
 
 #include "General.h"
+#include "feedHandler.h"
 #include "ActionsMap.h"
 #include "Action.h"
 #include "ServerSocket.h"
@@ -33,10 +34,12 @@ void usage()
 	cerr << "type = 1 se debe especificar una accion y parametros, el listener las procesara" << endl;
 	cerr << "type = 2 se debe especificar solamente un puerto donde se reciben acciones" << endl;
 	cerr << "type = 3 se borraran los archivos y no se necesitan parametros extra" << endl;
+	cerr << "type = 4 se realizara la exportacion a XML a partir de la base de datos existente" << endl;
 	cerr << "Ejemplos: " << endl;
 	cerr << "  listener 1 T2 tagId||#1" << endl;
 	cerr << "  listener 2 12000" << endl;
 	cerr << "  listener 3" << endl;
+	cerr << "  listener 4" << endl;
 
 	cerr << endl << "Las acciones disponibles son:";
 	vector<string> codeList = actionsMap.GetAvailableCodes();
@@ -74,6 +77,89 @@ void usage()
 	cerr << "Ej: tagIds||#1||,2||,3|||tagStates||#1||,0||,1" << endl;
 	cerr << endl;
 	::exit( 1 );
+}
+
+string getArticleTags(Articulo article)
+{
+	string tagsStr = "";
+	Archivo4 a4;
+	for (t_idcat i = 0; i < article.get_MAX_CAT(); ++i) {
+		if ( article.get_cont_idcat().getCat( i ) )
+		{
+			t_regArchivo4 reg(a4.getCategoryInfo( i ));
+			tagsStr += reg.categoryName;
+			tagsStr += " ";
+		}
+	}
+	return tagsStr;
+}
+
+void exportFeedsToXml()
+{
+		// Nota: el 16 no es importante, ya que si la estructura de archivos
+		// no existe no tendra feeds y no sera exportada. Si existe, el valor
+		// verdadero de MAX_CAT sera leido de la misma.
+		feedHandler fh(16);
+		t_cola_idfeeds feedsIdQueue(fh.getColaIdFeeds());
+
+		string fileName(General::getDataPath());
+		fileName.append(DBXML_FILE_NAME);
+		ofstream file(fileName.c_str(), ios_base::trunc);
+
+		string xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+		xml += "<database>\n";
+
+		t_idart artCount = 0;
+		while(!feedsIdQueue.empty())
+		{
+			xml += "\t<feed url=\"";
+			Feed currentFeed(fh.getFeed(feedsIdQueue.front()));
+			xml += currentFeed.getUri();
+			xml += "\" >\n";
+			file.write(reinterpret_cast<const char *>(xml.c_str()),
+			xml.length()*(sizeof(char)));
+
+			artCount = fh.cantidadArticulos(feedsIdQueue.front());
+			t_cola_art artQueue(fh.getUltimosArticulos
+			(feedsIdQueue.front(), MAX_GET_ART));
+			xml = "";
+			while (artCount != 0)
+			{
+				// Para no usar los negativos
+				if (MAX_GET_ART <= artCount)
+					artCount -= MAX_GET_ART;
+				else
+					artCount = 0;
+
+				while(!artQueue.empty())
+				{
+					xml += "\t\t<item>\n";
+					xml += "\t\t\t<url>";
+					xml += XmlUtils::xmlEncode(artQueue.front().get_uri());
+					xml += "</url>\n";
+					xml += "\t\t\t<title>";
+					xml += XmlUtils::xmlEncode(artQueue.front().get_title());
+					xml += "</title>\n";
+					xml += "\t\t\t<tags>";
+					xml += XmlUtils::xmlEncode(getArticleTags(artQueue.front()));
+					xml += "</tags>\n";
+					xml += "\t\t</item>\n";
+					file.write(reinterpret_cast<const char *>(xml.c_str()),
+					xml.length()*(sizeof(char)));
+					artQueue.pop();
+					xml="";
+				}
+				artQueue = fh.getProximosArticulos(MAX_GET_ART);
+			}
+			xml = "\t</feed>\n";
+			file.write(reinterpret_cast<const char *>(xml.c_str()),
+			xml.length()*(sizeof(char)));
+			feedsIdQueue.pop();
+			xml="";
+		}
+		xml += "</database>";
+		file.write(reinterpret_cast<const char *>(xml.c_str()),
+		  xml.length()*(sizeof(char)));
 }
 
 string Now()
@@ -324,6 +410,13 @@ int main(int argc, char* argv[])
 		system(rmFiles.c_str());
 		cout << "Los archivos de datos fueron eliminados" << endl;
 	}
+	else if (type == "4")
+	{
+		cout << "Exportando base de datos a archivo XML..." << endl;
+		exportFeedsToXml();
+		cout << "Archivo XML generado" << endl;
+	}
+
 	else
 	{
 		if ( argc < 3 ) usage();
