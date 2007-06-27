@@ -46,7 +46,7 @@ EntitiesManager::EntitiesManager()
 /*-------------------------------------------------------------------------------------------*/
 EntitiesManager::~EntitiesManager()
 {
-//TODO: liverar managerWord
+//TODO: liberar managerWord
 	if ( isInit )
 	{
 		delete _feedManager;
@@ -116,23 +116,20 @@ string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 		t_word_cont::iterator it;
 		short cond = art.find_cat(IDCAT_FAV);
 
-		// Si usu_pc = 1 -> clasificado por la pc
-		// Si usu_pc = 0 -> clasificado por el usuario
-
-		//Ya se le cambio el estado asi q voy por la inversa
+		// Ya se le cambio el estado asi q voy por la inversa
 		if(cond != -1){
-			//El articulo no pertenese a la categoria favoritos y va pasar a estarlo
+			// Clasificacion NO FAVORITO -> FAVORITO
 			_a4->incCategoryArtAndWord(IDCAT_FAV,1,cont.size());
 
 		}else{
-				//El articulo pertenese a la categoria favoritos y va pasar a no estarlo
+				// Clasificacion FAVORITO -> NO FAVORITO
 				if(_feedManager->readUsu_Pc(feedId,artId,IDCAT_FAV)){
 					// Si lo habia clasificado el sistema
 					_a4->decCategoryArtAndWord(IDCAT_FAV,1,cont.size());
 
 					for(it = cont.begin(); it != cont.end() ; ++it ){
 						((t_diferencias) it->second).cantFalse=((t_diferencias) it->second).cantTrue;
-						//Cero xq no se habia incorporado a la base de conocimiento.
+						// Cero xq no se habia incorporado a la base de conocimiento.
 						((t_diferencias) it->second).cantTrue = 0;
 					}
 
