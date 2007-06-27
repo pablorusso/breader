@@ -211,7 +211,7 @@ void cManagerWord::deleteCategoria(const t_idcat &id){
 /*----------------------------------------------------------------------*/
 void cManagerWord::reestructurar(){
 	if(!isCreada)
-		throw ExceptionManagerWord(MW_ERROR_CL);
+		throw ExceptionManagerWord(MW_ERROR_CR);
 
 	try{ manager.reestructurar();
 	}catch(ExceptionFileManager){throw ExceptionManagerWord(MW_ERROR_RES);}
