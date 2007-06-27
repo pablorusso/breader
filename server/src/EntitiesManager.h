@@ -56,16 +56,10 @@ class EntitiesManager
 		string BuildArticlesList( t_cola_art colaArt );
 
 		void initialize();
+		
+		string getArticleTags(Articulo article);
+		//void getArticlesByFeedXml( t_idfeed feedId, fstream file);
 	public:
-
-		/**
-		*/
-
-		string exportFeedsToXml();
-
-	string getArticlesByFeedXml( t_idfeed feedId);
-
-string getArticleTags(Articulo article);
 
 		/**
 		 *
@@ -295,6 +289,12 @@ string getArticleTags(Articulo article);
 		 * @return TODO
 		 */
 		void importFeeds(const string &fileName);
+		
+		/*
+		* Exporta los feeds a un XML
+		*
+		*/
+		void exportFeedsToXml();
 
 };
 
