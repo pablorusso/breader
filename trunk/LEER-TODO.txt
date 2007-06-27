@@ -5,8 +5,9 @@ IMPORTANTE
 ----------
 
 * el bayesianoooooooo (Para todos, supongo)
-- exportacion a XMLSchema (Eduardo: LISTO - EJECUTANDO "./listener 4")
 * importacion de txt (Damian: lo deje a medias, falta pablo)
+
+- exportacion a XMLSchema (Eduardo: LISTO - EJECUTANDO "./listener 4")
 - Agregar el id_fav (es el cero) en el archivo4 al comienzo estructura,
   para que este siempre (Damian - LISTO)
 * Soportar reestructurar y ampliar idcat
@@ -37,6 +38,7 @@ IMPORTANTE
 		  siempre se va reestructura.
 
 - Sergio: guardar los archivos en el directorio que te dice General (LISTO)
+- Sergio: Documentación de desarrollo (LISTO)
 
 
 PRESENTACION LUNES
@@ -61,7 +63,7 @@ NO TAN IMPORTANTE
 - Que no se puedan agregar dos categorias con el mismo nombre (Damian - a lo bestia - LISTO)
 - Que al modificar el nombre de una categoria no pueda tener uno ya existente (Damian - a lo bestia - LISTO)
 - Que no se puedan agregar dos feeds con la misma url (elijo url sola) (Damian - a lo bestia - LISTO)
-* Configurar los parametros del cArbol y cFileManager a gusto.
+* Configurar los parametros del cArbol y cFileManager a gusto. (Sergio Listo)
 * Pablo: restringistes el límite de los nombres de las categorías en el Agregar pero no en el Modificar.
 - Faltan unos cuantos "refrescar" (al bajar categorias, al modificar categorias, al agregar feeds, al quitar feeds...) (Pablo - LISTO)
 

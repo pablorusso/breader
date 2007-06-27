@@ -1,3 +1,5 @@
+La información de desarrollo no es subida al repositorio dado su tamaño. Igual se la puede encontrar en code.google en la parte de download y si no hacer lo siguiente:
+
 
 Obtención de la documentación de desarrollo:
 
@@ -12,4 +14,4 @@ Obtención de la documentación de desarrollo:
 
 Listo, se generar la documentación en formato html en el directorio "breader/doc_desarrollo" y los fuentes seran tomados de "breader/server/src" . Si consideran que hay que agregar otro directorio de fuentes esto debe agregarse en la linea 462 del archivo Doxyfile en el tag INPUT.
 
-La información de desarrollo no es subida al repositorio dado su tamaño.
+
