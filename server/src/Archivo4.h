@@ -235,6 +235,20 @@ class Archivo4 {
 		tRegistro3 getRegistro(const t_idcat &idCat);
 
 		/**
+		 * Devuelve la cantidad de articulos clasificados positivamente
+		 * @return la cantidad de articulos clasificados positivamente
+		 */
+		t_quantity getCantClasPos() const
+		  {return this->header.cantClasPos;}
+
+		/**
+		 * Devuelve la cantidad de articulos clasificados negativamente
+		 * @return la cantidad de articulos clasificados negativamente
+		 */
+		t_quantity getCantClasNeg() const
+		  {return this->header.cantClasNeg;}
+
+		/**
 		 * Sobrecarga del operator<<
 		 * Imprime el contenido del Archivo4
 		 * Nota: no es const porque tengo que leer y cambiar el fpointer
