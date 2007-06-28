@@ -543,17 +543,17 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 					if(regTag.wordsPositive != 0 ){
 						prob1 = (double) (frec.cantTrue / regTag.wordsPositive);
 						prob2 = regTag.artPositive;
-						dato.probPos += prob1 * prob2;
+						dato.probPos += (prob1 * prob2);
 					}
 	
 					if(regTag.wordsNegative != 0 ){
 						prob1 = (double) (frec.cantFalse / regTag.wordsNegative);
 						prob2 = regTag.artNegative;
-						dato.probNeg += prob1 * prob2;
+						dato.probNeg += (prob1 * prob2);
 					}
 				}catch(ExceptionManagerWord){}
 			}
-			file << "frec+: " << frec.cantTrue << " frec-: " << frec.cantFalse << " P+: " << dato.probPos << " P-: " << dato.probNeg << " id: " << dato.id << std::endl;
+			file << "frec+: " << frec.cantTrue << "   frec-: " << frec.cantFalse << "   P+: " << (double) dato.probPos << "   id: " << dato.id << "   regTag.wordsPositive: " << regTag.wordsPositive << "   regTag.artPositive: " << regTag.artPositive << "   id: " << dato.id << std::endl;
 			map.insert(t_probMap::value_type(dato.probPos-dato.probNeg,dato.id));
 		}
 
@@ -563,16 +563,17 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 		bool salir=false;
 		t_probMap::reverse_iterator itt = map.rbegin();
 
-		file << "------------------------------------" << std::endl;
+
 		
 
 		while(!salir && itt!=map.rend()){
-			file << "Prob: " << itt->first << std::endl;
+			file << "Prob: " << (double) itt->first << std::endl;
 			if(itt->first > UMBRAL_BCLAS )
 				_feedManager->clasificarArticulo(art.get_idfeed(),itt->second,art.get_idart(),true,true);
 			else salir=true;
 			++itt;
 		}
+		file << "------------------------------------" << std::endl;
 		file.close();
 
 	}
