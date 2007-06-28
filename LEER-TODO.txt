@@ -33,6 +33,7 @@ BUGS
 - Si clickeás rápido, podés mandar dos veces el borrarCategoría para la misma categoría... eso lo hace tildar. (Pablo - es obvio, no jodás - LISTO)
 * Al agregar un feed no siempre me actualiza los articulos, y a veces me los actualiza pero también
   me deja abajo los del feed que estaba mirando
+* Al mostrar por feeds no me estas mostrando el ultimo articulo de la cola...
 
 
 NO TAN IMPORTANTE
