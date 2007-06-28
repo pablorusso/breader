@@ -37,6 +37,8 @@ Hasta aca funiona el listener y la comunicacion entre el CGI y el listener, ahor
 
 El primero es para la carpeta CGI, el segundo para el sitio en si mismo.
 
+Además, hay que ejecutar el comando chmod para darle los permisos necesarios a la carpeta /uploads dentro de /www. "chmod 777 www/uploads"
+
 4- por ultimo, XSLT
 Una vez que estos dos pasos funcionan podemos decir que la comunicacion funciona, acto seguido hay que verificar que el apache entienda los xslt. Para esto en la carpeta www/xmls hay unos ejemplos de transformaciones xslt sencillas. Hay que abrir un browser y acceder a localhost/breader/xmls/tags.xml. Ahi pueden ocurrir dos cosas:
    a- Se ve un texto que dice algo asi como  "Categorias, busqueda avanzada" (no importa bien lo que dice)
