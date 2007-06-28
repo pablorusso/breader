@@ -15,10 +15,16 @@ Archivo4::Archivo4()
 		this->f.open(fileName.c_str(), ios::out | ios::binary);
 		this->header.numCat = header.numCat = 0;
 		this->header.primerLibre = header.primerLibre = 0;
+		this->header.cantClasPos = header.cantClasPos = 0;
+		this->header.cantClasNeg = header.cantClasNeg = 0;
 		this->f.write(reinterpret_cast<const char *>(&header.numCat),
 		  sizeof(t_idcat));
 		this->f.write(reinterpret_cast<const char *>(&header.primerLibre),
 		  sizeof(t_idcat));
+		this->f.write(reinterpret_cast<const char *>(&this->header.cantClasPos),
+		sizeof(t_quantity));
+		this->f.write(reinterpret_cast<const char *>(&this->header.cantClasNeg),
+		sizeof(t_quantity));
 		// Lo reabro para que sirva para entrada/salida
 		this->f.close();
 		this->f.open(fileName.c_str(), ios::in | ios::out | ios::binary);
@@ -338,6 +344,58 @@ bool Archivo4::decCategoryWord(const t_idcat &idCategory,
 	return ret;
 }
 
+void Archivo4::incCantClasPos() {
+	try
+	{
+		++this->header.cantClasPos;
+		this->writeHeader();
+    }
+	catch (fstream::failure)
+	{
+		if (this->f.is_open()) this->f.close();
+		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
+	}
+}
+
+void Archivo4::incCantClasNeg() {
+	try
+	{
+		++this->header.cantClasNeg;
+		this->writeHeader();
+    }
+	catch (fstream::failure)
+	{
+		if (this->f.is_open()) this->f.close();
+		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
+	}
+}
+
+void Archivo4::decCantClasPos() {
+	try
+	{
+		--this->header.cantClasPos;
+		this->writeHeader();
+    }
+	catch (fstream::failure)
+	{
+		if (this->f.is_open()) this->f.close();
+		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
+	}
+}
+
+void Archivo4::decCantClasNeg() {
+	try
+	{
+		--this->header.cantClasNeg;
+		this->writeHeader();
+    }
+	catch (fstream::failure)
+	{
+		if (this->f.is_open()) this->f.close();
+		THROW(eArchivo4, A4_ARCHIVO_CORRUPTO);
+	}
+}
+
 bool Archivo4::modifyCategoryName(const t_idcat &idCategory,
 	const string &catName)
 {
@@ -403,6 +461,7 @@ bool Archivo4::modifyCategoryBlocks(const t_idcat &idCategory,
 	}
 	return ret;
 }
+
 bool Archivo4::deleteCategory(const t_idcat &idCat)
 {
 	bool ret = false;
@@ -495,6 +554,11 @@ void Archivo4::writeHeader()
 	  sizeof(t_idcat));
 	this->f.write(reinterpret_cast<const char *>(&this->header.primerLibre),
 	  sizeof(t_idcat));
+	this->f.write(reinterpret_cast<const char *>(&this->header.cantClasPos),
+	  sizeof(t_quantity));
+	this->f.write(reinterpret_cast<const char *>(&this->header.cantClasNeg),
+	  sizeof(t_quantity));
+
 }
 
 void Archivo4::readHeader()
@@ -504,8 +568,11 @@ void Archivo4::readHeader()
 	  sizeof(t_idcat));
 	this->f.read(reinterpret_cast<char *>(&this->header.primerLibre),
 	  sizeof(t_idcat));
+	this->f.read(reinterpret_cast<char *>(&this->header.cantClasPos),
+	  sizeof(t_quantity));
+	this->f.read(reinterpret_cast<char *>(&this->header.cantClasNeg),
+	  sizeof(t_quantity));
 }
-
 
 void Archivo4::writeReg(string catName, const t_quantity &artPositive,
 	const t_quantity &artNegative, const t_quantity &wordsPositive,
