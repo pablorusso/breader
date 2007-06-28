@@ -57,14 +57,30 @@ t_idart Archivo2::writeArticulo(const Articulo &art) {
 	t_idart ret=0;
 	try {
 		ret = this->numRegs;
+		Articulo artNew(art);
 		t_regArchivo2 reg(this->header.MAX_CAT);
-		reg.fecha = art.get_timestamp();
-		reg.oArchivo1 = this->a1.writeArticulo(art);
-		reg.leido = art.get_leido();
-		reg.cont_idcat = art.get_cont_idcat();
-		reg.cont_usu_pc = art.get_cont_usu_pc();
+// cout << "timestamp: " << artNew.get_timestamp() << endl << flush;
+// cout << "pubdate: " << artNew.get_pubdate() << endl << flush;
+
+		reg.fecha = artNew.get_timestamp();
+		// Parchecito en caso que timestamp no venga en forma ascendente
+		if (this->numRegs > 0) {
+			// Quiero comparar la fecha
+			Articulo artOld(this->readArticulo(this->numRegs-1));
+			
+			if (reg.fecha < artOld.get_timestamp())
+			{
+				reg.fecha = artOld.get_timestamp();
+				artNew.set_pubdate(artOld.get_pubdate());
+			}
+		}
+
+		reg.oArchivo1 = this->a1.writeArticulo(artNew);
+		reg.leido = artNew.get_leido();
+		reg.cont_idcat = artNew.get_cont_idcat();
+		reg.cont_usu_pc = artNew.get_cont_usu_pc();
 		this->writeReg(reg);
-		this->numRegs++;
+		++this->numRegs;
 	}
 	catch (fstream::failure){
 		THROW(eArchivo2, A2_ARCHIVO_CORRUPTO);
