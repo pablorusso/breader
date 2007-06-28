@@ -7,6 +7,8 @@
 #include <set>
 #include <cctype>
 
+#define NB_TITLE_IMPORTANCE 3
+
 // BORRAR
 #include <iostream>
 // BORRAR

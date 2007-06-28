@@ -142,7 +142,7 @@ void cManagerWord::addFrecWord(std::string palabra,const t_idcat &id,const t_dif
 		}else{	
         		t_offset off = manager.addPalabra();
 				word.setNroBloque(off);
-				try{ word.persistirPalabra();
+				try{word.persistirPalabra();
 				}catch(ExceptionPalabra){}
 				arbol.insertar(word);
 				manager.setPalabra(id, off,frec);

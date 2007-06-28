@@ -543,7 +543,6 @@ void EntitiesManager::clasificarArticulo(Articulo &art){
 			return;
 		}
 
-		std::ofstream file("aux.txt",  std::ios::app);
 		bool done = false;
 		// Por cada idcat recorro una vez la lista de palabras
 		while(!cola.empty() && !done) {
@@ -585,14 +584,6 @@ void EntitiesManager::clasificarArticulo(Articulo &art){
 
 			if (dato.probPos > dato.probNeg)
 				map.insert(t_probMap::value_type(dato.probPos,dato.id));
-
-			file << "   P+: " << dato.probPos << "   P-: " << dato.probNeg
-			  << "   regTag.wordsPositive: " << regTag.wordsPositive
-			  << "   regTag.artPositive: " << regTag.artPositive
-			  << "   regTag.wordsNegative: " << regTag.wordsNegative
-			  << "   regTag.artNegative: " << regTag.artNegative
-			  << "   id: " << dato.id << " cantClasPos: " << cantClasPos
-			  << " cantClasNeg: " << cantClasNeg << std::endl;
 		}
 
 		// Clasifico al articulo con la categoria en la que se obtuvo una mayor probabilidad
@@ -602,15 +593,13 @@ void EntitiesManager::clasificarArticulo(Articulo &art){
 		t_probMap::reverse_iterator itt = map.rbegin();
 
 		while(!salir && itt!=map.rend()){
-			file << "Prob: " << itt->first << std::endl;
 			art.add_cat(itt->second, 1);
 			if (itt->second != IDCAT_FAV)
 				_feedManager->clasificarArticulo(art.get_idfeed(),itt->second,art.get_idart(),true,true);
 			salir=true;
 			++itt;
 		}
-		file << "------------------------------------" << std::endl;
-		file.close();
+
 
 	}
 	catch (eArchivo4 &e) {
