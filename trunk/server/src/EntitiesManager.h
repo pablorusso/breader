@@ -29,7 +29,7 @@
 #define DBXML_FILE_NAME "DBXML.xml"
 //!< El nombre del archivo de salida a donde hara la exportacion
 
-typedef std::multimap< double , t_idcat , std::greater<double> > t_probMap;
+typedef std::multimap< double , t_idcat , std::less<double> > t_probMap;
 //!< TODO comentar
 
 typedef struct{

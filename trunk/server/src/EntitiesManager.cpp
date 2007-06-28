@@ -334,6 +334,8 @@ string EntitiesManager::ArticleLinkTag( t_idfeed feedId, t_idart artId, t_idcat 
 string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idcat tagId )
 {
 	try {
+		// Leo antes de clasificar
+		bool usu_pc = _feedManager->readUsu_Pc(feedId, artId, tagId);
 		// Es una desclasificacion de un articulo
 		Articulo art = _feedManager->clasificarArticulo( feedId, tagId, artId, false, false );
 		t_word_cont cont = articleParser.parseArticle(art);
@@ -341,8 +343,9 @@ string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idca
 
 		// Si usu_pc = 1 -> clasificado por la pc
 		// Si usu_pc = 0 -> clasificado por el usuario
-		if(_feedManager->readUsu_Pc(feedId,artId,tagId)){
+		if(usu_pc){
 			// Si lo clasifico el sistema
+cout <<" desaprobando clasificacion del sistema: " << endl;
 			_a4->incCantClasNeg();
 			_a4->decCategoryArtAndWord(tagId,1,cont.size());
 			for(it = cont.begin(); it != cont.end() ; ++it ){
@@ -521,70 +524,101 @@ void EntitiesManager::clasificarArticulo(Articulo &art){
 		t_word_cont::const_iterator it;
 		tFrecuencias frec={0,0};
 		t_probability dato;
-		double prob1=0,prob2=0;
+		t_quantity cantClasPos, cantClasNeg;
+		cantClasPos = _a4->getCantClasPos();
+		cantClasNeg = _a4->getCantClasNeg();
+		
+		// Si alguno es cero no puedo clasificar
+
+#define UMBRAL_CLAS_POS 0
+#define UMBRAL_CLAS_NEG 0
+#define UMBRAL_WORDS_POSITIVE 100
+#define UMBRAL_ARTS_POSITIVE 
+#define FACTOR_AMPLITUD_NEG 1.25
+
+		if (cantClasPos <= UMBRAL_CLAS_POS)
+		{
+			cout << "No minimo" << endl;
+			return;
+		}
 
 		std::ofstream file("aux.txt",  std::ios::app);
-
+		bool done = false;
 		// Por cada idcat recorro una vez la lista de palabras
-		while(!cola.empty()) {
+		while(!cola.empty() && !done) {
 			dato.id = cola.front();
 			cola.pop();
-			dato.probPos=dato.probNeg=0;
+			dato.probPos=dato.probNeg=1;
+	
 	
 			// Obtengo la cantidad total de palabras en la categoria y la cantidad
 			// de articulos que pertenecen a la categoria
 			regTag = _a4->getCategoryInfo(dato.id);
+			// Necesito que todas las categorias tengan cierta cantidad de ejemplos
 
-			for(it = contWord.begin(); it!=contWord.end();++it){
+// frec.?  = cantidad de veces que aparecio la palabra en esa categoria clasificada como ? (neg o pos)
+
+
+			for(it = contWord.begin(); it!=contWord.end();++it)
+			{
 				// Obtengo la cantidad de veces que aparecio la palabra en
 				// una categoria
 				try{
-
 					// TODO ojo logaritmos negativos...
 					frec = managerWord->getWord((string)it->first, dato.id);
-//					dato.probPos += log(P+static_cast<double>(frec.cantTrue)) -
-//					  log(P+static_cast<double>(regTag.wordsPositive));
- 					if(regTag.wordsPositive != 0 ){
- 						prob1 = (double) frec.cantTrue/ (double) regTag.wordsPositive;
- 						prob2 = regTag.artPositive / (double) _a4->getCantClasPos();
- 						dato.probPos += (prob1 * prob2);
- 					}
-//					dato.probNeg += log(P+static_cast<double>(frec.cantFalse)) -
-//					  log(P+static_cast<double>(regTag.wordsNegative));
+					if(regTag.wordsPositive > UMBRAL_WORDS_POSITIVE){
+						if (frec.cantTrue == 0)
+							++frec.cantTrue;
+						dato.probPos *= ( static_cast<double>(frec.cantTrue)
+						  / static_cast<double>(regTag.wordsPositive));
+					}
+					if(regTag.wordsNegative != 0 ){
+						if (frec.cantFalse == 0)
+							++frec.cantFalse;
+						dato.probNeg *= (static_cast<double>(frec.cantFalse)
+						  / static_cast<double>(regTag.wordsNegative));
+					}
+				}
+				catch(ExceptionManagerWord)
+				{
 
- 					if(regTag.wordsNegative != 0 ){
- 						prob1 = (double) frec.cantFalse / (double) regTag.wordsNegative;
- 						prob2 = (double) regTag.artNegative / (double) _a4->getCantClasNeg();
- 						dato.probNeg += (prob1 * prob2);
- 					}
-				}catch(ExceptionManagerWord){}
+				}
 			}
-			file << "frec+: " << frec.cantTrue << "   frec-: " << frec.cantFalse
-			  << "   P+: " << dato.probPos << "   P-: " << dato.probNeg
+ 			dato.probPos *=  static_cast<double>(regTag.artPositive)
+			                / static_cast<double>(cantClasPos);
+ 			if (cantClasNeg == 0)
+			{
+				dato.probNeg = 0;
+			}
+			else
+			{
+				dato.probNeg *= FACTOR_AMPLITUD_NEG*(static_cast<double>(regTag.artNegative)
+			                    / static_cast<double>(cantClasNeg));
+			}
+			if (dato.probPos > dato.probNeg)
+				map.insert(t_probMap::value_type(dato.probPos,dato.id));
+			// Si no, no la inserto directamente
+
+			file << "   P+: " << dato.probPos << "   P-: " << dato.probNeg
 			  << "   regTag.wordsPositive: " << regTag.wordsPositive
 			  << "   regTag.artPositive: " << regTag.artPositive
 			  << "   regTag.wordsNegative: " << regTag.wordsNegative
-			  << "   regTag.artNegative: " << regTag.artNegative << "   id: " << dato.id << std::endl;
-// 			dato.probPos += log(P+static_cast<double>(regTag.artPositive));
-//			dato.probNeg += log(P+static_cast<double>(regTag.artNegative));
-//			dato.probPos = fabs(dato.probPos);
-//			dato.probNeg = fabs(dato.probNeg);
-			map.insert(t_probMap::value_type(dato.probPos-dato.probNeg,dato.id));
+			  << "   regTag.artNegative: " << regTag.artNegative
+			  << "   id: " << dato.id << " cantClasPos: " << cantClasPos
+			  << " cantClasNeg: " << cantClasNeg << std::endl;
 		}
 
 		// Clasifico al articulo con la categoria en la que se obtuvo una mayor probabilidad
 		// de ocurrencia sin haber cometido tantos errores previos de clasificacion.
 
 		bool salir=false;
-		t_probMap::reverse_iterator itt = map.rbegin();		
+		t_probMap::reverse_iterator itt = map.rbegin();
 
 		while(!salir && itt!=map.rend()){
 			file << "Prob: " << itt->first << std::endl;
-			if(itt->first > UMBRAL_BCLAS ) {
-				art.add_cat(itt->second, 1);
-				_feedManager->clasificarArticulo(art.get_idfeed(),itt->second,art.get_idart(),true,true);
-			}
-			else salir=true;
+			art.add_cat(itt->second, 1);
+			_feedManager->clasificarArticulo(art.get_idfeed(),itt->second,art.get_idart(),true,true);
+			salir=true;
 			++itt;
 		}
 		file << "------------------------------------" << std::endl;
