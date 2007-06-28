@@ -29,13 +29,17 @@ void usage()
 	cerr << "./listener.exe [type] [variable-params]" << endl << endl;
 	cerr << "./listener.exe 1 [action{si type=1}] [params{si type=1}]" << endl;
 	cerr << "./listener.exe 2 [puerto{si type=2}] " << endl;
-	cerr << "./listener.exe 3" << endl << endl;
+	cerr << "./listener.exe 3" << endl;
+	cerr << "./listener.exe 4" << endl;
+	cerr << "./listener.exe 5" << endl << endl;
+
 	cerr << "donde [type] puede ser 1=consola, 2=sockets o 3=borrar datos" << endl;
 	cerr << "type = 1 se debe especificar una accion y parametros, el listener las procesara" << endl;
 	cerr << "type = 2 se debe especificar solamente un puerto donde se reciben acciones" << endl;
 	cerr << "type = 3 se borraran los archivos y no se necesitan parametros extra" << endl;
 	cerr << "type = 4 se realizara la exportacion a XML a partir de la base de datos existente" << endl;
 	cerr << "type = 5 se realizara una reestructuracion de los archivos para ocupar el menor espacio en disco posible" << endl;
+	cerr << "type = 6 se importaran los feeds del archivo de texto indicado" << endl;
 	cerr << "Ejemplos: " << endl;
 	cerr << "  listener 1 T2 tagId||#1" << endl;
 	cerr << "  listener 2 12000" << endl;
@@ -518,6 +522,7 @@ int main(int argc, char* argv[])
 	string type(argv[1]);
 	if ( type == "3" )
 	{
+		if (argc != 2) usage();
 		string rmFiles("rm -fR ");
 		rmFiles.append( General::getDataPath() );
 		system(rmFiles.c_str());
@@ -525,6 +530,7 @@ int main(int argc, char* argv[])
 	}
 	else if (type == "4")
 	{
+		if (argc != 2) usage();
 		cout << "Exportando base de datos a archivo XML..." << endl;
 
 		string makeDir("mkdir -p ");
@@ -538,6 +544,7 @@ int main(int argc, char* argv[])
 	}
 	else if (type == "5")
 	{
+		if (argc != 2) usage();
 		cout << "Reestructurando archivos ..." << endl;
 
 		string makeDir("mkdir -p ");
@@ -549,7 +556,6 @@ int main(int argc, char* argv[])
 		else
 			cout << "Reestructuracion fallida" << endl;
 	}
-
 	else
 	{
 		if ( argc < 3 ) usage();
