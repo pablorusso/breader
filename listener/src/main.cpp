@@ -190,7 +190,7 @@ bool exportFeedsToXml()
 	catch (eArchivo4 &e) {
 		ret = false;
 		cout << "Error en la exportacion (Archivo4): " << e.what() << endl;
-	}	
+	}
 	catch (fstream::failure)
 	{
 		cout << "Error en la exportacion (Archivo de salida): Archivo corrupto" << endl;
@@ -242,7 +242,7 @@ bool reestructurar() {
 		{
 			cout << "No se cumplen las minimas condiciones para reestructurar ManagerWord " << endl;
 			cout << "Reestructuracion ManagerWord no realizada" << endl;
-		}		
+		}
 
 	}
 	catch (eFeedHandler &e)
@@ -271,9 +271,9 @@ bool reestructurar() {
 		ret = false;
 		cout << e.what() << endl;
 	}
-	
 
-	
+
+
 	// TODO mas excepciones
 
 	return ret;
@@ -283,7 +283,7 @@ string Now()
 {
 	string fileName(General::getDataPath());
 	fileName.append("now.out");
-	
+
 	string s("date +\"%m/%d/%Y %k:%M:%S.%N\" > ");
 	s.append(fileName);
 	system( s.c_str() );
@@ -481,7 +481,7 @@ void listen( int argc, char* argv[] )
 
 		cout << endl << "[listener] - Matando el socket.";
 		// matar el socket
-		mustExit = true;
+		//mustExit = true;
 		// espero que termine
 		pthread_join( serverListenThread, NULL);
 		cout << endl << "[listener] - Adios." << endl;
@@ -496,7 +496,7 @@ void listen( int argc, char* argv[] )
 	}
 	tData.logFile.close();
 	// Agregado por damian
-	tData.socket = NULL; 
+	tData.socket = NULL;
 }
 
 void readActionFromConsole( int argc, char* argv[] )

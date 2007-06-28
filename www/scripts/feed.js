@@ -153,8 +153,8 @@ function updateFeedsDiv( feedId, mustUpdate )
 {
 	if ( mustUpdate )
 	{
-		/*if ( feedId != null )
-			setCurrentBody( "actionCode=" + escape( "A5" ) + '&params=' + escape( "feedId||#" + feedId + '|||' ) );*/
+		if ( feedId != null )
+			setCurrentBody( "actionCode=" + escape( "A5" ) + '&params=' + escape( "feedId||#" + feedId + '|||' ) );
 
 		doAction ( getCurrentBody(), bodyHandler, 'A' );
 		doAction ( "actionCode=F3", feedsHandler, 'F' );

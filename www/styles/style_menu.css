@@ -60,7 +60,8 @@
 #menu_tags,
 #menu_feeds,
 #menu_add_feed,
-#menu_add_tag
+#menu_add_tag,
+#menu_import
 {
 	color: #000;
 	width: 100%;
@@ -71,7 +72,8 @@
 #menu_tags td.s,
 #menu_feeds td.s,
 #menu_add_feed td.s,
-#menu_add_tag td.s
+#menu_add_tag td.s,
+#menu_import td.s
 {
 	background-color: #6bc290;
 }
@@ -80,7 +82,8 @@
 #menu_tags .c,
 #menu_feeds .c,
 #menu_add_feed .c,
-#menu_add_tag .c
+#menu_add_tag .c,
+#menu_import .c
 {
 	background: #b5edbc;
 	width: 100%;
@@ -98,7 +101,7 @@ margin-left: 4px;
 {
 	font-weight: bold;
 }
-.quickaddFeed, .quickaddTag
+.quickaddFeed, .quickaddTag, .quickImportFeed
 {
 	width: 100%;
 	position: relative;
