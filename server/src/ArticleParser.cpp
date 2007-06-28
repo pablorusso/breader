@@ -75,6 +75,7 @@ void ArticleParser::loadSW() {
 		string myword;
 		while (f >> myword) {
 			this->stopwords.insert(myword);
+// 			cout << "myword: " << myword << endl << flush;
 			myword.clear();
 		}
 		f.close();
@@ -94,7 +95,8 @@ bool ArticleParser::isStopWord(const string &word) {
 }
 
 string ArticleParser::genSWFileName() {
-	string fileName(General::getDataPath());
+	//string fileName(General::getDataPath());
+	string fileName;
 	fileName.append(SW_FILENAME);
 	return fileName;
 }
