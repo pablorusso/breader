@@ -1,0 +1,55 @@
+Instalación
+------------
+1- Ejecutar make en el directorio raíz (Ej.: /svn/breader)
+  * Notar que ese directorio será el configurado en apache. 
+
+Configuración del entorno y ejecución
+-------------------------------------
+
+1- Comunicacion:
+El breader usa sockets por lo que el listener hay que iniciarlo especificando un numero de puerto:
+./listener.exe 2 12000
+Este puerto esta harcodeado en www/index.html, si se quiere usar otro, acordarse de cambiarlo ahi tambien. Tanto el puerto del index.html y del que se usa para iniciarlizar el listener tiene que ser el mismo, sino no se van a conectar
+
+2- Verificacion de la comunicacion (opcional)
+Una vez que el listener esta corriendo, lo mejor a hacer es ejecutar el thin_client.exe desde la consola y ver si la comunicacion entre estos funciona. Para esto hay que ejecutar el thin_client con parametros. Un ejemplo podria ser:
+./thin_client.exe 127.0.0.1 12000 "actionCode=F4". La sintaxis es thin_cliente [serverIP] [port] [accion]. Para obtener el listado de las accciones ejecutar el listener sin parametros.
+
+3- Sitio y CGI
+Hasta aca funiona el listener y la comunicacion entre el CGI y el listener, ahora falta configurar el sitio y que pueda ejecutar el CGI. Para esto hay que tocar la configuracion del apache. La configuracion del sitio en el apache tiene que ser algo asi:
+   
+    ScriptAlias /breader/bin /home/pablo/facultad/datos/breader/www/bin/
+    <Directory "/home/pablo/facultad/datos/breader/www/bin">
+       AllowOverride None
+       Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+       Order allow,deny
+       Allow from all
+    </Directory>
+
+    Alias /breader "/home/pablo/facultad/datos/breader/www"
+    <Directory "/home/pablo/facultad/datos/breader/www">
+       Options Indexes FollowSymLinks MultiViews Includes
+       AllowOverride None
+       Order allow,deny
+       allow from all
+       DirectoryIndex index.html index.shtml index.php
+    </Directory>
+
+El primero es para la carpeta CGI, el segundo para el sitio en si mismo.
+
+4- por ultimo, XSLT
+Una vez que estos dos pasos funcionan podemos decir que la comunicacion funciona, acto seguido hay que verificar que el apache entienda los xslt. Para esto en la carpeta www/xmls hay unos ejemplos de transformaciones xslt sencillas. Hay que abrir un browser y acceder a localhost/breader/xmls/tags.xml. Ahi pueden ocurrir dos cosas:
+   a- Se ve un texto que dice algo asi como  "Categorias, busqueda avanzada" (no importa bien lo que dice)
+   b- Aparece un mensaje de error que dice que xslt no es un formato valido. (algo asi)
+Si pasa el caso b, tiene que asegurarse (y sino agregar) lo siguiente en la configuracion del apache:
+    AddType application/xml xsl
+    AddType application/xml xslt
+Se puede agregar en cualquier lado, yo lo hice dentro de <IfModule mod_mime.c> por comodidad, pero asegurarse que el mod_mime.c este corriendo si se lo agrega ahi dentro (si no, no se va a ver el cambio en la configuracion).
+Luego de tocar el .conf, reiniciar el apache y reintentar.
+
+5- Index.html
+Editar el index.html para que tenga el puerto y host correcto en donde el listener se esta ejecuntado, esta configuracion esta bien al principio del archivo y se guarda en 2 variables javascript. La configuracion por defecto localhost:12000 deberia funcionar mientras el listener tambien corra en la PC escuchando en el puerto 12000.
+
+Una vez que todos estos pasos se hayan respestado, iniciar el listener con el comando: ./listener 2 [puerto]
+y entrar al sitio: http://localhost/breader
+
