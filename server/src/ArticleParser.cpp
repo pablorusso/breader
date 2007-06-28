@@ -19,6 +19,10 @@ t_word_cont ArticleParser::parseArticle(const Articulo &art) {
 	t_word_cont cont;
 	// TODO ver si va solo la description o tambien el title y demas
 	string des(art.get_summary());
+	des.append(" ");
+#define NB_TITLE_IMPORTANCE 3
+	for (int i=0; i< NB_TITLE_IMPORTANCE; ++i)
+		des.append(art.get_title());
 	string myword;
 	string::size_type i=0;
 	char c;

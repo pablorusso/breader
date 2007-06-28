@@ -34,6 +34,8 @@ BUGS
 * Al agregar un feed no siempre me actualiza los articulos, y a veces me los actualiza pero también
   me deja abajo los del feed que estaba mirando
 * Al mostrar por feeds no me estas mostrando el ultimo articulo de la cola...
+* Favoritos clasificados automaticamente???
+
 
 
 NO TAN IMPORTANTE
