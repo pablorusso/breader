@@ -577,17 +577,12 @@ void EntitiesManager::clasificarArticulo(Articulo &art){
  			dato.probPos +=  log( (static_cast<double>(regTag.artPositive) + NB_ALPHA)
 			                / (static_cast<double>(cantClasPos)  + NB_ALPHA*static_cast<double>(nroWords)));
 			dato.probPos = fabs(dato.probPos);
- 			if (cantClasNeg == 0)
-			{
-				dato.probNeg = 0;
-			}
-			else
-			{
-				// Le doy mas importancia a los negativos
-				dato.probNeg += FACTOR_AMPLITUD_NEG*log((static_cast<double>(regTag.artNegative) + NB_ALPHA)
-			                    / (static_cast<double>(cantClasNeg) + NB_ALPHA*static_cast<double>(nroWords)));
-				dato.probNeg = fabs(dato.probNeg);
-			}
+
+			// Le doy mas importancia a los negativos
+			dato.probNeg += FACTOR_AMPLITUD_NEG*log((static_cast<double>(regTag.artNegative) + NB_ALPHA)
+							/ (static_cast<double>(cantClasNeg) + NB_ALPHA*static_cast<double>(nroWords)));
+			dato.probNeg = fabs(dato.probNeg);
+
 			if (dato.probPos > dato.probNeg)
 				map.insert(t_probMap::value_type(dato.probPos,dato.id));
 

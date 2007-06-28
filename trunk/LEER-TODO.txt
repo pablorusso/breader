@@ -59,19 +59,19 @@ CD o DVD incluyendo:
 
 opcionales: (en un directorio separado)
 * binarios linkeados estaticamente.
-* Bases de prueba generadas para el tp y usadas para testearlo.
-* Aplicaciones de test usadas en el desarrollo.
-* Set de datos de prueba usado.
+- Bases de prueba generadas para el tp y usadas para testearlo  (Damian: LISTO)
+- Aplicaciones de test usadas en el desarrollo. (Damian: LISTO)
+- Set de datos de prueba usado.  (Damian: LISTO svn)
 * Documentacion en formato digital.
-* Todo lo demas que consideren relevante para la entrega.
+- Todo lo demas que consideren relevante para la entrega.  (Damian: LISTO)
 
 A su vez se debera entregar una carpeta con la siguiente documentacion:
 
-* Detalle de todas las dependencias necesarias para construir la
+- Detalle de todas las dependencias necesarias para construir la
   aplicacion (Vital)
-* Manual de instalacion y configuracion del entorno de ejecucion.
+- Manual de instalacion y configuracion del entorno de ejecucion. (Damian: LISTO)
 - Manual de usuario (explicacion del uso de la interfaz web, modulo de
   persistencia y modulo de salida a xml) (Damian: LISTO)
-* Informacion de contacto al grupo por cualquier consulta que pueda
-  surgir.
-* Todo lo demas que consideren relevante para la entrega.
+- Informacion de contacto al grupo por cualquier consulta que pueda
+  surgir.  (Damian: LISTO)
+- Todo lo demas que consideren relevante para la entrega.  (Damian: LISTO)
