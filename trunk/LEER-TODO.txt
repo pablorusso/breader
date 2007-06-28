@@ -4,39 +4,15 @@ cada uno tilde lo que hizo.
 IMPORTANTE
 ----------
 
-* el bayesianoooooooo (Para todos, supongo)
+- el bayesianoooooooo (Funcionando mal)
 * importacion de txt (Damian: lo deje a medias, falta pablo)
 
 - exportacion a XMLSchema (Eduardo: LISTO - EJECUTANDO "./listener 4")
 - Agregar el id_fav (es el cero) en el archivo4 al comienzo estructura,
   para que este siempre (Damian - LISTO)
-* Soportar reestructurar y ampliar idcat
-	Damian - reestructurar:
-		* El feedHandler tiene un getUsedFactor que devuelve (reg_usados/reg_totales)
-		  no sé cuándo quieren que lo use, o si quieren llamarlo de afuera. La idea
-		  sería poner un umbral y que abajo de eso se reestructure
-		  Llamada: feedManager->reestructurar();
-	Damian - ampliar idcat:  (nota: este ampliar idcat también reestructura)
-		* No me acuerdo por qué pero esto no lo podía hacer yo desde adentro...
-		  quizás sería bueno que le preguntásemos al Archivo4 cuántas categorías hay
-		  tomadas, para poner un umbral de cuántas categorías nos quedan y ahí ampliarla
-		  automáticamente.
-		  También podríamos pensar en decirle al usuario cuántas categorías va a querer,
-		  pero es más sucio.
-		  Llamada: feedManager->set_MAX_CAT(NEW_MAX_CAT);
-	Damian - ambas anteriores:
-		* Obviamente, después de hacer la llamada esa: rezar. ;-)
-
-	Sergio - reestructurar:
-		  El cManagerWord tiene un getUsedFactor que devuelve (reg_usados/reg_totales)
-		  no sé cuándo quieren que lo use, o si quieren llamarlo de afuera. La idea
-		  sería poner un umbral y que abajo de eso se reestructure
-		  Llamada: managerWord.reestructurar();
-
-		  Yo opino que se haga desde una opcion en consola xej ./listener -R asi se ejecuta 
-		  cuando el programa no esta corriendo y aparte el umbral asi x mas q se lo llame no 
-		  siempre se va reestructura.
-
+- Soportar reestructurar y ampliar idcat (LISTO - EJECUTANDO "./listener 5" es reestructurar,
+                                          ampliar idcat es automatico)
+	
 - Sergio: guardar los archivos en el directorio que te dice General (LISTO)
 - Sergio: Documentación de desarrollo (LISTO)
 
@@ -55,6 +31,8 @@ BUGS
   convertir eso a un numero (Pablo - LISTO)
 - Este feed no trae mensajes? http://rssnewsapps.ziffdavis.com/pcmag.xml (Atom... fuck)
 - Si clickeás rápido, podés mandar dos veces el borrarCategoría para la misma categoría... eso lo hace tildar. (Pablo - es obvio, no jodás - LISTO)
+* Al agregar un feed no siempre me actualiza los articulos, y a veces me los actualiza pero también
+  me deja abajo los del feed que estaba mirando
 
 
 NO TAN IMPORTANTE
@@ -63,7 +41,7 @@ NO TAN IMPORTANTE
 - Que no se puedan agregar dos categorias con el mismo nombre (Damian - a lo bestia - LISTO)
 - Que al modificar el nombre de una categoria no pueda tener uno ya existente (Damian - a lo bestia - LISTO)
 - Que no se puedan agregar dos feeds con la misma url (elijo url sola) (Damian - a lo bestia - LISTO)
-* Configurar los parametros del cArbol y cFileManager a gusto. (Sergio Listo)
+- Configurar los parametros del cArbol y cFileManager a gusto. (Sergio: LISTO)
 * Pablo: restringistes el límite de los nombres de las categorías en el Agregar pero no en el Modificar.
 - Faltan unos cuantos "refrescar" (al bajar categorias, al modificar categorias, al agregar feeds, al quitar feeds...) (Pablo - LISTO)
 
@@ -89,8 +67,8 @@ A su vez se debera entregar una carpeta con la siguiente documentacion:
 * Detalle de todas las dependencias necesarias para construir la
   aplicacion (Vital)
 * Manual de instalacion y configuracion del entorno de ejecucion.
-* Manual de usuario (explicacion del uso de la interfaz web, modulo de
-  persistencia y modulo de salida a xml) (Damian: está medio cocinado)
+- Manual de usuario (explicacion del uso de la interfaz web, modulo de
+  persistencia y modulo de salida a xml) (Damian: LISTO)
 * Informacion de contacto al grupo por cualquier consulta que pueda
   surgir.
 * Todo lo demas que consideren relevante para la entrega.
