@@ -526,6 +526,7 @@ void EntitiesManager::clasificarArticulo(Articulo &art){
 		while(!cola.empty()) {
 			dato.id = cola.front();
 			cola.pop();
+			dato.probPos=dato.probNeg=0;
 	
 			// Obtengo la cantidad total de palabras en la categoria y la cantidad
 			// de articulos que pertenecen a la categoria
@@ -537,17 +538,17 @@ void EntitiesManager::clasificarArticulo(Articulo &art){
 				try{
 					// TODO ojo logaritmos negativos...
 					frec = managerWord->getWord((string)it->first, dato.id);
-					dato.probPos = log(static_cast<double>(frec.cantTrue)) -
-					  log(static_cast<double>(regTag.wordsPositive)) +
-					  log(static_cast<double>(regTag.artPositive));
+					dato.probPos += log(1.0+static_cast<double>(frec.cantTrue)) -
+					  log(1.0+static_cast<double>(regTag.wordsPositive)) +
+					  log(1.0+static_cast<double>(regTag.artPositive));
 // 					if(regTag.wordsPositive != 0 ){
 // 						prob1 = (double) frec.cantTrue/ (double) regTag.wordsPositive;
 // 						prob2 = regTag.artPositive;
 // 						dato.probPos += (prob1 * prob2);
 // 					}
-					dato.probPos = log(static_cast<double>(frec.cantFalse)) -
-					  log(static_cast<double>(regTag.wordsNegative)) +
-					  log(static_cast<double>(regTag.artNegative));
+					dato.probPos += log(1.0+static_cast<double>(frec.cantFalse)) -
+					  log(1.0+static_cast<double>(regTag.wordsNegative)) +
+					  log(1.0+static_cast<double>(regTag.artNegative));
 // 					if(regTag.wordsNegative != 0 ){
 // 						prob1 = (double) frec.cantFalse / (double) regTag.wordsNegative;
 // 						prob2 = (double) regTag.artNegative;
@@ -575,7 +576,7 @@ void EntitiesManager::clasificarArticulo(Articulo &art){
 		
 
 		while(!salir && itt!=map.rend()){
-			file << "Prob: " << (double) itt->first << std::endl;
+			file << "Prob: " << itt->first << std::endl;
 			if(itt->first > UMBRAL_BCLAS ) {
 				art.add_cat(itt->second, 1);
 				_feedManager->clasificarArticulo(art.get_idfeed(),itt->second,art.get_idart(),true,true);
