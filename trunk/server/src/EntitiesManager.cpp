@@ -563,7 +563,7 @@ void EntitiesManager::clasificarArticulo(Articulo &art){
 			  << "   regTag.wordsNegative: " << regTag.wordsNegative
 			  << "   regTag.artNegative: " << regTag.artNegative << "   id: " << dato.id << std::endl;
 
-			map.insert(t_probMap::value_type(dato.probPos-dato.probNeg,dato.id));
+			map.insert(t_probMap::value_type(fabs(dato.probPos-dato.probNeg),dato.id));
 		}
 
 		// Clasifico al articulo con la categoria en la que se obtubo una mayor probabilidad
