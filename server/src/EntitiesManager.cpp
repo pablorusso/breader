@@ -89,6 +89,7 @@ string EntitiesManager::ArticleApproveTag( t_idfeed feedId, t_idart artId, t_idc
 	t_word_cont cont = articleParser.parseArticle(art);
 
 	try {
+		_a4->incCantClasPos();
 		_a4->incCategoryArtAndWord(tagId,1,cont.size());
 		managerWord->addFrecWords(tagId,cont);
 		Feed feed = _feedManager->getFeed( art.get_idfeed() );
@@ -118,12 +119,14 @@ string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 		//Ya se le cambio el estado asi q voy por la inversa
 		if(cond != -1){
 			// Clasificacion NO FAVORITO -> FAVORITO
+			_a4->incCantClasPos();
 			_a4->incCategoryArtAndWord(IDCAT_FAV,1,cont.size());
 
 		}else{
 				// Clasificacion FAVORITO -> NO FAVORITO
 				if(_feedManager->readUsu_Pc(feedId,artId,IDCAT_FAV)){
 					// Si lo habia clasificado el sistema
+					_a4->incCantClasNeg();
 					_a4->decCategoryArtAndWord(IDCAT_FAV,1,cont.size());
 
 					for(it = cont.begin(); it != cont.end() ; ++it ){
@@ -134,6 +137,7 @@ string EntitiesManager::ArticleChangeFavState( t_idfeed feedId, t_idart artId )
 
 				}else{
 					// Si lo habia clasificado el usuario entonces el se confundio.
+					_a4->decCantClasPos();
 					_a4->decCategoryArtAndWordUserError(IDCAT_FAV,1,cont.size());
 					for(it = cont.begin(); it != cont.end() ; ++it )
 						((t_diferencias) it->second).cantTrue *= -1;
@@ -246,11 +250,6 @@ string EntitiesManager::ArticleGetByTagsNext( t_idart quantity )
 /*-------------------------------------------------------------------------------------------*/
 string EntitiesManager::ArticleGetFavourites( t_idart quantity )
 {
-
-// TODO BORRAR!!!,  PARA TESTING
-// this->exportFeedsToXml();
-// TODO BORRAR!!!
-
 	vector< t_idcat > tagIds;
 	tagIds.push_back( IDCAT_FAV );
 
@@ -317,6 +316,7 @@ string EntitiesManager::ArticleLinkTag( t_idfeed feedId, t_idart artId, t_idcat 
 	try {
 		Articulo art = _feedManager->clasificarArticulo( feedId, tagId, artId, true, false );
 		t_word_cont cont = articleParser.parseArticle(art);
+		_a4->incCantClasPos();
 		_a4->incCategoryArtAndWord(tagId,1,cont.size());
 		managerWord->addFrecWords(tagId,cont);
 		Feed feed = _feedManager->getFeed( art.get_idfeed() );
@@ -343,6 +343,7 @@ string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idca
 		// Si usu_pc = 0 -> clasificado por el usuario
 		if(_feedManager->readUsu_Pc(feedId,artId,tagId)){
 			// Si lo clasifico el sistema
+			_a4->incCantClasNeg();
 			_a4->decCategoryArtAndWord(tagId,1,cont.size());
 			for(it = cont.begin(); it != cont.end() ; ++it ){
 				((t_diferencias) it->second).cantFalse=((t_diferencias) it->second).cantTrue;
@@ -352,6 +353,7 @@ string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idca
 
 		}else{
 			// Si lo clasifico el usuario
+			_a4->decCantClasPos();
 			_a4->decCategoryArtAndWordUserError(tagId,1,cont.size());
 			for(it = cont.begin(); it != cont.end() ; ++it )
 				((t_diferencias) it->second).cantTrue*=-1;
@@ -536,19 +538,19 @@ void EntitiesManager::clasificarArticulo(Articulo &art){
 				// Obtengo la cantidad de veces que aparecio la palabra en
 				// una categoria
 				try{
+	#define P 0.000001
 					// TODO ojo logaritmos negativos...
 					frec = managerWord->getWord((string)it->first, dato.id);
-					dato.probPos += log(1.0+static_cast<double>(frec.cantTrue)) -
-					  log(1.0+static_cast<double>(regTag.wordsPositive)) +
-					  log(1.0+static_cast<double>(regTag.artPositive));
+					dato.probPos += log(P+static_cast<double>(frec.cantTrue)) -
+					  log(P+static_cast<double>(regTag.wordsPositive));
 // 					if(regTag.wordsPositive != 0 ){
 // 						prob1 = (double) frec.cantTrue/ (double) regTag.wordsPositive;
 // 						prob2 = regTag.artPositive;
 // 						dato.probPos += (prob1 * prob2);
 // 					}
-					dato.probPos += log(1.0+static_cast<double>(frec.cantFalse)) -
-					  log(1.0+static_cast<double>(regTag.wordsNegative)) +
-					  log(1.0+static_cast<double>(regTag.artNegative));
+					dato.probNeg += log(P+static_cast<double>(frec.cantFalse)) -
+					  log(P+static_cast<double>(regTag.wordsNegative));
+
 // 					if(regTag.wordsNegative != 0 ){
 // 						prob1 = (double) frec.cantFalse / (double) regTag.wordsNegative;
 // 						prob2 = (double) regTag.artNegative;
@@ -562,11 +564,14 @@ void EntitiesManager::clasificarArticulo(Articulo &art){
 			  << "   regTag.artPositive: " << regTag.artPositive
 			  << "   regTag.wordsNegative: " << regTag.wordsNegative
 			  << "   regTag.artNegative: " << regTag.artNegative << "   id: " << dato.id << std::endl;
-
-			map.insert(t_probMap::value_type(fabs(dato.probPos-dato.probNeg),dato.id));
+ 			dato.probPos += log(P+static_cast<double>(regTag.artPositive));
+			dato.probNeg += log(P+static_cast<double>(regTag.artNegative));
+			dato.probPos = fabs(dato.probPos);
+			dato.probNeg = fabs(dato.probNeg);
+			map.insert(t_probMap::value_type(dato.probPos-dato.probNeg,dato.id));
 		}
 
-		// Clasifico al articulo con la categoria en la que se obtubo una mayor probabilidad
+		// Clasifico al articulo con la categoria en la que se obtuvo una mayor probabilidad
 		// de ocurrencia sin haber cometido tantos errores previos de clasificacion.
 
 		bool salir=false;
@@ -577,7 +582,7 @@ void EntitiesManager::clasificarArticulo(Articulo &art){
 
 		while(!salir && itt!=map.rend()){
 			file << "Prob: " << itt->first << std::endl;
-			if(itt->first > UMBRAL_BCLAS ) {
+			if(itt->first < UMBRAL_BCLAS ) {
 				art.add_cat(itt->second, 1);
 				_feedManager->clasificarArticulo(art.get_idfeed(),itt->second,art.get_idart(),true,true);
 			}

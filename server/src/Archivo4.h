@@ -23,6 +23,8 @@
 typedef struct t_headerArchivo4 {
 	t_idcat numCat; //!< guardo la cantidad de Categorias
 	t_idcat primerLibre; //!< guardo la posicion del primer reg libre
+	t_quantity cantClasPos; //!< cantidad de art clasificados positivamente
+	t_quantity cantClasNeg; //!< cantidad de art clasificados negativamente
 };
 
 /**
@@ -187,6 +189,29 @@ class Archivo4 {
 		bool modifyCategoryBlocks(const t_idcat &idCategory, 
 									const t_offset &firstBlockTag,	
 									const t_offset &firstBlockEmpty);
+
+		/**
+		 * Incrementa la cantidad de articulos clasificados positivamente
+		 * @throw eArchivo4 si el archivo esta corrupto
+		 */
+		void incCantClasPos();
+
+		/**
+		 * Incrementa la cantidad de articulos clasificados negativamente
+		 * @throw eArchivo4 si el archivo esta corrupto
+		 */
+		void incCantClasNeg();
+
+		/**
+		 * Decrementa la cantidad de articulos clasificados positivamente
+		 * @throw eArchivo4 si el archivo esta corrupto
+		 */
+		void decCantClasPos();
+		/**
+		 * Decrementa la cantidad de articulos clasificados negativamente
+		 * @throw eArchivo4 si el archivo esta corrupto
+		 */
+		void decCantClasNeg();
 
 		/**
 		 * Devuelve una cola con los ids de las categorias del archivo

@@ -23,7 +23,7 @@ agregar basura en el medio...
 #include <string>
 #include <map>
 
-#define UMBRAL_BCLAS 0.6
+#define UMBRAL_BCLAS 1.0
 //!< Vos calculas las prob para cada categoria, bueno si superan ese umbral el
 //!< articulo va a ser categorizado con ese ID
 #define UMBRAL_FH 0.8
