@@ -19,10 +19,11 @@ t_word_cont ArticleParser::parseArticle(const Articulo &art) {
 	t_word_cont cont;
 	// TODO ver si va solo la description o tambien el title y demas
 	string des(art.get_summary());
-	des.append(" ");
 #define NB_TITLE_IMPORTANCE 3
-	for (int i=0; i< NB_TITLE_IMPORTANCE; ++i)
+	for (int i=0; i< NB_TITLE_IMPORTANCE; ++i) {
+		des.append(" ");
 		des.append(art.get_title());
+	}
 	string myword;
 	string::size_type i=0;
 	char c;
@@ -32,18 +33,20 @@ t_word_cont ArticleParser::parseArticle(const Articulo &art) {
 	else done = true;
 
 	while (!done) {
-		c = tolower(des[i]); // TODO ojo con ISO;
-		if ((c == '<') && (myword.size() == 0)) { // TODO ver si asi esta bien
+		c = tolower(des[i]);
+		if ((c == '<') && (myword.size() == 0)) {
 			bool found = false;
 			while ((!found) && (i < des.size())) {
-				if (des[i] == '>') found = true; // TODO tags anidados??
+				if (des[i] == '>') found = true;
 				else ++i;
 			}
 
 		}
 		else if (isspace(c) || ispunct(c)) {
-			if (!this->isStopWord(myword))
+			if (!this->isStopWord(myword)) {
+// 				cout << "word: " << myword << "size: " << myword.size() <<endl;
 				this->addWord(cont,myword);
+			}
 			myword.clear();
 		}
 		else {
@@ -51,8 +54,10 @@ t_word_cont ArticleParser::parseArticle(const Articulo &art) {
 		}
 		++i;
 		if (i == des.size()) { // Agrego la ultima palabra
-			if (!this->isStopWord(myword))
+			if (!this->isStopWord(myword)) {
+// 				cout << "word: " << myword << "size: " << myword.size() <<endl;
 				this->addWord(cont,myword);
+			}
 			done=true;
 		}
 	}
