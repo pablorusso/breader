@@ -192,6 +192,7 @@ void cPalabra::persistirPalabra(){
 	  /*Le indico que la palabra es mayor al tamano preestablecido
 		por ende lo que se almacena no es la palabra si no el offset al
 		archivo que contiene la palabra.*/
+		
 		dato.tipo=IS_OFFSET;		
 		outputFile << (unsigned char) palabra.length();		
 		outputFile << palabra;
