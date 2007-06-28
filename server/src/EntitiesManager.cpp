@@ -41,7 +41,6 @@ EntitiesManager::EntitiesManager()
 /*-------------------------------------------------------------------------------------------*/
 EntitiesManager::~EntitiesManager()
 {
-//TODO: liberar managerWord
 	if ( isInit )
 	{
 		delete _feedManager;
@@ -345,7 +344,6 @@ string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idca
 		// Si usu_pc = 0 -> clasificado por el usuario
 		if(usu_pc){
 			// Si lo clasifico el sistema
-cout <<" desaprobando clasificacion del sistema: " << endl;
 			_a4->incCantClasNeg();
 			_a4->decCategoryArtAndWord(tagId,1,cont.size());
 			for(it = cont.begin(); it != cont.end() ; ++it ){
@@ -515,12 +513,17 @@ string EntitiesManager::TagGetAll()
 /*-------------------------------------------------------------------------------------------*/
 void EntitiesManager::clasificarArticulo(Articulo &art){
 	//TODO: Corroborar
+	// Nota: la forma de obtener el bayesiano esta sacada de
+    // Tackling the Poor Assumptions of Naive Bayes Text Classiﬁers
+	// Jason D. M. Rennie, Lawrence Shih, Jaime Teevan, David R. Karger
+
 	try {
 		//almaceno las probabilidades ordenadas de menor a mayor.
 		t_probMap map;
 		t_queue_idcat cola = _a4->getCategoriesId();
 		t_regArchivo4 regTag;
 		t_word_cont contWord = articleParser.parseArticle(art);
+		t_word_cont::size_type nroWords = contWord.size();
 		t_word_cont::const_iterator it;
 		tFrecuencias frec={0,0};
 		t_probability dato;
@@ -528,17 +531,15 @@ void EntitiesManager::clasificarArticulo(Articulo &art){
 		cantClasPos = _a4->getCantClasPos();
 		cantClasNeg = _a4->getCantClasNeg();
 		
-		// Si alguno es cero no puedo clasificar
-
-#define UMBRAL_CLAS_POS 0
-#define UMBRAL_CLAS_NEG 0
+#define UMBRAL_CLAS_POS 15
 #define UMBRAL_WORDS_POSITIVE 100
-#define UMBRAL_ARTS_POSITIVE 
 #define FACTOR_AMPLITUD_NEG 1.25
+#define NB_ALPHA 1.0
 
+		// Si no tengo un minimo de articulos clasificados positivamente no
+		// clasifico
 		if (cantClasPos <= UMBRAL_CLAS_POS)
 		{
-			cout << "No minimo" << endl;
 			return;
 		}
 
@@ -548,56 +549,47 @@ void EntitiesManager::clasificarArticulo(Articulo &art){
 		while(!cola.empty() && !done) {
 			dato.id = cola.front();
 			cola.pop();
-			dato.probPos=dato.probNeg=1;
-	
-	
+			dato.probPos=dato.probNeg=0;
+
 			// Obtengo la cantidad total de palabras en la categoria y la cantidad
 			// de articulos que pertenecen a la categoria
 			regTag = _a4->getCategoryInfo(dato.id);
-			// Necesito que todas las categorias tengan cierta cantidad de ejemplos
-
-// frec.?  = cantidad de veces que aparecio la palabra en esa categoria clasificada como ? (neg o pos)
-
-
 			for(it = contWord.begin(); it!=contWord.end();++it)
 			{
 				// Obtengo la cantidad de veces que aparecio la palabra en
 				// una categoria
-				try{
-					// TODO ojo logaritmos negativos...
+				try {
 					frec = managerWord->getWord((string)it->first, dato.id);
-					if(regTag.wordsPositive > UMBRAL_WORDS_POSITIVE){
-						if (frec.cantTrue == 0)
-							++frec.cantTrue;
-						dato.probPos *= ( static_cast<double>(frec.cantTrue)
-						  / static_cast<double>(regTag.wordsPositive));
-					}
-					if(regTag.wordsNegative != 0 ){
-						if (frec.cantFalse == 0)
-							++frec.cantFalse;
-						dato.probNeg *= (static_cast<double>(frec.cantFalse)
-						  / static_cast<double>(regTag.wordsNegative));
-					}
+
+					dato.probPos += static_cast<double>(it->second.cantTrue)
+					  *log(( static_cast<double>(frec.cantTrue) + NB_ALPHA)
+					       /( static_cast<double>(regTag.wordsPositive) + NB_ALPHA*static_cast<double>(nroWords)));
+
+					dato.probNeg += static_cast<double>(it->second.cantTrue)
+					  * log((static_cast<double>(frec.cantFalse) + NB_ALPHA)
+					        /(static_cast<double>(regTag.wordsNegative) + NB_ALPHA*static_cast<double>(nroWords)));
 				}
 				catch(ExceptionManagerWord)
 				{
 
 				}
 			}
- 			dato.probPos *=  static_cast<double>(regTag.artPositive)
-			                / static_cast<double>(cantClasPos);
+ 			dato.probPos +=  log( (static_cast<double>(regTag.artPositive) + NB_ALPHA)
+			                / (static_cast<double>(cantClasPos)  + NB_ALPHA*static_cast<double>(nroWords)));
+			dato.probPos = fabs(dato.probPos);
  			if (cantClasNeg == 0)
 			{
 				dato.probNeg = 0;
 			}
 			else
 			{
-				dato.probNeg *= FACTOR_AMPLITUD_NEG*(static_cast<double>(regTag.artNegative)
-			                    / static_cast<double>(cantClasNeg));
+				// Le doy mas importancia a los negativos
+				dato.probNeg += FACTOR_AMPLITUD_NEG*log((static_cast<double>(regTag.artNegative) + NB_ALPHA)
+			                    / (static_cast<double>(cantClasNeg) + NB_ALPHA*static_cast<double>(nroWords)));
+				dato.probNeg = fabs(dato.probNeg);
 			}
 			if (dato.probPos > dato.probNeg)
 				map.insert(t_probMap::value_type(dato.probPos,dato.id));
-			// Si no, no la inserto directamente
 
 			file << "   P+: " << dato.probPos << "   P-: " << dato.probNeg
 			  << "   regTag.wordsPositive: " << regTag.wordsPositive

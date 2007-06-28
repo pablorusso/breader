@@ -21,7 +21,7 @@
 #include <sstream>
 
 
-#define MAX_CATS_INI 39
+#define MAX_CATS_INI 128
 //!< El maximo numero de categorias inicial (despues se ira expandiendo)
 #define MAX_GET_ART 20
 //!< La cantidad maxima de archivos que se piden por vez
@@ -30,14 +30,14 @@
 //!< El nombre del archivo de salida a donde hara la exportacion
 
 typedef std::multimap< double , t_idcat , std::less<double> > t_probMap;
-//!< TODO comentar
+//!< Un contenedor con las probabilidades de las categorias
 
 typedef struct{
 	t_idcat id;
 	double probPos;
 	double probNeg;
 }t_probability;
-//!< TODO comentar
+//!< Las probabilidades de la categorias
 
 using namespace std;
 class EntitiesManager
@@ -292,9 +292,8 @@ class EntitiesManager
 		string TagGetAll();
 
 		/**
-		 * Clasifica un articulo
+		 * Clasifica un articulo de forma automatica
 		 * @param art el articulo a clasificar
-		 * @return TODO
 		 */
 		void clasificarArticulo(Articulo &art);
 

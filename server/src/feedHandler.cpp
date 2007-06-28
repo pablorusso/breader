@@ -303,6 +303,7 @@ t_cola_art feedHandler::getUltimosArticulos(const t_idfeed &idfeed,
 			c_art.push(a2.readArticulo(--idart));
 		}
 		this->ultArt = idart;
+// 		cout << "c_art.size():" << c_art.size() << endl << flush;
 	}
 	catch (IException &e) {
 		eFeedHandler mie(e.getErrorMensaje());
@@ -325,6 +326,7 @@ t_cola_art feedHandler::getProximosArticulos(const t_idart &cant_art) {
 				}
 				this->ultArt = idart;
 			}
+// 			cout << "c_art.size():" << c_art.size() << endl << flush;
 		}
 		catch (IException &e) {
 			eFeedHandler mie(e.getErrorMensaje());
