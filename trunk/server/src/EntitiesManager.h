@@ -11,6 +11,7 @@
 #include "Archivo4.h"
 #include "ArticleParser.h"
 
+#include <cmath>
 #include <string>
 #include <vector>
 #include <list>
@@ -295,7 +296,7 @@ class EntitiesManager
 		 * @param art el articulo a clasificar
 		 * @return TODO
 		 */
-		void clasificarArticulo(const Articulo &art);
+		void clasificarArticulo(Articulo &art);
 
 		/**
 		 * Importa una lista de feeds al server

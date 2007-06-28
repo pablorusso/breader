@@ -508,12 +508,11 @@ string EntitiesManager::TagGetAll()
 	}
 }
 /*-------------------------------------------------------------------------------------------*/
-void EntitiesManager::clasificarArticulo(const Articulo &art){
+void EntitiesManager::clasificarArticulo(Articulo &art){
 	//TODO: Corroborar
 	try {
 		//almaceno las probabilidades ordenadas de menor a mayor.
 		t_probMap map;
-		double prob1=0,prob2=0;
 		t_queue_idcat cola = _a4->getCategoriesId();
 		t_regArchivo4 regTag;
 		t_word_cont contWord = articleParser.parseArticle(art);
@@ -525,8 +524,6 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 
 		// Por cada idcat recorro una vez la lista de palabras
 		while(!cola.empty()) {
-			dato.probPos = 0;
-			dato.probNeg=0;
 			dato.id = cola.front();
 			cola.pop();
 	
@@ -538,22 +535,33 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 				// Obtengo la cantidad de veces que aparecio la palabra en
 				// una categoria
 				try{
-					frec = managerWord->getWord((string)it->first ,dato.id);
-	
-					if(regTag.wordsPositive != 0 ){
-						prob1 = (double) (frec.cantTrue / regTag.wordsPositive);
-						prob2 = regTag.artPositive;
-						dato.probPos += (prob1 * prob2);
-					}
-	
-					if(regTag.wordsNegative != 0 ){
-						prob1 = (double) (frec.cantFalse / regTag.wordsNegative);
-						prob2 = regTag.artNegative;
-						dato.probNeg += (prob1 * prob2);
-					}
+					// TODO ojo logaritmos negativos...
+					frec = managerWord->getWord((string)it->first, dato.id);
+					dato.probPos = log(static_cast<double>(frec.cantTrue)) -
+					  log(static_cast<double>(regTag.wordsPositive)) +
+					  log(static_cast<double>(regTag.artPositive));
+// 					if(regTag.wordsPositive != 0 ){
+// 						prob1 = (double) frec.cantTrue/ (double) regTag.wordsPositive;
+// 						prob2 = regTag.artPositive;
+// 						dato.probPos += (prob1 * prob2);
+// 					}
+					dato.probPos = log(static_cast<double>(frec.cantFalse)) -
+					  log(static_cast<double>(regTag.wordsNegative)) +
+					  log(static_cast<double>(regTag.artNegative));
+// 					if(regTag.wordsNegative != 0 ){
+// 						prob1 = (double) frec.cantFalse / (double) regTag.wordsNegative;
+// 						prob2 = (double) regTag.artNegative;
+// 						dato.probNeg += (prob1 * prob2);
+// 					}
 				}catch(ExceptionManagerWord){}
 			}
-			file << "frec+: " << frec.cantTrue << "   frec-: " << frec.cantFalse << "   P+: " << (double) dato.probPos << "   id: " << dato.id << "   regTag.wordsPositive: " << regTag.wordsPositive << "   regTag.artPositive: " << regTag.artPositive << "   id: " << dato.id << std::endl;
+			file << "frec+: " << frec.cantTrue << "   frec-: " << frec.cantFalse
+			  << "   P+: " << dato.probPos << "   P-: " << dato.probNeg
+			  << "   regTag.wordsPositive: " << regTag.wordsPositive
+			  << "   regTag.artPositive: " << regTag.artPositive
+			  << "   regTag.wordsNegative: " << regTag.wordsNegative
+			  << "   regTag.artNegative: " << regTag.artNegative << "   id: " << dato.id << std::endl;
+
 			map.insert(t_probMap::value_type(dato.probPos-dato.probNeg,dato.id));
 		}
 
@@ -568,8 +576,10 @@ void EntitiesManager::clasificarArticulo(const Articulo &art){
 
 		while(!salir && itt!=map.rend()){
 			file << "Prob: " << (double) itt->first << std::endl;
-			if(itt->first > UMBRAL_BCLAS )
+			if(itt->first > UMBRAL_BCLAS ) {
+				art.add_cat(itt->second, 1);
 				_feedManager->clasificarArticulo(art.get_idfeed(),itt->second,art.get_idart(),true,true);
+			}
 			else salir=true;
 			++itt;
 		}
