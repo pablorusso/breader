@@ -609,7 +609,8 @@ void EntitiesManager::clasificarArticulo(Articulo &art){
 		while(!salir && itt!=map.rend()){
 			file << "Prob: " << itt->first << std::endl;
 			art.add_cat(itt->second, 1);
-			_feedManager->clasificarArticulo(art.get_idfeed(),itt->second,art.get_idart(),true,true);
+			if (itt->second != IDCAT_FAV)
+				_feedManager->clasificarArticulo(art.get_idfeed(),itt->second,art.get_idart(),true,true);
 			salir=true;
 			++itt;
 		}
@@ -628,31 +629,4 @@ void EntitiesManager::clasificarArticulo(Articulo &art){
 	}
 }
 /*-------------------------------------------------------------------------------------------*/
-void EntitiesManager::importFeeds(const string &fileName) {
-	try {
-		ifstream inputFile(fileName.c_str());
-		inputFile.exceptions(ifstream::eofbit | ifstream::failbit | ifstream::badbit);
-		string feedUrl;
-		string feedName;
-		char c;
-		while (!inputFile.eof()) {
-			feedUrl.clear();
-			inputFile.read(reinterpret_cast<char *>(&c), sizeof(unsigned char));
-			while ((c!='\n') && (!inputFile.eof())) {
-				feedUrl.push_back(c);
-				inputFile.read(reinterpret_cast<char *>(&c), sizeof(unsigned char));
-			}
-			feedName = "PEPITO"; // TODO de donde saco el nombre?
-			FeedCreate( feedName, feedUrl );
-		}
-		inputFile.close();
-	}
-	catch (fstream::failure) {
-		// TODO error
-		//cout << "ERROR EN EL INPUTFILE" << endl;
-	}
-
-	// TODO devuelver algo
-}
-
 
