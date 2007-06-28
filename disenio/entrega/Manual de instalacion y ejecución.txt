@@ -1,9 +1,9 @@
-Instalaci√≥n
+InstalaciÛn
 ------------
-1- Ejecutar make en el directorio ra√≠z (Ej.: /svn/breader)
-  * Notar que ese directorio ser√° el configurado en apache. 
+1- Ejecutar make en el directorio raÌz (Ej.: /svn/breader)
+  * Notar que ese directorio ser· el configurado en apache.
 
-Configuraci√≥n del entorno y ejecuci√≥n
+ConfiguraciÛn del entorno y ejecuciÛn
 -------------------------------------
 
 1- Comunicacion:
@@ -17,7 +17,7 @@ Una vez que el listener esta corriendo, lo mejor a hacer es ejecutar el thin_cli
 
 3- Sitio y CGI
 Hasta aca funiona el listener y la comunicacion entre el CGI y el listener, ahora falta configurar el sitio y que pueda ejecutar el CGI. Para esto hay que tocar la configuracion del apache. La configuracion del sitio en el apache tiene que ser algo asi:
-   
+
     ScriptAlias /breader/bin /home/pablo/facultad/datos/breader/www/bin/
     <Directory "/home/pablo/facultad/datos/breader/www/bin">
        AllowOverride None
@@ -37,7 +37,7 @@ Hasta aca funiona el listener y la comunicacion entre el CGI y el listener, ahor
 
 El primero es para la carpeta CGI, el segundo para el sitio en si mismo.
 
-Adem√°s, hay que ejecutar el comando chmod para darle los permisos necesarios a la carpeta /uploads dentro de /www. "chmod 777 www/uploads"
+Adem·s, hay que ejecutar el comando chmod para darle los permisos necesarios a la carpeta /uploads dentro de /www. "chmod 777 www/uploads"
 
 4- por ultimo, XSLT
 Una vez que estos dos pasos funcionan podemos decir que la comunicacion funciona, acto seguido hay que verificar que el apache entienda los xslt. Para esto en la carpeta www/xmls hay unos ejemplos de transformaciones xslt sencillas. Hay que abrir un browser y acceder a localhost/breader/xmls/tags.xml. Ahi pueden ocurrir dos cosas:
