@@ -1,4 +1,4 @@
-
+﻿
 #if !defined ARBOL
 #define ARBOL
 
@@ -270,8 +270,10 @@ bool cArbol< CONT, ELEM >::buscarPos(cNodo<CONT,ELEM> * ptr, const CONT &elem, t
 	int primero=0,ultimo = ptr->cantClavesUsadas-1;
 	centro=ultimo/2;
 
-	if(ptr->dato[ultimo] == elem)
+	if(ptr->dato[ultimo] == elem){
+		centro=ultimo;
 		return true;
+	}
 
 	while(primero <= ultimo){
 
