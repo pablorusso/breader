@@ -481,7 +481,7 @@ void listen( int argc, char* argv[] )
 
 		cout << endl << "[listener] - Matando el socket.";
 		// matar el socket
-		//mustExit = true;
+		mustExit = true;
 		// espero que termine
 		pthread_join( serverListenThread, NULL);
 		cout << endl << "[listener] - Adios." << endl;
