@@ -20,7 +20,7 @@ Hay algunos bugs conocidos:
  - La importación no anda actualmente ya que la implementación de sockets en php no la pudimos terminar.
  - Si el feed no informa artículos con fecha, el sistema no los puede procesar.
 
-Esperamos que con esta información puedas probarlo en tu máquina y funcione correctamente. De cualquier manera, si no lo hace, podés probar conectándote por ssh a la pc de Pablo.
+Esperamos que con esta información puedas probarlo en tu máquina y funcione correctamente. De cualquier manera, si algo falla, podés probar conectándote por ssh a la pc de Pablo.
 
     ip: grupo14.dyndns.org
     user: breader
