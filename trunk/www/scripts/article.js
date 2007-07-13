@@ -52,13 +52,14 @@ function updateBodyHandler( result )
 	if ( result == null ) return;
 
 	var newArticles = result.documentElement.childNodes[1].childNodes;
-	for( i = 0; i < newArticles.length; i++ )
-		bodyDocument.documentElement.childNodes[1].appendChild( newArticles[i] );
+	var hasNew = newArticles.length > 0;
+	for( i = 0; i < newArticles.length; bodyDocument.documentElement.childNodes[1].appendChild( newArticles[i] ) );
+		
 	showBody( document, bodyDocument );
 
 	// Si ya no trae mas articulos, no tiene sentido seguir yendo a buscar mas
-	if ( newArticles.length > 0 )
-		setTimeout( 'showScroll()', 1000 );
+	if ( hasNew )
+	  setTimeout( 'showScroll()', 1000 );
 }
 
 function editArticleHandler( result )
