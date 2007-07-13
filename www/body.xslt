@@ -69,7 +69,7 @@
 						<div class="entry-container entry-main">
 							<!--fecha-->
 							<xsl:variable name="timestamp">
-								<xsl:value-of select="concat('http://localhost/breader/convert.php?timestamp=', @date)"/>
+								<xsl:value-of select="concat('convert.php?timestamp=', @date)"/>
 							</xsl:variable>
 							<div class="entry-date">
 								<xsl:value-of select="document( $timestamp )/formatted" />
