@@ -340,16 +340,21 @@ string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idca
 		t_word_cont cont = articleParser.parseArticle(art);
 		t_word_cont::iterator it;
 
+		//typedef std::map< std::string , t_diferencias > t_word_cont
+		t_word_cont mapToSend;
+
 		// Si usu_pc = 1 -> clasificado por la pc
 		// Si usu_pc = 0 -> clasificado por el usuario
 		if(usu_pc){
 			// Si lo clasifico el sistema
 			_a4->incCantClasNeg();
 			_a4->decCategoryArtAndWord(tagId,1,cont.size());
-			for(it = cont.begin(); it != cont.end() ; ++it ){
-				((t_diferencias) it->second).cantFalse=((t_diferencias) it->second).cantTrue;
-				//Cero xq no se habia incorporado a la base de conocimiento.
-				((t_diferencias) it->second).cantTrue=0;
+			for(it = cont.begin(); it != cont.end() ; ++it )
+			{
+				string myword    	  = static_cast<string>( it->first );
+				t_diferencia newFalseValue = ((t_diferencias) it->second).cantTrue;
+				t_diferencias newCount={ 0, newFalseValue };
+				mapToSend[myword] = newCount;
 			}
 
 		}else{
@@ -357,9 +362,16 @@ string EntitiesManager::ArticleUnLinkTag( t_idfeed feedId, t_idart artId, t_idca
 			_a4->decCantClasPos();
 			_a4->decCategoryArtAndWordUserError(tagId,1,cont.size());
 			for(it = cont.begin(); it != cont.end() ; ++it )
-				((t_diferencias) it->second).cantTrue*=-1;
+			{
+				string myword    	  = static_cast<string>( it->first );
+				t_diferencia newTrueValue = ((t_diferencias) it->second).cantTrue*-1;		
+				t_diferencia newFalseValue = ((t_diferencias) it->second).cantFalse;
+				
+				t_diferencias newCount={ newTrueValue, newFalseValue };
+				mapToSend[myword] = newCount;
+			}
 		}
-		managerWord->addFrecWords(tagId,cont);
+		managerWord->addFrecWords(tagId,mapToSend);
 		Feed feed = _feedManager->getFeed( art.get_idfeed() );
 		return art.getXML( feed.getName(), *_a4 );
 
@@ -512,9 +524,8 @@ string EntitiesManager::TagGetAll()
 }
 /*-------------------------------------------------------------------------------------------*/
 void EntitiesManager::clasificarArticulo(Articulo &art){
-	//TODO: Corroborar
 	// Nota: la forma de obtener el bayesiano esta sacada de
-    // Tackling the Poor Assumptions of Naive Bayes Text Classiﬁers
+    	// Tackling the Poor Assumptions of Naive Bayes Text Classiﬁers
 	// Jason D. M. Rennie, Lawrence Shih, Jaime Teevan, David R. Karger
 
 	try {
@@ -530,11 +541,12 @@ void EntitiesManager::clasificarArticulo(Articulo &art){
 		t_quantity cantClasPos, cantClasNeg;
 		cantClasPos = _a4->getCantClasPos();
 		cantClasNeg = _a4->getCantClasNeg();
-		
-#define UMBRAL_CLAS_POS 15
-#define UMBRAL_WORDS_POSITIVE 100
-#define FACTOR_AMPLITUD_NEG 1.25
-#define NB_ALPHA 1.0
+
+		// Parametrizacion de la clasificacion bayesiana
+		#define UMBRAL_CLAS_POS 5
+		#define FACTOR_AMPLITUD_NEG 1.25
+		#define NB_ALPHA 1.0
+		#define UMBRAL_POS_FOR_SURE 0.8
 
 		// Si no tengo un minimo de articulos clasificados positivamente no
 		// clasifico
@@ -561,54 +573,53 @@ void EntitiesManager::clasificarArticulo(Articulo &art){
 					frec = managerWord->getWord((string)it->first, dato.id);
 
 					dato.probPos += static_cast<double>(it->second.cantTrue)
-					  *log(( static_cast<double>(frec.cantTrue) + NB_ALPHA)
-					       /( static_cast<double>(regTag.wordsPositive) + NB_ALPHA*static_cast<double>(nroWords)));
+					  *log( (
+						  static_cast<double>(frec.cantTrue) 
+					       	  /
+						  ( static_cast<double>(regTag.wordsPositive) 
+						    + NB_ALPHA*static_cast<double>(nroWords) )
+						) + NB_ALPHA );
 
-					dato.probNeg += static_cast<double>(it->second.cantTrue)
-					  * log((static_cast<double>(frec.cantFalse) + NB_ALPHA)
-					        /(static_cast<double>(regTag.wordsNegative) + NB_ALPHA*static_cast<double>(nroWords)));
+					dato.probNeg += FACTOR_AMPLITUD_NEG * static_cast<double>(it->second.cantTrue)
+					  * log( (
+						   static_cast<double>(frec.cantFalse)
+					           /
+						   ( static_cast<double>(regTag.wordsNegative) 
+						     + NB_ALPHA*static_cast<double>(nroWords) )
+						    )  + NB_ALPHA );
 				}
 				catch(ExceptionManagerWord)
 				{
 
 				}
 			}
- 			dato.probPos +=  log( (static_cast<double>(regTag.artPositive) + NB_ALPHA)
-			                / (static_cast<double>(cantClasPos)  + NB_ALPHA*static_cast<double>(nroWords)));
+ 			dato.probPos +=  log ( ( static_cast<double>(regTag.artPositive) 
+			                	/ ( static_cast<double>(cantClasPos)  
+						    + NB_ALPHA*static_cast<double>(nroWords) ) )
+						+ NB_ALPHA
+					     );
 			dato.probPos = fabs(dato.probPos);
 
 			// Le doy mas importancia a los negativos
-			dato.probNeg += FACTOR_AMPLITUD_NEG*log((static_cast<double>(regTag.artNegative) + NB_ALPHA)
-							/ (static_cast<double>(cantClasNeg) + NB_ALPHA*static_cast<double>(nroWords)));
+			dato.probPos +=  FACTOR_AMPLITUD_NEG * log ( ( static_cast<double>(regTag.artNegative) 
+			                	/ ( static_cast<double>(cantClasNeg)  
+						    + NB_ALPHA*static_cast<double>(nroWords) ) )
+						+ NB_ALPHA
+					     );
 			dato.probNeg = fabs(dato.probNeg);
 
-			if (dato.probPos > dato.probNeg)
+			if ( dato.probPos > dato.probNeg && dato.probPos > UMBRAL_POS_FOR_SURE )
 				map.insert(t_probMap::value_type(dato.probPos,dato.id));
 		}
 
 		// Clasifico al articulo con la categoria en la que se obtuvo una mayor probabilidad
 		// de ocurrencia sin haber cometido tantos errores previos de clasificacion.
-
-/*
-		bool salir=false;
-		t_probMap::reverse_iterator itt = map.rbegin();
-
-		while(!salir && itt!=map.rend()){
-			art.add_cat(itt->second, 1);
-			if (itt->second != IDCAT_FAV)
-				_feedManager->clasificarArticulo(art.get_idfeed(),itt->second,art.get_idart(),true,true);
-			salir=true;
-			++itt;
-		}
-*/
-
 		t_probMap::reverse_iterator itt = map.rbegin();
 		if ((itt != map.rend()) && (itt->second != IDCAT_FAV))
 		{
 			art.add_cat(itt->second, 1);
 			_feedManager->clasificarArticulo(art.get_idfeed(),itt->second,art.get_idart(),true,true);
 		}
-
 	}
 	catch (eArchivo4 &e) {
 		throw string(e.what());
