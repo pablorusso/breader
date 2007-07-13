@@ -6,6 +6,6 @@
 
 	echo "<?xml version=\"1.0\"?>";
 	echo "<formatted>";
-	echo strftime( "%B %e, %Y %R", $timestamp );
+	echo strftime( "%B %e, %Y %R:%S", $timestamp );
 	echo "</formatted>";
 ?>
