@@ -546,7 +546,7 @@ void EntitiesManager::clasificarArticulo(Articulo &art){
 		#define UMBRAL_CLAS_POS 5
 		#define FACTOR_AMPLITUD_NEG 1.25
 		#define NB_ALPHA 1.0
-		#define UMBRAL_POS_FOR_SURE 0.8
+		#define UMBRAL_POS_FOR_SURE 0.35
 
 		// Si no tengo un minimo de articulos clasificados positivamente no
 		// clasifico
@@ -601,12 +601,15 @@ void EntitiesManager::clasificarArticulo(Articulo &art){
 			dato.probPos = fabs(dato.probPos);
 
 			// Le doy mas importancia a los negativos
-			dato.probPos +=  FACTOR_AMPLITUD_NEG * log ( ( static_cast<double>(regTag.artNegative) 
+			dato.probNeg +=  FACTOR_AMPLITUD_NEG * log ( ( static_cast<double>(regTag.artNegative)
 			                	/ ( static_cast<double>(cantClasNeg)  
 						    + NB_ALPHA*static_cast<double>(nroWords) ) )
 						+ NB_ALPHA
 					     );
 			dato.probNeg = fabs(dato.probNeg);
+
+// cout << "dato.probPos: " << dato.probPos << endl << flush;
+// cout << "dato.probNeg: " << dato.probNeg << endl << flush;
 
 			if ( dato.probPos > dato.probNeg && dato.probPos > UMBRAL_POS_FOR_SURE )
 				map.insert(t_probMap::value_type(dato.probPos,dato.id));
