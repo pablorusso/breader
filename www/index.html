@@ -126,7 +126,6 @@
 					{
 						setCurrentBody( params );
 						var startQS = getCurrentBody() + escape('quantity||#10|||startPosition||#0');
-						//document.getElementById( 'start_pos').value = 0;
 						params += startQS;
 
 						showDiv( document, 'loading_body', null );
@@ -154,11 +153,6 @@
 			function updateArticleCount()
 			{
 				var startPos = bodyDocument.documentElement.childNodes[1].childNodes.length;
-				//var startPos = parseInt( document.getElementById( 'start_pos').value );
-				//if ( startPos == 0 ) startPos = 10;
-				//else startPos = startPos + 5;
-				//document.getElementById( 'start_pos').value = startPos;
-
 				var startQS = getCurrentBody() + escape('quantity||#5|||startPosition||#' + startPos );
 				doAction ( startQS, updateBodyHandler, '' );
 			}
@@ -272,7 +266,6 @@
 		<input id="currentFeed" name="currentFeeds" type="hidden" value="actionCode=F3" />
 		<input id="currentTag"  name="currentTags"  type="hidden" value="actionCode=T4" />
 		<input id="advSearch"   name="advSearch"    type="hidden" value="" />
-		<!--input id="start_pos"   name="start_pos"    type="hidden" value="0" /-->
 
 		<div id="pag">
 			<!--MENU DE LA IZQUIERDA -->
