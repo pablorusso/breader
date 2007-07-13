@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<rdf:RDF
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns="http://purl.org/rss/1.0/"
+ xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+ xmlns:taxo="http://purl.org/rss/1.0/modules/taxonomy/"
+ xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:syn="http://purl.org/rss/1.0/modules/syndication/"
+ xmlns:admin="http://webns.net/mvcb/"
+>
+
+<channel rdf:about="http://barrapunto.com/">
+<title>Barrapunto3</title>
+<link>http://barrapunto.com/</link>
+<description>La informaci&#243;n que te interesa</description>
+<dc:language>EN</dc:language>
+<dc:rights>Copyleft 1999-2006, Barrapunto</dc:rights>
+<dc:date>2007-06-25T09:50:10+00:00</dc:date>
+<dc:publisher>Barrapunto S.L.</dc:publisher>
+<dc:creator>webmaster@barrapunto.com</dc:creator>
+<dc:subject>Tecnolog&#237;a, Software libre</dc:subject>
+<syn:updatePeriod>hourly</syn:updatePeriod>
+<syn:updateFrequency>1</syn:updateFrequency>
+<syn:updateBase>1970-01-01T00:00+00:00</syn:updateBase>
+<items>
+ <rdf:Seq>
+  <rdf:li rdf:resource="http://ciberderechos.barrapunto.com/article.pl?sid=07/06/25/0934229&amp;from=rss" />
+ </rdf:Seq>
+</items>
+<image rdf:resource="http://barrapunto.com/images/topics/topicbarrapunto.png" />
+<textinput rdf:resource="http://barrapunto.com/search.pl" />
+</channel>
+
+<image rdf:about="http://barrapunto.com/images/topics/topicbarrapunto.png">
+<title>Barrapunto</title>
+<url>http://barrapunto.com/images/topics/topicbarrapunto.png</url>
+<link>http://barrapunto.com/</link>
+</image>
+
+<item rdf:about="http://ciberderechos.barrapunto.com/article.pl?sid=07/06/25/0934229&amp;from=rss">
+<title>Gmail peligra en Alemania</title>
+<link>http://ciberderechos.barrapunto.com/article.pl?sid=07/06/25/0934229&amp;from=rss</link>
+<description>Manu nos cuenta: &amp;#171;Google puede cerrar Gmail en Alemania, pero lo importante es el porqu&amp;#233;. El gobierno alem&amp;#225;n est&amp;#225; imponiendo nuevas leyes de privacidad en Internet que exigir&amp;#237;an a Google a informar a las autoridades de la identidad exacta de los usuarios. La postura es clara por parte de Google, preferir&amp;#237;an abandonar Alemania antes que defraudar a sus usuarios y no darles suficiente privacidad elemental en la sociedad de Internet de hoy en d&amp;#237;a. El problema de Google y Alemania no es nuevo puesto que ya comentamos los problemas de la marca "Gmail" en Alemania, a pesar de ello este hecho no afectaba demasiado a Gmail porque en Alemania ofrece el servicio bajo el nombre de googlemail.com. V&amp;#237;a Techcrunch&amp;#187;</description>
+<dc:creator>Yonderboy</dc:creator>
+<dc:date>2007-06-25T09:35:00+00:00</dc:date>
+<dc:subject>privacidad</dc:subject>
+<slash:department>ansias-de-control-pol&amp;#237;tico</slash:department>
+<slash:section>ciberderechos</slash:section>
+<slash:comments>7</slash:comments>
+<slash:hit_parade>7,7,2,2,0,0,0</slash:hit_parade>
+</item>
+
+<textinput rdf:about="http://barrapunto.com/search.pl">
+<title>Search Barrapunto</title>
+<description>Search Barrapunto stories</description>
+<name>query</name>
+<link>http://barrapunto.com/search.pl</link>
+</textinput>
+
+</rdf:RDF>
