@@ -1,29 +1,31 @@
 Hola Martín, estuvimos toda la noche y parte del día de hoy probando y tratando de reproducir los problemas que nos reportaste.
 Te contamos brevemente que descubrimos al respecto:
- - El problema que reportaste sobre que el listener aparentemente no escuchaba fue el que más nos costó encontrar la causa, pero finalmente descubrimos que tenía que ver con el tamaño de los artículos que tenía tu feed de prueba. El problema en cuestión es que estamos pasando los articulos usando GET (en lugar de POST, que sería lo más correcto) y por lo tanto superaba el límite configurado por defecto en el apache para el queryString. Como solución temporal, siempre y cuando estés de acuerdo, cambiamos en la configuración del apache dicho límite para que acepte queryStrings mas extensos. La solución formal más correcta es la de utilizar POST para transmitir dichos datos, pero si bien no es complicado, llevaría un poco mas de tiempo y preferimos  entregarte una solución de compromiso mas rápido así podes al menos probar el TP. Si consideras que esto es un error grave o que tendríamos que arreglarlo, avisanos y cambiamos el código para que viaje por post.
- - Con respecto al problema que el listener no frenaba con ENTER fue un error de la versión que te copiamos dentro del CD. Mientras debugeamos, tenemos que comentar la linea que frena el listener para que no frene nunca y esta version fue distribuida por error dentro del CD. Tengo entendido que vos pudiste ver este problema y arreglarlo, pero de todas formas te mandamos adjunto una versión corregida del listener que ahora sí funciona como se espera.
 
-Además, aprovechamos estas horas de ventaja que nos diste y el set de pruebas que nos entregaste para probar un poco más la aplicacion y encontramos otras cosas que tampoco andaban bien. Te detallamos a continuacion qué arreglamos así estas enterado de qué cosas no andaban correctamente en la primer entrega. Si le haces un diff al código adjunto contra el de la entrega vas
-a ver que son cambios menores (5 o 6 líneas de codigo).
+ - El problema que reportaste sobre que el listener aparentemente no escuchaba fue el que más nos costó encontrar la causa, pero finalmente descubrimos que tenía que ver con el tamaño de los artículos que tenía tu feed de prueba. El problema en cuestión es que estamos pasando los artículos usando GET (en lugar de POST, que sería lo más correcto) y por lo tanto superaba el límite configurado por defecto en el apache para el queryString. Como solución temporal, siempre y cuando estés de acuerdo, cambiamos en la configuración del apache dicho límite para que acepte queryStrings mas extensos. La solución formal más correcta es la de utilizar POST para transmitir dichos datos, pero si bien no es complicado, llevaría un poco mas de tiempo y preferimos  entregarte una solución de compromiso mas rápido así podes al menos probar el TP. Si consideras que esto es un error grave o que tendríamos que arreglarlo, avisanos y cambiamos el código para que viaje por post.
+
+ - Con respecto al problema que el listener no frenaba con ENTER fue un error de la versión que te copiamos dentro del CD. Mientras debugeamos, tenemos que comentar la linea que frena el listener para que no frene nunca y esta versión fue distribuida por error dentro del CD. Tengo entendido que vos pudiste ver este problema y arreglarlo, pero de todas formas te mandamos adjunto una versión corregida del listener que ahora sí funciona como se espera.
+
+Además, aprovechamos estas horas de ventaja que nos diste y el set de pruebas que nos entregaste para probar un poco más la aplicación y encontramos otras cosas que tampoco andaban bien. Te detallamos a continuación qué arreglamos así estas enterado de qué cosas no andaban correctamente en la primer entrega. Si le haces un diff al código adjunto contra el de la entrega vas
+a ver que son cambios menores (5 o 6 líneas de código).
  1- En algunos casos podía traer artículos de menos (error de la pagina web, index.html y articles.js)
  2- Parseaba mal la fecha de los artículos, ahora la muestra con segundos. (rss_utils.inc, del magpie)
  3- En algunos casos podía no mostrar la fecha del articulo. (convert.php)
  4- Cambios varios sobre el algoritmo de clasificación para mejorar la misma. (EntitiesManager.cpp del server)
  5- No guardaba correctamente las frecuencias negativas (EntitiesManager.cpp del server)
 
-El bug 4 y 5 son en realidad los más importantes ya que incidían directamente en la clasificación y hacían que la misma no fuera correcta. Con estos últimos cambios encontramos que la clasificación funciona muchisímo mejor y estamos bastante conformes con los resultados que arroja. Esperamos que vos tengas el mismo resultado.
+El bug 4 y 5 son en realidad los más importantes ya que incidían directamente en la clasificación y hacían que la misma no fuera correcta. Con estos últimos cambios encontramos que la clasificación funciona muchísimo mejor y estamos bastante conformes con los resultados que arroja. Esperamos que vos tengas el mismo resultado.
 
 Para probarlo, en función a lo que te dijimos anteriormente, tenés que tener en cuenta lo siguiente:
  - apache2.conf -> LimitRequestLine 1638000 (por el tema que estamos usando get en lugar de post)
  - PHP4 -> notamos ciertos bugs en el parser (MagpieRSS) al usar php5, por eso recomendamos usar php4
- - si algo funciona anormalmente, puede ser que los archivos queden invalidos, y no funcione correctamente el tp. Los mismos se guardan en el home. Para borrarlos fácilmente es con:
+ - si algo funciona anormalmente, puede ser que los archivos queden inválidos, y no funcione correctamente el tp. Los mismos se guardan en el home. Para borrarlos fácilmente es con:
   "./listener 3"
 
-A esta altura, tamien tenemos identificados dos temas que nos llevaría más tiempo arreglar o terminar y por lo tanto decidimos exponerlos como bugs conocidos. Llegado el caso y la necesidad podemos avanzar sobre estos temas, queda a tu criterio. Los items son:
+A esta altura, también tenemos identificados dos temas que nos llevaría más tiempo arreglar o terminar y por lo tanto decidimos exponerlos como bugs conocidos. Llegado el caso y la necesidad podemos avanzar sobre estos temas, queda a tu criterio. Los items son:
  1- La importación no anda actualmente ya que la implementación de sockets en php no la pudimos terminar. (está terminada en realidad, pero nunca nos funcionó bien, por lo que esta funcionalidad está comentada y no se ve en la pantalla)
  2- Si el feed no informa artículos con fecha, el sistema no los puede procesar. (los ignora pero no da error)
 
-Esperamos, ahora si, que con esta información y con los pequeños arreglos, puedas probarlo en tu máquina y funcione correctamente. No encontramos ninguna razon para que no ocurra. De todas formas, si algo falla, podés probar conectándote por ssh a la pc de Pablo que en principio va a estar prendida durante el viernes y el sábado (si necesitas más tiempo por favor avisanos así no apaga la maquina)
+Esperamos, ahora si, que con esta información y con los pequeños arreglos, puedas probarlo en tu máquina y funcione correctamente. No encontramos ninguna razón para que no ocurra. De todas formas, si algo falla, podés probar conectándote por ssh a la pc de Pablo que en principio va a estar prendida durante el viernes y el sábado (si necesitas más tiempo por favor avisanos así no apaga la maquina)
     ip: grupo14.dyndns.org
     user: breader
     pass: breader123
@@ -32,14 +34,12 @@ Esperamos, ahora si, que con esta información y con los pequeños arreglos, pueda
 Y conectarte a la web en: http://grupo14.dyndns.org/breader/
 El listener puede llegar a estar apagado por lo que antes de entrar al sitio, entra por ssh y ejecutalo.
 
-Si por algun razón no podés entrar por ssh envianos un mail que vamos a estar chequeandolo seguido y te solucionamos cualquier inconveniente que puedas encontrar.
+Si por alguna razón no podés entrar por ssh envianos un mail que vamos a estar chequeandolo seguido y te solucionamos cualquier inconveniente que puedas encontrar.
 
-Adjunto, además, te enviamos la nueva versión del codigo con los cambios que describimos arriba, también queda una copia dentro de la carpeta tp_datos en el home del usuario breader en la maquina de pablo en caso que lo prefieras ver por ssh.
+Adjunto, además, te enviamos la nueva versión del código con los cambios que describimos arriba, también queda una copia dentro de la carpeta tp_datos en el home del usuario breader en la maquina de Pablo en caso que lo prefieras ver por ssh.
 
 Creemos que es todo, por favor no dejes de informarnos sobre cualquier novedad, problema o inquietud que tengas sobre el TP ya que vamos a estar a disposición tuya para arreglar o solucionar cualquier problema que pueda surgir.
 
 Muchas gracias nuevamente por la paciencia y la buena onda.
 Saludos,
 Grupo 14.
-
-
