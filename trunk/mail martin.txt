@@ -11,9 +11,11 @@ Para probarlo, tenés que tener en cuenta lo siguiente:
 
  - apache2.conf -> LimitRequestLine 1638000 (porque estamos usando get en lugar de post, si se requiere cambiar, se podría hacer) 
  - PHP4 -> notamos ciertos bugs en el parser (MagpieRSS) al usar php5, por eso recomendamos usar php4
+ - si algo funciona anormalmente, puede ser que los archivos queden invalidos, y no funcione correctamente el tp. Los mismos se guardan en el home. Para borrarlos fácilmente es con:
+  "./listener 3"
 
 
-Hay algunos bugs conocidos que no tenemos tiempo de solucionarlos:
+Hay algunos bugs conocidos:
 
  - La importación no anda actualmente ya que la implementación de sockets en php no la pudimos terminar.
  - Si el feed no informa artículos con fecha, el sistema no los puede procesar.
@@ -24,4 +26,10 @@ Esperamos que con esta información puedas probarlo en tu máquina y funcione corr
     user: breader
     pass: breader123
 
-(yo cuando la probamos usé ssh -X breader@grupo14.dyndns.org -p 443)
+(Ej:  ssh -X breader@grupo14.dyndns.org -p 443)
+
+Y conectarte a la web en:
+
+    http://grupo14.dyndns.org/breader/
+
+
