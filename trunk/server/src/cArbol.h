@@ -1,4 +1,3 @@
-﻿
 #if !defined ARBOL
 #define ARBOL
 
@@ -11,44 +10,71 @@
 #include <list>
 
 
-/**Header del archivo que contiene a los nodos del arbol en disco.*/
-class cHeaderArbol{
-public:
-	t_uint nroRaiz; //!< Numero del nodo Raiz.
-	t_uint cantNodos;//!< Cantidad de nodos alamcenados.
-
+/**Header del archivo que contiene a los nodos del arbol en disco.*/
+
+class cHeaderArbol{
+
+public:
+
+	t_uint nroRaiz; //!< Numero del nodo Raiz.
+
+	t_uint cantNodos;//!< Cantidad de nodos alamcenados.
+
+
+
   /** Constructor.
 	*/
-	cHeaderArbol(){
-		nroRaiz=0; 
-		cantNodos=0;
-	}
-
+	cHeaderArbol(){
+
+		nroRaiz=0;
+
+		cantNodos=0;
+
+	}
+
+
+
   /**Escribe los datos sobre el buffer de salida.
 	* @param salida Buffer sobre el que se escribe.
 	* @param dato Elemento que se quiere guardar
 	*/
-	friend std::ofstream &operator<<(std::ofstream &salida, cHeaderArbol &header){
-		salida.write(reinterpret_cast<char *> (&(header.nroRaiz)) , sizeof(t_uint));
-    	salida.write(reinterpret_cast<char *> (&(header.cantNodos)), sizeof(t_uint));
-		return salida;
-	}
+	friend std::ofstream &operator<<(std::ofstream &salida, cHeaderArbol &header){
 
-  /**Obtiene los datos del buffer de entrada.
+		salida.write(reinterpret_cast<char *> (&(header.nroRaiz)) , sizeof(t_uint));
+
+    	salida.write(reinterpret_cast<char *> (&(header.cantNodos)), sizeof(t_uint));
+
+		return salida;
+
+	}
+
+
+
+  /**Obtiene los datos del buffer de entrada.
 	* @param entrada Buffer sobre el que se leen los datos.
 	* @param dato Elemento que se recupera.
 	*/
-	friend std::ifstream &operator>>(std::ifstream &entrada, cHeaderArbol &header){	
-		entrada.read(reinterpret_cast<char *> (&(header.nroRaiz)), sizeof(t_uint));
-		entrada.read(reinterpret_cast<char *> (&(header.cantNodos)), sizeof(t_uint));
-		return entrada;
-	}
-
+	friend std::ifstream &operator>>(std::ifstream &entrada, cHeaderArbol &header){
+
+		entrada.read(reinterpret_cast<char *> (&(header.nroRaiz)), sizeof(t_uint));
+
+		entrada.read(reinterpret_cast<char *> (&(header.cantNodos)), sizeof(t_uint));
+
+		return entrada;
+
+	}
+
+
+
   /** Retorna el tamaño del header en disco.
-	*/
-	static unsigned int sizeofHeader(){
-		return (sizeof(t_uint)*2);
-	}
+	*/
+
+	static unsigned int sizeofHeader(){
+
+		return (sizeof(t_uint)*2);
+
+	}
+
 };
 
 template < class CONT, class ELEM>
@@ -122,7 +148,7 @@ private:
    cHeaderArbol header; //!< Header del archivo donde se guarda el arbol
    bool isCreado;       //!< Si esta o no creado el arbol
    t_uint limitLevel;     //!< Nivel hasta donde se carga el arbol en memoria
-   
+
  /**Agrega un elemento a un nodo que tiene espacio suficiente
    * @param ptr Puntero al nodo que se quiere inicializar.
    * @param elem Elemento del nodo
@@ -152,7 +178,7 @@ private:
    bool buscarLugar(CONT &elem);
 
  /** Libera la memoria asignada a los nodos del arbol de forma recursiva.
-   * @param ptr : nodo a liberar.   
+   * @param ptr : nodo a liberar.
    */
    void borrarNodo(cNodo<CONT,ELEM> *ptr);
 
@@ -213,7 +239,7 @@ cArbol< CONT, ELEM >::cArbol(double maxOcup){
 
 	double tamNodo = (double) cNodo<CONT,ELEM>::sizeofNodo();
 
-	/*CANT_ELEM_X_NODO * sizeof(CONT) + (CANT_ELEM_X_NODO+1)*(sizeof(cNodo<CONT,ELEM>*) + 
+	/*CANT_ELEM_X_NODO * sizeof(CONT) + (CANT_ELEM_X_NODO+1)*(sizeof(cNodo<CONT,ELEM>*) +
           sizeof(t_uint))+ sizeof(cNodo<CONT,ELEM>); */
 
 	tamNodo= tamNodo/1024;
@@ -764,9 +790,9 @@ void cArbol< CONT, ELEM >::destroy(){
 		corriente=NULL;
 		remove(nameFile.c_str());
    		nameFile="";
-   		limitLevel=0; 
+   		limitLevel=0;
 	   }
-	
+
 	}else throw ExceptionTree(ERROR_DT);
 }
 /*---------------------------------------------------------------------------*/
@@ -816,10 +842,10 @@ void cArbol< CONT, ELEM >::saveArbol(){
 		throw ExceptionTree(ERROR_SAVE_TREE);
 
 	header.nroRaiz=raiz->nroNodo;
-	outputFile << header;	
+	outputFile << header;
 	guardarRec(outputFile,raiz);
-	outputFile.close();	
-	
+	outputFile.close();
+
 }
 
 /*---------------------------------------------------------------------------*/
@@ -836,7 +862,7 @@ void cArbol< CONT, ELEM >::closeArbol(){
 		raiz=NULL;
 		corriente=NULL;
    		nameFile="";
-   		limitLevel=0; 
+   		limitLevel=0;
 	}
 }
 
