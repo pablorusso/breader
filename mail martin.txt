@@ -24,4 +24,4 @@ Esperamos que con esta información puedas probarlo en tu máquina y funcione corr
     user: breader
     pass: breader123
 
-(yo cuando la probamos usé ssh -X breader@grupo14.dyndns.org ... )
+(yo cuando la probamos usé ssh -X breader@grupo14.dyndns.org -p 443)
