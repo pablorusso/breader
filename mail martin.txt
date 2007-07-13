@@ -1,0 +1,27 @@
+Hola Martín, acá te pasamos el nuevo código para ver si ahora funciona.
+Los cambios son los siguientes
+
+ - En algunos casos podía traer artículos de menos
+ - Parseaba mal la fecha de los artículos, ahora la muestra con segundos.
+ - En algunos casos podía no mostrar la fecha del articulo.
+ - Cambios varios sobre el algoritmo de clasificación para mejorar la misma.
+ - No guardaba correctamente las frecuencias negativas (CRITICO!)
+
+Para probarlo, tenés que tener en cuenta lo siguiente:
+
+ - apache2.conf -> LimitRequestLine 1638000 (porque estamos usando get en lugar de post, si se requiere cambiar, se podría hacer) 
+ - PHP4 -> notamos ciertos bugs en el parser (MagpieRSS) al usar php5, por eso recomendamos usar php4
+
+
+Hay algunos bugs conocidos que no tenemos tiempo de solucionarlos:
+
+ - La importación no anda actualmente ya que la implementación de sockets en php no la pudimos terminar.
+ - Si el feed no informa artículos con fecha, el sistema no los puede procesar.
+
+Esperamos que con esta información puedas probarlo en tu máquina y funcione correctamente. De cualquier manera, si no lo hace, podés probar conectándote por ssh a la pc de Pablo.
+
+    ip: grupo14.dyndns.org
+    user: breader
+    pass: breader123
+
+(yo cuando la probamos usé ssh -X breader@grupo14.dyndns.org ... )
