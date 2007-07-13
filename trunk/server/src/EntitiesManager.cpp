@@ -589,6 +589,7 @@ void EntitiesManager::clasificarArticulo(Articulo &art){
 		// Clasifico al articulo con la categoria en la que se obtuvo una mayor probabilidad
 		// de ocurrencia sin haber cometido tantos errores previos de clasificacion.
 
+/*
 		bool salir=false;
 		t_probMap::reverse_iterator itt = map.rbegin();
 
@@ -599,7 +600,14 @@ void EntitiesManager::clasificarArticulo(Articulo &art){
 			salir=true;
 			++itt;
 		}
+*/
 
+		t_probMap::reverse_iterator itt = map.rbegin();
+		if ((itt != map.rend()) && (itt->second != IDCAT_FAV))
+		{
+			art.add_cat(itt->second, 1);
+			_feedManager->clasificarArticulo(art.get_idfeed(),itt->second,art.get_idart(),true,true);
+		}
 
 	}
 	catch (eArchivo4 &e) {
