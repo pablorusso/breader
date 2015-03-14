@@ -1,0 +1,1 @@
+RSS feed classifier using bayesian. This rss reader can be trained to classify feeds based on user preferences into diferent categories.
